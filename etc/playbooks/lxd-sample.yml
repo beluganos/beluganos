@@ -1,0 +1,44 @@
+---
+
+- hosts: hosts
+  connection: local
+  vars:
+    bridges: []
+  roles:
+    - bridge
+  tags:
+    - bridge
+
+
+- hosts: hosts
+  connection: local
+  roles:
+    - { role: lxd, mode: host }
+  tags:
+    - host
+
+
+- hosts: hosts
+  connection: local
+  tasks:
+    - include_role:
+        name: lxd
+      vars:
+        mode: create
+      with_items: # change "lxd-sample" to your setting.
+        - "{{ groups['lxd-sample'] }}"
+      loop_control:
+        loop_var: lxcname
+  tags:
+    - create
+    - lxd
+
+
+- hosts: lxd-sample  # change "lxd-sample" to your setting.
+  connection: lxd
+  roles:
+    - { role: lxd, lxcname: "{{ inventory_hostname }}", mode: setup }
+  tags:
+    - setup
+    - lxd
+

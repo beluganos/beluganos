@@ -1,0 +1,4 @@
+---
+
+filesdir: "roles/dpath/files/{{ dpname }}"
+commondir: "roles/dpath/files/common"

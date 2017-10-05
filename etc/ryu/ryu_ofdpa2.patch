@@ -1,0 +1,17 @@
+diff --git a/ryu/lib/ofctl_v1_3.py b/ryu/lib/ofctl_v1_3.py
+index 91ae9a0..970f25f 100644
+--- a/ryu/lib/ofctl_v1_3.py
++++ b/ryu/lib/ofctl_v1_3.py
+@@ -240,7 +240,11 @@ def to_match(dp, attrs):
+                'mpls_bos': str_to_int,
+                'pbb_isid': ofctl_utils.to_match_masked_int,
+                'tunnel_id': ofctl_utils.to_match_masked_int,
+-               'ipv6_exthdr': ofctl_utils.to_match_masked_int}
++               'ipv6_exthdr': ofctl_utils.to_match_masked_int,
++               'ipv6_exthdr': ofctl_utils.to_match_masked_int,
++               'vrf': str_to_int,
++               'mpls_type': str_to_int,
++               'allow_vlan_translation': str_to_int}
+ 
+     keys = {'dl_dst': 'eth_dst',
+             'dl_src': 'eth_src',

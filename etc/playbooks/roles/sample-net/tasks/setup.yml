@@ -1,0 +1,13 @@
+---
+
+- name: copy config files
+  copy:
+    src: "{{ filesdir }}/{{ item.src }}"
+    dest: "{{ item.dst }}"
+    owner: "{{ item.owner }}"
+  with_flattened:
+    - "{{ config_files }}"
+
+- name: enable service
+  systemd: name=beluganos enabled=yes
+

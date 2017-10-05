@@ -1,0 +1,326 @@
+// -*- coding: utf-8 -*-
+
+syntax = "proto3";
+
+package fibcapi;
+
+// FF Message types
+enum FFM {
+    UNSPEC        = 0; // unused
+    HELLO         = 1;
+    PORT_STATUS   = 2;
+    PORT_CONFIG   = 3;
+    FLOW_MOD      = 4;
+    GROUP_MOD     = 5;
+    DP_STATUS     = 6;
+}
+
+message Hello {
+    string re_id = 1;
+}
+
+message DpStatus {
+    enum Status {
+        NOP   = 0;  // unused
+	ENTER = 1;
+	LEAVE = 2;
+    }
+
+    Status status = 1;
+    string re_id  = 2;
+}
+
+message PortStatus {
+    enum Status {
+        NOP  = 0;  // unused
+        UP   = 1;
+        DOWN = 2;
+    }
+
+    Status status    = 1;
+    string re_id     = 2;
+    uint32 port_id   = 3;
+    string ifname    = 4;
+}
+
+message PortConfig {
+    enum Cmd {
+        NOP    = 0; // unused.
+        ADD    = 1; // value: port_id
+        MODIFY = 2; // value: 0:DOWN, 1:UP
+        DELETE = 3; // value: -
+    }
+
+    Cmd    cmd       = 1;
+    string re_id     = 2;
+    string ifname    = 3;
+    uint32 value     = 4;
+}
+
+message FlowMod {
+    enum Cmd {
+        NOP           = 0; // unused
+        ADD           = 1;
+        MODIFY        = 2;
+        MODIFY_STRICT = 3;
+        DELETE        = 4;
+        DELETE_STRICT = 5;
+    }
+
+    enum Table {
+        INGRESS_PORT      = 0;
+        VLAN              = 10;
+        TERM_MAC          = 20;
+        L3_TYPE           = 21;
+        MPLS0             = 23;
+        MPLS1             = 24;
+        MPLS2             = 25;
+        MPLS_L3_TYPE      = 27;
+        MPLS_LABEL_TRUST  = 28;
+        MPLS_TYPE         = 29;
+        UNICAST_ROUTING   = 30;
+        MULTICAST_ROUTING = 40;
+        BRIDGING          = 50;
+        POLICY_ACL        = 60;
+    }
+
+    Cmd    cmd       = 1;
+    Table  table     = 2;
+    string re_id     = 3;
+    oneof entry {
+        VLANFlow             vlan       = 4; // VLAN
+        TerminationMacFlow   term_mac   = 5; // TERM_MAC
+        MPLSFlow             mpls1      = 6; // MPLS1
+        UnicastRoutingFlow   unicast    = 7; // UNICAST_ROUTING
+        BridgingFlow         bridging   = 8; // BRIDGING
+        PolicyACLFlow        acl        = 9; // POLICY_ACL
+    }
+}
+
+message GroupMod {
+    enum Cmd {
+        NOP    = 0; // unused
+        ADD    = 1;
+        MODIFY = 2;
+        DELETE = 3;
+    }
+
+    enum GType {
+        UNSPEC           = 0x00;  // unused
+        L2_INTERFACE     = 0x01;
+        L2_REWRITE       = 0x10;
+        L3_UNICAST       = 0x20;
+        L2_MULTICAST     = 0x30;
+        L2_FLOOD         = 0x40;
+        L3_INTERFACE     = 0x50;
+        L3_MULTICAST     = 0x60;
+        L3_ECMP          = 0x70;
+        L2_OVERLAY_FL_UC = 0x80;
+        L2_OVERLAY_FL_MC = 0x81;
+        L2_OVERLAY_MC_UC = 0x82;
+        L2_OVERLAY_MC_MC = 0x83;
+        MPLS_INTERFACE   = 0x90;
+        MPLS_L2_VPN      = 0x91;
+        MPLS_L3_VPN      = 0x92;
+        MPLS_TUNNEL1     = 0x93;
+        MPLS_TUNNEL2     = 0x94;
+        MPLS_SWAP        = 0x95;
+        MPLS_FF          = 0xA6;
+        MPLS_ECMP        = 0xA8;
+        L2_UF_INTERFACE  = 0xB0;
+    }
+
+    Cmd    cmd       = 1;
+    GType  g_type    = 2;
+    string re_id     = 3;
+    oneof entry {
+        L2InterfaceGroup     l2_iface     = 4; // L2_IF_GROUP
+        L3UnicastGroup       l3_unicast   = 5; // L3_UNICAST_GROUP
+        MPLSInterfaceGroup   mpls_iface   = 6; // MPLS_INTERFACE
+        MPLSLabelGroup       mpls_label   = 7; // MPLS_*_VPN, MPLS_TUNNEL*, MPLS_SWAP
+    }
+}
+
+message VLANFlow {
+    message Match {
+        uint32 in_port  = 1;
+        uint32 vid      = 2;
+        uint32 vid_mask = 3;
+    }
+
+    message Action {
+        enum Name {
+            UNSPEC        = 0; // unused
+            SET_VLAN_VID  = 1; // value: vlan_vid
+            SET_VRF       = 2; // value: vrf
+            SET_OVID      = 3; // value: outermost vlan_vid
+            SET_MPLS_TYPE = 4; // value: MPLS_TYPE
+            PUSH_VLAN     = 5; // value: vlan_vid
+            POP_VLAN      = 6; // value: -
+            SET_MPLS_L2_TYPE = 7;
+            SET_TUNNEL_ID = 8;
+        }
+        Name   name  = 1;
+        uint32 value = 2;
+    }
+
+    Match           match      = 1;
+    repeated Action actions    = 2;
+    uint32          goto_table = 3;
+}
+
+message TerminationMacFlow {
+    message Match {
+        uint32 in_port  = 1; // 0: unspec
+        uint32 eth_type = 2;
+        string eth_dst  = 3; // mac or mac/mask
+        uint32 vlan_vid = 4; // 0: unspec
+    }
+
+    message Action {
+        enum Name {
+            UNSPEC = 0; // unused
+            OUTPUT = 1; // value: -
+        }
+        Name   name  = 1;
+        uint32 value = 2;
+    }
+
+    Match           match      = 1;
+    repeated Action actions    = 2;
+    uint32          goto_table = 3;
+}
+
+message MPLSFlow {
+    message Match {
+        bool bos     = 1;
+        uint32 label = 2;
+    }
+
+    message Action {
+        enum Name {
+            UNSPEC            = 0;  // unused
+            POP_LABEL         = 1;  // value: eth_type
+            DEC_TTL           = 2;  // value: -
+            COPY_TTL_IN       = 3;  // value: -
+            COPY_TC_IN        = 4;  // value: -
+            SET_VRF           = 5;  // value: vrf
+            SET_MPLS_L2_PORT  = 6;  // value: L2 Port
+            SET_MPLS_TYPE     = 7;  // value: MPLS_TYPE
+            SET_TUNNEL_ID     = 8;  // value: Tunnel Id
+            SET_QOS_INDEX     = 9;  // value: QoS Index
+            SET_TRAFFIC_CLASS = 10; // value: Traffic Class
+            SET_L3_IN_PORT    = 11; // value: L3 In Port
+            COPY_FIELD        = 12; // value: MPLS_TC
+            POP_CW_OR_ACH     = 13; // value: -
+            POP_VLAN          = 14; // value: -
+            POP_L2_HEADER     = 15; // value: -
+            SET_LMEP_ID       = 16; // value: LMEP_Id
+            SET_PROTECTION_INDEX = 17; // value: Protection Index
+        }
+        Name   name = 1;
+        uint32 value  = 2;
+    }
+
+    Match           match      = 1;
+    repeated Action actions    = 2;
+    GroupMod.GType  g_type     = 3; // MPLS_INTERFACE, MPLS_SWAP, MPLS_FF, MPLS_ECMP
+    uint32          g_id       = 4;
+    uint32          goto_table = 5;
+}
+
+message UnicastRoutingFlow {
+    message Match {
+        string ip_dst = 1; // ip/mask
+        uint32 vrf    = 2;
+    }
+
+    message Action {
+        enum Name {
+            UNSPEC        = 0;  // unused
+            OUTPUT        = 1;  // value: - / Output to CONTROLLER. Optional.
+            CLEAR_ACTIONS = 2;  // value: - / Drop packet. Optional.
+            DEC_TTL       = 3;  // value: -
+        }
+        Name   name  = 1;
+        uint32 value = 2;
+    }
+
+    Match          match  = 1;
+    Action         action = 2;
+    GroupMod.GType g_type = 3; // L3_UNICAST, L3_ECMP, MPLS_L3_VPN
+    uint32         g_id   = 4;
+}
+
+message BridgingFlow {
+    message Match {
+        string eth_dst   = 1; // <mac> or <mac>/<mask>
+        uint32 vlan_vid  = 2; // 0: unspec
+        uint32 tunnel_id = 3; // 0: unspec
+    }
+
+    message Action {
+        enum Name {
+            UNSPEC = 0; // unused
+            OUTPUT = 1; // value: -, Send a copy to CONTROLLER
+        }
+        Name name    = 1;
+        uint32 value = 2;
+    } 
+
+    Match  match  = 1;
+    Action action = 2;  // Optional.
+}
+
+message PolicyACLFlow {
+    message Match {
+        string ip_dst = 1; // <ip>/<mask>
+        uint32 vrf    = 2; // 0: unspec
+    }
+
+    message Action {
+        enum Name {
+            UNSPEC = 0; // unused
+            OUTPUT = 1; // value: -, Send a copy to CONTROLLER
+        }
+        Name name    = 1;
+        uint32 value = 2;
+    }
+
+    Match match   = 1;
+    Action action = 2;
+}
+
+// 0x0vvvPPPP (vvv:VID, PPPP:port_id)
+message L2InterfaceGroup {
+    uint32 port_id  = 1; // VRF+LnId
+    uint32 vlan_vid = 2; // uint16 (0:POP_VLAN)
+    bool   vlan_translation = 3;
+}
+
+// 0x20VVNNNN (VV:VRF, NNNN:NeId)
+message L3UnicastGroup {
+    uint32 ne_id    = 1; // VRF+NeId
+    uint32 port_id  = 2; // VRF+LnId
+    uint32 vlan_vid = 3; // uint16
+    string eth_dst  = 4;
+    string eth_src  = 5;
+}
+
+// 0x90VVNNNN (VV:VRF, NNNN:NeId)
+message MPLSInterfaceGroup {
+    uint32 ne_id    = 1; // VRF+NeId
+    uint32 port_id  = 2; // VRF+LnId
+    uint32 vlan_vid = 3; // uint16
+    string eth_dst  = 4;
+    string eth_src  = 5;
+}
+
+// 0x9x0LLLLL (LLLL: label)
+message MPLSLabelGroup {
+    uint32  dst_id        = 1;  // Local Label or Encap Id
+    uint32  new_label     = 2;  // Remote Label
+    uint32  ne_id         = 3;  // VRF+NeId     (encap single label)
+    uint32  new_dst_id    = 4;  // New Encap Id (encap double label)
+    GroupMod.GType g_type = 5;
+}

@@ -1,0 +1,15 @@
+[Unit]
+Description=fib controller service
+After=network.target
+ConditionPathExists=/etc/beluganos/fibcd.conf
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/beluganos/fibcd.conf
+ExecStartPre=/bin/sleep ${START_DELAY_SEC}
+ExecStart=<path/to/virtualenv>/bin/ryu-manager ryu.app.ofctl_rest ${FIBC_APP} --config-file ${FIBC_CONF} --log-config-file ${LOG_CONF}
+Restart=on-abort
+User=beluganos
+
+[Install]
+WantedBy=network.target

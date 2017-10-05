@@ -1,0 +1,25 @@
+---
+
+routers:
+  - desc: Router-2
+    re_id: 1.1.1.1
+    datapath:  dp1
+    ports:
+      - { name: 0/ens10,     port: 1 }
+      - { name: 0/ens11,     port: 2 }
+      - { name: 10/ens10,    port: 3 }
+      - { name: 10/ens11,    port: 4 }
+      - { name: 10/eth1,     port: 5 }
+      - { name: 10/eth2,     port: 6 }
+      - { name: 10/eth3,     port: 7 }
+      - { name: 10/eth1.10,  port: 0, link: 10/eth1 }
+      # - { name: 10/bond1,    port: 101, slaves: [10/eth2, 10/eth3] }
+
+datapaths:
+  - name:  dp1
+    dp_id: 14
+    mode:  generic
+
+  - name:  dp2
+    dp_id: 15
+    mode:  ofdpa2

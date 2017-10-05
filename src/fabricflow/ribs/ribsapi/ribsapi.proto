@@ -1,0 +1,67 @@
+// -*- coding: utf-8 -*-
+
+syntax = "proto3";
+
+package ribsapi;
+
+//
+// RIBS API
+//
+service RIBSApi {
+  rpc GetRics       (GetRicsRequest)     returns (stream RicEntry){}
+  rpc GetNexthops   (GetNexthopsRequest) returns (stream Nexthop) {}
+  rpc GetNexthopMap (GetNexthopMapRequest) returns (stream NexthopMap){}
+}
+
+service RIBSCoreApi {
+  rpc ModRib      (RibUpdate)         returns (ModRibReply) {}
+  rpc MonitorRib  (MonitorRibRequest) returns (stream RibUpdate) {}
+  rpc SyncRib     (SyncRibRequest)    returns (SyncRibReply) {}
+}
+
+message GetRicsRequest{}
+message GetNexthopsRequest{}
+message GetNexthopMapRequest{}
+message ModRibReply{}
+message SyncRibReply{}
+
+message SyncRibRequest{
+    string rt = 1;
+}
+
+message MonitorRibRequest {
+    string rt   = 1;
+    uint32 n_id = 2;
+}
+
+message RibUpdate {
+    string         rt     = 1;
+    string         prefix = 2;
+    repeated bytes paths  = 3;
+}
+
+message RicEntry {
+    string key   = 1;
+    uint32 n_id  = 2;
+    string addr  = 3;
+    uint32 port  = 4;
+    string rt    = 5;
+    string rd    = 6;
+    uint32 label = 7;
+}
+
+message Path {
+    string prefix  = 1;
+    string nexthop = 2;
+}
+
+message Nexthop {
+    string addr   = 1;
+    string rt     = 2;
+    string src_id = 3;
+}
+
+message NexthopMap {
+    string key = 1;
+    string val = 2;
+}

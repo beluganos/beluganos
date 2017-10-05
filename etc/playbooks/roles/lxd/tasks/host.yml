@@ -1,0 +1,10 @@
+---
+
+- name: copy fibc config
+  become: yes
+  copy:
+    src: "{{ commondir }}/{{ item }}"
+    dest: "{{ confdir }}/{{ item }}"
+  with_items:
+    - fibc.conf
+    - fibc.log.conf

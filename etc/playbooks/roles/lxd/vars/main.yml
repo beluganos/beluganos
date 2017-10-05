@@ -1,0 +1,43 @@
+---
+
+filesdir: "roles/lxd/files/{{ lxcname }}"
+
+commondir: "roles/lxd/files/common"
+
+confdir: "/etc/beluganos"
+
+gopath: "~/go"
+
+users:
+  - beluganos
+
+dirs:
+  - { path: "/etc/beluganos/", owner: "beluganos"  }
+
+config_files:
+  - { src: "interfaces.cfg", dst: "/etc/network/interfaces.d/50-beluganos.cfg", owner: "root" }
+  - { src: "sysctl.conf",    dst: "/etc/sysctl.d/30-beluganos.conf", owner: "root" }
+  - { src: "ribxd.conf",     dst: "/etc/beluganos/ribxd.conf" , owner: "beluganos"  }
+  - { src: "daemons",        dst: "/etc/frr/daemons",            owner: "frr" }
+  - { src: "frr.conf",       dst: "/etc/frr/frr.conf",           owner: "frr" }
+  - { src: "gobgp.conf",     dst: "/etc/frr/gobgp.conf",         owner: "frr" }
+  - { src: "gobgpd.conf",    dst: "/etc/frr/gobgpd.conf",        owner: "frr" }
+
+services:
+  - beluganos.service
+  - nlad.service
+  - ribcd.service
+  - ribsd.service
+  - ribpd.service
+  - beluganos.target
+  - gobgpd.service
+
+binfiles:
+  - nlad
+  - nlac
+  - ribcd
+  - ribpd
+  - ribsd
+  - ribsdmp
+  - gobgpd
+  - gobgp

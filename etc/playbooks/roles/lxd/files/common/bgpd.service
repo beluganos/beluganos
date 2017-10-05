@@ -1,0 +1,15 @@
+[Unit]
+Description=BGP daemon
+BindTo=zebra.service
+After=syslog.target network.target zebra.service
+ConditionPathExists=/etc/quagga/bgpd.conf
+
+[Service]
+Type=forking
+EnvironmentFile=/etc/quagga/quagga.conf
+ExecStart=/usr/lib/quagga/bgpd --daemon $BGPD_OPTS -f /etc/quagga/bgpd.conf
+Restart=on-abort
+
+[Install]
+WantedBy=network.target
+

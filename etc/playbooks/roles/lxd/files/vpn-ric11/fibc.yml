@@ -1,0 +1,9 @@
+---
+
+routers:
+  - desc: VPN-RIC11
+    re_id: 10.0.1.6
+    datapath: whitebox1
+    ports:
+      - { name: 11/eth1,     port: 3 }
+      - { name: 11/eth1.10,  port: 0,  link: "11/eth1" }

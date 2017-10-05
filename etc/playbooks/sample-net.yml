@@ -1,0 +1,95 @@
+---
+
+- hosts: hosts
+  connection: local
+  vars:
+    bridges: ["lxdbr1", "lxdbr2", "lxdbr7", "lxdbr8"]
+  roles:
+    - bridge
+  tags:
+    - network
+
+
+- hosts: hosts
+  connection: local
+  tasks:
+    - include_role:
+        name: sample-net
+      vars:
+        mode: create
+      with_items:
+        - "{{ groups['sample-net'] }}"
+      loop_control:
+        loop_var: lxcname
+  tags:
+    - create
+    - lxd
+
+
+- hosts: sample-net
+  connection: lxd
+  roles:
+    - { role: sample-net, lxcname: "{{ inventory_hostname }}", mode: setup }
+  tags:
+    - setup
+    - lxd
+
+
+- hosts: hosts
+  connection: local
+  roles:
+    - { role: sample-net, mode: ovs}
+  tags:
+    - network
+
+   #                           |
+   #                     172.16.1.0/24 [lxdbr1]
+   #                           | .2
+   #                         (eth1)
+   #                    +--------------+
+   #                    |      P1      |
+   #                    | <sample-p1>  |
+   #                    | Lo: 10.0.0.1 |
+   #                    +--------------+
+   #                         (eth2)
+   #                           | .1
+   #                     172.16.2.0/24 [lxdbr2]
+   #                           | .2
+   #                         (eth1)
+   #                    +--------------+
+   #                    |      P2      |
+   #                    | <sample-p2>  |
+   #                    | Lo: 10.0.0.2 |
+   #                    +--------------+
+   #                         (eth2)
+   #                           | .1
+   #                           |
+   #                     [sample-p2.1] ---+
+   #                     172.16.3.0/24
+   #                      [sample.1] -----+
+   #                           |
+   #                           | .2
+   #                         (eth1)
+   #                   +--------------+
+   #                   |  OpenvSwitch | <------- Beluganos
+   #                   |   <sample>   |
+   #          +--(eth2)| Lo: 10.0.0.5 |(eth3)--+
+   #          |    .1  +--------------+   .1   |
+   #          |            (eth4.10)           |
+   #          |                | .1            |
+   #          |                |               |
+   # +---- [sample.2]       [sample.4]      [sample.3] ----+
+   #     172.16.4.0/24    172.16.6.0/24   172.16.5.0/24
+   # +-- [sample-p3.1]                    [sample-p4.1] ---+
+   #          |                                |
+   #          | .2                             | .2
+   #        (eth1)                           (eth1)
+   #   +--------------+                 +--------------+
+   #   |      P3      |                 |      P4      |
+   #   | <sample-p3>  |                 | <sample-p4>  |
+   #   | Lo: 10.0.0.3 |                 | Lo: 10.0.0.4 |
+   #   +--------------+                 +--------------+
+   #        (eth2)                           (eth2)
+   #          | .1                             | .1
+   #    172.16.7.0/24 [lxdbr7]           172.16.8.0/24 [lxdbr8]
+   #          |                                |

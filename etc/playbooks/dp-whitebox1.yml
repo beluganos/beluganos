@@ -1,0 +1,8 @@
+---
+
+- hosts: hosts
+  connection: local
+  roles:
+    - { role: dpath, dpname: whitebox1, mode: fibc }
+  tags:
+    fibc

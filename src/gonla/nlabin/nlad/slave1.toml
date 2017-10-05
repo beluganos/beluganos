@@ -1,0 +1,12 @@
+# -*- coding: utf-8; mode: toml -*-
+
+[core]
+addr = "127.0.0.1:50051"
+nid  = 10
+
+[slave]
+dummyif = "ens3"
+
+[log]
+level = 5
+dump  = 0

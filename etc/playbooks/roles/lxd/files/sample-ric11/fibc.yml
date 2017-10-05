@@ -1,0 +1,9 @@
+---
+
+routers:
+  - desc: SANPLE-VPN-RIC11
+    re_id: 10.0.1.1
+    datapath: whitebox1
+    ports:
+      - { name: 11/eth1,     port: 4 }
+      - { name: 11/eth2,     port: 5 }

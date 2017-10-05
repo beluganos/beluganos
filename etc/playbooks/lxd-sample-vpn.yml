@@ -1,0 +1,88 @@
+---
+
+- hosts: hosts
+  connection: local
+  vars:
+    bridges: []
+  roles:
+    - bridge
+  tags:
+    - bridge
+
+
+- hosts: hosts
+  connection: local
+  roles:
+    - { role: lxd, mode: host }
+  tags:
+    - host
+
+
+- hosts: hosts
+  connection: local
+  tasks:
+    - include_role:
+        name: lxd
+      vars:
+        mode: create
+      with_items:
+        - "{{ groups['lxd-sample-vpn'] }}"
+      loop_control:
+        loop_var: lxcname
+  tags:
+    - create
+    - lxd
+
+
+- hosts: lxd-sample-vpn
+  connection: lxd
+  roles:
+    - { role: lxd, lxcname: "{{ inventory_hostname }}", mode: setup }
+  tags:
+    - setup
+    - lxd
+
+#
+#            +--------------+            +----------------+
+#            |      P1      |-----\\-----|      RR1       |
+#            | Lo: 10.0.0.1 |            | Lo: 10.0.0.254 |
+#            +--------------+            +----------------+
+#                  | .1
+#                  |
+#            172.16.2.0/30
+#   +--     [sample-mic.1]
+#   :              |
+#   :              | .2
+#   :            (eth1)
+#   :       +--------------+
+#   :       |  sample-mic  |
+#   :       | Lo: 10.0.1.1 |
+#   S       | AS: 65001    |
+#   A       +--------------+
+#   M            (eth0)
+#   P              | .1
+#   L       192.169.0.0/24 [lxdbr0]
+#   E              +-----------------------------+
+#   |              | .X(DHCP)                    | .Y(DHCP)
+#   V            (eth0)                        (eth0)
+#   P       +--------------+              +--------------+
+#   N       | sample-ric10 |              | sample-ric11 |
+#   :       | Lo: 10.0.0.5 |              | Lo: 10.0.0.5 |
+#   :       | AS: 65001    |              | AS: 65001    |
+#   :       | VRF:10       |              | VRF:11       |
+#   :       | RT: 1:10     |              | RT: 1:11     |
+#   :       | RD: 1:2010   |              | RD: 1:2011   |
+#   :       +--------------+              +--------------+
+#   :            (eth1)                 (eth1)         (eth2)
+#   :              | .1                   | .1           | .1
+#   :              |                      |              |
+#   +--    [sample-ric10.1]      [sample-ric11.1]  [sample-ric11.2]
+#           192.168.1.0/24        192.168.2.0/24    192.168.3.0/24
+#                  |                      |              |
+#                  | .2                   | .2           | .2
+#           +--------------+    +--------------+    +--------------+
+#           |     CE1      |    |     CE2      |    |     CE3      |
+#           | Lo: 20.0.0.1 |    | Lo: 20.0.0.2 |    | Lo: 20.0.0.3 |
+#           | AS: 10       |    | AS: 20       |    | AS; 20       |
+#           | VRF:10       |    | VRF:11       |    | VRF:11       |
+#           +--------------+    +--------------+    +--------------+

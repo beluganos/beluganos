@@ -1,0 +1,12 @@
+---
+
+- include: "{{ lxcname }}.yml"
+
+- name: create container
+  lxd_container:
+    name: "{{ lxcname }}"
+    state: started
+    source:
+      type: image
+      alias: base
+    profiles: ["{{ lxcname }}"]

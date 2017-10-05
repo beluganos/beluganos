@@ -1,0 +1,17 @@
+// -*- coding: utf-8 -*-
+
+syntax = "proto3";
+
+package nlalink;
+
+message Node {
+  bytes  ip  = 1;
+}
+
+message Vpn {
+  bytes  ip    = 1;  // net.IP
+  bytes  mask  = 2;  // net.IPMask
+  bytes  gw    = 3;  // net.IP
+  uint32 label = 4;
+  bytes  vpn_gw= 5;  // net.IP
+}
