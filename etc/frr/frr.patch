@@ -1,0 +1,26 @@
+diff --git a/doc/Makefile.am b/doc/Makefile.am
+index d82a3073..fd43c3f3 100644
+--- a/doc/Makefile.am
++++ b/doc/Makefile.am
+@@ -151,7 +151,7 @@ EXTRA_DIST = BGP-TypeCode draft-zebra-00.ms draft-zebra-00.txt \
+ 	$(figures_sources) $(figures_png) $(figures_txt)
+ 
+ draft-zebra-00.txt: draft-zebra-00.ms
+-	groff -T ascii -ms $< > $@
++	groff -T ascii $< > $@
+ 
+ # Ensure that all of the figures are copied into the html directory
+ html-local: $(HTMLS)
+diff --git a/tools/frr.service b/tools/frr.service
+index 51dbbe2f..ed7a6360 100644
+--- a/tools/frr.service
++++ b/tools/frr.service
+@@ -4,7 +4,7 @@ After=syslog.target networking.service
+ OnFailure=heartbeat-failed@%n.service
+ 
+ [Service]
+-Nice=-5
++# Nice=-5
+ EnvironmentFile=/etc/default/frr
+ Type=forking
+ NotifyAccess=all

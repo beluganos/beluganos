@@ -1,0 +1,23 @@
+---
+
+- name: create profile
+  lxd_profile:
+    name: "{{ lxcname }}"
+    state: present
+    config: {"security.privileged": "true"}
+    devices:
+      eth0: # Management LAN
+        type: nic
+        name: eth0
+        nictype: bridged
+        parent: lxdbr0
+      eth1:
+        type: nic
+        name: eth1
+        nictype: bridged
+        parent: lxdbr2
+      eth2:
+        type: nic
+        name: eth2
+        host_name: "{{ lxcname }}.1"
+        nictype: p2p

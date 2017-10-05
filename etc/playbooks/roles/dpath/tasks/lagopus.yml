@@ -1,0 +1,32 @@
+---
+
+- name: disable ovs
+  become: yes
+  service: name=openvswitch-switch state=stopped enabled=no
+
+
+- name: mkdir /etc/lagopus
+  become: yes
+  file: path=/etc/lagopus state=directory mode=0755
+
+
+- name: copy config files
+  become: yes
+  copy:
+    src: "{{ filesdir }}/{{ item.src }}"
+    dest: "{{ item.dst }}"
+    mode: 0644
+  with_items:
+    - { src: lagopus.conf, dst: /etc/lagopus/lagopus.conf }
+    - { src: dpdk.conf,    dst: /etc/lagopus/dpdk.conf }
+
+
+- name: copy shells
+  become: yes
+  copy:
+    src: "{{ commondir }}/{{ item.src }}"
+    dest: "{{ item.dst }}"
+    mode: 0755
+  with_items:
+    - { src: lagopus.sh,  dst: /usr/local/bin/lagopus.sh  }
+    - { src: dpdkinit.sh, dst: /usr/local/bin/dpdkinit.sh }

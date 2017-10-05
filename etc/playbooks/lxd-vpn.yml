@@ -1,0 +1,109 @@
+---
+
+- hosts: hosts
+  connection: local
+  vars:
+    bridges: []
+  roles:
+    - bridge
+  tags:
+    - bridge
+
+
+- hosts: hosts
+  connection: local
+  roles:
+    - { role: lxd, mode: host }
+  tags:
+    - host
+
+
+- hosts: hosts
+  connection: local
+  tasks:
+    - include_role:
+        name: lxd
+      vars:
+        mode: create
+      with_items:
+        - "{{ groups['lxd-vpn'] }}"
+      loop_control:
+        loop_var: lxcname
+  tags:
+    - create
+    - lxd
+
+
+- hosts: lxd-vpn
+  connection: lxd
+  roles:
+    - { role: lxd, lxcname: "{{ inventory_hostname }}", mode: setup }
+  tags:
+    - setup
+    - lxd
+
+#----------------------------------------------
+#
+#               +------+ rid: 10.0.0.2
+#               | P#2  | ospfd/ldpd
+#               +------+
+#                  |  .17
+#              10.81.35.16/30
+#                  |
+#               <mic.3>
+#                  | .18
+#         [3/14] (eth3)
+#
+#
+#               +------+ rid: 10.0.0.1       +------+ rid: 10.81.254.255
+#               | P#1  | ospfd/ldpd          |  RR  | AS : 65000
+#               +------+                     +------+
+#                  |  .1                        | .1
+#                  |                            |
+# - - - - -  10.81.35.0/30 - - - - - - - 10.81.254.0/24 - -
+#                  |                            |
+#               <mic.2>                       <mic.1>
+#                  |           +-----(VPNv4)----+
+#                  | .2        | .2
+#        [2/14]  (eth2)     (eth1.10)   [1/14]
+#               +------+ rid: 10.0.1.1
+#               | mic  | AS : 65000
+#               +------+ vrf: 0
+#                (eth0)
+#                  | .151
+#                  |
+#   PE#1     192.169.1.0/24 <lxdbr0>
+#                  |
+#                  | .223
+#                (eth0)
+#               +------+ rid: 10.0.1.1
+#               | ric1 | AS : 65000
+#               +------+ vrf: 5
+#        [4/14]  (eth1.10)
+#                  | .1
+#                  |
+#               <ric1.1>
+#                  |
+# - - - - - - 20.100.1.0/24 - - - - - - - - - - - - - - - - - -
+#                  |
+#                  | .2
+#               (eth1.10)
+#               +------+ rid: 20.100.255.1
+#               | CE#1 | AS : 65001
+#               +------+
+#
+#
+#         [4/6]  (eth2.10)
+#                  | .1
+#                  |
+#                <ric.2>
+#                  |
+#             20.100.2.0/24
+#                  |
+#                  | .2
+#               +------+ router-id: 20.100.255.2
+#               | CE#2 | BGP(65001)
+#               +------+
+#
+#
+

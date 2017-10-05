@@ -1,0 +1,8 @@
+---
+
+- name: create bridge device
+  become: yes
+  shell: ip link add {{ item }} type bridge; ip link set {{ item }} up
+  with_items:
+    - "{{ bridges }}"
+  ignore_errors: yes

@@ -1,0 +1,6 @@
+---
+
+datapaths:
+  - name: sample_sw
+    dp_id: 153
+    mode: ovs   # "geneic" or "ofdpa2" or "ovs"

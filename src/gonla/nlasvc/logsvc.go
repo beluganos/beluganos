@@ -1,0 +1,77 @@
+// -*- coding: utf-8 -*-
+
+// Copyright (C) 2017 Nippon Telegraph and Telephone Corporation.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+// implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package nlasvc
+
+import (
+	log "github.com/sirupsen/logrus"
+	"gonla/nlactl"
+	"gonla/nlalib"
+	"gonla/nlamsg"
+)
+
+type NLALogService struct {
+	dump uint32
+}
+
+func NewNLALogService(dump uint32) *NLALogService {
+	return &NLALogService{
+		dump: dump,
+	}
+}
+
+func (n *NLALogService) Start(uint8, *nlactl.NLAChannels) error {
+	// nothing to do.
+	return nil
+}
+
+func (n *NLALogService) Stop() {
+	// nothing to do.
+}
+
+func (n *NLALogService) NetlinkMessage(nlmsg *nlamsg.NetlinkMessage) {
+	log.Debugf("Log: %v", nlmsg)
+	if n.dump != 0 {
+		for _, line := range nlalib.HexSlice(nlmsg.Data) {
+			log.Debugf("Log: %s", line)
+		}
+	}
+}
+
+func (n *NLALogService) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.Link) {
+	log.Debugf("Log: LINK %v, %v", &nlmsg.Header, link)
+}
+
+func (n *NLALogService) NetlinkAddr(nlmsg *nlamsg.NetlinkMessage, addr *nlamsg.Addr) {
+	log.Debugf("Log: ADDR %v, %v", &nlmsg.Header, addr)
+}
+
+func (n *NLALogService) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nlamsg.Neigh) {
+	log.Debugf("Log: NEIG %v, %v", &nlmsg.Header, neigh)
+}
+
+func (n *NLALogService) NetlinkRoute(nlmsg *nlamsg.NetlinkMessage, route *nlamsg.Route) {
+	log.Debugf("Log: ROUT %v, %v", &nlmsg.Header, route)
+}
+
+func (n *NLALogService) NetlinkNode(nlmsg *nlamsg.NetlinkMessage, node *nlamsg.Node) {
+	log.Debugf("Log: NODE %v, %v", &nlmsg.Header, node.IP())
+}
+
+func (n *NLALogService) NetlinkVpn(nlmsg *nlamsg.NetlinkMessage, vpn *nlamsg.Vpn) {
+	log.Debugf("Log: VPN  %v, %v", &nlmsg.Header, vpn)
+}

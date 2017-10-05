@@ -1,0 +1,16 @@
+[Unit]
+Description=Beluganos initializer
+After=syslog.target network.target
+
+[Service]
+Type=simple
+ExecStartPre=/bin/mkdir -p /var/log/beluganos
+ExecStartPre=/bin/chown beluganos.beluganos /var/log/beluganos
+ExecStartPre=/bin/mkdir -p /var/run/beluganos
+ExecStartPre=/bin/chown beluganos.beluganos /var/run/beluganos
+ExecStartPre=/bin/chmod 755 /var/run/beluganos
+ExecStart=/sbin/sysctl -p /etc/sysctl.d/30-beluganos.conf
+
+[Install]
+WantedBy=network.target
+

@@ -1,0 +1,9 @@
+---
+
+routers:
+  - desc: SAMPLE-VPN-RIC10
+    re_id: 10.0.1.1
+    datapath: whitebox1
+    ports:
+      - { name: 10/eth1,     port: 2 }
+      - { name: 10/eth2,     port: 3 }

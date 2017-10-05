@@ -1,0 +1,19 @@
+// -*- coding: utf-8 -*-
+
+syntax = "proto3";
+
+package ribpapi;
+
+//
+// RIBP API
+//
+service RIBPApi {
+  rpc SendFFPacket(FFPacketRequest) returns (SendFFPacketReply) {}
+}
+
+message FFPacketRequest {
+  string ifname = 1;
+}
+
+message SendFFPacketReply {
+}

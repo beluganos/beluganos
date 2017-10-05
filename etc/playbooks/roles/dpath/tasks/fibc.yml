@@ -1,0 +1,7 @@
+---
+
+- name: copy fibc.yml
+  become: yes
+  copy:
+    src: "{{ filesdir }}/fibc.yml"
+    dest: "/etc/beluganos/fibc.d/fibc-dpath-{{ dpname }}.yml"

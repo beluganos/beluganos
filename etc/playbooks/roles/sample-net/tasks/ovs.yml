@@ -1,0 +1,12 @@
+---
+
+- name: add ovs-ports
+  become: yes
+  openvswitch_port:
+    bridge: "{{ ovs_bridge }}"
+    port: "{{ item.name }}"
+    state: present
+    set: Interface {{ item.name }} ofport_request={{ item.port_no }}
+  with_items:
+    - "{{ ovs_ports }}"
+

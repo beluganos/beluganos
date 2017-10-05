@@ -1,0 +1,16 @@
+---
+
+- name: restart container
+  lxd_container:
+    name: "{{ lxcname }}"
+    state: restarted
+
+
+- name: restart services
+  systemd: name={{ item }} state=restarted
+  with_items:
+    - "{{ services }}"
+
+
+- name: reload services
+  command: systemctl daemon-reload

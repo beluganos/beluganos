@@ -1,0 +1,6 @@
+---
+
+datapaths:
+  - name: whitebox1
+    dp_id: 6
+    mode: ofdpa2

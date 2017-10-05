@@ -1,0 +1,9 @@
+[Unit]
+Description=Beluganos RIB Service
+After=syslog.target network.target zebra.service
+Requires=network.target
+Wants=beluganos.service nlad.service ribcd.service ribsd.service ribpd.service
+
+[Install]
+WantedBy=network.target
+

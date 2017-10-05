@@ -1,0 +1,12 @@
+[Unit]
+Description=Bekuganos RIB Packet Service
+After=syslog.target network.target zebra.service beluganos.service
+ConditionPathExists=/etc/beluganos/ribxd.conf
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ribpd -config /etc/beluganos/ribxd.conf
+Restart=on-abort
+
+[Install]
+WantedBy=network.target

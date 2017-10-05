@@ -1,0 +1,15 @@
+[Unit]
+Description=LDP daemon
+BindTo=zebra.service
+After=syslog.target network.target zebra.service
+ConditionPathExists=/etc/quagga/ldpd.conf
+
+[Service]
+Type=forking
+EnvironmentFile=/etc/quagga/quagga.conf
+ExecStart=/usr/lib/quagga/ldpd --daemon $LDPD_OPTS -f /etc/quagga/ldpd.conf
+Restart=on-abort
+
+[Install]
+WantedBy=network.target
+

@@ -1,0 +1,8 @@
+---
+
+routers:
+  - desc: SAMPLE-VPN-MIC
+    re_id: 10.0.1.1
+    datapath: whitebox1
+    ports:
+      - { name: 0/eth1,     port: 1 }

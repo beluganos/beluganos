@@ -1,0 +1,50 @@
+---
+
+- name: add user
+  user: name={{ item }} system=yes createhome=no
+  with_flattened:
+    - "{{ users }}"
+
+
+- name: make directories
+  file: path={{ item.path }} owner={{ item.owner }} state=directory
+  with_flattened:
+    - "{{ dirs }}"
+
+
+- name: copy binary files
+  copy:
+    src: "{{ gopath }}/bin/{{ item }}"
+    dest: "/usr/bin/{{ item }}"
+    mode: 0755
+  with_items:
+    - "{{ binfiles }}"
+  notify:
+    - restart services
+
+
+- name: copy config files
+  copy:
+    src: "{{ filesdir }}/{{ item.src }}"
+    dest: "{{ item.dst }}"
+    owner: "{{ item.owner }}"
+  with_flattened:
+    - "{{ config_files }}"
+  notify:
+    - restart services
+
+
+- name: copy service files
+  copy:
+    src: "{{ commondir }}/{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+  with_flattened:
+    - "{{ services }}"
+  notify:
+    - reload services
+
+
+- name: enable services
+  systemd: name={{ item }} enabled=yes
+  with_flattened:
+    - "{{ services }}"
