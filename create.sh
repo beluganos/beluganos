@@ -147,9 +147,20 @@ frr_pkg() {
         pushd $FRR_DIR
         git checkout -b 3.0 origin/stable/3.0
         patch -p1 < /tmp/frr.patch
+        ln -s debianpkg debian
     fi
 
     ./bootstrap.sh
+    ./configure
+    make dist
+    fakeroot debian/rules backports
+
+    cd ${LXD_WORK_DIR}
+    tar xvf ${FRR_DIR}/${FRR_ORG}
+    cd frr-*
+    . /etc/os-release
+    tar xvf ${FRR_DIR}/frr_*${ID}${VERSION_ID}*.debian.tar.xz
+
     fakeroot ./debian/rules binary
 
     popd
