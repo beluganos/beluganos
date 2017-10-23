@@ -137,7 +137,7 @@ O   10.10.2.4/30 [110/200] is directly connected, eth2.100, 00:08:06
 C>* 10.10.2.4/30 is directly connected, eth2.100
 ~~~~
 
-For more details of operating Beluganos, please refer to [doc/operaion-guide.md](doc/operaion-guide.md).
+For more details of operating Beluganos, please refer to [doc/operation-guide.md](doc/operation-guide.md).
 
 ## Support
 Github issue page and e-mail are available. If you prefer to use e-mail, please contact `msf-contact [at] lab.ntt.co.jp`.
