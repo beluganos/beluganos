@@ -350,7 +350,7 @@ auto eth2.100
 iface eth2.100 inet manual
 ~~~~
 
-### 3. sysctl.conf: MPLS Basic Configurations: sysctl.conf
+### 3. sysctl.conf: MPLS basic configurations: sysctl.conf
 
 This file will be located under `/etc/sysctl.d/` in Linux container. If you want to enable MPLS for all interfaces, you have to disable `rp_filter` and set `net.mpls.conf` as follows:
 
@@ -397,7 +397,7 @@ nhrpd=no
 Each daemon configuration of FRRouting.
  See [FRRouting user-guide](https://frrouting.org/user-guide/).
 
-### 6. gobgp.conf: GoBGP daemons settings
+### 6. gobgp.conf: GoBGP daemon settings
 
 This file is about gobgp booting, **NOT gobgpd itself**. In general, please do not edit.
 
