@@ -8,14 +8,14 @@ Generally, PE router needs a master instance and multiple VRF instance in order 
 
 ### MIC
 
-- __M__aster __I__nstance __C__ontroller
+- **M**aster **I**nstance **C**ontainer
 - Connect with P, PE, and RR routers
 - MP-iBGP by GoBGP
 - Required number at PE: 1
 
 ### RIC
 
-- __R__outing __I__nstance __C__ontroller
+- **R**outing **I**nstance **C**ontainer
 - Connect with CE routers
 - The learned route by eBGP will be redistributed to MIC's GoBGP.
 - Requrired number at PE: 1 per VRF
