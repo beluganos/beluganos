@@ -1,4 +1,5 @@
-# Beluganos
+<img src="doc/img/brand-logo-h.png" width="420px" alt="beluganos-logomark">
+
 Beluganos is a **new network OS** designed for **white-box switches** (OF-DPA), which can apply large-scale networks.
 
 - IP Routing (BGP, OSPF, ...)
@@ -7,6 +8,8 @@ Beluganos is a **new network OS** designed for **white-box switches** (OF-DPA), 
 - ASIC based **full hardware processing**
 
 The feature matrix of Beluganos is available at [doc/function.md](doc/function.md).
+
+Beluganos was named after [beluga whale](https://en.wikipedia.org/wiki/Beluga_whale).
 
 ## Architecture
 Beluganos has one or more [Linux containers](https://linuxcontainers.org/). The route table which is installed to Linux containers is copied to white-box switches. To configure router settings like IP addresses or parameter of routing protocols, you have to configure the settings of Linux containers.
