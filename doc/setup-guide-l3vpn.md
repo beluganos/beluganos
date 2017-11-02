@@ -2,20 +2,20 @@
 
 Beluganos support PE router of BGP/MPLS based IP-VPN environments. To setup PE router, additional settings are needed. After setting general settings by [setup-guide](setup-guide.md), please execute following procedure.
 
-## Container Constitution
+## Container constitution
 
 Generally, PE router needs a master instance and multiple VRF instance in order to separate the area of IP address. In Beluganos, **the separation of Linux containers will be roled as the separation of IP address tables**. We call these containers MIC and RIC.
 
 ### MIC
 
-- __M__aster __I__nstance __C__ontroller
+- **M**aster **I**nstance **C**ontainer
 - Connect with P, PE, and RR routers
 - MP-iBGP by GoBGP
 - Required number at PE: 1
 
 ### RIC
 
-- __R__outing __I__nstance __C__ontroller
+- **R**outing **I**nstance **C**ontainer
 - Connect with CE routers
 - The learned route by eBGP will be redistributed to MIC's GoBGP.
 - Requrired number at PE: 1 per VRF
