@@ -32,12 +32,11 @@ beluganos/
                         create.yml          # DO NOT EDIT.
                         setup.yml           # DO NOT EDIT.
                         host.yml            # DO NOT EDIT.
-                        sample.yml          # Sample
-                        <container name>.yml
                     files/
                         common/             # DO NOT EDIT.
                         sample/             # Sample
                         <container name>/
+                            lxd_profile.yml
                             interfaces.cfg
                             sysctl.conf
                             daemons
@@ -218,8 +217,8 @@ If your container name is *"master-instance"*, please edit task files as follows
 
 ~~~~
 $ cd etc/playbooks
-$ cp roles/lxd/tasks/sample.yml roles/lxd/tasks/master-instance.yml
-$ vi roles/lxd/tasks/master-instance.yml
+$ cp -r roles/lxd/files/sample roles/lxd/files/master-instance
+$ vi roles/lxd/files/master-instance/lxd_profile.yml
 
 ---
 
@@ -291,7 +290,6 @@ The reflection of "B. Settings for Linux Containers" should be done after editti
 
 ```
 $ cd etc/playbooks
-$ cp -r roles/lxd/files/sample roles/lxd/files/master-instance
 $ ls roles/lxd/files/master-instance
 daemons fibc.yml frr.conf gobgp.conf gobgpd.conf interfaces.cfg ribxd.conf sysctl.conf
 ```
