@@ -1,6 +1,6 @@
 ---
 
-- include: "{{ lxcname }}.yml"
+- include: "{{ filesdir }}/lxd_profile.yml"
 
 - name: create container
   lxd_container:

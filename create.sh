@@ -327,7 +327,6 @@ do_all() {
     pip_install
     gopkg_install
     netlink_patch
-    gobgp_patch
     ryu_patch
 
     # create frr deb package
@@ -379,7 +378,6 @@ case $1 in
     gopkg)
         gopkg_install
         netlink_patch
-        gobgp_patch
         ;;
     min)
         do_minimal

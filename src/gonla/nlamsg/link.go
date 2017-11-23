@@ -20,6 +20,7 @@ package nlamsg
 import (
 	"fmt"
 	"github.com/vishvananda/netlink"
+	"golang.org/x/sys/unix"
 )
 
 //
@@ -76,7 +77,8 @@ func NewLink(link netlink.Link, nid uint8, id uint16) *Link {
 }
 
 func LinkDeserialize(nlmsg *NetlinkMessage) (*Link, error) {
-	link, err := netlink.LinkDeserialize(&nlmsg.Header, nlmsg.Data)
+	header := unix.NlMsghdr(nlmsg.Header)
+	link, err := netlink.LinkDeserialize(&header, nlmsg.Data)
 	if err != nil {
 		return nil, err
 	}

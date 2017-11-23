@@ -94,12 +94,12 @@ $ ansible-playbook -i etc/playbooks/hosts -K etc/playbooks/dp-sample.yml
 - Playbook
 	- Sample: `etc/playbooks/lxd-sample.yml`
 	- In this file, the task related with lxd-sample is defined.
-- Task
-	- Sample: `etc/playbooks/roles/lxd/tasks/sample.yml`
-	- **The file name will be a container name.** In this sample, the container name is "sample".
-	- In sample file, eth1 and eth2 are assigned to D-Plane port. Because eth0 will be assigned for internal use, **do NOT edit eth0 settings**.
+- Setting files
+	- Sample: `etc/playbooks/roles/lxd/files/sample/lxd-profile.yml`
+	- **The folder name should be a container name.** In this sample, the container name is "sample".
+	- In sample file, eth1, eth2, eth3 and eth4 are assigned to D-Plane port. However, because eth0 will be assigned for internal use, **do NOT edit eth0 settings**.
 
-In above settings, the files where is in `etc/playbooks/lxd/files/sample/` will be used to set up. After checking these files, please execute playbook:
+The other files where is in `etc/playbooks/roles/lxd/files/sample/` will be used to set up. After checking these files, please execute playbook.
 
 ~~~~
 $ ansible-playbook -i etc/playbooks/hosts -K etc/playbooks/lxd-sample.yml && lxc stop sample
