@@ -1,6 +1,9 @@
-# Setup guide for L3VPN
+# Configure guide for L3VPN
 
-Beluganos support PE router of BGP/MPLS based IP-VPN environments. To setup PE router, additional settings are needed. After setting general settings by [setup-guide](setup-guide.md), please execute following procedure.
+Beluganos support PE router of BGP/MPLS based IP-VPN environments. To setup PE router, additional settings are needed.
+
+## Pre-requirements
+After setting general settings by [setup-guide.md](setup-guide.md) and [configure-ansible.md](configure-ansible.md), please execute following procedure.
 
 ## Container constitution
 
@@ -33,11 +36,7 @@ PE--//--P   P--//--RR
       CE   CE CE
 ~~~~
 
-## A. Settings for white-box switches
-
-Common with [setup-guide](setup-guide.md).
-
-## B. Settings for Linux Containers
+## Settings for Linux Containers
 
 ### 1. Container name (inventry)
 
@@ -54,7 +53,7 @@ samplr-ric11
 
 Common with [setup-guide](setup-guide.md).
 
-## C. Router settings
+## Router settings
 
 In sample of playbooks, the files under `etc/playbooks/roles/lxd/files/<container-name>` will be transfered each linux container. This capter will be described the difference from general routers. The files which is not mentioned in this capter is common with [setup-guide](setup-guide.md).
 
@@ -66,8 +65,9 @@ The file of `roles/lxd/files/<container-name>/fibc.yml` should be modified like 
 
 - Same port cannot belong to both MIC and RIC. The value of port number should not be dupplicated.
 - **The value of `re_id` and `datappath` should be same value** in both MIC and all RIC. We recommended re_id will be set to MIC's router-id.
-- `<instance-number>` is the Linux container ID (integer). Please note that you have to match this value with `ribxd.conf` file. The value of `0` means MIC, and other value means RIC.
-- Syntax is following.
+- `<lxc-interface-name>` should be unique between other Linux containers.
+- The settings of "ports" should be described only physical interface. VLAN (logical) interface settings should be described other files.
+- Syntax is following:
 
 ~~~~
 routers:
@@ -75,13 +75,12 @@ routers:
     re_id: <router-entity-id>
     datapath: <switch-name>
     ports:
-      - { name: <instance-number>/<lxc-interface-name>, port: <switch-interface-number> }                                                # For physical interface
-      - { name: <instance-number>/<lxc-interface-name>.<lxc-interface-vlan>, port: 0, link: "<instance-number>/<lxc-interface-name>" }   # For VLAN interface
+      - { name: <lxc-interface-name>, port: <switch-interface-number> }  # For physical interface
 ~~~~
 
 #### MIC
 
-The value of ports -> name should be `0/<ifname>` format. Sample is here:
+Sample is here:
 
 ~~~~
 routers:
@@ -89,13 +88,12 @@ routers:
     re_id: 10.0.1.1
     datapath: whitebox1
     ports:
-      - { name: 0/eth1,     port: 1 }
-      - { name: 0/eth1.10,  port: 0, link: "0/eth1" }  # VLAN Device
+      - { name: eth1,     port: 1 }
 ~~~~
 
 #### RIC
 
-The values of ports -> name should be `<instance-number>/<ifname>` format. Sample is here:
+Sample is here:
 
 ~~~~
 routers:
@@ -103,31 +101,11 @@ routers:
     re_id: 10.0.1.1
     datapath: whitebox1
     ports:
-      - { name: 10/eth1,     port: 2 }
-      - { name: 10/eth2,     port: 3 }
-      - { name: 10/eth2.10,  port: 0, link: "10/eth2" } # VLAN Device
-
+      - { name: eth2,     port: 2 }
+      - { name: eth3,     port: 3 }
 ~~~~
 
-### 2. interfaces.cfg
-
-The files of `etc/playbooks/roles/lxd/files/<container-name>/interfaces.cfg` should be modified like following sample.
-
-#### MIC
-
-See [setup-guide](setup-guide.md).
-
-#### RIC
-
-Additional configurations are needed for internal use. Please add following configurations. The bridge name of `ffbr0` will be used in `ribxd.conf`. This bridge is used for route redistribution between MIC and RIC.
-
-~~~~
-auto ffbr0
-iface ffbr0 inet manual
-  pre-up ip link add ffbr0 type bridge
-~~~~
-
-### 4. daemons
+### 3. daemons
 
 The file of `etc/playbooks/roles/lxd/files/<container-name>/daemons` should be modified like following sample.
 
@@ -157,7 +135,7 @@ ldpd=no
 bgpd=no
 ~~~~
 
-### 6. gobgpd.conf
+### 4. gobgpd.conf
 
 The file of `etc/playbooks/roles/lxd/files/<container-name>/gobgpd.conf` should be modified like following sample.
 
@@ -272,15 +250,16 @@ The file of `etc/playbooks/roles/lxd/files/<container-name>/gobgpd.conf` should 
 - Currently, route redistribution to MIC's MP-BGP daemon will be performed without configurations.
 - Other notes is same as MIC.
 
-### 8. ribxd.conf
+### 5. ribxd.conf
 
 The file of `etc/playbooks/roles/lxd/files/<container-name>/ribxd.conf` should be modified like following sample.
 
-The value which is not described here should be set as [setup-guide](setup-guide.md).
+The value which is not described here should be set as [configure-ansible.md](configure-ansible.md).
 
 - [node]
 	- nid (`<instance-number>`): Linux container ID. Please refer `fibc.yml` to match number. MIC's `<instance-number>` should be 0, and RIC's `<instance-number>` should be 1-254.
 	- label (`<vpn-start-label>`): The start values of MPLS label to identify VPN. Generally you don't have to change this. Note that this settings should be commented out only in PE router's environments.
+	- allow\_duplicate\_ifname: The settings to allow overlapping of interface names between different containers, except "lo" and "eth0". Default settings is "false".
 - [nla]
 	- Settings about netlink abstruction module.
 	- core (`<container-name-mic>:50061`): The settings for route redistribution. The linux container name of MIC should be set. The port number cannot be changed.
@@ -307,6 +286,7 @@ The value which is not described here should be set as [setup-guide](setup-guide
 nid   = 0                        # 0
 reid  = "10.0.1.1"               # <router-entity-id> at fibc.yml
 label = 100000
+allow_duplicate_ifname = false
 
 [log]
 level = 5
@@ -345,6 +325,7 @@ interval = 5000
 nid = 10                        # <instance-number> in fibc.yml
 reid  = "10.0.1.1"              # <router-entiry-id> in fibc.yml
 label = 100000
+allow_duplicate_ifname = false
 
 [log]
 level = 5
@@ -373,3 +354,6 @@ iface = "ffbr0"
 api = "127.0.0.1:50091"
 interval = 5000
 ```
+
+## Note
+- The dummy interface "ffbr0" will be created. This interface is required by Beluganos. Please do NOT delete and change settings.
