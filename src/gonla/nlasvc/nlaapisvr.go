@@ -186,41 +186,61 @@ func (n *NLAApiServer) GetEncapInfo(ctxt context.Context, req *nlaapi.EncapInfoK
 }
 
 func (n *NLAApiServer) GetLinks(req *nlaapi.GetLinksRequest, stream nlaapi.NLAApi_GetLinksServer) error {
+	nid := uint8(req.NId)
 	nladbm.Links().Walk(func(link *nlamsg.Link) error {
-		m := nlaapi.NewLinkFromNative(link)
-		return stream.Send(m)
+		if nid == link.NId || nid == nlamsg.NODE_ID_ALL {
+			m := nlaapi.NewLinkFromNative(link)
+			return stream.Send(m)
+		}
+		return nil
 	})
 	return nil
 }
 
 func (n *NLAApiServer) GetAddrs(req *nlaapi.GetAddrsRequest, stream nlaapi.NLAApi_GetAddrsServer) error {
+	nid := uint8(req.NId)
 	nladbm.Addrs().Walk(func(addr *nlamsg.Addr) error {
-		m := nlaapi.NewAddrFromNative(addr)
-		return stream.Send(m)
+		if nid == addr.NId || nid == nlamsg.NODE_ID_ALL {
+			m := nlaapi.NewAddrFromNative(addr)
+			return stream.Send(m)
+		}
+		return nil
 	})
 	return nil
 }
 
 func (n *NLAApiServer) GetNeighs(req *nlaapi.GetNeighsRequest, stream nlaapi.NLAApi_GetNeighsServer) error {
+	nid := uint8(req.NId)
 	nladbm.Neighs().Walk(func(neigh *nlamsg.Neigh) error {
-		m := nlaapi.NewNeighFromNative(neigh)
-		return stream.Send(m)
+		if nid == neigh.NId || nid == nlamsg.NODE_ID_ALL {
+			m := nlaapi.NewNeighFromNative(neigh)
+			return stream.Send(m)
+		}
+		return nil
 	})
 	return nil
 }
 
 func (n *NLAApiServer) GetRoutes(req *nlaapi.GetRoutesRequest, stream nlaapi.NLAApi_GetRoutesServer) error {
+	nid := uint8(req.NId)
 	nladbm.Routes().Walk(func(route *nlamsg.Route) error {
-		m := nlaapi.NewRouteFromNative(route)
-		return stream.Send(m)
+		if nid == route.NId || nid == nlamsg.NODE_ID_ALL {
+			m := nlaapi.NewRouteFromNative(route)
+			return stream.Send(m)
+		}
+		return nil
 	})
 	return nil
 }
 
 func (n *NLAApiServer) GetMplss(req *nlaapi.GetMplssRequest, stream nlaapi.NLAApi_GetMplssServer) error {
+	nid := uint8(req.NId)
 	nladbm.Mplss().Walk(func(mpls *nlamsg.Route) error {
-		m := nlaapi.NewRouteFromNative(mpls)
-		return stream.Send(m)
+		if nid == mpls.NId || nid == nlamsg.NODE_ID_ALL {
+			m := nlaapi.NewRouteFromNative(mpls)
+			return stream.Send(m)
+		}
+		return nil
 	})
 	return nil
 }

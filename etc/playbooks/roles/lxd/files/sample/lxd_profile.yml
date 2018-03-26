@@ -31,3 +31,7 @@
         name: eth4
         host_name: "{{ lxcname }}.4"
         nictype: p2p
+      root:
+        path: /
+        pool: default
+        type: disk

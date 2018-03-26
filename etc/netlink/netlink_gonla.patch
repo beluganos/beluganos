@@ -13,6 +13,29 @@ index 0000000..f76e094
 +func AddrDeserialize(m []byte) (addr Addr, family, index int, err error) {
 +	return parseAddr(m)
 +}
+diff --git a/neigh_linux.go b/neigh_linux.go
+index f75c226..60855b6 100644
+--- a/neigh_linux.go
++++ b/neigh_linux.go
+@@ -253,11 +253,13 @@ func NeighDeserialize(m []byte) (*Neigh, error) {
+ 
+ 	// This should be cached for perfomance
+ 	// once per table dump
+-	link, err := LinkByIndex(neigh.LinkIndex)
+-	if err != nil {
+-		return nil, err
+-	}
+-	encapType := link.Attrs().EncapType
++	encapType := func() string {
++		link, err := LinkByIndex(neigh.LinkIndex)
++		if err != nil {
++			return ""
++		}
++		return link.Attrs().EncapType
++	}()
+ 
+ 	for _, attr := range attrs {
+ 		switch attr.Attr.Type {
 diff --git a/nl/mpls_gonla.go b/nl/mpls_gonla.go
 new file mode 100644
 index 0000000..bb11deb
@@ -66,7 +89,7 @@ index 0000000..08d5709
 +	return &route, err
 +}
 diff --git a/route_linux.go b/route_linux.go
-index fd5ac89..300f13d 100644
+index 3f85671..b1de3f9 100644
 --- a/route_linux.go
 +++ b/route_linux.go
 @@ -603,6 +603,8 @@ func deserializeRoute(m []byte) (Route, error) {

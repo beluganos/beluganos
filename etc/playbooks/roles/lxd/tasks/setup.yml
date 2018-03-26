@@ -33,6 +33,8 @@
   notify:
     - restart services
 
+- name: netplan apply
+  shell: netplan apply
 
 - name: copy service files
   copy:

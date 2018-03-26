@@ -9,6 +9,8 @@ ExecStartPre=/bin/chown beluganos.beluganos /var/log/beluganos
 ExecStartPre=/bin/mkdir -p /var/run/beluganos
 ExecStartPre=/bin/chown beluganos.beluganos /var/run/beluganos
 ExecStartPre=/bin/chmod 755 /var/run/beluganos
+ExecStartPre=/sbin/ip link add ffbr0 type bridge
+ExecStartPre=/sbin/ip link set ffbr0 up
 ExecStart=/sbin/sysctl -p /etc/sysctl.d/30-beluganos.conf
 
 [Install]

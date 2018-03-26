@@ -311,3 +311,12 @@ func NewRouteKeyFromNative(n *nladbm.RouteKey) *RouteKey {
 		Addr: n.Addr,
 	}
 }
+
+//
+// Routes
+//
+func NewGetRoutesRequest(nid uint8) *GetRoutesRequest {
+	return &GetRoutesRequest{
+		NId: uint32(nid),
+	}
+}

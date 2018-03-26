@@ -42,29 +42,32 @@ func (r *RIBController) SendL2InterfaceGroup(cmd fibcapi.GroupMod_Cmd, link *nla
 // L3 Unicast Group
 //
 func NewL3UnicastGroup(link *nlamsg.Link, neigh *nlamsg.Neigh) *fibcapi.L3UnicastGroup {
-	return fibcapi.NewL3UnicastGroup(
-		NewNeighId(neigh),
-		NewPortId(link),
-		link.VlanId(),
-		neigh.HardwareAddr,
-		link.Attrs().HardwareAddr,
-	)
-}
-
-func (r *RIBController) NewL3UnicastGroup(neigh *nlamsg.Neigh) (*fibcapi.L3UnicastGroup, error) {
-	link, err := r.nla.GetLink(neigh.NId, neigh.LinkIndex)
-	if err != nil {
-		return nil, err
+	if link == nil {
+		return fibcapi.NewL3UnicastGroup(
+			NewNeighId(neigh),
+			NewPortId(nil),
+			0,
+			neigh.HardwareAddr,
+			neigh.HardwareAddr, // dummy
+		)
+	} else {
+		return fibcapi.NewL3UnicastGroup(
+			NewNeighId(neigh),
+			NewPortId(link),
+			link.VlanId(),
+			neigh.HardwareAddr,
+			link.Attrs().HardwareAddr,
+		)
 	}
-
-	return NewL3UnicastGroup(link, neigh), nil
 }
 
 func (r *RIBController) SendL3UnicastGroup(cmd fibcapi.GroupMod_Cmd, neigh *nlamsg.Neigh) error {
-	g, err := r.NewL3UnicastGroup(neigh)
+	link, err := r.nla.GetLink_GroupMod(cmd, neigh.NId, neigh.LinkIndex)
 	if err != nil {
 		return err
 	}
+
+	g := NewL3UnicastGroup(link, neigh)
 	return r.fib.Send(g.ToMod(cmd, r.reId), 0)
 }
 
@@ -72,17 +75,27 @@ func (r *RIBController) SendL3UnicastGroup(cmd fibcapi.GroupMod_Cmd, neigh *nlam
 // MPLS Interface Group
 //
 func NewMPLSInterfaceGroup(link *nlamsg.Link, neigh *nlamsg.Neigh) *fibcapi.MPLSInterfaceGroup {
-	return fibcapi.NewMPLSInterfaceGroup(
-		NewNeighId(neigh),
-		NewPortId(link),
-		link.VlanId(),
-		neigh.HardwareAddr,
-		link.Attrs().HardwareAddr,
-	)
+	if link == nil {
+		return fibcapi.NewMPLSInterfaceGroup(
+			NewNeighId(neigh),
+			NewPortId(nil),
+			0,
+			neigh.HardwareAddr,
+			neigh.HardwareAddr, // dummy
+		)
+	} else {
+		return fibcapi.NewMPLSInterfaceGroup(
+			NewNeighId(neigh),
+			NewPortId(link),
+			link.VlanId(),
+			neigh.HardwareAddr,
+			link.Attrs().HardwareAddr,
+		)
+	}
 }
 
 func (r *RIBController) SendMPLSInterfaceGroup(cmd fibcapi.GroupMod_Cmd, neigh *nlamsg.Neigh) error {
-	link, err := r.nla.GetLink(neigh.NId, neigh.LinkIndex)
+	link, err := r.nla.GetLink_GroupMod(cmd, neigh.NId, neigh.LinkIndex)
 	if err != nil {
 		return err
 	}
@@ -126,7 +139,7 @@ func (r *RIBController) SendMPLSLabelGroupMPLS(cmd fibcapi.GroupMod_Cmd, route *
 		return nil
 	}
 
-	neigh, err := r.nla.GetNeigh(route.NId, route.GetGw())
+	neigh, err := r.nla.GetNeigh_GroupMod(cmd, route.NId, route.GetGw())
 	if err != nil {
 		return err
 	}
@@ -176,7 +189,7 @@ func NewMPLSLabelGroupSwap(neigh *nlamsg.Neigh, route *nlamsg.Route) *fibcapi.MP
 }
 
 func (r *RIBController) SendMPLSLabelGroupSwap(cmd fibcapi.GroupMod_Cmd, route *nlamsg.Route) error {
-	neigh, err := r.nla.GetNeigh(route.NId, route.GetGw())
+	neigh, err := r.nla.GetNeigh_GroupMod(cmd, route.NId, route.GetGw())
 	if err != nil {
 		return err
 	}

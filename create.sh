@@ -153,10 +153,10 @@ frr_pkg() {
     ./bootstrap.sh
     ./configure
     make dist
-    fakeroot debian/rules backports
+    make -f debian/rules backports
 
     cd ${LXD_WORK_DIR}
-    tar xvf ${FRR_DIR}/${FRR_ORG}
+    tar xvf ${FRR_DIR}/frr_*.orig.tar.gz
     cd frr-*
     . /etc/os-release
     tar xvf ${FRR_DIR}/frr_*${ID}${VERSION_ID}*.debian.tar.xz
@@ -170,39 +170,16 @@ frr_pkg() {
 # lxdbr0 setting
 #
 lxd_network() {
-    local CONF_FILE=/etc/default/lxd-bridge
-
-    sudo sed -i "s/^LXD_IPV4_ADDR=.*/LXD_IPV4_ADDR=\"${LXD_MNG_ADDR}\"/" ${CONF_FILE}
-    sudo sed -i "s/^LXD_IPV4_NETMASK=.*/LXD_IPV4_NETMASK=\"${LXD_NETWORK_MASK}\"/" ${CONF_FILE}
-    sudo sed -i "s/^LXD_IPV4_NETWORK=.*/LXD_IPV4_NETWORK=\"${LXD_NETWORK_HOST}\"/" ${CONF_FILE}
-    sudo sed -i "s/^LXD_IPV4_DHCP_RANGE=.*/LXD_IPV4_DHCP_RANGE=\"${LXD_NETWORK_DHCP_RANGE}\"/" ${CONF_FILE}
-    sudo sed -i "s/^LXD_IPV4_DHCP_MAX=.*/LXD_IPV4_DHCP_MAX=\"${LXD_NETWORK_DHCP_MAX}\"/" ${CONF_FILE}
-    echo "${CONF_FILE} updated."
-
-    sudo systemctl enable lxd-bridge.service
-    echo "lxd-bridge.service enabled."
-
-    sudo systemctl restart lxd-bridge.service
-    echo "lxd-bridge.service restarted."
+    lxc network set ${LXD_BRIDGE} ipv4.address ${LXD_NETWORK}
+    lxc network show ${LXD_BRIDGE}
 }
 
 #
 # ubuntu image
 #
 lxd_image() {
-
-    pushd ${LXD_WORK_DIR}
-
-    for IMG in ${LXD_IMAGE_LIST}; do
-        wget -nc "${LXD_IMAGE_URL}/${IMG}" || { echo "lxd_image/download error."; exit 1; }
-    done
-
-    lxc image import ${LXD_IMAGE_LIST} --alias ${LXD_IMAGE_BARE} || echo "${LXD_IMAGE_BARE} maybe exist."
-    popd
-
+    lxc image copy ${LXD_IMAGE_ORIG} local: --alias ${LXD_IMAGE_BARE}
     lxc image info ${LXD_IMAGE_BARE}
-
-    echo "done"
 }
 
 #
@@ -217,10 +194,7 @@ lxd_base() {
     fi
 
     lxc launch ${LXD_IMAGE_BARE} ${LXD_IMAGE_TEMP}
-    sleep 3
-
-    sudo iptables -t nat -A POSTROUTING -s ${LXD_NETWORK} -o ${BELUG_MNG_IFACE} -j MASQUERADE
-    lxc exec ${LXD_IMAGE_TEMP} dhclient -- ${LXD_MNG_IFACE}
+    sleep 10
 
     echo "Installing packages"
     lxc exec ${LXD_IMAGE_TEMP} apt ${APT_PROXY} -- -y update || { echo "lxd_base/update error."; exit 1; }
@@ -258,7 +232,7 @@ init_sys() {
     sudo cp -v etc/modules/modules.conf  /etc/modules-load.d/beluganos.conf
     sudo cp -v etc/modules/modprobe.conf /etc/modprobe.d/beluganos.conf
     sudo modprobe -a belbonding mpls_router mpls_iptunnel
-    sudo /etc/init.d/networking restart
+    sudo netplan apply
 }
 
 init_host() {
@@ -269,12 +243,15 @@ init_host() {
     local IFACE_TEMP=/tmp/interfaces_temp
     cat >  ${IFACE_TEMP} <<EOF
 # -*- coding: utf-8 -*-
-auto ${BELUG_OFC_IFACE}
-iface ${BELUG_OFC_IFACE} inet static
-address ${BELUG_OFC_ADDR}
-netmask ${BELUG_OFC_MASK}
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    ${BELUG_OFC_IFACE}:
+      addresses:
+        - ${BELUG_OFC_ADDR}
 EOF
-    sudo cp ${IFACE_TEMP} /etc/network/interfaces.d/10-beluganos
+    sudo cp ${IFACE_TEMP} /etc/netplan/02-beluganos.yaml
 
     init_sys
 }
@@ -296,6 +273,23 @@ init_ovs() {
 beluganos_install() {
     ./bootstrap.sh
     make release
+}
+
+netconf_install() {
+    if [ "${BEL_NC_ENABLE}" = "yes" ]; then
+        local NC_DIR=${LXD_WORK_DIR}/netconf
+
+        if [ -e $NC_DIR ]; then
+            pushd $NC_DIR
+        else
+            git clone $BEL_NC_URL $NC_DIR || { echo "beluganos_netconf/clone error."; exit 1; }
+            pushd $NC_DIR
+        fi
+
+        PROXY=${PROXY} ./create.sh beluganos-netconf
+
+        popd
+    fi
 }
 
 confirm() {
@@ -337,6 +331,10 @@ do_all() {
     init_host
     init_ovs ${BELUG_OVS_BRIDGE} 127.0.0.1
 
+    # beluganos-netconf
+    netconf_install
+
+    # beluganos-beluganos
     beluganos_install
 }
 
@@ -381,6 +379,9 @@ case $1 in
         ;;
     min)
         do_minimal
+        ;;
+    netconf)
+        netconf_install
         ;;
     help)
         do_usage

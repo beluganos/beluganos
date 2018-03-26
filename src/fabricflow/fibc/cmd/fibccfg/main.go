@@ -18,13 +18,14 @@
 package main
 
 import (
-	"bytes"
+	"fabricflow/fibc/cmd/lib"
 	"flag"
 	"fmt"
-	"net/http"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 )
 
-func showRouters(routers []Router) {
+func showRouters(routers []*fibccmd.Router) {
 	for _, router := range routers {
 		fmt.Printf("%s\n", router.String())
 		for _, port := range router.Ports {
@@ -33,39 +34,9 @@ func showRouters(routers []Router) {
 	}
 }
 
-func showDpaths(dpaths []Datapath) {
+func showDpaths(dpaths []*fibccmd.Datapath) {
 	for _, dpath := range dpaths {
 		fmt.Printf("%s\n", dpath.String())
-	}
-}
-
-func modRouters(url string, routers []Router) {
-	for _, router := range routers {
-		b, err := router.ToJSON()
-		if err != nil {
-			fmt.Printf("ToJSON error. %s", err)
-			return
-		}
-
-		if _, err = http.Post(url, "application/json", bytes.NewReader(b)); err != nil {
-			fmt.Printf("http POST error. %s", err)
-			return
-		}
-	}
-}
-
-func modDpaths(url string, dpaths []Datapath) {
-	for _, dpath := range dpaths {
-		b, err := dpath.ToJSON()
-		if err != nil {
-			fmt.Printf("ToJSON error. %s", err)
-			return
-		}
-
-		if _, err := http.Post(url, "application/json", bytes.NewReader(b)); err != nil {
-			fmt.Printf("http POST error. %s", err)
-			return
-		}
 	}
 }
 
@@ -73,27 +44,34 @@ func main() {
 	var addr string
 	var cmd string
 	var path string
-	var table string
 	flag.StringVar(&addr, "a", "127.0.0.1:8080", "ryu addr")
-	flag.StringVar(&cmd, "c", "check", "command(add/delete/check)")
-	flag.StringVar(&table, "t", "port", "table(port/dp/re)")
+	flag.StringVar(&cmd, "c", "check", "command(add/del/check)")
 	flag.StringVar(&path, "f", "fibc.yml", "filename.")
 	flag.Parse()
 
-	var cfg Config
-	if err := ReadConfig(path, &cfg); err != nil {
+	var cfg fibccmd.Config
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		fmt.Printf("ReadConfig error. %s", err)
+		return
+	}
+	if err := yaml.Unmarshal(b, &cfg); err != nil {
 		fmt.Printf("ReadConfig error. %s", err)
 		return
 	}
 
+	c := fibccmd.NewConfigClient(addr)
 	switch cmd {
-	case "add", "delete":
-		url := fmt.Sprintf("http://%s/fib/portmap/%s/%s", addr, table, cmd)
-		if table == "dp" {
-			modDpaths(url, cfg.Datapaths)
-		} else {
-			modRouters(url, cfg.Routers)
+	case "add":
+		if err := c.Add(&cfg); err != nil {
+			fmt.Printf("Add error. %s\n", err)
 		}
+
+	case "del":
+		if err := c.Del(&cfg); err != nil {
+			fmt.Printf("Add error. %s\n", err)
+		}
+
 	default:
 		showRouters(cfg.Routers)
 		showDpaths(cfg.Datapaths)

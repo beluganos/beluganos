@@ -1,9 +1,0 @@
-[Unit]
-Description=Quagga
-After=syslog.target network.target
-Requires=network.target
-Wants=zebra.service ospfd.service ospf6d.service ldpd.service bgpd.service gobgpd.service
-
-[Install]
-WantedBy=network.target
-

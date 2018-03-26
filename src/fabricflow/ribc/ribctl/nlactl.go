@@ -18,6 +18,7 @@
 package ribctl
 
 import (
+	"fabricflow/fibc/api"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 	"gonla/nlaapi"
@@ -111,8 +112,17 @@ func (n *NLAController) GetLink(nid uint8, index int) (*nlamsg.Link, error) {
 	return link.ToNative(), nil
 }
 
-func (n *NLAController) GetLinks(f func(*nlamsg.Link) error) error {
-	stream, err := n.client.GetLinks(context.Background(), &nlaapi.GetLinksRequest{})
+func (n *NLAController) GetLink_GroupMod(cmd fibcapi.GroupMod_Cmd, nid uint8, index int) (*nlamsg.Link, error) {
+	switch cmd {
+	case fibcapi.GroupMod_DELETE:
+		return nil, nil
+	default:
+		return n.GetLink(nid, index)
+	}
+}
+
+func (n *NLAController) GetLinks(nid uint8, f func(*nlamsg.Link) error) error {
+	stream, err := n.client.GetLinks(context.Background(), nlaapi.NewGetLinksRequest(nid))
 	if err != nil {
 		return err
 	}
@@ -131,8 +141,8 @@ func (n *NLAController) GetLinks(f func(*nlamsg.Link) error) error {
 	}
 }
 
-func (n *NLAController) GetAddrs(f func(*nlamsg.Addr) error) error {
-	stream, err := n.client.GetAddrs(context.Background(), &nlaapi.GetAddrsRequest{})
+func (n *NLAController) GetAddrs(nid uint8, f func(*nlamsg.Addr) error) error {
+	stream, err := n.client.GetAddrs(context.Background(), nlaapi.NewGetAddrsRequest(nid))
 	if err != nil {
 		return nil
 	}
@@ -163,8 +173,26 @@ func (n *NLAController) GetNeigh(nid uint8, addr net.IP) (*nlamsg.Neigh, error) 
 	return neigh.ToNative(), nil
 }
 
-func (n *NLAController) GetNeighs(f func(*nlamsg.Neigh) error) error {
-	stream, err := n.client.GetNeighs(context.Background(), &nlaapi.GetNeighsRequest{})
+func (n *NLAController) GetNeigh_FlowMod(cmd fibcapi.FlowMod_Cmd, nid uint8, addr net.IP) (*nlamsg.Neigh, error) {
+	switch cmd {
+	case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
+		return nil, nil
+	default:
+		return n.GetNeigh(nid, addr)
+	}
+}
+
+func (n *NLAController) GetNeigh_GroupMod(cmd fibcapi.GroupMod_Cmd, nid uint8, addr net.IP) (*nlamsg.Neigh, error) {
+	switch cmd {
+	case fibcapi.GroupMod_DELETE:
+		return nil, nil
+	default:
+		return n.GetNeigh(nid, addr)
+	}
+}
+
+func (n *NLAController) GetNeighs(nid uint8, f func(*nlamsg.Neigh) error) error {
+	stream, err := n.client.GetNeighs(context.Background(), nlaapi.NewGetNeighsRequest(nid))
 	if err != nil {
 		return nil
 	}
@@ -183,8 +211,8 @@ func (n *NLAController) GetNeighs(f func(*nlamsg.Neigh) error) error {
 	}
 }
 
-func (n *NLAController) GetRoutes(f func(*nlamsg.Route) error) error {
-	stream, err := n.client.GetRoutes(context.Background(), &nlaapi.GetRoutesRequest{})
+func (n *NLAController) GetRoutes(nid uint8, f func(*nlamsg.Route) error) error {
+	stream, err := n.client.GetRoutes(context.Background(), nlaapi.NewGetRoutesRequest(nid))
 	if err != nil {
 		return nil
 	}

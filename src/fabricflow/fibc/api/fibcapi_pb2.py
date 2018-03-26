@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='fibcapi.proto',
   package='fibcapi',
   syntax='proto3',
-  serialized_pb=_b('\n\rfibcapi.proto\x12\x07\x66ibcapi\"\x16\n\x05Hello\x12\r\n\x05re_id\x18\x01 \x01(\t\"l\n\x08\x44pStatus\x12(\n\x06status\x18\x01 \x01(\x0e\x32\x18.fibcapi.DpStatus.Status\x12\r\n\x05re_id\x18\x02 \x01(\t\"\'\n\x06Status\x12\x07\n\x03NOP\x10\x00\x12\t\n\x05\x45NTER\x10\x01\x12\t\n\x05LEAVE\x10\x02\"\x8d\x01\n\nPortStatus\x12*\n\x06status\x18\x01 \x01(\x0e\x32\x1a.fibcapi.PortStatus.Status\x12\r\n\x05re_id\x18\x02 \x01(\t\x12\x0f\n\x07port_id\x18\x03 \x01(\r\x12\x0e\n\x06ifname\x18\x04 \x01(\t\"#\n\x06Status\x12\x07\n\x03NOP\x10\x00\x12\x06\n\x02UP\x10\x01\x12\x08\n\x04\x44OWN\x10\x02\"\x91\x01\n\nPortConfig\x12$\n\x03\x63md\x18\x01 \x01(\x0e\x32\x17.fibcapi.PortConfig.Cmd\x12\r\n\x05re_id\x18\x02 \x01(\t\x12\x0e\n\x06ifname\x18\x03 \x01(\t\x12\r\n\x05value\x18\x04 \x01(\r\"/\n\x03\x43md\x12\x07\n\x03NOP\x10\x00\x12\x07\n\x03\x41\x44\x44\x10\x01\x12\n\n\x06MODIFY\x10\x02\x12\n\n\x06\x44\x45LETE\x10\x03\"\x9f\x05\n\x07\x46lowMod\x12!\n\x03\x63md\x18\x01 \x01(\x0e\x32\x14.fibcapi.FlowMod.Cmd\x12%\n\x05table\x18\x02 \x01(\x0e\x32\x16.fibcapi.FlowMod.Table\x12\r\n\x05re_id\x18\x03 \x01(\t\x12!\n\x04vlan\x18\x04 \x01(\x0b\x32\x11.fibcapi.VLANFlowH\x00\x12/\n\x08term_mac\x18\x05 \x01(\x0b\x32\x1b.fibcapi.TerminationMacFlowH\x00\x12\"\n\x05mpls1\x18\x06 \x01(\x0b\x32\x11.fibcapi.MPLSFlowH\x00\x12.\n\x07unicast\x18\x07 \x01(\x0b\x32\x1b.fibcapi.UnicastRoutingFlowH\x00\x12)\n\x08\x62ridging\x18\x08 \x01(\x0b\x32\x15.fibcapi.BridgingFlowH\x00\x12%\n\x03\x61\x63l\x18\t \x01(\x0b\x32\x16.fibcapi.PolicyACLFlowH\x00\"U\n\x03\x43md\x12\x07\n\x03NOP\x10\x00\x12\x07\n\x03\x41\x44\x44\x10\x01\x12\n\n\x06MODIFY\x10\x02\x12\x11\n\rMODIFY_STRICT\x10\x03\x12\n\n\x06\x44\x45LETE\x10\x04\x12\x11\n\rDELETE_STRICT\x10\x05\"\xe0\x01\n\x05Table\x12\x10\n\x0cINGRESS_PORT\x10\x00\x12\x08\n\x04VLAN\x10\n\x12\x0c\n\x08TERM_MAC\x10\x14\x12\x0b\n\x07L3_TYPE\x10\x15\x12\t\n\x05MPLS0\x10\x17\x12\t\n\x05MPLS1\x10\x18\x12\t\n\x05MPLS2\x10\x19\x12\x10\n\x0cMPLS_L3_TYPE\x10\x1b\x12\x14\n\x10MPLS_LABEL_TRUST\x10\x1c\x12\r\n\tMPLS_TYPE\x10\x1d\x12\x13\n\x0fUNICAST_ROUTING\x10\x1e\x12\x15\n\x11MULTICAST_ROUTING\x10(\x12\x0c\n\x08\x42RIDGING\x10\x32\x12\x0e\n\nPOLICY_ACL\x10<B\x07\n\x05\x65ntry\"\xf8\x05\n\x08GroupMod\x12\"\n\x03\x63md\x18\x01 \x01(\x0e\x32\x15.fibcapi.GroupMod.Cmd\x12\'\n\x06g_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.GroupMod.GType\x12\r\n\x05re_id\x18\x03 \x01(\t\x12-\n\x08l2_iface\x18\x04 \x01(\x0b\x32\x19.fibcapi.L2InterfaceGroupH\x00\x12-\n\nl3_unicast\x18\x05 \x01(\x0b\x32\x17.fibcapi.L3UnicastGroupH\x00\x12\x31\n\nmpls_iface\x18\x06 \x01(\x0b\x32\x1b.fibcapi.MPLSInterfaceGroupH\x00\x12-\n\nmpls_label\x18\x07 \x01(\x0b\x32\x17.fibcapi.MPLSLabelGroupH\x00\"/\n\x03\x43md\x12\x07\n\x03NOP\x10\x00\x12\x07\n\x03\x41\x44\x44\x10\x01\x12\n\n\x06MODIFY\x10\x02\x12\n\n\x06\x44\x45LETE\x10\x03\"\x95\x03\n\x05GType\x12\n\n\x06UNSPEC\x10\x00\x12\x10\n\x0cL2_INTERFACE\x10\x01\x12\x0e\n\nL2_REWRITE\x10\x10\x12\x0e\n\nL3_UNICAST\x10 \x12\x10\n\x0cL2_MULTICAST\x10\x30\x12\x0c\n\x08L2_FLOOD\x10@\x12\x10\n\x0cL3_INTERFACE\x10P\x12\x10\n\x0cL3_MULTICAST\x10`\x12\x0b\n\x07L3_ECMP\x10p\x12\x15\n\x10L2_OVERLAY_FL_UC\x10\x80\x01\x12\x15\n\x10L2_OVERLAY_FL_MC\x10\x81\x01\x12\x15\n\x10L2_OVERLAY_MC_UC\x10\x82\x01\x12\x15\n\x10L2_OVERLAY_MC_MC\x10\x83\x01\x12\x13\n\x0eMPLS_INTERFACE\x10\x90\x01\x12\x10\n\x0bMPLS_L2_VPN\x10\x91\x01\x12\x10\n\x0bMPLS_L3_VPN\x10\x92\x01\x12\x11\n\x0cMPLS_TUNNEL1\x10\x93\x01\x12\x11\n\x0cMPLS_TUNNEL2\x10\x94\x01\x12\x0e\n\tMPLS_SWAP\x10\x95\x01\x12\x0c\n\x07MPLS_FF\x10\xa6\x01\x12\x0e\n\tMPLS_ECMP\x10\xa8\x01\x12\x14\n\x0fL2_UF_INTERFACE\x10\xb0\x01\x42\x07\n\x05\x65ntry\"\x8c\x03\n\x08VLANFlow\x12&\n\x05match\x18\x01 \x01(\x0b\x32\x17.fibcapi.VLANFlow.Match\x12)\n\x07\x61\x63tions\x18\x02 \x03(\x0b\x32\x18.fibcapi.VLANFlow.Action\x12\x12\n\ngoto_table\x18\x03 \x01(\r\x1a\x37\n\x05Match\x12\x0f\n\x07in_port\x18\x01 \x01(\r\x12\x0b\n\x03vid\x18\x02 \x01(\r\x12\x10\n\x08vid_mask\x18\x03 \x01(\r\x1a\xdf\x01\n\x06\x41\x63tion\x12+\n\x04name\x18\x01 \x01(\x0e\x32\x1d.fibcapi.VLANFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\"\x98\x01\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\x10\n\x0cSET_VLAN_VID\x10\x01\x12\x0b\n\x07SET_VRF\x10\x02\x12\x0c\n\x08SET_OVID\x10\x03\x12\x11\n\rSET_MPLS_TYPE\x10\x04\x12\r\n\tPUSH_VLAN\x10\x05\x12\x0c\n\x08POP_VLAN\x10\x06\x12\x14\n\x10SET_MPLS_L2_TYPE\x10\x07\x12\x11\n\rSET_TUNNEL_ID\x10\x08\"\xce\x02\n\x12TerminationMacFlow\x12\x30\n\x05match\x18\x01 \x01(\x0b\x32!.fibcapi.TerminationMacFlow.Match\x12\x33\n\x07\x61\x63tions\x18\x02 \x03(\x0b\x32\".fibcapi.TerminationMacFlow.Action\x12\x12\n\ngoto_table\x18\x03 \x01(\r\x1aM\n\x05Match\x12\x0f\n\x07in_port\x18\x01 \x01(\r\x12\x10\n\x08\x65th_type\x18\x02 \x01(\r\x12\x0f\n\x07\x65th_dst\x18\x03 \x01(\t\x12\x10\n\x08vlan_vid\x18\x04 \x01(\r\x1an\n\x06\x41\x63tion\x12\x35\n\x04name\x18\x01 \x01(\x0e\x32\'.fibcapi.TerminationMacFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\"\x1e\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\n\n\x06OUTPUT\x10\x01\"\xdc\x04\n\x08MPLSFlow\x12&\n\x05match\x18\x01 \x01(\x0b\x32\x17.fibcapi.MPLSFlow.Match\x12)\n\x07\x61\x63tions\x18\x02 \x03(\x0b\x32\x18.fibcapi.MPLSFlow.Action\x12\'\n\x06g_type\x18\x03 \x01(\x0e\x32\x17.fibcapi.GroupMod.GType\x12\x0c\n\x04g_id\x18\x04 \x01(\r\x12\x12\n\ngoto_table\x18\x05 \x01(\r\x1a#\n\x05Match\x12\x0b\n\x03\x62os\x18\x01 \x01(\x08\x12\r\n\x05label\x18\x02 \x01(\r\x1a\x8c\x03\n\x06\x41\x63tion\x12+\n\x04name\x18\x01 \x01(\x0e\x32\x1d.fibcapi.MPLSFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\"\xc5\x02\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\r\n\tPOP_LABEL\x10\x01\x12\x0b\n\x07\x44\x45\x43_TTL\x10\x02\x12\x0f\n\x0b\x43OPY_TTL_IN\x10\x03\x12\x0e\n\nCOPY_TC_IN\x10\x04\x12\x0b\n\x07SET_VRF\x10\x05\x12\x14\n\x10SET_MPLS_L2_PORT\x10\x06\x12\x11\n\rSET_MPLS_TYPE\x10\x07\x12\x11\n\rSET_TUNNEL_ID\x10\x08\x12\x11\n\rSET_QOS_INDEX\x10\t\x12\x15\n\x11SET_TRAFFIC_CLASS\x10\n\x12\x12\n\x0eSET_L3_IN_PORT\x10\x0b\x12\x0e\n\nCOPY_FIELD\x10\x0c\x12\x11\n\rPOP_CW_OR_ACH\x10\r\x12\x0c\n\x08POP_VLAN\x10\x0e\x12\x11\n\rPOP_L2_HEADER\x10\x0f\x12\x0f\n\x0bSET_LMEP_ID\x10\x10\x12\x18\n\x14SET_PROTECTION_INDEX\x10\x11\"\xe8\x02\n\x12UnicastRoutingFlow\x12\x30\n\x05match\x18\x01 \x01(\x0b\x32!.fibcapi.UnicastRoutingFlow.Match\x12\x32\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\".fibcapi.UnicastRoutingFlow.Action\x12\'\n\x06g_type\x18\x03 \x01(\x0e\x32\x17.fibcapi.GroupMod.GType\x12\x0c\n\x04g_id\x18\x04 \x01(\r\x1a$\n\x05Match\x12\x0e\n\x06ip_dst\x18\x01 \x01(\t\x12\x0b\n\x03vrf\x18\x02 \x01(\r\x1a\x8e\x01\n\x06\x41\x63tion\x12\x35\n\x04name\x18\x01 \x01(\x0e\x32\'.fibcapi.UnicastRoutingFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\">\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\n\n\x06OUTPUT\x10\x01\x12\x11\n\rCLEAR_ACTIONS\x10\x02\x12\x0b\n\x07\x44\x45\x43_TTL\x10\x03\"\x91\x02\n\x0c\x42ridgingFlow\x12*\n\x05match\x18\x01 \x01(\x0b\x32\x1b.fibcapi.BridgingFlow.Match\x12,\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x1c.fibcapi.BridgingFlow.Action\x1a=\n\x05Match\x12\x0f\n\x07\x65th_dst\x18\x01 \x01(\t\x12\x10\n\x08vlan_vid\x18\x02 \x01(\r\x12\x11\n\ttunnel_id\x18\x03 \x01(\r\x1ah\n\x06\x41\x63tion\x12/\n\x04name\x18\x01 \x01(\x0e\x32!.fibcapi.BridgingFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\"\x1e\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\n\n\x06OUTPUT\x10\x01\"\xfc\x01\n\rPolicyACLFlow\x12+\n\x05match\x18\x01 \x01(\x0b\x32\x1c.fibcapi.PolicyACLFlow.Match\x12-\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x1d.fibcapi.PolicyACLFlow.Action\x1a$\n\x05Match\x12\x0e\n\x06ip_dst\x18\x01 \x01(\t\x12\x0b\n\x03vrf\x18\x02 \x01(\r\x1ai\n\x06\x41\x63tion\x12\x30\n\x04name\x18\x01 \x01(\x0e\x32\".fibcapi.PolicyACLFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\"\x1e\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\n\n\x06OUTPUT\x10\x01\"O\n\x10L2InterfaceGroup\x12\x0f\n\x07port_id\x18\x01 \x01(\r\x12\x10\n\x08vlan_vid\x18\x02 \x01(\r\x12\x18\n\x10vlan_translation\x18\x03 \x01(\x08\"d\n\x0eL3UnicastGroup\x12\r\n\x05ne_id\x18\x01 \x01(\r\x12\x0f\n\x07port_id\x18\x02 \x01(\r\x12\x10\n\x08vlan_vid\x18\x03 \x01(\r\x12\x0f\n\x07\x65th_dst\x18\x04 \x01(\t\x12\x0f\n\x07\x65th_src\x18\x05 \x01(\t\"h\n\x12MPLSInterfaceGroup\x12\r\n\x05ne_id\x18\x01 \x01(\r\x12\x0f\n\x07port_id\x18\x02 \x01(\r\x12\x10\n\x08vlan_vid\x18\x03 \x01(\r\x12\x0f\n\x07\x65th_dst\x18\x04 \x01(\t\x12\x0f\n\x07\x65th_src\x18\x05 \x01(\t\"\x7f\n\x0eMPLSLabelGroup\x12\x0e\n\x06\x64st_id\x18\x01 \x01(\r\x12\x11\n\tnew_label\x18\x02 \x01(\r\x12\r\n\x05ne_id\x18\x03 \x01(\r\x12\x12\n\nnew_dst_id\x18\x04 \x01(\r\x12\'\n\x06g_type\x18\x05 \x01(\x0e\x32\x17.fibcapi.GroupMod.GType*j\n\x03\x46\x46M\x12\n\n\x06UNSPEC\x10\x00\x12\t\n\x05HELLO\x10\x01\x12\x0f\n\x0bPORT_STATUS\x10\x02\x12\x0f\n\x0bPORT_CONFIG\x10\x03\x12\x0c\n\x08\x46LOW_MOD\x10\x04\x12\r\n\tGROUP_MOD\x10\x05\x12\r\n\tDP_STATUS\x10\x06\x62\x06proto3')
+  serialized_pb=_b('\n\rfibcapi.proto\x12\x07\x66ibcapi\"\x16\n\x05Hello\x12\r\n\x05re_id\x18\x01 \x01(\t\"l\n\x08\x44pStatus\x12(\n\x06status\x18\x01 \x01(\x0e\x32\x18.fibcapi.DpStatus.Status\x12\r\n\x05re_id\x18\x02 \x01(\t\"\'\n\x06Status\x12\x07\n\x03NOP\x10\x00\x12\t\n\x05\x45NTER\x10\x01\x12\t\n\x05LEAVE\x10\x02\"\x8d\x01\n\nPortStatus\x12*\n\x06status\x18\x01 \x01(\x0e\x32\x1a.fibcapi.PortStatus.Status\x12\r\n\x05re_id\x18\x02 \x01(\t\x12\x0f\n\x07port_id\x18\x03 \x01(\r\x12\x0e\n\x06ifname\x18\x04 \x01(\t\"#\n\x06Status\x12\x07\n\x03NOP\x10\x00\x12\x06\n\x02UP\x10\x01\x12\x08\n\x04\x44OWN\x10\x02\"\xdd\x01\n\nPortConfig\x12$\n\x03\x63md\x18\x01 \x01(\x0e\x32\x17.fibcapi.PortConfig.Cmd\x12\r\n\x05re_id\x18\x02 \x01(\t\x12\x0e\n\x06ifname\x18\x03 \x01(\t\x12\x0f\n\x07port_id\x18\x04 \x01(\r\x12\x0c\n\x04link\x18\x05 \x01(\t\x12\x0e\n\x06slaves\x18\x06 \x03(\t\x12*\n\x06status\x18\x07 \x01(\x0e\x32\x1a.fibcapi.PortStatus.Status\"/\n\x03\x43md\x12\x07\n\x03NOP\x10\x00\x12\x07\n\x03\x41\x44\x44\x10\x01\x12\n\n\x06MODIFY\x10\x02\x12\n\n\x06\x44\x45LETE\x10\x03\"\x9f\x05\n\x07\x46lowMod\x12!\n\x03\x63md\x18\x01 \x01(\x0e\x32\x14.fibcapi.FlowMod.Cmd\x12%\n\x05table\x18\x02 \x01(\x0e\x32\x16.fibcapi.FlowMod.Table\x12\r\n\x05re_id\x18\x03 \x01(\t\x12!\n\x04vlan\x18\x04 \x01(\x0b\x32\x11.fibcapi.VLANFlowH\x00\x12/\n\x08term_mac\x18\x05 \x01(\x0b\x32\x1b.fibcapi.TerminationMacFlowH\x00\x12\"\n\x05mpls1\x18\x06 \x01(\x0b\x32\x11.fibcapi.MPLSFlowH\x00\x12.\n\x07unicast\x18\x07 \x01(\x0b\x32\x1b.fibcapi.UnicastRoutingFlowH\x00\x12)\n\x08\x62ridging\x18\x08 \x01(\x0b\x32\x15.fibcapi.BridgingFlowH\x00\x12%\n\x03\x61\x63l\x18\t \x01(\x0b\x32\x16.fibcapi.PolicyACLFlowH\x00\"U\n\x03\x43md\x12\x07\n\x03NOP\x10\x00\x12\x07\n\x03\x41\x44\x44\x10\x01\x12\n\n\x06MODIFY\x10\x02\x12\x11\n\rMODIFY_STRICT\x10\x03\x12\n\n\x06\x44\x45LETE\x10\x04\x12\x11\n\rDELETE_STRICT\x10\x05\"\xe0\x01\n\x05Table\x12\x10\n\x0cINGRESS_PORT\x10\x00\x12\x08\n\x04VLAN\x10\n\x12\x0c\n\x08TERM_MAC\x10\x14\x12\x0b\n\x07L3_TYPE\x10\x15\x12\t\n\x05MPLS0\x10\x17\x12\t\n\x05MPLS1\x10\x18\x12\t\n\x05MPLS2\x10\x19\x12\x10\n\x0cMPLS_L3_TYPE\x10\x1b\x12\x14\n\x10MPLS_LABEL_TRUST\x10\x1c\x12\r\n\tMPLS_TYPE\x10\x1d\x12\x13\n\x0fUNICAST_ROUTING\x10\x1e\x12\x15\n\x11MULTICAST_ROUTING\x10(\x12\x0c\n\x08\x42RIDGING\x10\x32\x12\x0e\n\nPOLICY_ACL\x10<B\x07\n\x05\x65ntry\"\xf8\x05\n\x08GroupMod\x12\"\n\x03\x63md\x18\x01 \x01(\x0e\x32\x15.fibcapi.GroupMod.Cmd\x12\'\n\x06g_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.GroupMod.GType\x12\r\n\x05re_id\x18\x03 \x01(\t\x12-\n\x08l2_iface\x18\x04 \x01(\x0b\x32\x19.fibcapi.L2InterfaceGroupH\x00\x12-\n\nl3_unicast\x18\x05 \x01(\x0b\x32\x17.fibcapi.L3UnicastGroupH\x00\x12\x31\n\nmpls_iface\x18\x06 \x01(\x0b\x32\x1b.fibcapi.MPLSInterfaceGroupH\x00\x12-\n\nmpls_label\x18\x07 \x01(\x0b\x32\x17.fibcapi.MPLSLabelGroupH\x00\"/\n\x03\x43md\x12\x07\n\x03NOP\x10\x00\x12\x07\n\x03\x41\x44\x44\x10\x01\x12\n\n\x06MODIFY\x10\x02\x12\n\n\x06\x44\x45LETE\x10\x03\"\x95\x03\n\x05GType\x12\n\n\x06UNSPEC\x10\x00\x12\x10\n\x0cL2_INTERFACE\x10\x01\x12\x0e\n\nL2_REWRITE\x10\x10\x12\x0e\n\nL3_UNICAST\x10 \x12\x10\n\x0cL2_MULTICAST\x10\x30\x12\x0c\n\x08L2_FLOOD\x10@\x12\x10\n\x0cL3_INTERFACE\x10P\x12\x10\n\x0cL3_MULTICAST\x10`\x12\x0b\n\x07L3_ECMP\x10p\x12\x15\n\x10L2_OVERLAY_FL_UC\x10\x80\x01\x12\x15\n\x10L2_OVERLAY_FL_MC\x10\x81\x01\x12\x15\n\x10L2_OVERLAY_MC_UC\x10\x82\x01\x12\x15\n\x10L2_OVERLAY_MC_MC\x10\x83\x01\x12\x13\n\x0eMPLS_INTERFACE\x10\x90\x01\x12\x10\n\x0bMPLS_L2_VPN\x10\x91\x01\x12\x10\n\x0bMPLS_L3_VPN\x10\x92\x01\x12\x11\n\x0cMPLS_TUNNEL1\x10\x93\x01\x12\x11\n\x0cMPLS_TUNNEL2\x10\x94\x01\x12\x0e\n\tMPLS_SWAP\x10\x95\x01\x12\x0c\n\x07MPLS_FF\x10\xa6\x01\x12\x0e\n\tMPLS_ECMP\x10\xa8\x01\x12\x14\n\x0fL2_UF_INTERFACE\x10\xb0\x01\x42\x07\n\x05\x65ntry\"\x8c\x03\n\x08VLANFlow\x12&\n\x05match\x18\x01 \x01(\x0b\x32\x17.fibcapi.VLANFlow.Match\x12)\n\x07\x61\x63tions\x18\x02 \x03(\x0b\x32\x18.fibcapi.VLANFlow.Action\x12\x12\n\ngoto_table\x18\x03 \x01(\r\x1a\x37\n\x05Match\x12\x0f\n\x07in_port\x18\x01 \x01(\r\x12\x0b\n\x03vid\x18\x02 \x01(\r\x12\x10\n\x08vid_mask\x18\x03 \x01(\r\x1a\xdf\x01\n\x06\x41\x63tion\x12+\n\x04name\x18\x01 \x01(\x0e\x32\x1d.fibcapi.VLANFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\"\x98\x01\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\x10\n\x0cSET_VLAN_VID\x10\x01\x12\x0b\n\x07SET_VRF\x10\x02\x12\x0c\n\x08SET_OVID\x10\x03\x12\x11\n\rSET_MPLS_TYPE\x10\x04\x12\r\n\tPUSH_VLAN\x10\x05\x12\x0c\n\x08POP_VLAN\x10\x06\x12\x14\n\x10SET_MPLS_L2_TYPE\x10\x07\x12\x11\n\rSET_TUNNEL_ID\x10\x08\"\xce\x02\n\x12TerminationMacFlow\x12\x30\n\x05match\x18\x01 \x01(\x0b\x32!.fibcapi.TerminationMacFlow.Match\x12\x33\n\x07\x61\x63tions\x18\x02 \x03(\x0b\x32\".fibcapi.TerminationMacFlow.Action\x12\x12\n\ngoto_table\x18\x03 \x01(\r\x1aM\n\x05Match\x12\x0f\n\x07in_port\x18\x01 \x01(\r\x12\x10\n\x08\x65th_type\x18\x02 \x01(\r\x12\x0f\n\x07\x65th_dst\x18\x03 \x01(\t\x12\x10\n\x08vlan_vid\x18\x04 \x01(\r\x1an\n\x06\x41\x63tion\x12\x35\n\x04name\x18\x01 \x01(\x0e\x32\'.fibcapi.TerminationMacFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\"\x1e\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\n\n\x06OUTPUT\x10\x01\"\xdc\x04\n\x08MPLSFlow\x12&\n\x05match\x18\x01 \x01(\x0b\x32\x17.fibcapi.MPLSFlow.Match\x12)\n\x07\x61\x63tions\x18\x02 \x03(\x0b\x32\x18.fibcapi.MPLSFlow.Action\x12\'\n\x06g_type\x18\x03 \x01(\x0e\x32\x17.fibcapi.GroupMod.GType\x12\x0c\n\x04g_id\x18\x04 \x01(\r\x12\x12\n\ngoto_table\x18\x05 \x01(\r\x1a#\n\x05Match\x12\x0b\n\x03\x62os\x18\x01 \x01(\x08\x12\r\n\x05label\x18\x02 \x01(\r\x1a\x8c\x03\n\x06\x41\x63tion\x12+\n\x04name\x18\x01 \x01(\x0e\x32\x1d.fibcapi.MPLSFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\"\xc5\x02\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\r\n\tPOP_LABEL\x10\x01\x12\x0b\n\x07\x44\x45\x43_TTL\x10\x02\x12\x0f\n\x0b\x43OPY_TTL_IN\x10\x03\x12\x0e\n\nCOPY_TC_IN\x10\x04\x12\x0b\n\x07SET_VRF\x10\x05\x12\x14\n\x10SET_MPLS_L2_PORT\x10\x06\x12\x11\n\rSET_MPLS_TYPE\x10\x07\x12\x11\n\rSET_TUNNEL_ID\x10\x08\x12\x11\n\rSET_QOS_INDEX\x10\t\x12\x15\n\x11SET_TRAFFIC_CLASS\x10\n\x12\x12\n\x0eSET_L3_IN_PORT\x10\x0b\x12\x0e\n\nCOPY_FIELD\x10\x0c\x12\x11\n\rPOP_CW_OR_ACH\x10\r\x12\x0c\n\x08POP_VLAN\x10\x0e\x12\x11\n\rPOP_L2_HEADER\x10\x0f\x12\x0f\n\x0bSET_LMEP_ID\x10\x10\x12\x18\n\x14SET_PROTECTION_INDEX\x10\x11\"\xe8\x02\n\x12UnicastRoutingFlow\x12\x30\n\x05match\x18\x01 \x01(\x0b\x32!.fibcapi.UnicastRoutingFlow.Match\x12\x32\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\".fibcapi.UnicastRoutingFlow.Action\x12\'\n\x06g_type\x18\x03 \x01(\x0e\x32\x17.fibcapi.GroupMod.GType\x12\x0c\n\x04g_id\x18\x04 \x01(\r\x1a$\n\x05Match\x12\x0e\n\x06ip_dst\x18\x01 \x01(\t\x12\x0b\n\x03vrf\x18\x02 \x01(\r\x1a\x8e\x01\n\x06\x41\x63tion\x12\x35\n\x04name\x18\x01 \x01(\x0e\x32\'.fibcapi.UnicastRoutingFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\">\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\n\n\x06OUTPUT\x10\x01\x12\x11\n\rCLEAR_ACTIONS\x10\x02\x12\x0b\n\x07\x44\x45\x43_TTL\x10\x03\"\x91\x02\n\x0c\x42ridgingFlow\x12*\n\x05match\x18\x01 \x01(\x0b\x32\x1b.fibcapi.BridgingFlow.Match\x12,\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x1c.fibcapi.BridgingFlow.Action\x1a=\n\x05Match\x12\x0f\n\x07\x65th_dst\x18\x01 \x01(\t\x12\x10\n\x08vlan_vid\x18\x02 \x01(\r\x12\x11\n\ttunnel_id\x18\x03 \x01(\r\x1ah\n\x06\x41\x63tion\x12/\n\x04name\x18\x01 \x01(\x0e\x32!.fibcapi.BridgingFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\"\x1e\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\n\n\x06OUTPUT\x10\x01\"\xfc\x01\n\rPolicyACLFlow\x12+\n\x05match\x18\x01 \x01(\x0b\x32\x1c.fibcapi.PolicyACLFlow.Match\x12-\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x1d.fibcapi.PolicyACLFlow.Action\x1a$\n\x05Match\x12\x0e\n\x06ip_dst\x18\x01 \x01(\t\x12\x0b\n\x03vrf\x18\x02 \x01(\r\x1ai\n\x06\x41\x63tion\x12\x30\n\x04name\x18\x01 \x01(\x0e\x32\".fibcapi.PolicyACLFlow.Action.Name\x12\r\n\x05value\x18\x02 \x01(\r\"\x1e\n\x04Name\x12\n\n\x06UNSPEC\x10\x00\x12\n\n\x06OUTPUT\x10\x01\"O\n\x10L2InterfaceGroup\x12\x0f\n\x07port_id\x18\x01 \x01(\r\x12\x10\n\x08vlan_vid\x18\x02 \x01(\r\x12\x18\n\x10vlan_translation\x18\x03 \x01(\x08\"d\n\x0eL3UnicastGroup\x12\r\n\x05ne_id\x18\x01 \x01(\r\x12\x0f\n\x07port_id\x18\x02 \x01(\r\x12\x10\n\x08vlan_vid\x18\x03 \x01(\r\x12\x0f\n\x07\x65th_dst\x18\x04 \x01(\t\x12\x0f\n\x07\x65th_src\x18\x05 \x01(\t\"h\n\x12MPLSInterfaceGroup\x12\r\n\x05ne_id\x18\x01 \x01(\r\x12\x0f\n\x07port_id\x18\x02 \x01(\r\x12\x10\n\x08vlan_vid\x18\x03 \x01(\r\x12\x0f\n\x07\x65th_dst\x18\x04 \x01(\t\x12\x0f\n\x07\x65th_src\x18\x05 \x01(\t\"\x7f\n\x0eMPLSLabelGroup\x12\x0e\n\x06\x64st_id\x18\x01 \x01(\r\x12\x11\n\tnew_label\x18\x02 \x01(\r\x12\r\n\x05ne_id\x18\x03 \x01(\r\x12\x12\n\nnew_dst_id\x18\x04 \x01(\r\x12\'\n\x06g_type\x18\x05 \x01(\x0e\x32\x17.fibcapi.GroupMod.GType*j\n\x03\x46\x46M\x12\n\n\x06UNSPEC\x10\x00\x12\t\n\x05HELLO\x10\x01\x12\x0f\n\x0bPORT_STATUS\x10\x02\x12\x0f\n\x0bPORT_CONFIG\x10\x03\x12\x0c\n\x08\x46LOW_MOD\x10\x04\x12\r\n\tGROUP_MOD\x10\x05\x12\r\n\tDP_STATUS\x10\x06\x62\x06proto3')
 )
 
 _FFM = _descriptor.EnumDescriptor(
@@ -60,8 +60,8 @@ _FFM = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=4544,
-  serialized_end=4650,
+  serialized_start=4620,
+  serialized_end=4726,
 )
 _sym_db.RegisterEnumDescriptor(_FFM)
 
@@ -152,8 +152,8 @@ _PORTCONFIG_CMD = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=403,
-  serialized_end=450,
+  serialized_start=479,
+  serialized_end=526,
 )
 _sym_db.RegisterEnumDescriptor(_PORTCONFIG_CMD)
 
@@ -190,8 +190,8 @@ _FLOWMOD_CMD = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=803,
-  serialized_end=888,
+  serialized_start=879,
+  serialized_end=964,
 )
 _sym_db.RegisterEnumDescriptor(_FLOWMOD_CMD)
 
@@ -260,8 +260,8 @@ _FLOWMOD_TABLE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=891,
-  serialized_end=1115,
+  serialized_start=967,
+  serialized_end=1191,
 )
 _sym_db.RegisterEnumDescriptor(_FLOWMOD_TABLE)
 
@@ -290,8 +290,8 @@ _GROUPMOD_CMD = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=403,
-  serialized_end=450,
+  serialized_start=479,
+  serialized_end=526,
 )
 _sym_db.RegisterEnumDescriptor(_GROUPMOD_CMD)
 
@@ -392,8 +392,8 @@ _GROUPMOD_GTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1473,
-  serialized_end=1878,
+  serialized_start=1549,
+  serialized_end=1954,
 )
 _sym_db.RegisterEnumDescriptor(_GROUPMOD_GTYPE)
 
@@ -442,8 +442,8 @@ _VLANFLOW_ACTION_NAME = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2134,
-  serialized_end=2286,
+  serialized_start=2210,
+  serialized_end=2362,
 )
 _sym_db.RegisterEnumDescriptor(_VLANFLOW_ACTION_NAME)
 
@@ -464,8 +464,8 @@ _TERMINATIONMACFLOW_ACTION_NAME = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2593,
-  serialized_end=2623,
+  serialized_start=2669,
+  serialized_end=2699,
 )
 _sym_db.RegisterEnumDescriptor(_TERMINATIONMACFLOW_ACTION_NAME)
 
@@ -550,8 +550,8 @@ _MPLSFLOW_ACTION_NAME = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2905,
-  serialized_end=3230,
+  serialized_start=2981,
+  serialized_end=3306,
 )
 _sym_db.RegisterEnumDescriptor(_MPLSFLOW_ACTION_NAME)
 
@@ -580,8 +580,8 @@ _UNICASTROUTINGFLOW_ACTION_NAME = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=3531,
-  serialized_end=3593,
+  serialized_start=3607,
+  serialized_end=3669,
 )
 _sym_db.RegisterEnumDescriptor(_UNICASTROUTINGFLOW_ACTION_NAME)
 
@@ -602,8 +602,8 @@ _BRIDGINGFLOW_ACTION_NAME = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2593,
-  serialized_end=2623,
+  serialized_start=2669,
+  serialized_end=2699,
 )
 _sym_db.RegisterEnumDescriptor(_BRIDGINGFLOW_ACTION_NAME)
 
@@ -624,8 +624,8 @@ _POLICYACLFLOW_ACTION_NAME = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2593,
-  serialized_end=2623,
+  serialized_start=2669,
+  serialized_end=2699,
 )
 _sym_db.RegisterEnumDescriptor(_POLICYACLFLOW_ACTION_NAME)
 
@@ -643,7 +643,7 @@ _HELLO = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -674,14 +674,14 @@ _DPSTATUS = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='re_id', full_name='fibcapi.DpStatus.re_id', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -713,28 +713,28 @@ _PORTSTATUS = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='re_id', full_name='fibcapi.PortStatus.re_id', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='port_id', full_name='fibcapi.PortStatus.port_id', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ifname', full_name='fibcapi.PortStatus.ifname', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -766,28 +766,49 @@ _PORTCONFIG = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='re_id', full_name='fibcapi.PortConfig.re_id', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ifname', full_name='fibcapi.PortConfig.ifname', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='value', full_name='fibcapi.PortConfig.value', index=3,
+      name='port_id', full_name='fibcapi.PortConfig.port_id', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='link', full_name='fibcapi.PortConfig.link', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='slaves', full_name='fibcapi.PortConfig.slaves', index=5,
+      number=6, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='fibcapi.PortConfig.status', index=6,
+      number=7, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -802,7 +823,7 @@ _PORTCONFIG = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=305,
-  serialized_end=450,
+  serialized_end=526,
 )
 
 
@@ -819,63 +840,63 @@ _FLOWMOD = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='table', full_name='fibcapi.FlowMod.table', index=1,
       number=2, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='re_id', full_name='fibcapi.FlowMod.re_id', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan', full_name='fibcapi.FlowMod.vlan', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='term_mac', full_name='fibcapi.FlowMod.term_mac', index=4,
       number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mpls1', full_name='fibcapi.FlowMod.mpls1', index=5,
       number=6, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='unicast', full_name='fibcapi.FlowMod.unicast', index=6,
       number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='bridging', full_name='fibcapi.FlowMod.bridging', index=7,
       number=8, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='acl', full_name='fibcapi.FlowMod.acl', index=8,
       number=9, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -893,8 +914,8 @@ _FLOWMOD = _descriptor.Descriptor(
       name='entry', full_name='fibcapi.FlowMod.entry',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=453,
-  serialized_end=1124,
+  serialized_start=529,
+  serialized_end=1200,
 )
 
 
@@ -911,49 +932,49 @@ _GROUPMOD = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='g_type', full_name='fibcapi.GroupMod.g_type', index=1,
       number=2, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='re_id', full_name='fibcapi.GroupMod.re_id', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='l2_iface', full_name='fibcapi.GroupMod.l2_iface', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='l3_unicast', full_name='fibcapi.GroupMod.l3_unicast', index=4,
       number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mpls_iface', full_name='fibcapi.GroupMod.mpls_iface', index=5,
       number=6, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mpls_label', full_name='fibcapi.GroupMod.mpls_label', index=6,
       number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -971,8 +992,8 @@ _GROUPMOD = _descriptor.Descriptor(
       name='entry', full_name='fibcapi.GroupMod.entry',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1127,
-  serialized_end=1887,
+  serialized_start=1203,
+  serialized_end=1963,
 )
 
 
@@ -989,21 +1010,21 @@ _VLANFLOW_MATCH = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vid', full_name='fibcapi.VLANFlow.Match.vid', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vid_mask', full_name='fibcapi.VLANFlow.Match.vid_mask', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1016,8 +1037,8 @@ _VLANFLOW_MATCH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2005,
-  serialized_end=2060,
+  serialized_start=2081,
+  serialized_end=2136,
 )
 
 _VLANFLOW_ACTION = _descriptor.Descriptor(
@@ -1033,14 +1054,14 @@ _VLANFLOW_ACTION = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='value', full_name='fibcapi.VLANFlow.Action.value', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1054,8 +1075,8 @@ _VLANFLOW_ACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2063,
-  serialized_end=2286,
+  serialized_start=2139,
+  serialized_end=2362,
 )
 
 _VLANFLOW = _descriptor.Descriptor(
@@ -1071,21 +1092,21 @@ _VLANFLOW = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='actions', full_name='fibcapi.VLANFlow.actions', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='goto_table', full_name='fibcapi.VLANFlow.goto_table', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1098,8 +1119,8 @@ _VLANFLOW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1890,
-  serialized_end=2286,
+  serialized_start=1966,
+  serialized_end=2362,
 )
 
 
@@ -1116,28 +1137,28 @@ _TERMINATIONMACFLOW_MATCH = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='eth_type', full_name='fibcapi.TerminationMacFlow.Match.eth_type', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='eth_dst', full_name='fibcapi.TerminationMacFlow.Match.eth_dst', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan_vid', full_name='fibcapi.TerminationMacFlow.Match.vlan_vid', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1150,8 +1171,8 @@ _TERMINATIONMACFLOW_MATCH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2434,
-  serialized_end=2511,
+  serialized_start=2510,
+  serialized_end=2587,
 )
 
 _TERMINATIONMACFLOW_ACTION = _descriptor.Descriptor(
@@ -1167,14 +1188,14 @@ _TERMINATIONMACFLOW_ACTION = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='value', full_name='fibcapi.TerminationMacFlow.Action.value', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1188,8 +1209,8 @@ _TERMINATIONMACFLOW_ACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2513,
-  serialized_end=2623,
+  serialized_start=2589,
+  serialized_end=2699,
 )
 
 _TERMINATIONMACFLOW = _descriptor.Descriptor(
@@ -1205,21 +1226,21 @@ _TERMINATIONMACFLOW = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='actions', full_name='fibcapi.TerminationMacFlow.actions', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='goto_table', full_name='fibcapi.TerminationMacFlow.goto_table', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1232,8 +1253,8 @@ _TERMINATIONMACFLOW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2289,
-  serialized_end=2623,
+  serialized_start=2365,
+  serialized_end=2699,
 )
 
 
@@ -1250,14 +1271,14 @@ _MPLSFLOW_MATCH = _descriptor.Descriptor(
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='label', full_name='fibcapi.MPLSFlow.Match.label', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1270,8 +1291,8 @@ _MPLSFLOW_MATCH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2796,
-  serialized_end=2831,
+  serialized_start=2872,
+  serialized_end=2907,
 )
 
 _MPLSFLOW_ACTION = _descriptor.Descriptor(
@@ -1287,14 +1308,14 @@ _MPLSFLOW_ACTION = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='value', full_name='fibcapi.MPLSFlow.Action.value', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1308,8 +1329,8 @@ _MPLSFLOW_ACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2834,
-  serialized_end=3230,
+  serialized_start=2910,
+  serialized_end=3306,
 )
 
 _MPLSFLOW = _descriptor.Descriptor(
@@ -1325,35 +1346,35 @@ _MPLSFLOW = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='actions', full_name='fibcapi.MPLSFlow.actions', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='g_type', full_name='fibcapi.MPLSFlow.g_type', index=2,
       number=3, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='g_id', full_name='fibcapi.MPLSFlow.g_id', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='goto_table', full_name='fibcapi.MPLSFlow.goto_table', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1366,8 +1387,8 @@ _MPLSFLOW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2626,
-  serialized_end=3230,
+  serialized_start=2702,
+  serialized_end=3306,
 )
 
 
@@ -1384,14 +1405,14 @@ _UNICASTROUTINGFLOW_MATCH = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vrf', full_name='fibcapi.UnicastRoutingFlow.Match.vrf', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1404,8 +1425,8 @@ _UNICASTROUTINGFLOW_MATCH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3412,
-  serialized_end=3448,
+  serialized_start=3488,
+  serialized_end=3524,
 )
 
 _UNICASTROUTINGFLOW_ACTION = _descriptor.Descriptor(
@@ -1421,14 +1442,14 @@ _UNICASTROUTINGFLOW_ACTION = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='value', full_name='fibcapi.UnicastRoutingFlow.Action.value', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1442,8 +1463,8 @@ _UNICASTROUTINGFLOW_ACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3451,
-  serialized_end=3593,
+  serialized_start=3527,
+  serialized_end=3669,
 )
 
 _UNICASTROUTINGFLOW = _descriptor.Descriptor(
@@ -1459,28 +1480,28 @@ _UNICASTROUTINGFLOW = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='action', full_name='fibcapi.UnicastRoutingFlow.action', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='g_type', full_name='fibcapi.UnicastRoutingFlow.g_type', index=2,
       number=3, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='g_id', full_name='fibcapi.UnicastRoutingFlow.g_id', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1493,8 +1514,8 @@ _UNICASTROUTINGFLOW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3233,
-  serialized_end=3593,
+  serialized_start=3309,
+  serialized_end=3669,
 )
 
 
@@ -1511,21 +1532,21 @@ _BRIDGINGFLOW_MATCH = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan_vid', full_name='fibcapi.BridgingFlow.Match.vlan_vid', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='tunnel_id', full_name='fibcapi.BridgingFlow.Match.tunnel_id', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1538,8 +1559,8 @@ _BRIDGINGFLOW_MATCH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3702,
-  serialized_end=3763,
+  serialized_start=3778,
+  serialized_end=3839,
 )
 
 _BRIDGINGFLOW_ACTION = _descriptor.Descriptor(
@@ -1555,14 +1576,14 @@ _BRIDGINGFLOW_ACTION = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='value', full_name='fibcapi.BridgingFlow.Action.value', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1576,8 +1597,8 @@ _BRIDGINGFLOW_ACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3765,
-  serialized_end=3869,
+  serialized_start=3841,
+  serialized_end=3945,
 )
 
 _BRIDGINGFLOW = _descriptor.Descriptor(
@@ -1593,14 +1614,14 @@ _BRIDGINGFLOW = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='action', full_name='fibcapi.BridgingFlow.action', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1613,8 +1634,8 @@ _BRIDGINGFLOW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3596,
-  serialized_end=3869,
+  serialized_start=3672,
+  serialized_end=3945,
 )
 
 
@@ -1631,14 +1652,14 @@ _POLICYACLFLOW_MATCH = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vrf', full_name='fibcapi.PolicyACLFlow.Match.vrf', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1651,8 +1672,8 @@ _POLICYACLFLOW_MATCH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3412,
-  serialized_end=3448,
+  serialized_start=3488,
+  serialized_end=3524,
 )
 
 _POLICYACLFLOW_ACTION = _descriptor.Descriptor(
@@ -1668,14 +1689,14 @@ _POLICYACLFLOW_ACTION = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='value', full_name='fibcapi.PolicyACLFlow.Action.value', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1689,8 +1710,8 @@ _POLICYACLFLOW_ACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4019,
-  serialized_end=4124,
+  serialized_start=4095,
+  serialized_end=4200,
 )
 
 _POLICYACLFLOW = _descriptor.Descriptor(
@@ -1706,14 +1727,14 @@ _POLICYACLFLOW = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='action', full_name='fibcapi.PolicyACLFlow.action', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1726,8 +1747,8 @@ _POLICYACLFLOW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3872,
-  serialized_end=4124,
+  serialized_start=3948,
+  serialized_end=4200,
 )
 
 
@@ -1744,21 +1765,21 @@ _L2INTERFACEGROUP = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan_vid', full_name='fibcapi.L2InterfaceGroup.vlan_vid', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan_translation', full_name='fibcapi.L2InterfaceGroup.vlan_translation', index=2,
       number=3, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1771,8 +1792,8 @@ _L2INTERFACEGROUP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4126,
-  serialized_end=4205,
+  serialized_start=4202,
+  serialized_end=4281,
 )
 
 
@@ -1789,35 +1810,35 @@ _L3UNICASTGROUP = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='port_id', full_name='fibcapi.L3UnicastGroup.port_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan_vid', full_name='fibcapi.L3UnicastGroup.vlan_vid', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='eth_dst', full_name='fibcapi.L3UnicastGroup.eth_dst', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='eth_src', full_name='fibcapi.L3UnicastGroup.eth_src', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1830,8 +1851,8 @@ _L3UNICASTGROUP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4207,
-  serialized_end=4307,
+  serialized_start=4283,
+  serialized_end=4383,
 )
 
 
@@ -1848,35 +1869,35 @@ _MPLSINTERFACEGROUP = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='port_id', full_name='fibcapi.MPLSInterfaceGroup.port_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan_vid', full_name='fibcapi.MPLSInterfaceGroup.vlan_vid', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='eth_dst', full_name='fibcapi.MPLSInterfaceGroup.eth_dst', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='eth_src', full_name='fibcapi.MPLSInterfaceGroup.eth_src', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1889,8 +1910,8 @@ _MPLSINTERFACEGROUP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4309,
-  serialized_end=4413,
+  serialized_start=4385,
+  serialized_end=4489,
 )
 
 
@@ -1907,35 +1928,35 @@ _MPLSLABELGROUP = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='new_label', full_name='fibcapi.MPLSLabelGroup.new_label', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ne_id', full_name='fibcapi.MPLSLabelGroup.ne_id', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='new_dst_id', full_name='fibcapi.MPLSLabelGroup.new_dst_id', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='g_type', full_name='fibcapi.MPLSLabelGroup.g_type', index=4,
       number=5, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1948,8 +1969,8 @@ _MPLSLABELGROUP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4415,
-  serialized_end=4542,
+  serialized_start=4491,
+  serialized_end=4618,
 )
 
 _DPSTATUS.fields_by_name['status'].enum_type = _DPSTATUS_STATUS
@@ -1957,6 +1978,7 @@ _DPSTATUS_STATUS.containing_type = _DPSTATUS
 _PORTSTATUS.fields_by_name['status'].enum_type = _PORTSTATUS_STATUS
 _PORTSTATUS_STATUS.containing_type = _PORTSTATUS
 _PORTCONFIG.fields_by_name['cmd'].enum_type = _PORTCONFIG_CMD
+_PORTCONFIG.fields_by_name['status'].enum_type = _PORTSTATUS_STATUS
 _PORTCONFIG_CMD.containing_type = _PORTCONFIG
 _FLOWMOD.fields_by_name['cmd'].enum_type = _FLOWMOD_CMD
 _FLOWMOD.fields_by_name['table'].enum_type = _FLOWMOD_TABLE

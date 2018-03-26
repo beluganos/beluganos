@@ -22,8 +22,10 @@ import (
 )
 
 type NodeConfig struct {
-	NId  uint8  `toml:"nid"`
-	ReId string `toml:"reid"`
+	NId       uint8  `toml:"nid"`
+	ReId      string `toml:"reid"`
+	NIdIfname string `toml:"nid_from_ifaddr"`
+	DupIfname bool   `toml:"allow_duplicate_ifname"`
 }
 
 type RibpConfig struct {
@@ -37,6 +39,7 @@ type Config struct {
 }
 
 func ReadConfig(path string, cfg *Config) error {
+	cfg.Node.DupIfname = true // default value
 	_, err := toml.DecodeFile(path, cfg)
 	if err != nil {
 		return err

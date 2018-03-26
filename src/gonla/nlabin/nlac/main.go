@@ -73,7 +73,7 @@ func strLink(link *nlaapi.Link) string {
 }
 
 func printLinks(c nlaapi.NLAApiClient) {
-	stream, err := c.GetLinks(context.Background(), &nlaapi.GetLinksRequest{})
+	stream, err := c.GetLinks(context.Background(), nlaapi.NewGetLinksRequest(nlaapi.NODE_ID_ALL))
 	if err != nil {
 		log.Errorf("GetLinks error. %v", err)
 		return
@@ -103,7 +103,7 @@ func strAddr(addr *nlaapi.Addr) string {
 }
 
 func printAddrs(c nlaapi.NLAApiClient) {
-	stream, err := c.GetAddrs(context.Background(), &nlaapi.GetAddrsRequest{})
+	stream, err := c.GetAddrs(context.Background(), nlaapi.NewGetAddrsRequest(nlaapi.NODE_ID_ALL))
 	if err != nil {
 		log.Errorf("GetAddrs error. %v", err)
 		return
@@ -153,18 +153,20 @@ func strNeighState(state int32) string {
 }
 
 func strNeigh(neigh *nlaapi.Neigh) string {
-	return fmt.Sprintf("NEIGH:%03d:%04d %-32s %-18s %s i=%d",
+	return fmt.Sprintf("NEIGH:%03d:%04d %-32s %-18s %s i=%d,v=%d,%d",
 		neigh.NId,
 		neigh.NeId,
 		neigh.GetIP(),
 		neigh.NetHardwareAddr(),
 		strNeighState(neigh.State),
 		neigh.LinkIndex,
+		neigh.VlanId,
+		neigh.Vni,
 	)
 }
 
 func printNeighs(c nlaapi.NLAApiClient) {
-	stream, err := c.GetNeighs(context.Background(), &nlaapi.GetNeighsRequest{})
+	stream, err := c.GetNeighs(context.Background(), nlaapi.NewGetNeighsRequest(nlaapi.NODE_ID_ALL))
 	if err != nil {
 		log.Errorf("GetNeighs error. %v", err)
 		return
@@ -263,7 +265,7 @@ func strRoute(route *nlaapi.Route) string {
 }
 
 func printRoutes(c nlaapi.NLAApiClient) {
-	stream, err := c.GetRoutes(context.Background(), &nlaapi.GetRoutesRequest{})
+	stream, err := c.GetRoutes(context.Background(), nlaapi.NewGetRoutesRequest(nlaapi.NODE_ID_ALL))
 	if err != nil {
 		log.Errorf("GetRoutes error. %v", err)
 		return
@@ -299,7 +301,7 @@ func strMpls(route *nlaapi.Route) string {
 }
 
 func printMplss(c nlaapi.NLAApiClient) {
-	stream, err := c.GetMplss(context.Background(), &nlaapi.GetMplssRequest{})
+	stream, err := c.GetMplss(context.Background(), nlaapi.NewGetMplssRequest(nlaapi.NODE_ID_ALL))
 	if err != nil {
 		log.Errorf("GetRoutes error. %v", err)
 		return

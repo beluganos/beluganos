@@ -34,6 +34,11 @@ from fabricflow.fibc.ofc import ofc
 _LOG = logging.getLogger(__name__)
 _SEND_MOD_WAIT_SEC = 0.025
 
+def _find_dp_by_re_id(re_id):
+    dp_id = fibcdbm.idmap().find_by_re_id(re_id)["dp_id"]
+    return fibcdbm.dps().find_by_id(dp_id), fibcdbm.dps().get_mode(dp_id, "default")
+
+
 # pylint: disable=no-self-use
 class FIBCModApp(app_manager.RyuApp):
     """
@@ -73,7 +78,7 @@ class FIBCModApp(app_manager.RyuApp):
             _LOG.debug("%s", mod)
 
         try:
-            dpath, mode = fibcdbm.find_dp_by_re_id(mod.re_id)
+            dpath, mode = _find_dp_by_re_id(mod.re_id)
             if dpath is not None:
                 fibccnv.conv_flow(mod, fibcdbm.portmap())
                 func = ofc.flow(mode, mod.table)
@@ -95,7 +100,7 @@ class FIBCModApp(app_manager.RyuApp):
             _LOG.debug(mod)
 
         try:
-            dpath, mode = fibcdbm.find_dp_by_re_id(mod.re_id)
+            dpath, mode = _find_dp_by_re_id(mod.re_id)
             if dpath is not None:
                 fibccnv.conv_group(mod, fibcdbm.portmap())
                 func = ofc.group(mode, mod.g_type)

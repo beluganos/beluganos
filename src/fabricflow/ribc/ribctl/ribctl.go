@@ -21,9 +21,16 @@ import (
 	"fabricflow/fibc/api"
 	"fabricflow/fibc/net"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"gonla/nlamsg"
+	"gonla/nlamsg/nlalink"
 	"net"
+
+	log "github.com/sirupsen/logrus"
+)
+
+const (
+	LOOPBACK_IFNAME = "lo"
+	UNSPEC_IFNAME   = "-"
 )
 
 type IfaceMap struct {
@@ -48,7 +55,11 @@ func (i *IfaceMap) Delete(ifname string) {
 	delete(i.ifmap, ifname)
 }
 
-func (i *IfaceMap) Contains(nid uint8, ifindex int) bool {
+func (i *IfaceMap) Contains(nid uint8, ifindex int, ifname string) bool {
+	if ifname == LOOPBACK_IFNAME {
+		return true
+	}
+
 	if ifindex > 0 {
 		entry := NewIfaceEntry(nid, ifindex)
 		for _, v := range i.ifmap {
@@ -61,22 +72,24 @@ func (i *IfaceMap) Contains(nid uint8, ifindex int) bool {
 }
 
 type RIBController struct {
-	nid   uint8
-	reId  string
-	label uint32
-	ifmap *IfaceMap
-	nla   *NLAController
-	fib   *FIBController
+	nid    uint8
+	reId   string
+	label  uint32
+	ifmap  *IfaceMap
+	nla    *NLAController
+	fib    *FIBController
+	useNId bool
 }
 
-func NewRIBController(nid uint8, reId string, label uint32, nla *NLAController, fib *FIBController) *RIBController {
+func NewRIBController(nid uint8, reId string, label uint32, useNId bool, nla *NLAController, fib *FIBController) *RIBController {
 	return &RIBController{
-		nid:   nid,
-		reId:  reId,
-		label: label,
-		nla:   nla,
-		fib:   fib,
-		ifmap: NewIfaceMap(),
+		nid:    nid,
+		reId:   reId,
+		label:  label,
+		nla:    nla,
+		fib:    fib,
+		ifmap:  NewIfaceMap(),
+		useNId: useNId,
 	}
 }
 
@@ -122,7 +135,8 @@ func (r *RIBController) OnDpStatus(msg *fibcapi.DpStatus) {
 func (r *RIBController) OnPortStatus(msg *fibcapi.PortStatus) {
 	log.Debugf("RIBController: OnPortStatus %v", msg)
 
-	nid, ifname := ParseLinkName(msg.Ifname)
+	_, ifname := ParseLinkName(msg.Ifname)
+	nid, _ := ParsePortId(msg.PortId)
 
 	if msg.Status == fibcapi.PortStatus_UP {
 		if nid != r.nid {
@@ -131,19 +145,21 @@ func (r *RIBController) OnPortStatus(msg *fibcapi.PortStatus) {
 			}
 		}
 
-		r.nla.GetLinks(func(link *nlamsg.Link) error {
+		r.nla.GetLinks(nid, func(link *nlamsg.Link) error {
 			if NewPortId(link) == msg.PortId {
 				if err := r.SendLinkFlows(fibcapi.FlowMod_ADD, link); err != nil {
 					log.Errorf("RIBController: SendLinkFlows error. %s", err)
 				}
 
-				r.ifmap.Set(NewLinkLinkName(link), link.NId, link.Attrs().Index)
+				r.ifmap.Set(msg.Ifname, link.NId, link.Attrs().Index)
+
+				log.Debugf("RIBController: '%s' registered to ifmap.", ifname)
 			}
 			return nil
 		})
 
-		r.nla.GetAddrs(func(addr *nlamsg.Addr) error {
-			if NewAddrLinkName(addr) == msg.Ifname {
+		r.nla.GetAddrs(nid, func(addr *nlamsg.Addr) error {
+			if NewAddrLinkName(addr, r.useNId) == msg.Ifname {
 				if err := r.SendACLFlowByAddr(fibcapi.FlowMod_ADD, addr); err != nil {
 					log.Errorf("RIBController: ACL FLow(Addr) error. %s", err)
 					return err
@@ -152,7 +168,7 @@ func (r *RIBController) OnPortStatus(msg *fibcapi.PortStatus) {
 			return nil
 		})
 
-		r.nla.GetNeighs(func(neigh *nlamsg.Neigh) error {
+		r.nla.GetNeighs(nid, func(neigh *nlamsg.Neigh) error {
 			link, err := r.nla.GetLink(neigh.NId, neigh.LinkIndex)
 			if err != nil {
 				log.Warnf("RIBController: Link not found. Neigh %s %s", neigh, err)
@@ -182,8 +198,29 @@ func (r *RIBController) OnNetlinkMessage(nlmsg *nlamsg.NetlinkMessageUnion) {
 	nlamsg.DispatchUnion(nlmsg, r)
 }
 
+func (r *RIBController) NetlinkNode(nlmsg *nlamsg.NetlinkMessage, node *nlamsg.Node) {
+	log.Debugf("RIBController: NODE nid:%d", node.NId)
+
+	if (nlmsg.Type() == nlalink.RTM_DELNODE) && (node.NId != r.nid) {
+		if err := r.SendMPLSFlowVRF(fibcapi.FlowMod_DELETE, node.NId); err != nil {
+			log.Errorf("RIBController: SendMPLSFlowVRF error. %s", err)
+		}
+	}
+}
+
 func (r *RIBController) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.Link) {
 	log.Debugf("RIBController: LINK nid:%d LnId:%d", link.NId, link.LnId)
+
+	if cmd := GetFlowCmd(nlmsg.Type()); cmd == fibcapi.FlowMod_DELETE {
+		if err := r.SendLinkFlows(cmd, link); err != nil {
+			log.Errorf("RIBController: SendLinkFlows error. %s", err)
+		}
+
+		ifname := NewLinkName(link, r.useNId)
+		r.ifmap.Delete(ifname)
+
+		log.Debugf("RIBController: '%s' unregistered from ifmap.", ifname)
+	}
 
 	cmd := GetPortConfigCmd(nlmsg.Type())
 	if err := r.SendPortConfig(cmd, link); err != nil {
@@ -196,7 +233,7 @@ func (r *RIBController) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.L
 func (r *RIBController) NetlinkAddr(nlmsg *nlamsg.NetlinkMessage, addr *nlamsg.Addr) {
 	log.Debugf("RIBController: ADDR NId:%d AdId:%d", addr.NId, addr.AdId)
 
-	if ok := r.ifmap.Contains(addr.NId, int(addr.Index)); !ok {
+	if ok := r.ifmap.Contains(addr.NId, int(addr.Index), addr.Label); !ok {
 		log.Warnf("RIBController: Ifindex not found. Addr %s", addr)
 		return
 	}
@@ -212,7 +249,7 @@ func (r *RIBController) NetlinkAddr(nlmsg *nlamsg.NetlinkMessage, addr *nlamsg.A
 func (r *RIBController) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nlamsg.Neigh) {
 	log.Debugf("RIBController: NEIGH NId;%d NeId:%d", neigh.NId, neigh.NeId)
 
-	if ok := r.ifmap.Contains(neigh.NId, neigh.LinkIndex); !ok {
+	if ok := r.ifmap.Contains(neigh.NId, neigh.LinkIndex, UNSPEC_IFNAME); !ok {
 		log.Warnf("RIBController: Ifindex not found. Neigh %s", neigh)
 		return
 	}
@@ -228,7 +265,7 @@ func (r *RIBController) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nlamsg
 func (r *RIBController) NetlinkRoute(nlmsg *nlamsg.NetlinkMessage, route *nlamsg.Route) {
 	log.Debugf("RIBController: ROUTE NId:%d RtId:%d", route.NId, route.RtId)
 
-	if ok := r.ifmap.Contains(route.NId, route.GetLinkIndex()); !ok {
+	if ok := r.ifmap.Contains(route.NId, route.GetLinkIndex(), UNSPEC_IFNAME); !ok {
 		log.Warnf("RIBController: Ifindex not found. Route %s", route)
 		return
 	}
@@ -244,9 +281,11 @@ func (r *RIBController) NetlinkRoute(nlmsg *nlamsg.NetlinkMessage, route *nlamsg
 func (r *RIBController) SendLinkFlows(cmd fibcapi.FlowMod_Cmd, link *nlamsg.Link) error {
 	grpCmd := FlowCmdToGroupCmd(cmd)
 
-	if err := r.SendL2InterfaceGroup(grpCmd, link); err != nil {
-		log.Errorf("RIBController: L2 Interface Group error. %s", err)
-		return err
+	if grpCmd != fibcapi.GroupMod_DELETE {
+		if err := r.SendL2InterfaceGroup(grpCmd, link); err != nil {
+			log.Errorf("RIBController: L2 Interface Group error. %s", err)
+			return err
+		}
 	}
 
 	if err := r.SendVLANFlow(cmd, link); err != nil {
@@ -259,13 +298,20 @@ func (r *RIBController) SendLinkFlows(cmd fibcapi.FlowMod_Cmd, link *nlamsg.Link
 		return err
 	}
 
+	if grpCmd == fibcapi.GroupMod_DELETE {
+		if err := r.SendL2InterfaceGroup(grpCmd, link); err != nil {
+			log.Errorf("RIBController: L2 Interface Group error. %s", err)
+			return err
+		}
+	}
+
 	return nil
 }
 
 func (r *RIBController) SendNeighFlows(cmd fibcapi.FlowMod_Cmd, neigh *nlamsg.Neigh) error {
 	grpCmd := FlowCmdToGroupCmd(cmd)
 
-	if cmd == fibcapi.FlowMod_DELETE {
+	if grpCmd == fibcapi.GroupMod_DELETE {
 		if err := r.SendUnicastRoutingFlowNeigh(cmd, neigh); err != nil {
 			log.Errorf("RIBController: Unicast Routing(Neigh) error. %s", err)
 			return err
@@ -282,7 +328,7 @@ func (r *RIBController) SendNeighFlows(cmd fibcapi.FlowMod_Cmd, neigh *nlamsg.Ne
 		return err
 	}
 
-	if cmd != fibcapi.FlowMod_DELETE {
+	if grpCmd != fibcapi.GroupMod_DELETE {
 		if err := r.SendUnicastRoutingFlowNeigh(cmd, neigh); err != nil {
 			log.Errorf("RIBController: Unicast Routing(Neigh) error. %s", err)
 			return err
@@ -314,7 +360,7 @@ func (r *RIBController) SendRouteFlows(cmd fibcapi.FlowMod_Cmd, route *nlamsg.Ro
 			//      -> MPLS Interface(0x90VVNNNN) V:VRF/N:NeId
 			grpCmd := FlowCmdToGroupCmd(cmd)
 
-			if cmd == fibcapi.FlowMod_DELETE {
+			if grpCmd == fibcapi.GroupMod_DELETE {
 				if err := r.SendUnicastRoutingFlowMPLS(cmd, route); err != nil {
 					log.Errorf("RIBController: Unicast Routing(MPLS) error. %s", err)
 					return err
@@ -331,7 +377,7 @@ func (r *RIBController) SendRouteFlows(cmd fibcapi.FlowMod_Cmd, route *nlamsg.Ro
 				return err
 			}
 
-			if cmd != fibcapi.FlowMod_DELETE {
+			if grpCmd != fibcapi.GroupMod_DELETE {
 				if err := r.SendUnicastRoutingFlowMPLS(cmd, route); err != nil {
 					log.Errorf("RIBController: Unicast Routing(MPLS) error. %s", err)
 					return err
@@ -375,7 +421,7 @@ func (r *RIBController) SendRouteFlows(cmd fibcapi.FlowMod_Cmd, route *nlamsg.Ro
 			//       -> MPLS Interface
 			grpCmd := FlowCmdToGroupCmd(cmd)
 
-			if cmd != fibcapi.FlowMod_DELETE {
+			if grpCmd != fibcapi.GroupMod_DELETE {
 				if err := r.SendMPLSLabelGroupSwap(grpCmd, route); err != nil {
 					log.Errorf("SendMPLSLabelGroupSwap error. %s", err)
 					return err
@@ -392,7 +438,7 @@ func (r *RIBController) SendRouteFlows(cmd fibcapi.FlowMod_Cmd, route *nlamsg.Ro
 				return err
 			}
 
-			if cmd == fibcapi.FlowMod_DELETE {
+			if grpCmd == fibcapi.GroupMod_DELETE {
 				if err := r.SendMPLSLabelGroupSwap(grpCmd, route); err != nil {
 					log.Errorf("SendMPLSLabelGroupSwap error. %s", err)
 					return err
@@ -406,22 +452,18 @@ func (r *RIBController) SendRouteFlows(cmd fibcapi.FlowMod_Cmd, route *nlamsg.Ro
 
 func (r *RIBController) SendLoopbackFlows(cmd fibcapi.FlowMod_Cmd, nid uint8) {
 	links := make(map[int32]struct{}, 0)
-	r.nla.GetLinks(func(link *nlamsg.Link) error {
-		if nid == link.NId {
-			if (link.Attrs().Flags & net.FlagLoopback) != 0 {
-				links[int32(link.Attrs().Index)] = struct{}{}
-			}
+	r.nla.GetLinks(nid, func(link *nlamsg.Link) error {
+		if (link.Attrs().Flags & net.FlagLoopback) != 0 {
+			links[int32(link.Attrs().Index)] = struct{}{}
 		}
 		return nil
 	})
 
-	r.nla.GetAddrs(func(addr *nlamsg.Addr) error {
-		if addr.NId == nid {
-			if _, ok := links[addr.Index]; ok {
-				if err := r.SendACLFlowByAddr(cmd, addr); err != nil {
-					log.Errorf("RIBController: ACL FLow(Addr) error. %s", err)
-					return err
-				}
+	r.nla.GetAddrs(nid, func(addr *nlamsg.Addr) error {
+		if _, ok := links[addr.Index]; ok {
+			if err := r.SendACLFlowByAddr(cmd, addr); err != nil {
+				log.Errorf("RIBController: ACL FLow(Addr) error. %s", err)
+				return err
 			}
 		}
 		return nil

@@ -18,8 +18,9 @@
 
 
 import unittest
-import fibcapi_pb2 as pb
-import fibcapi as api
+from fabricflow.fibc.api import fibcapi_pb2 as pb
+from fabricflow.fibc.api import fibcapi as api
+
 
 class TestVLANFlow(unittest.TestCase):
     def setUp(self):
@@ -113,7 +114,7 @@ class TestPortConfig(unittest.TestCase):
         pass
 
     def test_new(self):
-        msg = pb.PortConfig(cmd="ADD", re_id="1.1.1.1", ifname="ethX", value=10)
+        msg = pb.PortConfig(cmd="ADD", re_id="1.1.1.1", ifname="ethX", port_id=10)
         # print msg
 
 TESTS = [

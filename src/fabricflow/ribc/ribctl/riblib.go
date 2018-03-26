@@ -32,8 +32,16 @@ func NewVRFLabel(base uint32, nid uint8) uint32 {
 	return base + uint32(nid)
 }
 
-func NewLinkName(nid uint8, ifname string) string {
-	return fmt.Sprintf("%d/%s", nid, ifname)
+func newLinkName(nid uint8, name string, useNId bool) string {
+	if useNId {
+		return fmt.Sprintf("%d/%s", nid, name)
+	}
+
+	return name
+}
+
+func NewLinkName(link *nlamsg.Link, useNId bool) string {
+	return newLinkName(link.NId, link.Attrs().Name, useNId)
 }
 
 func ParseLinkName(name string) (uint8, string) {
@@ -53,20 +61,31 @@ func ParseLinkName(name string) (uint8, string) {
 	return nid, name[i+1:]
 }
 
-func NewLinkLinkName(link *nlamsg.Link) string {
-	return NewLinkName(link.NId, link.Attrs().Name)
-}
-
-func NewAddrLinkName(addr *nlamsg.Addr) string {
-	return NewLinkName(addr.NId, addr.Label)
+func NewAddrLinkName(addr *nlamsg.Addr, useNId bool) string {
+	return newLinkName(addr.NId, addr.Label, useNId)
 }
 
 func NewPortId(link *nlamsg.Link) uint32 {
-	return (uint32(link.NId) << 16) + uint32(link.LnId)
+	if link != nil {
+		return (uint32(link.NId) << 16) + uint32(link.LnId)
+	} else {
+		return 0
+	}
 }
 
 func ParsePortId(linkId uint32) (uint8, uint16) {
 	return uint8(linkId >> 16), uint16(linkId & 0xffff)
+}
+
+func NewPortStatus(link *nlamsg.Link) fibcapi.PortStatus_Status {
+	switch link.Attrs().OperState.String() {
+	case "up":
+		return fibcapi.PortStatus_UP
+	case "down":
+		return fibcapi.PortStatus_DOWN
+	default:
+		return fibcapi.PortStatus_NOP
+	}
 }
 
 func NewNeighId(neigh *nlamsg.Neigh) uint32 {

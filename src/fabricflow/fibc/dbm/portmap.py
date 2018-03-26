@@ -27,6 +27,7 @@ _LOG = logging.getLogger(__name__)
 FIBCPort = namedtuple('FIBCPort', ("id", "port"))
 FIBCLink = namedtuple('FIBCLink', ("re_id", "name"))
 
+
 class FIBCPortEntry(dict):
     """
     Entry of Portmap table.
@@ -40,7 +41,7 @@ class FIBCPortEntry(dict):
         self["dp"] = dp
         self["link"] = kwargs.get("link", None)
         self["slaves"] = kwargs.get("slaves", None)
-        self["dpenter"] = kwargs.get("dpenter", None)
+        self["dpenter"] = kwargs.get("dpenter", False)
 
 
     @classmethod
@@ -104,6 +105,12 @@ class FIBCPortEntry(dict):
         Check if VM port associated
         """
         return self["vm"].port != 0
+
+    def is_config(self):
+        """
+        Check if port entry from config file.
+        """
+        return self["link"] is None and self["slaves"] is None
 
 
 class FIBCDbPortMapTable(object):

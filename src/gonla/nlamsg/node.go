@@ -23,6 +23,8 @@ import (
 	"gonla/nlamsg/nlalink"
 )
 
+const NODE_ID_ALL uint8 = 255
+
 func CopyNode(src *nlalink.Node) *nlalink.Node {
 	dst := *src
 	return &dst
@@ -65,7 +67,7 @@ func (n *Node) Recv() <-chan *NetlinkMessageUnion {
 }
 
 func (n *Node) Send(msg *NetlinkMessageUnion) error {
-	if msg.NId == n.NId || msg.NId == 255 {
+	if msg.NId == n.NId || msg.NId == NODE_ID_ALL {
 		n.Ch <- msg
 	}
 	return nil

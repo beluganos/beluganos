@@ -163,7 +163,7 @@ func NewMPLSFlowPop2(neigh *nlamsg.Neigh, route *nlamsg.Route) *fibcapi.MPLSFlow
 }
 
 func (r *RIBController) SendMPLSFlowPop2(cmd fibcapi.FlowMod_Cmd, route *nlamsg.Route) error {
-	neigh, err := r.nla.GetNeigh(route.NId, route.GetGw())
+	neigh, err := r.nla.GetNeigh_FlowMod(cmd, route.NId, route.GetGw())
 	if err != nil {
 		return err
 	}
@@ -218,7 +218,7 @@ func (r *RIBController) SendUnicastRoutingFlow(cmd fibcapi.FlowMod_Cmd, route *n
 		return nil
 	}
 
-	neigh, err := r.nla.GetNeigh(route.NId, route.GetGw())
+	neigh, err := r.nla.GetNeigh_FlowMod(cmd, route.NId, route.GetGw())
 	if err != nil {
 		return err
 	}

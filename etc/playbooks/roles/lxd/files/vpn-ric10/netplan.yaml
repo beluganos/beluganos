@@ -1,0 +1,14 @@
+network:
+  version: 2
+  ethernets:
+    eth4:
+      mtu: 1500
+    eth5:
+      mtu: 1500
+  vlans:
+    eth4.20:
+      link: eth4
+      id: 20
+    eth5.20:
+      link: eth5
+      id: 20

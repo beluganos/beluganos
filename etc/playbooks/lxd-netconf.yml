@@ -1,0 +1,13 @@
+---
+
+- hosts: hosts
+  connection: local
+  become: true
+  roles:
+    - { role: lxd, mode: netconf }
+  vars:
+    port_num: 4
+    re_id: 10.0.1.6
+    datapath: sample_sw
+    dp_id: 153
+    bridge: dp0

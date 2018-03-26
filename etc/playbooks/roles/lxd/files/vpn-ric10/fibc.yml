@@ -5,7 +5,5 @@ routers:
     re_id: 10.0.1.6
     datapath: whitebox1
     ports:
-      - { name: 10/eth1,     port: 4 }
-      - { name: 10/eth2,     port: 5 }
-      - { name: 10/eth1.20,  port: 0,  link: "10/eth1" }
-      - { name: 10/eth2.20,  port: 0,  link: "10/eth2" }
+      - { name: eth4,     port: 4 }
+      - { name: eth5,     port: 5 }

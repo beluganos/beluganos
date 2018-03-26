@@ -1,4 +1,4 @@
-// coding: utf-8 -*-
+// -*- coding: utf-8 -*-
 
 // Copyright (C) 2017 Nippon Telegraph and Telephone Corporation.
 //
@@ -19,9 +19,11 @@ package main
 
 import (
 	"fabricflow/ribc/ribctl"
+	"fabricflow/util/net"
 	"flag"
-	log "github.com/sirupsen/logrus"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -49,9 +51,15 @@ func main() {
 		os.Exit(0)
 	}
 
+	nid, err := fflibnet.GetNIdFromLink(config.Node.NIdIfname)
+	if err != nil {
+		log.Infof("node.nid(conig:%d) is used as nid. reason:'%s'", nid, err)
+		nid = config.Node.NId
+	}
+
 	nla := ribctl.NewNLAController(config.NLA.Api)
 	fib := ribctl.NewFIBController(config.Ribc.Fibc)
-	rib := ribctl.NewRIBController(config.Node.NId, config.Node.ReId, config.Node.Label, nla, fib)
+	rib := ribctl.NewRIBController(nid, config.Node.ReId, config.Node.Label, config.Node.DupIfname, nla, fib)
 
 	if err := nla.Start(); err != nil {
 		log.Errorf("NewNLAMonitor Start error. %s", err)

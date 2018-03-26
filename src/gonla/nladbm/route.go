@@ -53,12 +53,15 @@ type RouteTable interface {
 	Delete(*RouteKey) *nlamsg.Route
 	Walk(f func(*nlamsg.Route) error) error
 	WalkFree(f func(*nlamsg.Route) error) error
+	WalkByGw(uint8, net.IP, func(*nlamsg.Route) error) error
+	WalkByGwFree(uint8, net.IP, func(*nlamsg.Route) error) error
 }
 
 func NewRouteTable() RouteTable {
 	return &routeTable{
 		Routes:  make(map[RouteKey]*nlamsg.Route),
 		Counter: nlalib.NewCounters32(),
+		GwIdx:   NewRouteGwIndex(),
 	}
 }
 
@@ -69,6 +72,7 @@ type routeTable struct {
 	Mutex   sync.RWMutex
 	Routes  map[RouteKey]*nlamsg.Route
 	Counter *nlalib.Counters32
+	GwIdx   *RouteGwIndex
 }
 
 func (t *routeTable) find(key *RouteKey) *nlamsg.Route {
@@ -88,6 +92,11 @@ func (t *routeTable) Insert(r *nlamsg.Route) (old *nlamsg.Route) {
 	}
 
 	t.Routes[*key] = r.Copy()
+
+	if old != nil {
+		t.GwIdx.Delete(old)
+	}
+	t.GwIdx.Insert(r)
 
 	return
 }
@@ -121,7 +130,108 @@ func (t *routeTable) Delete(key *RouteKey) (old *nlamsg.Route) {
 
 	if old = t.find(key); old != nil {
 		delete(t.Routes, *key)
+		t.GwIdx.Delete(old)
 	}
 
+	return
+}
+
+func (t *routeTable) WalkByGw(nid uint8, ip net.IP, f func(*nlamsg.Route) error) error {
+	t.Mutex.RLock()
+	defer t.Mutex.RUnlock()
+
+	return t.WalkByGwFree(nid, ip, f)
+}
+
+func (t *routeTable) WalkByGwFree(nid uint8, ip net.IP, f func(*nlamsg.Route) error) error {
+	e, ok := t.GwIdx.Select(nid, ip)
+	if ok {
+		for _, key := range e.Keys {
+			if route := t.find(key); route != nil {
+				if err := f(route); err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+//
+// GW Index Entry
+//
+type RouteGwIndexEntry struct {
+	Keys map[RouteKey]*RouteKey
+}
+
+func NewRouteGwIndexEntry() *RouteGwIndexEntry {
+	return &RouteGwIndexEntry{
+		Keys: make(map[RouteKey]*RouteKey),
+	}
+}
+
+func (r *RouteGwIndexEntry) Insert(key *RouteKey) {
+	r.Keys[*key] = key
+}
+
+func (r *RouteGwIndexEntry) Delete(key *RouteKey) {
+	delete(r.Keys, *key)
+}
+
+func (r *RouteGwIndexEntry) Len() int {
+	return len(r.Keys)
+}
+
+//
+// GW Index Table
+//
+type RouteGwIndex struct {
+	Entry map[NeighKey]*RouteGwIndexEntry
+}
+
+func NewRouteGwIndex() *RouteGwIndex {
+	return &RouteGwIndex{
+		Entry: make(map[NeighKey]*RouteGwIndexEntry),
+	}
+}
+
+func (r *RouteGwIndex) Insert(route *nlamsg.Route) {
+	gw := route.GetGw()
+	if gw == nil {
+		return
+	}
+
+	key := NewNeighKey(route.NId, gw)
+	e, ok := r.Entry[*key]
+	if !ok {
+		e = NewRouteGwIndexEntry()
+		r.Entry[*key] = e
+	}
+
+	e.Insert(RouteToKey(route))
+}
+
+func (r *RouteGwIndex) Delete(route *nlamsg.Route) {
+	gw := route.GetGw()
+	if gw == nil {
+		return
+	}
+
+	key := NewNeighKey(route.NId, gw)
+	e, ok := r.Entry[*key]
+	if !ok {
+		return
+	}
+
+	e.Delete(RouteToKey(route))
+
+	if e.Len() == 0 {
+		delete(r.Entry, *key)
+	}
+}
+
+func (r *RouteGwIndex) Select(nid uint8, ip net.IP) (e *RouteGwIndexEntry, ok bool) {
+	e, ok = r.Entry[*NewNeighKey(nid, ip)]
 	return
 }

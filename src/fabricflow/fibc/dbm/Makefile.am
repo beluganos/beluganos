@@ -1,6 +1,7 @@
 
 PYLIST = \
 	fibcdbm.py \
+	fibcmap.py \
 	portmap.py \
 	dps.py \
 	idmap.py

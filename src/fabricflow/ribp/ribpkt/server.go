@@ -20,10 +20,11 @@ package ribpkt
 import (
 	"fabricflow/fibc/net"
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"github.com/vishvananda/netlink"
 	"syscall"
 	"time"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/vishvananda/netlink"
 )
 
 type Server struct {
@@ -33,9 +34,10 @@ type Server struct {
 	links    map[int]netlink.Link // key: ifindex
 	linkCh   chan netlink.LinkUpdate
 	ctrlCh   chan string
+	useVrf   bool
 }
 
-func NewServer(reId string, vrf uint8, interval int) *Server {
+func NewServer(reId string, vrf uint8, interval int, useVrf bool) *Server {
 	return &Server{
 		interval: time.Duration(interval),
 		reId:     reId,
@@ -43,6 +45,7 @@ func NewServer(reId string, vrf uint8, interval int) *Server {
 		links:    make(map[int]netlink.Link),
 		linkCh:   make(chan netlink.LinkUpdate),
 		ctrlCh:   make(chan string),
+		useVrf:   useVrf,
 	}
 }
 
@@ -128,7 +131,13 @@ func (s *Server) SendPackets() {
 
 func (s *Server) SendPacket(attrs *netlink.LinkAttrs) error {
 
-	ifname := fmt.Sprintf("%d/%s", s.vrf, attrs.Name)
+	ifname := func() string {
+		if s.useVrf {
+			return fmt.Sprintf("%d/%s", s.vrf, attrs.Name)
+		}
+
+		return attrs.Name
+	}()
 
 	data, err := fibcnet.NewFFPacket(s.reId, attrs.HardwareAddr, ifname).Bytes()
 	if err != nil {

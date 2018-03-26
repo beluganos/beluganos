@@ -110,18 +110,3 @@ def create_idmap(router):
         re_id=router["re_id"],
         dp_id=dpath["dp_id"],
     )
-
-
-def create_dp(dpath):
-    """
-    Create Entry for DpTable
-    """
-    return dpath
-
-
-def find_dp_by_re_id(re_id):
-    """
-    find datapath object by re_id.
-    """
-    dp_id = idmap().find_by_re_id(re_id)["dp_id"]
-    return dps().find_by_id(dp_id), dps().get_mode(dp_id, "default")

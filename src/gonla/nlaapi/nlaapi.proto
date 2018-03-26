@@ -100,11 +100,26 @@ message ModVpnRequest {
 message ModVpnReply {}
 message ModNetlinkReply {}
 
-message GetLinksRequest {}
-message GetAddrsRequest {}
-message GetNeighsRequest{}
-message GetRoutesRequest{}
-message GetMplssRequest {}
+message GetLinksRequest {
+  uint32 n_id = 1; // 255: all nodes.
+}
+
+message GetAddrsRequest {
+  uint32 n_id = 1; // 255: all nodes.
+}
+
+message GetNeighsRequest{
+  uint32 n_id = 1; // 255: all nodes.
+}
+
+message GetRoutesRequest{
+  uint32 n_id = 1; // 255: all nodes.
+}
+
+message GetMplssRequest {
+  uint32 n_id = 1; // 255: all nodes.
+}
+
 message GetNodesRequest {}
 message GetVpnsRequest  {}
 message GetEncapInfosRequest {}
@@ -123,6 +138,8 @@ message AddrKey {
 message NeighKey {
     uint32 n_id = 1;
     string addr = 2;
+    int32  ifindex = 3;
+    int32  vlan_id = 4;
 }
 
 message RouteKey {
@@ -382,9 +399,12 @@ message Neigh {
     int32  flags         = 5;
     bytes  ip            = 6; // net.IP
     bytes  hardware_addr = 7; // net.HardwareAddr
+    bytes  ll_ip_addr    = 8; // net.IP
+    int32  vlan_id       = 9;
+    int32  vni           = 10;
 
-    uint32 n_id  = 8;
-    uint32 ne_id = 9;
+    uint32 n_id  = 11;
+    uint32 ne_id = 12;
 }
 
 message NexthopInfo {

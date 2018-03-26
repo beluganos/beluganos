@@ -46,15 +46,18 @@ message PortStatus {
 message PortConfig {
     enum Cmd {
         NOP    = 0; // unused.
-        ADD    = 1; // value: port_id
-        MODIFY = 2; // value: 0:DOWN, 1:UP
-        DELETE = 3; // value: -
+        ADD    = 1;
+        MODIFY = 2;
+        DELETE = 3;
     }
 
     Cmd    cmd       = 1;
     string re_id     = 2;
     string ifname    = 3;
-    uint32 value     = 4;
+    uint32 port_id   = 4;
+    string link      = 5;
+    repeated string   slaves = 6;
+    PortStatus.Status status = 7;
 }
 
 message FlowMod {

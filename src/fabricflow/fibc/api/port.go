@@ -52,11 +52,14 @@ func (p *PortConfig) Bytes() ([]byte, error) {
 	return proto.Marshal(p)
 }
 
-func NewPortConfig(cmd, reID, ifname string, value uint32) *PortConfig {
+func NewPortConfig(cmd, reID, ifname string, portId uint32, status PortStatus_Status) *PortConfig {
 	return &PortConfig{
 		Cmd:    PortConfig_Cmd(PortConfig_Cmd_value[cmd]),
 		ReId:   reID,
 		Ifname: ifname,
-		Value:  value,
+		PortId: portId,
+		Status: status,
+		Link:   "",
+		Slaves: []string{},
 	}
 }

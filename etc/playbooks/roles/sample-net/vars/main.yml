@@ -3,7 +3,7 @@
 filesdir: "roles/sample-net/files/{{ lxcname }}"
 
 config_files:
-  - { src: "interfaces.cfg", dst: "/etc/network/interfaces.d/50-beluganos.cfg", owner: "root" }
+  - { src: "netplan.yaml",   dst: "/etc/netplan/20-beluganos.yaml",  owner: "root" }
   - { src: "sysctl.conf",    dst: "/etc/sysctl.d/30-beluganos.conf", owner: "root" }
   - { src: "sysctl.service", dst: "/etc/systemd/system/beluganos.service", owner: "root" }
   - { src: "daemons",        dst: "/etc/frr/daemons",            owner: "frr" }
