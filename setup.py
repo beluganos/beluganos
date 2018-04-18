@@ -24,4 +24,7 @@ setup(
     packages=find_packages("src"),
     package_dir={"":"src"},
     install_requires=["ryu", "netaddr"],
+    entry_points = {
+        "console_scripts": ["beluganos=fabricflow.ffsh.ffsh:_main"],
+    }
 )

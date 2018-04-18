@@ -1,1 +1,1 @@
-SUBDIRS = util fibc ribc ribp ribs ffsh
+SUBDIRS = util fibc ribc ribp ribs

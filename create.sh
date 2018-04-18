@@ -18,6 +18,10 @@
 
 . ./create.ini
 
+PIP=pip
+PATCH=patch
+PYTHON_PIP=
+
 set_proxy() {
     if [ "${PROXY}"x != ""x ]; then
         PIP_PROXY="--proxy=${PROXY}"
@@ -33,14 +37,24 @@ set_proxy() {
     fi
 }
 
+set_sudo() {
+    if [ "${ENABLE_VIRTUALENV}" != "yes" ]; then
+        PYTHON_PIP="python-pip"
+        PIP="sudo $PIP"
+        PATCH="sudo $PATCH"
+    fi
+}
+
 #
 # python virtualenv
 #
 make_virtenv() {
-    if [ -d ${VIRTUALENV} ]; then
-        echo "${VIRTUALENV} already exist."
-    else
-        virtualenv ${VIRTUALENV}
+    if [ "${ENABLE_VIRTUALENV}" = "yes" ]; then
+        if [ -d ${VIRTUALENV} ]; then
+            echo "${VIRTUALENV} already exist."
+        else
+            virtualenv ${VIRTUALENV}
+        fi
     fi
 }
 
@@ -48,7 +62,7 @@ make_virtenv() {
 # install deb packages
 #
 apt_install() {
-    sudo ${HTTP_PROXY} apt -y install ${APT_PKGS} || { echo "apt_install error."; exit 1; }
+    sudo ${HTTP_PROXY} apt -y install ${APT_PKGS} ${PYTHON_PIP} || { echo "apt_install error."; exit 1; }
     sudo apt -y autoremove
 }
 
@@ -56,7 +70,7 @@ apt_install() {
 # install python packages
 #
 pip_install() {
-    pip install -U ${PIP_PROXY} ${PIP_PKGS} || { echo "pip_install error."; exit 1; }
+    $PIP install -U ${PIP_PROXY} ${PIP_PKGS} || { echo "pip_install error."; exit 1; }
 }
 
 #
@@ -127,8 +141,14 @@ gobgp_patch() {
 ryu_patch() {
     cp ./etc/ryu/ryu_ofdpa2.patch /tmp/
 
-    pushd ${VIRTUALENV}/lib/python2.7/site-packages
-    patch -b -p1 < /tmp/ryu_ofdpa2.patch
+    if [ "${ENABLE_VIRTUALENV}" = "yes" ]; then
+        pushd ${VIRTUALENV}/lib/python2.7/site-packages
+    else
+        pushd /usr/local/lib/python2.7/dist-packages
+    fi
+
+    $PATCH -b -p1 < /tmp/ryu_ofdpa2.patch
+
     popd
 }
 
@@ -145,7 +165,7 @@ frr_pkg() {
         cp etc/frr/frr.patch /tmp/
 
         pushd $FRR_DIR
-        git checkout -b 3.0 origin/stable/3.0
+        git checkout -b $FRR_BRANCH origin/stable/$FRR_BRANCH
         patch -p1 < /tmp/frr.patch
         ln -s debianpkg debian
     fi
@@ -272,7 +292,13 @@ init_ovs() {
 
 beluganos_install() {
     ./bootstrap.sh
-    make release
+    if [ "${ENABLE_VIRTUALENV}" = "yes" ]; then
+        make release
+    else
+        make install
+        make fflow-install
+        sudo make fibc-install
+    fi
 }
 
 netconf_install() {
@@ -344,7 +370,7 @@ do_minimal() {
     sudo ${HTTP_PROXY} apt -y install ${APT_MINS}
     make_virtenv
     . ./setenv.sh
-    pip install -U ${PIP_PROXY} ansible
+    $PIP install -U ${PIP_PROXY} ansible
     init_lxd
     init_sys
     init_ovs ${SAMPLE_OVS_BRIDGE} ${BELUG_OFC_ADDR} ${SAMPLE_OVS_DPID}
@@ -362,6 +388,7 @@ do_usage() {
 }
 
 set_proxy
+set_sudo
 case $1 in
     pkg)
         apt_install

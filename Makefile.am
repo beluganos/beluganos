@@ -22,7 +22,19 @@ fibc-install:
 fibc-egg:
 	python ./setup.py bdist_egg --bdist-dir=dist --dist-dir=bin
 
+install-service:
+	sudo install -v -C `pwd`/etc/systemd/fibcd.conf /etc/beluganos/
+	sudo install -v -C `pwd`/etc/systemd/fibcd.service /etc/systemd/system/
+	sudo systemctl daemon-reload
+
+uninstall-service:
+	sudo rm -v -f /etc/beluganos/fibcd.conf
+	sudo rm -v -f /etc/systemd/system/fibcd.service
+	sudo systemctl daemon-reload
+
 install-exec-local: fibc-egg
 
-release: install fibc-install
+fflow-install:
 	install -v -C `pwd`/bin/* ${GOPREFIX}/bin/
+
+release: install fibc-install fflow-install
