@@ -1,5 +1,12 @@
 ---
 
+- name: add ovs-bridge
+  become: yes
+  openvswitch_bridge:
+    bridge: "{{ ovs_bridge }}"
+    state: present
+
+
 - name: add ovs-ports
   become: yes
   openvswitch_port:

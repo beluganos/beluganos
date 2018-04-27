@@ -4,6 +4,8 @@
 *.log
 *.pyc
 *.retry
+*.orig
+*.rej
 cover.out
 aclocal.m4
 config.status

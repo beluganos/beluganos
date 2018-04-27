@@ -19,6 +19,7 @@ package nladbm
 
 import (
 	"gonla/nlamsg"
+	"net"
 	"sync"
 )
 
@@ -49,17 +50,18 @@ func MplsToKey(r *nlamsg.Route) *MplsKey {
 //
 type MplsTable interface {
 	Insert(*nlamsg.Route) *nlamsg.Route
-	Update(*nlamsg.Route) *nlamsg.Route
-	InsOrUpdate(*nlamsg.Route) *nlamsg.Route
 	Select(*MplsKey) *nlamsg.Route
 	Delete(*MplsKey) *nlamsg.Route
 	Walk(f func(*nlamsg.Route) error) error
 	WalkFree(f func(*nlamsg.Route) error) error
+	WalkByGw(uint8, net.IP, func(*nlamsg.Route) error) error
+	WalkByGwFree(uint8, net.IP, func(*nlamsg.Route) error) error
 }
 
 func NewMplsTable() MplsTable {
 	return &mplsTable{
 		Mplss: make(map[MplsKey]*nlamsg.Route),
+		GwIdx: NewMplsGwIndex(),
 	}
 }
 
@@ -69,6 +71,7 @@ func NewMplsTable() MplsTable {
 type mplsTable struct {
 	Mutex sync.RWMutex
 	Mplss map[MplsKey]*nlamsg.Route
+	GwIdx *MplsGwIndex
 }
 
 func (t *mplsTable) find(key *MplsKey) *nlamsg.Route {
@@ -83,30 +86,8 @@ func (t *mplsTable) Insert(r *nlamsg.Route) (old *nlamsg.Route) {
 	key := MplsToKey(r)
 	if old = t.find(key); old == nil {
 		t.Mplss[*key] = r.Copy()
+		t.GwIdx.Insert(r)
 	}
-
-	return
-}
-
-func (t *mplsTable) Update(r *nlamsg.Route) (old *nlamsg.Route) {
-	t.Mutex.Lock()
-	defer t.Mutex.Unlock()
-
-	key := MplsToKey(r)
-	if old = t.find(key); old != nil {
-		t.Mplss[*key] = r.Copy()
-	}
-
-	return
-}
-
-func (t *mplsTable) InsOrUpdate(r *nlamsg.Route) (old *nlamsg.Route) {
-	t.Mutex.Lock()
-	defer t.Mutex.Unlock()
-
-	key := MplsToKey(r)
-	old = t.find(key)
-	t.Mplss[*key] = r.Copy()
 
 	return
 }
@@ -140,7 +121,107 @@ func (t *mplsTable) Delete(key *MplsKey) (old *nlamsg.Route) {
 
 	if old = t.find(key); old != nil {
 		delete(t.Mplss, *key)
+		t.GwIdx.Delete(old)
 	}
 
+	return
+}
+
+func (t *mplsTable) WalkByGw(nid uint8, ip net.IP, f func(*nlamsg.Route) error) error {
+	t.Mutex.Lock()
+	defer t.Mutex.Unlock()
+
+	return t.WalkByGwFree(nid, ip, f)
+}
+
+func (t *mplsTable) WalkByGwFree(nid uint8, ip net.IP, f func(*nlamsg.Route) error) error {
+	if e, ok := t.GwIdx.Select(nid, ip); ok {
+		for _, key := range e.Keys {
+			if route := t.find(key); route != nil {
+				if err := f(route); err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+//
+// GW Index entry
+//
+type MplsGwIndexEntry struct {
+	Keys map[MplsKey]*MplsKey
+}
+
+func NewMplsGwIndexEntry() *MplsGwIndexEntry {
+	return &MplsGwIndexEntry{
+		Keys: make(map[MplsKey]*MplsKey),
+	}
+}
+
+func (m *MplsGwIndexEntry) Insert(key *MplsKey) {
+	m.Keys[*key] = key
+}
+
+func (m *MplsGwIndexEntry) Delete(key *MplsKey) {
+	delete(m.Keys, *key)
+}
+
+func (m *MplsGwIndexEntry) Len() int {
+	return len(m.Keys)
+}
+
+//
+// GW Index Table
+//
+type MplsGwIndex struct {
+	Entry map[NeighKey]*MplsGwIndexEntry
+}
+
+func NewMplsGwIndex() *MplsGwIndex {
+	return &MplsGwIndex{
+		Entry: make(map[NeighKey]*MplsGwIndexEntry),
+	}
+}
+
+func (m *MplsGwIndex) Insert(route *nlamsg.Route) {
+	gw := route.GetGw()
+	if gw == nil {
+		return
+	}
+
+	key := NewNeighKey(route.NId, gw)
+	e, ok := m.Entry[*key]
+	if !ok {
+		e = NewMplsGwIndexEntry()
+		m.Entry[*key] = e
+	}
+
+	e.Insert(MplsToKey(route))
+}
+
+func (m *MplsGwIndex) Delete(route *nlamsg.Route) {
+	gw := route.GetGw()
+	if gw == nil {
+		return
+	}
+
+	key := NewNeighKey(route.NId, gw)
+	e, ok := m.Entry[*key]
+	if !ok {
+		return
+	}
+
+	e.Delete(MplsToKey(route))
+
+	if e.Len() == 0 {
+		delete(m.Entry, *key)
+	}
+}
+
+func (m *MplsGwIndex) Select(nid uint8, ip net.IP) (e *MplsGwIndexEntry, ok bool) {
+	e, ok = m.Entry[*NewNeighKey(nid, ip)]
 	return
 }

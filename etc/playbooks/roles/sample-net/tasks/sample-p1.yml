@@ -21,3 +21,7 @@
         name: eth2
         nictype: bridged
         parent: lxdbr2
+      root:
+        path: /
+        pool: default
+        type: disk

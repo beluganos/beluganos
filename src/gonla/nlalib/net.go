@@ -31,3 +31,10 @@ func NewIPNetFromIP(ip net.IP) *net.IPNet {
 		Mask: net.CIDRMask(bitlen, bitlen),
 	}
 }
+
+func IpToString(ip net.IP) string {
+	if ip == nil || len(ip) == 0 {
+		return ""
+	}
+	return ip.String()
+}

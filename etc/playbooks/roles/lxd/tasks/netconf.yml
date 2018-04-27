@@ -1,0 +1,35 @@
+---
+
+- name: add user
+  user: name={{ item }} system=yes createhome=no
+  with_flattened:
+    - "{{ users }}"
+
+
+- name: make directories
+  file: path={{ item.path }} owner={{ item.owner }} state=directory
+  with_flattened:
+    - "{{ dirs }}"
+
+
+- name: create ovs bridge
+  openvswitch_bridge:
+    bridge: "{{ bridge }}"
+    state: present
+
+
+- name: set ofc address
+  shell: ovs-vsctl set-controller "{{ bridge }}" tcp:127.0.0.1:6633
+
+
+- name: add ports
+  openvswitch_port:
+    bridge: "{{ bridge }}"
+    port: "{{ item }}"
+  with_sequence: start=1 end={{ port_num }} format=veth%d
+
+  
+- name: create fibc-lxd-netconf.yaml
+  template:
+    src: templates/fibcd.conf.j2
+    dest: "{{ confdir }}/fibc.d/fibc-lxd-netconf.yml"

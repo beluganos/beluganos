@@ -15,7 +15,7 @@ dirs:
   - { path: "/etc/beluganos/", owner: "beluganos"  }
 
 config_files:
-  - { src: "interfaces.cfg", dst: "/etc/network/interfaces.d/50-beluganos.cfg", owner: "root" }
+  - { src: "netplan.yaml",   dst: "/etc/netplan/20-beluganos.yaml",  owner: "root"}
   - { src: "sysctl.conf",    dst: "/etc/sysctl.d/30-beluganos.conf", owner: "root" }
   - { src: "ribxd.conf",     dst: "/etc/beluganos/ribxd.conf" , owner: "beluganos"  }
   - { src: "daemons",        dst: "/etc/frr/daemons",            owner: "frr" }

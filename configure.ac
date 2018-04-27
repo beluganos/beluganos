@@ -40,7 +40,6 @@ AC_CONFIG_FILES([Makefile
 		 src/fabricflow/Makefile
 		 src/fabricflow/util/Makefile
 		 src/fabricflow/util/net/Makefile
-		 src/fabricflow/ffsh/Makefile
 		 src/fabricflow/fibc/Makefile
 		 src/fabricflow/fibc/net/Makefile
 		 src/fabricflow/fibc/api/Makefile

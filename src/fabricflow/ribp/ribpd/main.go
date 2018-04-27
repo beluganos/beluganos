@@ -19,10 +19,12 @@ package main
 
 import (
 	"fabricflow/ribp/ribpkt"
+	"fabricflow/util/net"
 	"flag"
+	"os"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/vishvananda/netlink"
-	"os"
 )
 
 func main() {
@@ -47,7 +49,13 @@ func main() {
 
 	done := make(chan struct{})
 
-	s := ribpkt.NewServer(cfg.Node.ReId, cfg.Node.NId, cfg.Ribp.Interval)
+	nid, err := fflibnet.GetNIdFromLink(cfg.Node.NIdIfname)
+	if err != nil {
+		log.Infof("node.nid(conig:%d) is used as nid. reason:'%s'", nid, err)
+		nid = cfg.Node.NId
+	}
+
+	s := ribpkt.NewServer(cfg.Node.ReId, nid, cfg.Ribp.Interval, cfg.Node.DupIfname)
 	if err := s.Start(done); err != nil {
 		log.Errorf("RIBP Server Start error. %s", err)
 		return

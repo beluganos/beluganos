@@ -576,3 +576,12 @@ func NewLinkKeyFromNative(n *nladbm.LinkKey) *LinkKey {
 		Index: int32(n.Index),
 	}
 }
+
+//
+// Links
+//
+func NewGetLinksRequest(nid uint8) *GetLinksRequest {
+	return &GetLinksRequest{
+		NId: uint32(nid),
+	}
+}

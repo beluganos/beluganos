@@ -21,8 +21,12 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
+const DEFAULT_MNG_IF = "eth0"
+const AUTO_NID uint8 = 255
+
 type NodeConfig struct {
-	NId uint8 `toml:"nid"`
+	NId   uint8  `toml:"nid"`
+	MngIF string `toml:"mng-if"`
 }
 
 type NLAConfig struct {
@@ -49,6 +53,10 @@ func (c *Config) IsMaster() bool {
 func ReadConfig(path string, config *Config) error {
 	if _, err := toml.DecodeFile(path, config); err != nil {
 		return err
+	}
+
+	if len(config.Node.MngIF) == 0 {
+		config.Node.MngIF = DEFAULT_MNG_IF
 	}
 
 	return nil

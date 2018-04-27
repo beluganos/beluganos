@@ -4,7 +4,7 @@ The one of advantage using Beluganos is MPLS-VPN. In this case, the sample confi
 
 ## Pre-requirements
 
-- Ubuntu 16.04 server
+- Ubuntu 17.10 server
 	- 10GB+ strage
 	- At least two NICs
 		- One of this should be connected with white-box switch. Please set IP address before following setup procedure.

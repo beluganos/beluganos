@@ -33,6 +33,7 @@ from fabricflow.fibc.app import fibcofc
 from fabricflow.fibc.app import fibcptm
 from fabricflow.fibc.app import fibcpkt
 from fabricflow.fibc.app import fibcwap
+from fabricflow.fibc.app import fibcncm
 
 _LOG = logging.getLogger(__name__)
 
@@ -54,6 +55,7 @@ def get_config():
     conf = cfg.CONF
     conf.register_opts([
         cfg.StrOpt("cfg_path", default="/etc/fabricflow/fibc.d"),
+        cfg.StrOpt("ncm_path", default="/tmp/ncmi.yaml"),
         cfg.StrOpt("api_addr", default="127.0.0.1"),
         cfg.IntOpt("api_port", default=50051),
     ])
@@ -76,6 +78,7 @@ class FIBCApp(app_manager.RyuApp):
         "ptmapp" : fibcptm.FIBCPtmApp,
         "pktapp" : fibcpkt.FIBCPktApp,
         "webapp" : fibcwap.FIBCRestApp,
+        "ncmapp" : fibcncm.FIBCNcmApp,
     }
 
     def __init__(self, *args, **kwargs):
@@ -88,6 +91,9 @@ class FIBCApp(app_manager.RyuApp):
 
         ptm = kwargs["ptmapp"]
         ptm.create(fibccfg.load_dir(config.cfg_path))
+
+        ncm = kwargs["ncmapp"]
+        ncm.init(config.ncm_path)
 
         wsgi = kwargs["wsgi"]
         webapp = kwargs["webapp"]

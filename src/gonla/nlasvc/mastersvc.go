@@ -72,7 +72,9 @@ func (n *NLAMasterService) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlams
 		}
 
 	case syscall.RTM_DELLINK:
-		nladbm.Links().Delete(nladbm.LinkToKey(link))
+		if old := nladbm.Links().Delete(nladbm.LinkToKey(link)); old != nil {
+			link.LnId = old.LnId
+		}
 
 	default:
 		log.Errorf("MasterService: LINK Invalid message. %v", nlmsg)
@@ -93,7 +95,9 @@ func (n *NLAMasterService) NetlinkAddr(nlmsg *nlamsg.NetlinkMessage, addr *nlams
 		}
 
 	case syscall.RTM_DELADDR:
-		nladbm.Addrs().Delete(nladbm.AddrToKey(addr))
+		if old := nladbm.Addrs().Delete(nladbm.AddrToKey(addr)); old != nil {
+			addr.AdId = old.AdId
+		}
 
 	default:
 		log.Errorf("MasterService: ADDR Invalid message. %v", nlmsg)
@@ -120,6 +124,19 @@ func (n *NLAMasterService) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nla
 	case syscall.RTM_DELNEIGH:
 		if old := nladbm.Neighs().Delete(nladbm.NeighToKey(neigh)); old != nil {
 			neigh.NeId = old.NeId
+
+			nlmsg.Header.Type = syscall.RTM_DELROUTE
+			nladbm.Mplss().WalkByGwFree(neigh.NId, neigh.IP, func(route *nlamsg.Route) error {
+				n.NetlinkRoute(nlmsg, route)
+				return nil
+
+			})
+			nladbm.Routes().WalkByGwFree(neigh.NId, neigh.IP, func(route *nlamsg.Route) error {
+				n.NetlinkRoute(nlmsg, route)
+				return nil
+			})
+
+			nlmsg.Header.Type = syscall.RTM_DELNEIGH
 		}
 
 	default:

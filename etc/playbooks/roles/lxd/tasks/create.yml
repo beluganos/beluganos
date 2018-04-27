@@ -1,6 +1,7 @@
 ---
 
-- include: "{{ filesdir }}/lxd_profile.yml"
+- import_tasks: "roles/lxd/files/{{ lxcname }}/lxd_profile.yml"
+
 
 - name: create container
   lxd_container:

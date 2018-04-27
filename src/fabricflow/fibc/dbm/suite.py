@@ -19,10 +19,12 @@
 import unittest
 
 import fibcdbm_test
+import fibcmap_test
 import portmap_test
 
 _PKGS = [
     fibcdbm_test,
+    fibcmap_test,
     portmap_test,
 ]
 

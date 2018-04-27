@@ -24,6 +24,16 @@ import (
 	"net"
 )
 
+const NODE_ID_ALL uint8 = 255
+
+func NewNodeIdFromNative(nid uint8) uint32 {
+	return uint32(nid)
+}
+
+func NodeIdToNative(nid uint32) uint8 {
+	return uint8(nid)
+}
+
 func (n *Node) GetIP() net.IP {
 	return net.IP(n.Ip)
 }

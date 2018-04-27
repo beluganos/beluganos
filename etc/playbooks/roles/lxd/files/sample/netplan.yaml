@@ -1,0 +1,11 @@
+---
+
+network:
+  version: 2
+  ethernets:
+    eth4:
+      mtu: 1500
+  vlans:
+    eth4.10:
+      link: eth4
+      id: 10

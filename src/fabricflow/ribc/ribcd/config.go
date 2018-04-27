@@ -18,24 +18,41 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/BurntSushi/toml"
 )
 
 const LABEL_BASE_DEFAULT = 0xfff00
 
 type NodeConfig struct {
-	NId   uint8  `toml:"nid"`
-	Label uint32 `toml:"label"`
-	ReId  string `toml:"reid"`
+	NId       uint8  `toml:"nid"`
+	Label     uint32 `toml:"label"`
+	ReId      string `toml:"reid"`
+	NIdIfname string `toml:"nid_from_ifaddr"`
+	DupIfname bool   `toml:"allow_duplicate_ifname"`
+}
+
+func (c *NodeConfig) String() string {
+	return fmt.Sprintf("nid:%d label:%d reid:'%s' dup-if:%t nid-if:'%s'",
+		c.NId, c.Label, c.ReId, c.DupIfname, c.NIdIfname)
 }
 
 type NlaConfig struct {
 	Api string `toml:"api"`
 }
 
+func (c *NlaConfig) String() string {
+	return fmt.Sprintf("api:'%s'", c.Api)
+}
+
 type RibcConfig struct {
 	Fibc    string `toml:"fibc"`
 	Disable bool   `toml:"disable"`
+}
+
+func (c *RibcConfig) String() string {
+	return fmt.Sprintf("fibc:'%s' disable:%t", c.Fibc, c.Disable)
 }
 
 type Config struct {
@@ -44,8 +61,13 @@ type Config struct {
 	Ribc RibcConfig `toml:"ribc"`
 }
 
+func (c *Config) String() string {
+	return fmt.Sprintf("node:{%s} nla:{%s} ribc:{%s}", &c.Node, &c.NLA, &c.Ribc)
+}
+
 func LoadConfig(path string) (*Config, error) {
 	config := &Config{}
+	config.Node.DupIfname = true // default value
 	_, err := toml.DecodeFile(path, config)
 	if err != nil {
 		return nil, err

@@ -28,6 +28,10 @@ func (n *Neigh) GetIP() net.IP {
 	return net.IP(n.Ip)
 }
 
+func (n *Neigh) GetLLIPAddr() net.IP {
+	return net.IP(n.LlIpAddr)
+}
+
 func (n *Neigh) NetHardwareAddr() net.HardwareAddr {
 	return net.HardwareAddr(n.HardwareAddr)
 }
@@ -41,6 +45,9 @@ func (n *Neigh) ToNetlink() *netlink.Neigh {
 		Flags:        int(n.Flags),
 		IP:           n.GetIP(),
 		HardwareAddr: n.NetHardwareAddr(),
+		LLIPAddr:     n.GetLLIPAddr(),
+		Vlan:         int(n.VlanId),
+		VNI:          int(n.Vni),
 	}
 }
 
@@ -61,6 +68,9 @@ func NewNeighFromNative(n *nlamsg.Neigh) *Neigh {
 		Flags:        int32(n.Flags),
 		Ip:           n.IP,
 		HardwareAddr: n.HardwareAddr,
+		LlIpAddr:     n.LLIPAddr,
+		VlanId:       int32(n.Vlan),
+		Vni:          int32(n.VNI),
 		NId:          uint32(n.NId),
 		NeId:         uint32(n.NeId),
 	}
@@ -72,14 +82,27 @@ func NewNeighFromNative(n *nlamsg.Neigh) *Neigh {
 
 func (k *NeighKey) ToNative() *nladbm.NeighKey {
 	return &nladbm.NeighKey{
-		NId:  uint8(k.NId),
-		Addr: k.Addr,
+		NId:     uint8(k.NId),
+		Addr:    k.Addr,
+		Ifindex: int(k.Ifindex),
+		Vid:     int(k.VlanId),
 	}
 }
 
 func NewNeighKeyFromNative(n *nladbm.NeighKey) *NeighKey {
 	return &NeighKey{
-		NId:  uint32(n.NId),
-		Addr: n.Addr,
+		NId:     uint32(n.NId),
+		Addr:    n.Addr,
+		Ifindex: int32(n.Ifindex),
+		VlanId:  int32(n.Vid),
+	}
+}
+
+//
+// Neighs
+//
+func NewGetNeighsRequest(nid uint8) *GetNeighsRequest {
+	return &GetNeighsRequest{
+		NId: uint32(nid),
 	}
 }

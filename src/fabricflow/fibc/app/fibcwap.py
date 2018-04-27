@@ -169,8 +169,7 @@ class FIBCRestController(ControllerBase):
         """
         dic = json.loads(req.body)
         if table == "dp":
-            msg = fibcdbm.create_dp(dic)
-            evt = fibcevt.EventFIBCPortMap(msg, cmd, "dp")
+            evt = fibcevt.EventFIBCPortMap(dic, cmd, "dp")
             self.app.send_event_to_observers(evt)
 
         elif table == "re":
@@ -212,7 +211,7 @@ class FIBCRestController(ControllerBase):
         cmd = msg["cmd"]
         re_id = msg["re_id"]
         for arg in msg["args"]:
-            cfg = pb.PortConfig(cmd=cmd, re_id=re_id, ifname=arg["ifname"], value=arg["port"])
+            cfg = pb.PortConfig(cmd=cmd, re_id=re_id, ifname=arg["ifname"], port_id=arg["port"])
             evt = fibcevt.EventFIBCPortConfig(cfg)
             self.app.send_event_to_observers(evt)
 

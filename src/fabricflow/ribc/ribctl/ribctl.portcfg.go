@@ -19,21 +19,30 @@ package ribctl
 
 import (
 	"fabricflow/fibc/api"
-	log "github.com/sirupsen/logrus"
 	"gonla/nlamsg"
+
+	log "github.com/sirupsen/logrus"
 )
 
-func NewPortConfig(cmd string, reId string, link *nlamsg.Link) *fibcapi.PortConfig {
-	return fibcapi.NewPortConfig(cmd, reId, NewLinkLinkName(link), NewPortId(link))
+func (r *RIBController) NewPortConfig(cmd string, reId string, link *nlamsg.Link) *fibcapi.PortConfig {
+	pc := fibcapi.NewPortConfig(cmd, reId, NewLinkName(link, r.useNId), NewPortId(link), NewPortStatus(link))
+	pc.Link = func() string {
+		if parent, err := r.nla.GetLink(link.NId, link.Attrs().ParentIndex); err == nil {
+			return NewLinkName(parent, r.useNId)
+		}
+		return ""
+	}()
+
+	return pc
 }
 
 func (r *RIBController) SendPortConfig(cmd string, link *nlamsg.Link) error {
-	p := NewPortConfig(cmd, r.reId, link)
+	p := r.NewPortConfig(cmd, r.reId, link)
 	return r.fib.Send(p, 0)
 }
 
 func (r *RIBController) SendPortConfigs() {
-	err := r.nla.GetLinks(func(link *nlamsg.Link) error {
+	err := r.nla.GetLinks(nlamsg.NODE_ID_ALL, func(link *nlamsg.Link) error {
 		return r.SendPortConfig("ADD", link)
 	})
 

@@ -1,0 +1,14 @@
+network:
+  version: 2
+  ethernets:
+    eth1:
+      mtu: 1500
+    eth2:
+      mtu: 1500
+  vlans:
+    eth1.100:
+      link: eth1
+      id: 100
+    eth2.100:
+      link: eth2
+      id: 100

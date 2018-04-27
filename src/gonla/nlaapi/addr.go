@@ -95,3 +95,12 @@ func NewAddrKeyFromNative(n *nladbm.AddrKey) *AddrKey {
 		Addr: n.Addr,
 	}
 }
+
+//
+// Addrs
+//
+func NewGetAddrsRequest(nid uint8) *GetAddrsRequest {
+	return &GetAddrsRequest{
+		NId: uint32(nid),
+	}
+}

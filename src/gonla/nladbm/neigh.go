@@ -29,19 +29,44 @@ import (
 //
 type NeighKey struct {
 	// do not use NeId
-	NId  uint8
-	Addr string // ip (net.IP.String())
+	NId     uint8
+	Addr    string // ip (net.IP.String()) or neigh.HardwareAddr(FDB only)
+	Ifindex int    // neigh.LinkIndex (FDB only)
+	Vid     int    // neigh.Vlan (FDB only)
 }
 
 func NewNeighKey(nid uint8, ip net.IP) *NeighKey {
 	return &NeighKey{
-		NId:  nid,
-		Addr: ip.String(),
+		NId:     nid,
+		Addr:    nlalib.IpToString(ip),
+		Ifindex: 0,
+		Vid:     0,
+	}
+}
+
+func NewNeighFdbKey(nid uint8, lladdr string, ifindex int, vid int) *NeighKey {
+	return &NeighKey{
+		NId:     nid,
+		Addr:    lladdr,
+		Ifindex: ifindex,
+		Vid:     vid,
 	}
 }
 
 func NeighToKey(n *nlamsg.Neigh) *NeighKey {
+	if n.IP == nil || len(n.IP) == 0 {
+		return NeighToFdbKey(n)
+	}
 	return NewNeighKey(n.NId, n.IP)
+}
+
+func NeighToFdbKey(n *nlamsg.Neigh) *NeighKey {
+	return NewNeighFdbKey(
+		n.NId,
+		n.HardwareAddr.String(),
+		n.LinkIndex,
+		n.Vlan,
+	)
 }
 
 //

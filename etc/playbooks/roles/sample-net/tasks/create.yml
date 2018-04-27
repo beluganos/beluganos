@@ -1,6 +1,6 @@
 ---
 
-- include: "{{ lxcname }}.yml"
+- import_tasks: "roles/sample-net/files/{{ lxcname }}/lxd_profile.yml"
 
 - name: create container
   lxd_container:

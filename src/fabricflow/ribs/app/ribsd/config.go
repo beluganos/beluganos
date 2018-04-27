@@ -26,8 +26,9 @@ const GOBGPD_GRPC_PORT = 50051
 const VIRT_NEXTHOPS = "127.0.0.1/32"
 
 type NodeConfig struct {
-	NId   uint8  `toml:"nid"`
-	Label uint32 `toml:"label"`
+	NId       uint8  `toml:"nid"`
+	Label     uint32 `toml:"label"`
+	NIdIfname string `toml:"nid_from_ifaddr"`
 }
 
 type NLAConfig struct {

@@ -1,0 +1,9 @@
+network:
+  version: 2
+  ethernets:
+    eth3:
+      mtu: 1500
+  vlans:
+    eth3.10:
+      link: eth3
+      id: 10

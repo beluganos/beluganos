@@ -1,4 +1,4 @@
-// coding: utf-8 -*-
+// -*- coding: utf-8 -*-
 
 // Copyright (C) 2017 Nippon Telegraph and Telephone Corporation.
 //
@@ -22,6 +22,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"gonla/nlactl"
 	"gonla/nladbm"
+	"gonla/nlalib"
 	"gonla/nlasvc"
 	"os"
 )
@@ -71,20 +72,38 @@ func services(c *Config) []nlactl.NLAService {
 	}
 }
 
+func getNId(ifname string, nid uint8) uint8 {
+	if nid != AUTO_NID {
+		log.Infof("NId: %d", nid)
+		return nid
+	}
+
+	if nid, err := nlalib.NewNodeIdFromIF(ifname); err != nil {
+		log.Errorf("NId error. %s", err)
+		os.Exit(1)
+		return nid
+
+	} else {
+		log.Infof("NId: %d (AUTO %s)", nid, ifname)
+		return nid
+	}
+}
+
 func main() {
 
 	var cfg Config
 	if err := readConfig(&cfg); err != nil {
 		log.Errorf("readConfig error. %s", err)
-		return
+		os.Exit(1)
 	}
 
 	initlog(&cfg)
 
+	nid := getNId(cfg.Node.MngIF, cfg.Node.NId)
 	done := make(chan struct{})
 	svcs := services(&cfg)
-	m := nlactl.NewNLAManager(cfg.Node.NId, done, svcs...)
-	s := nlactl.NewNLAServer(cfg.Node.NId, m.Chans.NlMsg, done)
+	m := nlactl.NewNLAManager(nid, done, svcs...)
+	s := nlactl.NewNLAServer(nid, m.Chans.NlMsg, done)
 	nladbm.Create()
 	m.Start()
 	s.Start()

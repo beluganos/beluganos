@@ -38,3 +38,12 @@ func NewMplsKeyFromNative(n *nladbm.MplsKey) *MplsKey {
 		LLabel: n.LLabel,
 	}
 }
+
+//
+// Mplss
+//
+func NewGetMplssRequest(nid uint8) *GetMplssRequest {
+	return &GetMplssRequest{
+		NId: uint32(nid),
+	}
+}

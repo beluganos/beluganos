@@ -1,0 +1,32 @@
+---
+
+- name: create profile
+  lxd_profile:
+    name: "{{ lxcname }}"
+    state: present
+    config: {"security.privileged": "true"}
+    devices:
+      eth0: # Management LAN
+        type: nic
+        name: eth0
+        nictype: bridged
+        parent: lxdbr0
+      eth1:
+        type: nic
+        name: eth1
+        nictype: bridged
+        parent: lxdbr7
+      eth2:
+        type: nic
+        name: eth2
+        nictype: bridged
+        parent: lxdbr8
+      eth3:
+        type: nic
+        name: eth3
+        nictype: bridged
+        parent: lxdbr9
+      root:
+        path: /
+        pool: default
+        type: disk

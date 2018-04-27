@@ -11,8 +11,12 @@
         nictype: bridged
         parent: lxdbr0
         type: nic
-      eth1:
+      eth2:
         type: nic
-        name: eth1
+        name: eth2
         host_name: "{{ lxcname }}.1"
         nictype: p2p
+      root:
+        path: /
+        pool: default
+        type: disk

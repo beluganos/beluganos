@@ -19,16 +19,22 @@ package main
 
 import (
 	"fabricflow/ribs/ribsyn"
+	"fabricflow/util/net"
 	"flag"
-	log "github.com/sirupsen/logrus"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 
 	var configPath string
+	var rt string
+	var rd string
 	var verbose bool
 	flag.StringVar(&configPath, "config", "/etc/fabricflow/ribsd.conf", "config file path.")
+	flag.StringVar(&rt, "RT", "", "route target")
+	flag.StringVar(&rd, "RD", "", "route distinguisher")
 	flag.BoolVar(&verbose, "verbose", false, "show detail log.")
 	flag.Parse()
 
@@ -36,6 +42,19 @@ func main() {
 	if err := ReadConfig(configPath, &cfg); err != nil {
 		log.Errorf("MAIN: ReadConfig error. %s", err)
 		os.Exit(1)
+	}
+
+	if len(rt) != 0 {
+		cfg.Ribs.Vrf.Rt = rt
+	}
+
+	if len(rd) != 0 {
+		cfg.Ribs.Vrf.Rd = rd
+	}
+
+	if nid, err := fflibnet.GetNIdFromLink(cfg.Node.NIdIfname); err == nil {
+		log.Infof("node.ifname(%s) is used as nid(%d).", cfg.Node.NIdIfname, nid)
+		cfg.Node.NId = nid
 	}
 
 	log.Infof("MAIN: config=:%s", cfg)

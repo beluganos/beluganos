@@ -97,7 +97,8 @@ func TestPortConfig_Bytes(t *testing.T) {
 		Cmd:    PortConfig_ADD,
 		ReId:   "1.1.1.1",
 		Ifname: "ethX",
-		Value:  100,
+		PortId: 100,
+		Status: PortStatus_UP,
 	}
 
 	b, err := p.Bytes()
@@ -119,7 +120,7 @@ func TestPortConfig_New(t *testing.T) {
 	}
 
 	for key, val := range m {
-		p := NewPortConfig(key, "1.1.1.1", "ethX", 100)
+		p := NewPortConfig(key, "1.1.1.1", "ethX", 100, PortStatus_UP)
 		if v := p.Cmd; v != val {
 			t.Errorf("NewPortConfig Cmd unmatch. %d", v)
 		}
@@ -129,8 +130,11 @@ func TestPortConfig_New(t *testing.T) {
 		if v := p.Ifname; v != "ethX" {
 			t.Errorf("NewPortConfig Ifname unmatch. %s", v)
 		}
-		if v := p.Value; v != 100 {
-			t.Errorf("NewPortConfig Value unmatch. %d", v)
+		if v := p.PortId; v != 100 {
+			t.Errorf("NewPortConfig PortId unmatch. %d", v)
+		}
+		if v := p.Status; v != PortStatus_UP {
+			t.Errorf("NewPortConfig Status unmatch. %d", v)
 		}
 	}
 }

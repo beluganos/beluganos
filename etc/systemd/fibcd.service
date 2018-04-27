@@ -7,7 +7,10 @@ ConditionPathExists=/etc/beluganos/fibcd.conf
 Type=simple
 EnvironmentFile=/etc/beluganos/fibcd.conf
 ExecStartPre=/bin/sleep ${START_DELAY_SEC}
-ExecStart=<path/to/virtualenv>/bin/ryu-manager ryu.app.ofctl_rest ${FIBC_APP} --config-file ${FIBC_CONF} --log-config-file ${LOG_CONF}
+# if fibc is installed to virtualenv.
+# ExecStart=<path/to/virtualenv>/bin/ryu-manager ryu.app.ofctl_rest ${FIBC_APP} --config-file ${FIBC_CONF} --log-config-file ${LOG_CONF}
+# if fibc is installed to system.
+ExecStart=/usr/local/bin/ryu-manager ryu.app.ofctl_rest ${FIBC_APP} --config-file ${FIBC_CONF} --log-config-file ${LOG_CONF}
 Restart=on-abort
 User=beluganos
 

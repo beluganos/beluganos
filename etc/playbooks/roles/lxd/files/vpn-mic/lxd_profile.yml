@@ -21,3 +21,7 @@
         name: eth2
         host_name: "{{ lxcname }}.2"
         nictype: p2p
+      root:
+        path: /
+        pool: default
+        type: disk
