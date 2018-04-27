@@ -30,9 +30,9 @@ In order to try Beluganos quickly, **some example cases are prepared**. This exa
 - Step3: Configure
 	- Change router settings like IP address, VLAN, and routing protocols as you like
 	- To configure by ansible, please see [doc/configure-ansible.md](doc/configure-ansible.md).
-	- To configure by NETCONF, please see [doc/configure-netconf.md](doc/configure-netconf.md)
+	- To configure by NETCONF, please see [doc/configure-netconf.md](doc/configure-netconf.md).
 - Step4: Run
-	- To launch Beluganos, 
+	- To launch Beluganos, please see [doc/operation-guide.md](doc/operation-guide.md).
 
 
 ## Support
