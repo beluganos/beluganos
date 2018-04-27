@@ -1,14 +1,14 @@
 # Beluganos Function Matrix
 
-This document shows currently supported feature of Beluganos.
+Currently supported feature of Beluganos is described in this page.
 
 ## Basic
 
-| Function | OF-DPA | OFSwitch |
-|:---------|:-------|:---------|
-|ARP|Yes|Yes|
-|IPv4 Routing|Yes|Yes|
-|IPv6 Routing|Planned|Planned|
+|Function           |OF-DPA   |OFSwitch  |
+|:------------------|:--------|:---------|
+|ARP                |Yes      |Yes       |
+|IPv4 Routing       |Yes      |Yes       |
+|IPv6 Routing       |Planned  |Planned   |
 |IP/MPLS|Yes|Yes|
 |IP/MPLS - MPLS SWAP|Yes|Yes|
 |IP/MPLS - MPLS POP|Yes|Yes|
@@ -61,6 +61,7 @@ This document shows currently supported feature of Beluganos.
 ## L3VPN
 | Function | OF-DPA | OFSwitch |
 |:---------|:-------|:---------|
+|Virtual router (VRF-Lite) |Yes|Yes \*1|
 |VRF|Yes|Yes \*1|
 |Intra-AS MPLS-VPN PE for IPv4|Yes|Yes|
 |Intra-AS MPLS-VPN 6PE/6VPE|Planned|Planned|
@@ -79,9 +80,9 @@ This document shows currently supported feature of Beluganos.
 |:---------|:-------|:---------|
 |SSH|Yes|Yes|
 |CLI|Yes \*1|Yes \*1|
-|NETCONF|Planned|Planned|
-|YANG|Planned|Planned|
-|OpenConfig|Planned|Planned|
+|NETCONF|Yes|Yes|
+|YANG|Yes|Yes|
+|OpenConfig|Partially yes|Partially yes|
 |SNMP MIB|Planned|Planned|
 |SNMP trap|Planned|Planned|
 |Telemetry|Planned|Planned|

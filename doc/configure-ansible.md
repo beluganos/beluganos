@@ -3,7 +3,6 @@ You can configure router options like IP addresses or settings of routing protoc
 
 ## Pre-requirements
 - Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
-- If the strings of `(mypython)` is not appeared in your terminal, you should exec `. ./setenv.sh` to set your environments.
 
 ## Config files at a glance
 

@@ -1,82 +1,47 @@
 # Operation Guide
 
-Beluganos consists of **main module** and **Linux container** which provide routing functions. You can operate both components by `bin/beluganos.py`. In order to start Beluganos properly, you should start main module and Linux container.
+Beluganos consists of **main module** and **Linux container** which provide routing functions. You can operate both components by `bin/beluganos`. In order to start Beluganos properly, you should start both main module and Linux container.
 
-## Environments
-Before starting setup and operation, please execute `setenv.sh` script to set your environments properly. After executing this script, the strings of "`(mypython)`" will be appeard in your console. Because this settings will be cleared after logout, you should execute this script every login.
+In this page, operation about NETCONF module is not described. If you'll use NETCONF to configure Beluganos, please refer [operation-guide-netconf.md](operation-guide-netconf.md) instead of following description.
 
- ~~~~
- $ . ./setenv.sh
- ~~~~
+## Pre-requirements
+- Please refer [install-guide.md](install-guide.md) before proceeding.
+- Please refer [setup-guide.md](setup-guide.md) before proceeding.
 
 ## Run main module
 
-You have two options to start/stop Beluganos.
+You have two options to start/stop Beluganos. 
 
 ### Option A: Daemon mode
 
-To use daemon mode, some preparation is required.
-
-#### Prepare-1. Edit `.service` file
-```
-$ cd etc/systemd
-$ vi fibcd.service
-```
-
-In this file, you have to change about "virtualenv" settings. The "virtualenv" path (`ExecStart`) should be modified as your Linux [username].
-
-```
-ExecStart=/home/[username]/mypython/bin/ryu-manager ryu.app.ofctl_rest ${FIBC_APP} --config-file ${FIBC_CONF} --log-config-file ${LOG_CONF}
-```
-
-e.g.) If your user name when you operated `create.sh` is "user1",
-
-```
-ExecStart=/home/user1/mypython/bin/ryu-manager ryu.app.ofctl_rest ${FIBC_APP} --config-file ${FIBC_CONF} --log-config-file ${LOG_CONF}
-```
-
-#### Prepare-2. Copy files
-
-```
-$ cd etc/systemd
-$ sudo cp fibcd.conf /etc/beluganos/
-$ sudo cp fibcd.service /etc/systemd/system/
-```
-
-#### Prepare-3. Reload daemon files
-
-```
-$ sudo systemctl daemon-reload
-$ systemctl status fibcd
-
-● fibcd.service - fib controller service
-   Loaded: loaded (/etc/systemd/system/fibcd.service; disabled; vendor preset: enabled)
-   Active: inactive (dead)
-```
-
-#### Operation
-
 To start,
 
-```
-$ beluganos.py start
-```
+~~~~
+$ beluganos start
+$ sudo systemctl start netopeer2-server
+$ sudo systemctl start ncm.target
+~~~~
 
 To stop,
 
-```
-$ beluganos.py stop
-```
+~~~~
+$ beluganos stop
+$ sudo systemctl stop ncmd
+$ sudo systemctl stop ncmi
+$ sudo systemctl stop ncms
+~~~~
 
 ### Option B: CLI mode
 
-In this method, Beluganos can be worked in your terminal. `Ctrl-c` to stop.
-
-```
-$ beluganos.py run
-```
-
 This mode should be used for only debug. In production, using daemon mode is recommended.
+
+In this method, Beluganos can be worked in your terminal. 
+
+~~~~
+$ beluganos run
+~~~~
+
+`Ctrl-c` to stop. 
 
 ## Run Linux containers
 
@@ -85,15 +50,15 @@ After starting main module of Beluganos, you should start Linux containers. In g
 
 To add:
 
-```
-$ beluganos.py add <container-name>
-```
+~~~~
+$ beluganos add <container-name>
+~~~~
 
 To delete:
 
-```
-$ beluganos.py del <container-name>
-```
+~~~~
+$ beluganos del <container-name>
+~~~~
 
 You forgot container name? In the procedure of `doc/setup-guide.md`, you should have already specified this name. Please check inventory file (`etc/playbooks/hosts`) or task foloder (`etc/playbooks/roles/lxd/tasks/<container-name>.yml`) to remenber your container name.
 
@@ -101,35 +66,35 @@ You forgot container name? In the procedure of `doc/setup-guide.md`, you should 
 
 ### Confirm main module's status
 
-```
-$ beluganos.py status
-```
+~~~~
+$ beluganos status
+~~~~
 
 ### Confirm linux container's status
 
-```
-$ beluganos.py status <container-name>
-```
+~~~~
+$ beluganos status <container-name>
+~~~~
 
 ### Confirm routing status
 
 In Linux container, you can confirm about routing status. Thanks to Beluganos's architecture, the route table of containers will be synchronized to White-box switches (For more detail, please check `doc/architecture.md`). At first, you may login to Linux container by following command:
 
-```
-$ beluganos.py con <container-name>
-```
+~~~~
+$ beluganos con <container-name>
+~~~~
 
 After that, you can execute any commands! For example, in case of container `sample`, you can check routing status by following commands:
 
-```
-$ beluganos.py con sample   # Login to containers
+~~~~
+$ beluganos con sample   # Login to containers
 # vtysh                     # Open FRR console
-```
+~~~~
 
 If you not familiar with FRRouting or quagga, after login `vtysh`, please hit `?` to check command reference. For example, if you want to check RIB,
 
-```
-$ beluganos.py con sample
+~~~~
+$ beluganos con sample
 # vtysh
 
 Hello, this is FRRouting (version 3.0-rc2).
@@ -174,13 +139,15 @@ sample# show ip ?
   rpf                   Display RPF information for multicast source
   ssmpingd              ssmpingd operation
 sample#
-```
+~~~~
 
 ## Remarks
 
-### beluganos.py
-```
-$ beluganos.py -h
+### Help
+`bin/beluganos` is created automatically by `create.sh`.
+
+~~~~
+$ beluganos -h
 usage: beluganos.py [-h] [-p [PROFILE]] [-b [BRIDGE]] [-e EXCLUDE [EXCLUDE ...]]
                [-v]
                {run,start,stop,add,del,status,con,init,clear} [container]
@@ -195,8 +162,7 @@ optional arguments:
   -b [BRIDGE], --bridge [BRIDGE]
   -e EXCLUDE [EXCLUDE ...], --exclude EXCLUDE [EXCLUDE ...]
   -v, --verbose
-```
-`bin/beluganos.py` is created automatically by `create.sh`.
+~~~~
 
 ### Port
 These port will be utilized by Beluganos.

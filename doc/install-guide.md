@@ -1,8 +1,9 @@
 # Install guide
-<img src="img/environments.png" width="320px">
+<!--- <img src="img/environments.png" width="320px"> --->
 
 ## 1. Pre-requirements
 
+### Resources
 You can also build Beluganos in the white-box switches, but installing another Ubuntu server is recommended at first.
 
 - Ubuntu server
@@ -37,6 +38,8 @@ LXD has been successfully configured.
 ~~~~
 
 ## 2. Build
+You can use building scripts (`create.sh`) for building Beluganos. Before starting scripts, setting file (`create.ini`) should be edited.
+
 ~~~~
 $ cd ~
 $ git clone https://github.com/beluganos/beluganos/ && cd beluganos/
@@ -48,7 +51,7 @@ $ vi create.ini
 $ ./create.sh
 ~~~~
 
-### For proxy environment
+### Note: For proxy environment
 If you need to use proxy server to connect Internet, please add proxy settings to `create.ini` **before** execute `./create.sh`.
 
 ~~~~
@@ -56,9 +59,10 @@ $ vi create.ini
   PROXY=http://<server-ip>:<server-port>
 ~~~~
 
-## 3. Set environments
-Before starting setup and operation, please execute `setenv.sh` script to set your environments properly. After executing this script, the strings of "`(mypython)`" will be appeard in your console. Because this settings will be cleared after logout, you should execute this script every login.
+## 3. Systemctl
 
- ~~~~
- $ . ./setenv.sh
- ~~~~
+Generally, register Beluganos as a linux service is recommended by following commands:
+
+~~~~
+$ make install-service
+~~~~

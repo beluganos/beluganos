@@ -3,7 +3,6 @@ This document describes about Beluganos's setup for white-box switches.
 
 ## Pre-requirements
 - Please refer [install-guide.md](install-guide.md) before proceeding.
-- If the strings of `(mypython)` is not appeared in your terminal, you should exec `. ./setenv.sh` to set your environments.
 
 ## Config files at a glance
 
@@ -52,8 +51,6 @@ beluganos/
 ~~~~
 
 ## Settings for white-box switches
-
-### 1. switch name
 
 **The sample playbook is `etc/playbooks/dp-sample.yml`**. You may copy sample file and rename this playbook. Any switch name (dpname) are acceptable, and this name is only used for internal configurations. If your switch name is *switchA*, please edit as follows:
 
@@ -131,6 +128,8 @@ In case `<switch-name>` is *switchA*:
 ~~~~
 $ ansible-playbook -i etc/playbooks/hosts -K etc/playbooks/dp-switchA.yml
 ~~~~
+
+## 
 
 ## Next steps
 After reflecting your changes, please refer "configure-guide". You can choose two methods to configure.
