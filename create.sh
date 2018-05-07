@@ -20,7 +20,6 @@
 
 PIP=pip
 PATCH=patch
-PYTHON_PIP=
 
 set_proxy() {
     if [ "${PROXY}"x != ""x ]; then
@@ -30,6 +29,8 @@ set_proxy() {
         export http_proxy=${PROXY}
         export https_proxy=${PROXY}
         export HTTPS_PROXY=${PROXY}
+        lxc config set core.proxy_http ${PROXY}
+        lxc config set core.proxy_https ${PROXY}
 
         echo "--- Proxy settings ---"
         echo "APT_PROXY=${APT_PROXY}"
@@ -39,7 +40,6 @@ set_proxy() {
 
 set_sudo() {
     if [ "${ENABLE_VIRTUALENV}" != "yes" ]; then
-        PYTHON_PIP="python-pip"
         PIP="sudo $PIP"
         PATCH="sudo $PATCH"
     fi
@@ -62,7 +62,7 @@ make_virtenv() {
 # install deb packages
 #
 apt_install() {
-    sudo ${HTTP_PROXY} apt -y install ${APT_PKGS} ${PYTHON_PIP} || { echo "apt_install error."; exit 1; }
+    sudo ${HTTP_PROXY} apt -y install ${APT_PKGS} || { echo "apt_install error."; exit 1; }
     sudo apt -y autoremove
 }
 
@@ -70,7 +70,12 @@ apt_install() {
 # install python packages
 #
 pip_install() {
-    $PIP install -U ${PIP_PROXY} ${PIP_PKGS} || { echo "pip_install error."; exit 1; }
+    if [ "${ENABLE_VIRTUALENV}" != "yes" ]; then
+        wget -nc P /tmp ${GET_PIP_URL}/${GET_PIP_FILE} || { echo "pip_install/wget error."; exit 1; }
+        python ${GET_PIP_FILE} --proxy="${PROXY}" || { echo "pip_install/python error."; exit 1; }
+    fi
+
+    $PIP install -U ${PIP_PROXY} ${PIP_PKGS} || { echo "pip_install/pip error."; exit 1; }
 }
 
 #
