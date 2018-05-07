@@ -24,14 +24,14 @@ PYTHON_PIP=
 
 set_proxy() {
     if [ "${PROXY}"x != ""x ]; then
-        PIP_PROXY="--proxy=${PROXY}"
+        PIP_PROXY=""
         APT_PROXY="--env http_proxy=${PROXY}"
         HTTP_PROXY="http_proxy=${PROXY} https_proxy=${PROXY}"
         export http_proxy=${PROXY}
         export https_proxy=${PROXY}
+        export HTTPS_PROXY=${PROXY}
 
         echo "--- Proxy settings ---"
-        echo "PIP_PROXY=${PIP_PROXY}"
         echo "APT_PROXY=${APT_PROXY}"
         echo "HTTP_PROXY=${HTTP_PROXY}"
     fi
