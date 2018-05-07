@@ -25,15 +25,12 @@ In order to try Beluganos quickly, **some example cases are prepared**. This exa
 	- Install Beluganos and related OSS automatically.
 	- See [doc/install-guide.md](doc/install-guide.md).
 - Step2: Setup
-	- Register your white-box switches to Beluganos
+	- Register your white-box switches to Beluganos.
 	- See [doc/setup-guide.md](doc/setup-guide.md).
 - Step3: Configure
-	- Change router settings like IP address, VLAN, and routing protocols as you like
+	- Change router settings like IP address, VLAN, and routing protocols as you like.
 	- To configure by ansible, please see [doc/configure-ansible.md](doc/configure-ansible.md).
 	- To configure by NETCONF, please see [doc/configure-netconf.md](doc/configure-netconf.md).
-- Step4: Run
-	- To launch Beluganos, please see [doc/operation-guide.md](doc/operation-guide.md).
-
 
 ## Support
 Github issue page and e-mail are available. If you prefer to use e-mail, please contact `msf-contact [at] lab.ntt.co.jp`.

@@ -15,8 +15,8 @@ beluganos/
             hosts                           # Inventry file
             lxd-sample.yml                  # Sample
             dp_sample.yml                   # Sample
-            lxd-<group_name>.yml            # Playbook
-            dp-<datapath_name>.yml          # Playbook
+            lxd-<group-name>.yml            # Playbook
+            dp-<datapath-name>.yml          # Playbook
             roles/
                 dpath/
                     vars/                   # DO NOT EDIT.
@@ -25,7 +25,7 @@ beluganos/
                         common/             # DO NOT EDIT.
                         sample_sw/
                             fibc.yml        # Sample
-                        <switch_name>/
+                        <switch-name>/
                             fibc.yml
                 lxd/
                     vars/                   # DO NOT EDIT.
@@ -38,7 +38,7 @@ beluganos/
                     files/
                         common/             # DO NOT EDIT.
                         sample/             # Sample
-                        <container name>/
+                        <container-name>/
                             lxd_profile.yml
                             netplan.yaml
                             sysctl.conf
@@ -132,7 +132,7 @@ $ ansible-playbook -i etc/playbooks/hosts -K etc/playbooks/dp-switchA.yml
 ## 
 
 ## Next steps
-After reflecting your changes, please refer "configure-guide". You can choose two methods to configure.
+After reflecting your changes, please refer configure guide. You can choose two methods.
 
 - ansible: [configure-ansible.md](configure-ansible.md)
 - NETCONF over SSH: [configure-netconf.md](configure-netconf.md)

@@ -3,9 +3,10 @@ You can configure router options like IP addresses or settings of routing protoc
 
 ## Pre-requirements
 - Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
+- In ansible, only startup config can be edited. If you already start Beluganos by `beluganos run` or `beluganos start` command, please stop before starting ansible playbooks.
+- If you will configure L3VPN routers, please refer not only this documents but also [configure-ansible-l3vpn.md](configure-ansible-l3vpn.md).
 
 ## Config files at a glance
-
 The files under `etc/playbooks/` are configuration files. In this page, `lxd-*.yml` and the files under `roles/lxd/` are described.
 
 ~~~~
@@ -15,8 +16,8 @@ beluganos/
             hosts                           # Inventry file
             lxd-sample.yml                  # Sample
             dp_sample.yml                   # Sample
-            lxd-<group_name>.yml            # Playbook
-            dp-<datapath_name>.yml          # Playbook
+            lxd-<group-name>.yml            # Playbook
+            dp-<datapath-name>.yml          # Playbook
             roles/
                 dpath/
                     vars/                   # Do NOT edit.
@@ -25,7 +26,7 @@ beluganos/
                         common/             # Do NOT edit.
                         sample_sw/
                             fibc.yml        # Sample
-                        <switch_name>/
+                        <switch-name>/
                             fibc.yml
                 lxd/
                     vars/                   # Do NOT edit.
@@ -38,7 +39,7 @@ beluganos/
                     files/
                         common/             # Do NOT edit.
                         sample/             # Sample 
-                        <container name>/
+                        <container-name>/
                             lxd_profile.yml
                             netplan.yaml
                             sysctl.conf
@@ -137,7 +138,7 @@ $ vi lxd-group.yml
 
 If your container name is *"master-instance"*, please edit task files as follows:
 
-~~~~
+```
 $ cd etc/playbooks
 $ cp -r roles/lxd/files/sample roles/lxd/files/master-instance
 $ vi roles/lxd/files/master-instance/lxd_profile.yml
@@ -169,13 +170,13 @@ $ vi roles/lxd/files/master-instance/lxd_profile.yml
         path: /
         pool: default
         type: disk
-~~~~
+```
 
 **For VRF environments only:** The task files should be created per routing-instance.
 
 The syntax is following:
 
-~~~~
+```
 - name: create profile
   lxd_profile:
     name: "{{ lxcname }}"
@@ -202,7 +203,7 @@ The syntax is following:
         path: /
         pool: default
         type: disk
-~~~~
+```
 
 - devices
 	- `eth0`: The management interface for internal use. Do NOT edit.
@@ -232,7 +233,7 @@ Especially, you can determine about **interface mapping between your white-box s
 
 Please note that only physical interface should be described at `fibc.yml`. Logical (VLAN) settings should be described another files (`netplan.yml`).
 
-~~~~
+```
 $ vi roles/lxd/files/master-instance/fibc.yml
 
 routers:
@@ -242,18 +243,18 @@ routers:
     ports:
       - { name: eth1,     port: 1 }                    # nid=0, lxc-iface=eth1, dp-port=1
       - { name: eth2,     port: 2 }                    # nid=0, lxc-iface=eth2, dp-port=2
-~~~~
+```
 
 Syntax is following:
 
-~~~~
+```
 routers:
   - desc: <description>
     re_id: <router-entity-id>
     datapath: <switch-name>
     ports:
       - { name: <lxc-interface-name>, port: <switch-interface-number> } # For physical interface
-~~~~
+```
 
 - desc (`<description>`): Your preferable descriptions.
 - re_id (`<router-entity-id>`): Router entity id for internal use. In general, router-id is recomended.
@@ -271,7 +272,7 @@ This file will be located to `/etc/netplan/02-beluganos.yaml` in linux container
 
 "eth3", "eth3.10" and "eth4.20" will be configured in following examples:
 
-~~~~
+```
 ---
 
 network:
@@ -286,13 +287,13 @@ network:
     eth4.20:
       link: eth4   # Physical interface
       id: 20       # VLAN-ID
-~~~~
+```
 
 ### 3. sysctl.conf: MPLS basic configurations: sysctl.conf
 
 This file will be located under `/etc/sysctl.d/` in Linux container. If you want to enable MPLS for all interfaces, you have to disable `rp_filter` and set `net.mpls.conf` as follows:
 
-~~~~
+```
 # -*- coding: utf-8 -*-
 
 # Max of MPLS label.
@@ -309,7 +310,7 @@ net.ipv4.conf.eth2/100.rp_filter=0
 # Enable MPLS
 net.mpls.conf.eth1.input=1
 net.mpls.conf.eth2/100.input=1
-~~~~
+```
 
 ### 4. daemons: Routing protocols which you want to use
 
@@ -339,7 +340,7 @@ Each daemon configuration of FRRouting.
 
 This file is about gobgp booting, **NOT gobgpd itself**. In general, please do not edit.
 
-~~~~
+```
 # -*- coding: utf-8 -*-
 
 CONF_PATH = /etc/frr/gobgpd.conf
@@ -347,7 +348,7 @@ CONF_TYPE = toml
 LOG_LEVEL = debug
 PPROF_OPT = --pprof-disable
 API_HOSTS = 127.0.0.1:50051
-~~~~
+```
 
 ### 7. gobgpd.conf: GoBGP itselfs configurations
 
@@ -359,7 +360,7 @@ GoBGP configurations. See [GoBGP configurations.md](https://github.com/osrg/gobg
 
 This is the main configuration file of Beluganos itself. For example, following configuration will be assumed:
 
-~~~~
+```
 # -*- coding: utf-8; mode: toml -*-
 
 [node]
@@ -384,11 +385,11 @@ disable = true
 [ribp]
 api = "127.0.0.1:50091"
 interval = 5000
-~~~~
+```
 
 **Except MPLS-VPN environments**, the syntax is following:
 
-~~~~
+```
 # -*- coding: utf-8; mode: toml -*-
 
 [node]
@@ -413,7 +414,7 @@ disable = true
 [ribp]
 api = "127.0.0.1:50091"
 interval = <beluganos-ribp-interval>
-~~~~
+```
 
 
 - [node]
@@ -444,10 +445,19 @@ interval = <beluganos-ribp-interval>
 
 In case group name is *lxd-group* and container name is *master-instance*:
 
-~~~~
+```
 $ ansible-playbook -i etc/playbooks/hosts -K etc/playbooks/lxd-group.yml
 $ lxc stop master-instance
-~~~~
+```
+
+## Start Beluganos
+
+When you finished the beluganos's settings, Let's start Beluganos! You should start main module of Beluganos 
+
+```
+$ beluganos start
+$ beluganos add master-instance
+```
 
 ## Note
 
