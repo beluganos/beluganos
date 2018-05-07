@@ -23,7 +23,6 @@ PATCH=patch
 
 set_proxy() {
     if [ "${PROXY}"x != ""x ]; then
-        PIP_PROXY=""
         APT_PROXY="--env http_proxy=${PROXY}"
         HTTP_PROXY="http_proxy=${PROXY} https_proxy=${PROXY}"
         export http_proxy=${PROXY}
@@ -40,7 +39,7 @@ set_proxy() {
 
 set_sudo() {
     if [ "${ENABLE_VIRTUALENV}" != "yes" ]; then
-        PIP="sudo $PIP"
+        PIP="sudo -E $PIP"
         PATCH="sudo $PATCH"
     fi
 }
@@ -71,11 +70,11 @@ apt_install() {
 #
 pip_install() {
     if [ "${ENABLE_VIRTUALENV}" != "yes" ]; then
-        wget -nc P /tmp ${GET_PIP_URL}/${GET_PIP_FILE} || { echo "pip_install/wget error."; exit 1; }
-        python ${GET_PIP_FILE} --proxy="${PROXY}" || { echo "pip_install/python error."; exit 1; }
+        wget -nc -P /tmp ${GET_PIP_URL}/${GET_PIP_FILE} || { echo "pip_install/wget error."; exit 1; }
+        sudo python /tmp/${GET_PIP_FILE} --proxy="${PROXY}" || { echo "pip_install/python error."; exit 1; }
     fi
 
-    $PIP install -U ${PIP_PROXY} ${PIP_PKGS} || { echo "pip_install/pip error."; exit 1; }
+    $PIP install -U ${PIP_PKGS} || { echo "pip_install/pip error."; exit 1; }
 }
 
 #
