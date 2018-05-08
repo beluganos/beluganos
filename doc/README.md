@@ -27,7 +27,7 @@ After installing ([install-guide.md](install-guide.md)), you can configure Belug
 	- Configuration guide of IP/MPLS router by ansible.
 - [configure-ansible-l3vpn.md](configure-ansible-l3vpn.md)
 	- Configuration guide of MPLS-VPN PE router by ansible.
-- [configure-netconf.md](netconf-guide.md)
+- [configure-netconf.md](configure-netconf.md)
 	- Configuration guide of router by NETCONF.
 - [operation-guide.md](operation-guide.md)
 	- How to start/stop Beluganos

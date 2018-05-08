@@ -114,9 +114,7 @@ server1$ vi create.ini
 ### Step 1-2. Settings for switches
 
 ~~~~
-server1$ cd ~/beluganos/
-server1$ . ./setenv.sh
-server1$ cd etc/playbooks
+server1$ cd ~/beluganos/etc/playbooks
 server1$ ansible-playbook -i hosts -K dp-sample.yml
 ~~~~
 
@@ -182,9 +180,7 @@ server2$ ./create.sh min
 ### Step 2-3. setup P1 to P4
 
 ~~~~
-server2$ cd ~/beluganos/
-server2$ . ./setenv.sh
-server2$ cd etc/playbooks
+server2$ cd ~/beluganos/etc/playbooks
 server2$ ansible-playbook -i hosts -K sample-net.yml
 server2$ lxc stop sample-p1 sample-p2 sample-p3 sample-p4
 ~~~~
@@ -200,18 +196,11 @@ server2$ lxc start sample-p1 sample-p2 sample-p3 sample-p4
 
 ### Step 3-2. start Beluganos
 
-If `(mypython)` didn't set your terminal at server 1, please execute following command to set your environments:
+Please execute following commands. You should have two terminals of server 1 because `beluganos run` command will take the standard input from you.
 
 ~~~~
-server1$ cd ~/beluganos/
-server1$ . ./setenv.sh
-~~~~
-
-After that, please execute following commands. You should have two terminals of server 1 because `beluganos.py run` command will take the standard input from you.
-
-~~~~
-server1$ beluganos.py run
-server1$ beluganos.py add sample
+server1$ beluganos run
+server1$ beluganos add sample
 ~~~~
 
 ## Step 4. confirm this case
@@ -219,9 +208,7 @@ server1$ beluganos.py add sample
 You can login Belunogas's routing engine by following commands:
 
 ~~~~
-server1$ cd ~/beluganos
-server1$ . ./setenv.sh
-server1$ beluganos.py con sample
+server1$ beluganos con sample
 root@sample:~# vtysh
 
 Hello, this is FRRouting (version 3.0-rc2).
@@ -307,12 +294,10 @@ If there is any trouble unfortunately, please stop and restart this case.
 ### Step 5-1. stop Beluganos
 
 ~~~~
-server1$ cd ~/beluganos/
-server1$ . ./setenv.sh
-server1$ beluganos.py del sample
+server1$ beluganos del sample
 ~~~~
 
-Note that the script `beluganos.py run` can be stopped by `Ctrl-c`. You should stop this script after executing `beluganos.py del sample`.
+Note that the script `beluganos run` can be stopped by `Ctrl-c`. You should stop this script after executing `beluganos del sample`.
 
 ### Step 5-2. stop environments
 
@@ -341,9 +326,7 @@ server1$ vi etc/playbooks/roles/dpath/files/sample/fibc.yml
 In order to apply this change, please execute playbook of `dp-sample.yml` after stopping Beluganos.
 
 ~~~~
-server1$ cd ~/beluganos/
-server1$ . ./setenv.sh
-server1$ cd etc/playbooks
+server1$ cd ~/beluganos/etc/playbooks
 server1$ ansible-playbook -i hosts -K dp-sample.yml
 ~~~~
 
@@ -386,4 +369,4 @@ For more detail, see `doc/setup-guide.md`.
 
 ### Start Beluganos as daemon
 
-When you execute `beluganos.py run`, you will be token the standard input by this script. This mode is useful for debugging, but some trouble will occur in production. Of course you can use daemon mode of Beluganos. For using, you should edit `.service` file. For more detail, see `doc/operation-guide.md`.
+When you execute `beluganos run`, you will be token the standard input by this script. This mode is useful for debugging, but some trouble will occur in production. Of course you can use daemon mode of Beluganos. For using, you should edit `.service` file. For more detail, see `doc/operation-guide.md`.

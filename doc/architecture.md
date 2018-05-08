@@ -19,7 +19,7 @@ Moreover, because OF-DPA is compliant with [OpenFlow](https://www.opennetworking
 
 ## Forwarding abstraction layer
 
-<img src="img/flow.png" alt="Flow modification architecture" width="460px">
+<img src="img/flow.png" alt="Flow modification architecture" width="420px">
 
 Forwarding abstraction layer convert path information. This layer has three important components: NLA, RIBC, FIBC.
 
@@ -32,4 +32,4 @@ The reason why we separate RIBC and FIBC is to support MPLS-VPN. In MPLS-VPN cas
 
 ## Management layer
 
-The management function will be required for network OS. NETCONF, SNMP, CLI function is under developing now.
+The management function will be required for network OS. NETCONF is already available at [https://github.com/beluganos/netconf](https://github.com/beluganos/netconf). SNMP, syslog, CLI function is under developing now.

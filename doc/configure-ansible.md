@@ -7,7 +7,7 @@ You can configure router options like IP addresses or settings of routing protoc
 - If you will configure L3VPN routers, please refer not only this documents but also [configure-ansible-l3vpn.md](configure-ansible-l3vpn.md).
 
 ## Config files at a glance
-The files under `etc/playbooks/` are configuration files. In this page, `lxd-*.yml` and the files under `roles/lxd/` are described.
+The files under `etc/playbooks` are configuration files. In this page, `lxd-*.yml` and the files under `roles/lxd` are described.
 
 ~~~~
 beluganos/
@@ -60,7 +60,7 @@ At first, you should edit [inventory file](http://docs.ansible.com/ansible/lates
 In general, one-to-one correspondence between group name and container name is assumed except VRF environments. For example, if your group name is *lxd-group* and your container name (i.e. routing instance name) is *master-instance*, please edit as follows:
 
 ```
-$ cd beluganos/etc/playbooks/
+$ cd ~/beluganos/etc/playbooks/
 $ vi hosts
 ---
 
@@ -86,7 +86,7 @@ vrf20
 
 
 ```
-$ cd etc/playbooks
+$ cd ~/beluganos/etc/playbooks
 $ cp lxd-sample.yml lxd-group.yml
 $ vi lxd-group.yml
 
@@ -139,7 +139,7 @@ $ vi lxd-group.yml
 If your container name is *"master-instance"*, please edit task files as follows:
 
 ```
-$ cd etc/playbooks
+$ cd ~/beluganos/etc/playbooks
 $ cp -r roles/lxd/files/sample roles/lxd/files/master-instance
 $ vi roles/lxd/files/master-instance/lxd_profile.yml
 
@@ -220,7 +220,7 @@ The reflection of "Settings for Linux Containers" should be done after editting 
 **The sample files are under `roles/lxd/files/sample`**. You may copy and rename these files. If your container name is *master-instance*, you can copy by folllowing commands:
 
 ```
-$ cd etc/playbooks
+$ cd ~/beluganos/etc/playbooks
 $ ls roles/lxd/files/master-instance
 daemons fibc.yml frr.conf gobgp.conf gobgpd.conf netplan.yaml ribxd.conf sysctl.conf
 ```
@@ -452,18 +452,16 @@ $ lxc stop master-instance
 
 ## Start Beluganos
 
-When you finished the beluganos's settings, Let's start Beluganos! You should start main module of Beluganos 
+When you finished the beluganos's settings, Let's start Beluganos! You can start main module of Beluganos by following commands:
 
 ```
 $ beluganos start
 $ beluganos add master-instance
 ```
 
+For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md).
+
 ## Note
 
 - MPLS-VPN configurations require more steps. Please refer [configure-ansible-l3vpn.md](configure-ansible-l3vpn.md).
-- Using both ansible and NETCONF are not permitted to configure router settings.
-
-## Next steps
-After reflecting your changes, please refer [operation-guide.md] 
-(operation-guide.md) to start Beluganos.
+- Using both ansible and NETCONF are not permitted currently to configure router settings.

@@ -55,7 +55,7 @@ beluganos/
 **The sample playbook is `etc/playbooks/dp-sample.yml`**. You may copy sample file and rename this playbook. Any switch name (dpname) are acceptable, and this name is only used for internal configurations. If your switch name is *switchA*, please edit as follows:
 
 ~~~~
-$ cd beluganos/etc/playbooks
+$ cd ~/beluganos/etc/playbooks
 $ cp dp-sample.yml dp-switchA.yml
 $ vi dp-switchA.yml
 
@@ -101,7 +101,7 @@ datapaths:
 
 ~~~~
 
-The syntax of this playbook is following:
+The syntax of `etc/playbooks/roles/dpath/files/<switch-name>/fibc.yml` is following:
 
 ~~~~
 datapaths:
@@ -126,7 +126,7 @@ The value of `dp-id` means OpenFlow datapath ID of your switch. The value of `mo
 In case `<switch-name>` is *switchA*:
 
 ~~~~
-$ ansible-playbook -i etc/playbooks/hosts -K etc/playbooks/dp-switchA.yml
+$ ansible-playbook -i hosts -K dp-switchA.yml
 ~~~~
 
 ## 

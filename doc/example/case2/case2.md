@@ -73,16 +73,14 @@ Please check `doc/install-guide.md` for install.
 ### Step 1-2. Settings for switches
 
 ~~~~
-$ cd ~/beluganos
-$ vi etc/playbooks/roles/dpath/files/whitebox1/fibc.yml
+$ cd ~/beluganos/etc/playbooks
+$ vi roles/dpath/files/whitebox1/fibc.yml
 
 datapaths:
-  - name: whitebos1         # dpname (A-Z,a-z,0-9,_-)
+  - name: whitebox1         # dpname (A-Z,a-z,0-9,_-)
     dp_id: 14               # datapath id of your switches (integer)
     mode: ofdpa2            # "ofdpa2" or "generic" or "ovs"
 
-$ . ./setenv.sh
-$ cd etc/playbooks
 $ ansible-playbook -i hosts -K dp-whitebox1.yml
 ~~~~
 
@@ -91,29 +89,20 @@ This settings should be modified as your white-box switches. For more detail, se
 ### Step 1-3. Settings for containers
 
 ~~~~
-$ cd ~/beluganos/
-$ . ./setenv.sh
-$ cd etc/playbooks
+$ cd ~/beluganos/etc/playbooks
 $ ansible-playbook -i hosts -K lxd-sample-vpn.yml
 $ lxc stop sample-mic sample-ric10 sample-ric11
 ~~~~
 
 ## Step 2. start this case
 
-If `(mypython)` didn't set your terminal, please execute following command to set your environments:
+Please execute following commands. You should have two terminals because `beluganos.py run` command will take the standard input from you.
 
 ~~~~
-$ cd ~/beluganos/
-$ . ./setenv.sh
-~~~~
-
-After that, please execute following commands. You should have two terminals because `beluganos.py run` command will take the standard input from you.
-
-~~~~
-$ beluganos.py run
-$ beluganos.py add sample
-$ beluganos.py add sample-ric10
-$ beluganos.py add sample-ric11
+$ beluganos run
+$ beluganos add sample
+$ beluganos add sample-ric10
+$ beluganos add sample-ric11
 ~~~~
 
 ## Step 3. confirm this case
@@ -121,8 +110,6 @@ $ beluganos.py add sample-ric11
 You can login Belunogas's routing engine by following commands. Note that you have three containers which is `sample-mic`, `sample-ric10`, and `sample-ric11`.  The container which has "ric" in the name means VRFs, and the "sample-mic" is the master instance.
 
 ~~~~
-$ cd ~/beluganos
-$ . ./setenv.sh
-$ beluganos.py con sample-mic
+$ beluganos con sample-mic
 sample-mic> vtysh
 ~~~~

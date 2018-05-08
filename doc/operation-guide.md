@@ -1,99 +1,103 @@
 # Operation Guide
 
-Beluganos consists of **main module** and **Linux container** which provide routing functions. You can operate both components by `bin/beluganos`. In order to start Beluganos properly, you should start both main module and Linux container.
+Beluganos consists of **main module** and **Linux container** which provide routing functions. You can operate both components by `beluganos`. In order to start Beluganos properly, you should start both main module and Linux container.
 
-In this page, operation about NETCONF module is not described. If you'll use NETCONF to configure Beluganos, please refer [operation-guide-netconf.md](operation-guide-netconf.md) instead of following description.
+In this page, operation about NETCONF module is also described. If you will not use NETCONF module, you can ignore some operations.
 
 ## Pre-requirements
-- Please refer [install-guide.md](install-guide.md) before proceeding.
-- Please refer [setup-guide.md](setup-guide.md) before proceeding.
+- Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
+- If you use **ansible** to configure router settings, you have to execute playbook before starting to run Beluganos. Please refer [configure-ansible.md](configure-ansible.md) before proceeding.
+- If you use **NETCONF** to configure router settings, you have to execute minimum playbook before starting to run Beluganos. Please refer [configure-netconf.md](configure-netconf.md) before proceeding.
 
-## Run main module
+## Step 1. Run main module
 
-You have two options to start/stop Beluganos. 
+You have two options to start/stop Beluganos. Generally, because you have already registered Beluganos as a linux service at [install-guide.md](install-guide.md), **daemon mode** is recommended in production.
 
-### Option A: Daemon mode
+### (Recommend) Daemon mode
 
 To start,
 
-~~~~
+```
 $ beluganos start
-$ sudo systemctl start netopeer2-server
-$ sudo systemctl start ncm.target
-~~~~
+$ sudo systemctl start netopeer2-server  #Only using NETCONF
+$ sudo systemctl start ncm.target        #Only using NETCONF
+```
 
 To stop,
 
-~~~~
+```
 $ beluganos stop
-$ sudo systemctl stop ncmd
-$ sudo systemctl stop ncmi
-$ sudo systemctl stop ncms
-~~~~
+$ sudo systemctl stop ncmd               #Only using NETCONF
+$ sudo systemctl stop ncmi               #Only using NETCONF
+$ sudo systemctl stop ncms               #Only using NETCONF
+```
 
-### Option B: CLI mode
+### CLI mode
 
-This mode should be used for only debug. In production, using daemon mode is recommended.
-
-In this method, Beluganos can be worked in your terminal. 
-
-~~~~
+```
 $ beluganos run
-~~~~
+```
 
-`Ctrl-c` to stop. 
+In this method, Beluganos can be worked in your terminal for debug. This command will snatch your standard output. `Ctrl-c` to stop. 
 
-## Run Linux containers
+### Remarks
+Executing `beluganos start` or `beluganos run` command will start to try connections between OpenFlow agent. Before executing this commands, starting OF-DPA apps is recommended.
 
-After starting main module of Beluganos, you should start Linux containers. In general, one container should be added. Only in VRF environments like MPLS-VPN, you should add all routing instance's containers.
+## Step 2. Add Linux containers
 
+After starting main module of Beluganos, you should add Linux containers. In general, one container should be added. Only in VRF environments like MPLS-VPN, you should add all routing instance's containers.
+
+**Important Notice:** When NETCONF is used for configure, you do **NOT** have to manually add linux containers. Following steps are required only the case which you have configured by [configure-ansible.md](configure-ansible.md).
 
 To add:
 
-~~~~
+```
 $ beluganos add <container-name>
-~~~~
+```
 
 To delete:
 
-~~~~
+```
 $ beluganos del <container-name>
-~~~~
+```
 
-You forgot container name? In the procedure of `doc/setup-guide.md`, you should have already specified this name. Please check inventory file (`etc/playbooks/hosts`) or task foloder (`etc/playbooks/roles/lxd/tasks/<container-name>.yml`) to remenber your container name.
+You forgot container name? In the procedure of [doc/configure-ansible.md](doc/configure-ansible.md), you should have already specified this name. Please check inventory file (`etc/playbooks/hosts`) or task foloder (`etc/playbooks/roles/lxd/tasks/<container-name>.yml`) to remember your container name.
 
 ## Confirm
 
 ### Confirm main module's status
 
-~~~~
+```
 $ beluganos status
-~~~~
+ fibcd.service - fib controller service
+   Loaded: loaded (/etc/systemd/system/fibcd.service; disabled; vendor preset: enabled)
+   Active: active (running) since Tue 2018-05-08 20:50:26 JST; 2min 7s ago
+```
 
 ### Confirm linux container's status
 
-~~~~
+```
 $ beluganos status <container-name>
-~~~~
+```
 
 ### Confirm routing status
 
 In Linux container, you can confirm about routing status. Thanks to Beluganos's architecture, the route table of containers will be synchronized to White-box switches (For more detail, please check `doc/architecture.md`). At first, you may login to Linux container by following command:
 
-~~~~
+```
 $ beluganos con <container-name>
-~~~~
+```
 
 After that, you can execute any commands! For example, in case of container `sample`, you can check routing status by following commands:
 
-~~~~
+```
 $ beluganos con sample   # Login to containers
-# vtysh                     # Open FRR console
-~~~~
+# vtysh                  # Open FRR console
+```
 
-If you not familiar with FRRouting or quagga, after login `vtysh`, please hit `?` to check command reference. For example, if you want to check RIB,
+If you not familiar with FRRouting (or quagga), after login `vtysh`, please hit `?` to check command reference. For example, if you want to check RIB (Routing Information Base),
 
-~~~~
+```
 $ beluganos con sample
 # vtysh
 
@@ -139,16 +143,24 @@ sample# show ip ?
   rpf                   Display RPF information for multicast source
   ssmpingd              ssmpingd operation
 sample#
-~~~~
+```
 
 ## Remarks
 
-### Help
-`bin/beluganos` is created automatically by `create.sh`.
+### Automatic start-up
+
+```
+$ sudo systemctl enable fibcd
+$ sudo systemctl enable netopeer2-server  #Only using NETCONF
+$ sudo systemctl enable ncm.target        #Only using NETCONF
+```
+
+### Command
+The command of `beluganos` is created automatically by `create.sh`. The file (python script) is located at `/usr/local/bin/beluganos`. 
 
 ~~~~
 $ beluganos -h
-usage: beluganos.py [-h] [-p [PROFILE]] [-b [BRIDGE]] [-e EXCLUDE [EXCLUDE ...]]
+usage: beluganos [-h] [-p [PROFILE]] [-b [BRIDGE]] [-e EXCLUDE [EXCLUDE ...]]
                [-v]
                {run,start,stop,add,del,status,con,init,clear} [container]
 
@@ -163,6 +175,8 @@ optional arguments:
   -e EXCLUDE [EXCLUDE ...], --exclude EXCLUDE [EXCLUDE ...]
   -v, --verbose
 ~~~~
+
+Note that `sudo systemctl start fibcd` can be used instead of `beluganos start`.
 
 ### Port
 These port will be utilized by Beluganos.
