@@ -64,19 +64,22 @@ func TestNlMsghdrToApi(t *testing.T) {
 	v := NewNlMsghdrFromNative(&h)
 
 	if v == nil {
-		t.Errorf("NlMsghdrToApi nil. %v", v)
+		t.Errorf("NewNlMsghdrFromNative nil. %v", v)
 	}
-
-	vv := NlMsghdr{
-		Len:   0x01020304,
-		Type:  0x00001314,
-		Flags: 0x00002324,
-		Seq:   0x31323334,
-		Pid:   0x41424344,
+	if v.Len != 0x01020304 {
+		t.Errorf("NewNlMsghdrFromNative unmatch. Len=%d", v.Len)
 	}
-
-	if *v != vv {
-		t.Errorf("NlMsghdrToApi unmatch. %v", v)
+	if v.Type != 0x00001314 {
+		t.Errorf("NewNlMsghdrFromNative unmatch. Type=%d", v.Type)
+	}
+	if v.Flags != 0x00002324 {
+		t.Errorf("NewNlMsghdrFromNative unmatch. Flags=%d", v.Flags)
+	}
+	if v.Seq != 0x31323334 {
+		t.Errorf("NewNlMsghdrFromNative unmatch. Seq=%d", v.Seq)
+	}
+	if v.Pid != 0x41424344 {
+		t.Errorf("NewNlMsghdrFromNative unmatch. Pid=%d", v.Pid)
 	}
 }
 
@@ -137,21 +140,24 @@ func TestNetlinkMessageToApi(t *testing.T) {
 	v := NewNetlinkMessageFromNative(&m)
 
 	if v == nil {
-		t.Errorf("NetlinkMessageToApi nil")
+		t.Errorf("NewNetlinkMessageFromNative nil")
 	}
 
-	hh := NlMsghdr{
-		Len:   0x01020304,
-		Type:  0x00001314,
-		Flags: 0x00002324,
-		Seq:   0x31323334,
-		Pid:   0x41424344,
+	if v.Header.Len != 0x01020304 {
+		t.Errorf("NewNlMsghdrFromNative unmatch. Len=%d", v.Header.Len)
 	}
-
-	if *v.Header != hh {
-		t.Errorf("NetlinkMessageToApi Header unmatch. %v", v)
+	if v.Header.Type != 0x00001314 {
+		t.Errorf("NewNlMsghdrFromNative unmatch. Type=%d", v.Header.Type)
 	}
-
+	if v.Header.Flags != 0x00002324 {
+		t.Errorf("NewNlMsghdrFromNative unmatch. Flags=%d", v.Header.Flags)
+	}
+	if v.Header.Seq != 0x31323334 {
+		t.Errorf("NewNlMsghdrFromNative unmatch. Seq=%d", v.Header.Seq)
+	}
+	if v.Header.Pid != 0x41424344 {
+		t.Errorf("NewNlMsghdrFromNative unmatch. Pid=%d", v.Header.Pid)
+	}
 	if bytes.Compare(v.Data, data) != 0 {
 		t.Errorf("NetlinkMessageToApi Data unmatch. %v", v)
 	}

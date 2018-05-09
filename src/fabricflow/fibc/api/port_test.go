@@ -65,9 +65,17 @@ func TestPortStatus_NewFromBytes(t *testing.T) {
 	if err != nil {
 		t.Errorf("NewPortStatusFromBytes error. %s", err)
 	}
-
-	if *d != *p {
-		t.Errorf("NewPortStatusFromBytes unmatch. %v", p)
+	if d.Status != PortStatus_UP {
+		t.Errorf("NewPortStatusFromBytes unmatch. Status=%d", d.Status)
+	}
+	if d.ReId != "1.1.1.1" {
+		t.Errorf("NewPortStatusFromBytes unmatch. ReId=%s", d.ReId)
+	}
+	if d.PortId != 0x12345678 {
+		t.Errorf("NewPortStatusFromBytes unmatch. PortId=%d", d.PortId)
+	}
+	if d.Ifname != "ethX" {
+		t.Errorf("NewPortStatusFromBytes unmatch. Ifname=%s", d.Ifname)
 	}
 }
 

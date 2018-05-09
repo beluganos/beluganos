@@ -62,8 +62,11 @@ func TestDpStatus_NewFromByte(t *testing.T) {
 		t.Errorf("DpStatus NewDpStatusFromBytes error. %s", err)
 	}
 
-	if *ds != *d {
-		t.Errorf("DpStatus NewDpStatusFromBytes unmatch. %v", d)
+	if d.Status != DpStatus_ENTER {
+		t.Errorf("DpStatus NewDpStatusFromBytes unmatch. status=%d", d.Status)
+	}
+	if d.ReId != "1.1.1.1" {
+		t.Errorf("DpStatus NewDpStatusFromBytes unmatch. ReID=%s", d.ReId)
 	}
 }
 
