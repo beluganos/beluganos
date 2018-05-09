@@ -2,6 +2,13 @@
 
 - hosts: hosts
   connection: local
+  roles:
+    - { role: lxd, mode: host }
+  tags:
+    - host
+
+- hosts: hosts
+  connection: local
   become: true
   roles:
     - { role: lxd, mode: netconf }
