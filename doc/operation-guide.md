@@ -18,7 +18,7 @@ You have two options to start/stop Beluganos. Generally, because you have alread
 To start,
 
 ```
-$ beluganos start
+$ sudo systemctl start fibcd
 $ sudo systemctl start netopeer2-server  #Only using NETCONF
 $ sudo systemctl start ncm.target        #Only using NETCONF
 ```
@@ -26,7 +26,7 @@ $ sudo systemctl start ncm.target        #Only using NETCONF
 To stop,
 
 ```
-$ beluganos stop
+$ sudo systemctl stop fibcd
 $ sudo systemctl stop ncmd               #Only using NETCONF
 $ sudo systemctl stop ncmi               #Only using NETCONF
 $ sudo systemctl stop ncms               #Only using NETCONF
@@ -41,7 +41,7 @@ $ beluganos run
 In this method, Beluganos can be worked in your terminal for debug. This command will snatch your standard output. `Ctrl-c` to stop. 
 
 ### Remarks
-Executing `beluganos start` or `beluganos run` command will start to try connections between OpenFlow agent. Before executing this commands, starting OF-DPA apps is recommended.
+`fibcd` service and `beluganos run` command will make start to connect with OpenFlow agent. Before executing this commands, starting OF-DPA apps is recommended.
 
 ## Step 2. Add Linux containers
 
@@ -67,8 +67,10 @@ You forgot container name? In the procedure of [doc/configure-ansible.md](doc/co
 
 ### Confirm main module's status
 
+`fibcd` is one of the main componet name of Beluganos.
+
 ```
-$ beluganos status
+$ sudo systemctl status fibcd
  fibcd.service - fib controller service
    Loaded: loaded (/etc/systemd/system/fibcd.service; disabled; vendor preset: enabled)
    Active: active (running) since Tue 2018-05-08 20:50:26 JST; 2min 7s ago
@@ -179,7 +181,8 @@ optional arguments:
 Note that `sudo systemctl start fibcd` can be used instead of `beluganos start`.
 
 ### Port
-These port will be utilized by Beluganos.
+These port will be occupied by Beluganos. You should not use these port by another applications.
 
+* 830: NETCONF over ssh.
 * 6633: OpenFlow for white-box switches.
 * 8080: [Rest API](https://github.com/osrg/ryu/blob/master/doc/source/app/ofctl_rest.rst) by Ryu.

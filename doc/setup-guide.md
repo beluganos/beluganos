@@ -88,9 +88,9 @@ The syntax of this playbook is following:
 **The sample configuration files are under `etc/playbooks/roles/dpath/files/sample_sw`**. The files under `roles/dpath` will determine the type of white-box switches. Beluganos will optimize the writing method to FIB for each switch type. If your switch's name is *switchA*, you may copy sample file and rename to dpname as follows:
 
 ~~~~
-$ cd beluganos/etc/playbooks
-$ cp -r roles/dpath/files/sample_sw roles/dpath/files/dp-switchA
-$ vi roles/dpath/files/dp-switchA/fibc.yml
+$ cd ~/beluganos/etc/playbooks
+$ cp -r roles/dpath/files/sample_sw roles/dpath/files/switchA
+$ vi roles/dpath/files/switchA/fibc.yml
 
 ---
 
@@ -126,6 +126,7 @@ The value of `dp-id` means OpenFlow datapath ID of your switch. The value of `mo
 In case `<switch-name>` is *switchA*:
 
 ~~~~
+$ cd ~/beluganos/etc/playbooks
 $ ansible-playbook -i hosts -K dp-switchA.yml
 ~~~~
 

@@ -73,7 +73,7 @@ If you will use NETCONF to configure beluganos, following steps are also require
 
 ```
 $ cd ~/netconf
-$ make install-services
+$ sudo make install-services
 ```
 
 ## Next steps
