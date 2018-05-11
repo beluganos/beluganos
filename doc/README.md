@@ -33,6 +33,15 @@ After installing ([install-guide.md](install-guide.md)), you can configure Belug
 	- How to start/stop Beluganos
 	- How to login routing engine's console
 
+## NETCONF configure
+
+- [netconf/etc/openconfig](https://github.com/beluganos/netconf/tree/master/etc/openconfig)
+	- Yang files of Beluganos
+- [netconf/doc/examples](https://github.com/beluganos/netconf/tree/master/doc/examples)
+	- The examples of XML for NETCONF `<edit-config>`
+- [netconf/doc/setup-guide](https://github.com/beluganos/netconf/blob/master/doc/setup-guide.md)
+	- Initial settings about network-instance modules
+
 ## General
 
 - [README.md](../README.md)

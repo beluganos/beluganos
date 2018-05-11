@@ -61,7 +61,7 @@ To delete:
 $ beluganos del <container-name>
 ```
 
-You forgot container name? In the procedure of [doc/configure-ansible.md](doc/configure-ansible.md), you should have already specified this name. Please check inventory file (`etc/playbooks/hosts`) or task foloder (`etc/playbooks/roles/lxd/tasks/<container-name>.yml`) to remember your container name.
+You forgot container name? In the procedure of [configure-ansible.md](configure-ansible.md), you should have already specified this name. Please check inventory file (`etc/playbooks/hosts`) or task foloder (`etc/playbooks/roles/lxd/tasks/<container-name>.yml`) to remember your container name.
 
 ## Confirm
 
