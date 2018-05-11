@@ -62,7 +62,7 @@ $ sudo systemctl start netopeer2-server
 $ sudo systemctl start ncm.target
 ```
 
-For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md).
+You can use `beluganos start` instead of `systemctl start fibcd`. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md).
 
 ## Step 3. Configure by NETCONF
 
@@ -88,7 +88,6 @@ Note that the sample NETCONF XML are available at [netconf/doc/examples](https:/
 
 At least one **network-instance** is required. Even if it is general IP routers, single **network-instance** exists is assumed. The type and route-target of **network-instance** is used for Beluganos's settings.
 
-
 ```
 module: beluganos-network-instance
     +--rw network-instances
@@ -102,16 +101,44 @@ module: beluganos-network-instance
 
 The supported network instance (i.e. Linux container) type is following: 
 
-| Type             | Route-target | Description        |
-| ---------------- | ------------------------------------ | ---- | ---- |
-| DEFAULT_INSTANCE | No | Standard network instance            |
-| L3VRF            | No | Virtual router (VRF-Lite)            |
-| DEFAULT_INSTANCE | Yes(*1)| Standard network instance with L3VPN  |
-| L3VRF            | Yes | VRF for L3VPN                        |
+| Type             | Route-target | Description                          |
+| ---------------- | -------------| ------------------------------------ | 
+| DEFAULT_INSTANCE | No           | Standard network instance            |
+| L3VRF            | No           | Virtual router (VRF-Lite)            |
+| DEFAULT_INSTANCE | Yes(*1)      | Standard network instance with L3VPN |
+| L3VRF            | Yes          | VRF for L3VPN                        |
 
 (*1) As for any value, please fill it. This value is not used by Beluganos.
 
 For more detail about network-instance, please refer [netconf/setup-guide.md](https://github.com/beluganos/netconf/blob/master/doc/setup-guide.md).
+
+#### interfaces
+
+Currently Beluganos support only routed port. In routed port, `<subinterface>` describes VID (VLAN ID). For example, if you want to use `eth2` as a subinterface with VID 10, you should configure both `eth2` and `eth2.10`.
+
+```
+module: beluganos-interfaces
+    +--rw interfaces
+       +--rw interface* [name]
+          +--rw name             -> ../config/name
+          +--rw config
+          |  +--rw name?          string
+          |  +--rw type           identityref
+          |  +--rw mtu?           uint16
+          |  +--rw description?   string
+          |  +--rw enabled?       boolean
+          +--rw state
+          +--rw subinterfaces
+             +--rw subinterface* [index]
+                +--rw index     -> ../config/index
+                +--rw config
+                |  +--rw index?         uint32
+                |  +--rw description?   string
+                |  +--rw enabled?       boolean
+                +--rw state
+```
+
+The naming rules of interface are `eth<n>` (`<n>` is a interface index). The maximum number of `<n>` is defined at `<maximum-physical-port>` in `lxd-netconf.yml`.
 
 ## Appendix
 
