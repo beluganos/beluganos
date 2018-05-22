@@ -4,13 +4,14 @@ This document shows how to install beluganos in your systems. Automation scripts
 ## Pre-requirements
 
 ### Resources
-You can also build Beluganos into the white-box switches, but installing another Ubuntu server is recommended at first.
+Generally, network OS is installed into white-box switches. In Beluganos, you can also build Beluganos into the white-box switches. However, at first, preparing extra server (or VM) and installing here are recommended at first.
 
 - Ubuntu server
 	- **Ubuntu 17.10** (17.10.1-server-amd64) is strongly recommended (Note that supporting Ubuntu 18.04 is scheduled).
 	- **Two or more network interfaces** are required.
+	- Some LXC instance will be created. More than **12GB HDD** is recommended.
 - White-box switches
-	- **[OF-DPA 2.0](https://github.com/Broadcom-Switch/of-dpa/) switch** and OpenFlow agent are required. OF-DPA application in Edge-core switches is also available at [here] (https://github.com/edge-core/beluganos-forwarding-app).
+	- **[OF-DPA 2.0](https://github.com/Broadcom-Switch/of-dpa/) switch** and OpenFlow agent are required. OF-DPA application in Edge-core switches is also available at [Edge-core's repository] (https://github.com/edge-core/beluganos-forwarding-app).
 	- If you don't have OF-DPA switches, any OpenFlow 1.3 switches are acceptable to try Beluganos. In this case, [Lagopus switch](http://www.lagopus.org/) is recommended.
 
 ### LXC settings
@@ -21,7 +22,7 @@ If LXC have not configured yet, please set up LXC before starting to build Belug
 - The size of new loop device is depend on number of VRF which you will configure at most. ( Num-of-VRF + 2 ) GB or more is required.
 
 ```
-$ lxd init
+$ sudo lxd init
 Do you want to configure a new storage pool (yes/no) [default=yes]?
 Name of the new storage pool [default=default]:
 Name of the storage backend to use (dir, btrfs, lvm) [default=btrfs]:

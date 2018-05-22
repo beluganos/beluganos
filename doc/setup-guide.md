@@ -13,41 +13,18 @@ beluganos/
     etc/
         playbooks/
             hosts                           # Inventry file
-            lxd-sample.yml                  # Sample
-            dp_sample.yml                   # Sample
-            lxd-<group-name>.yml            # Playbook
-            dp-<datapath-name>.yml          # Playbook
+            dp_sample.yml                   # Sample of playbok
+            dp-<switch-name>.yml          # Playbook
             roles/
                 dpath/
                     vars/                   # DO NOT EDIT.
                     tasks/                  # DO NOT EDIT.
                     files/
                         common/             # DO NOT EDIT.
-                        sample_sw/
-                            fibc.yml        # Sample
-                        <switch-name>/
+                        sample_sw/          # Sample of files
                             fibc.yml
-                lxd/
-                    vars/                   # DO NOT EDIT.
-                    handlers/               # DO NOT EDIT.
-                    tasks/
-                        main.yml            # DO NOT EDIT.
-                        create.yml          # DO NOT EDIT.
-                        setup.yml           # DO NOT EDIT.
-                        host.yml            # DO NOT EDIT.
-                    files/
-                        common/             # DO NOT EDIT.
-                        sample/             # Sample
-                        <container-name>/
-                            lxd_profile.yml
-                            netplan.yaml
-                            sysctl.conf
-                            daemons
-                            frr.conf
-                            gobgp.comnf
-                            gobgpd.conf
+                        <switch-name>/      # Files
                             fibc.yml
-                            ribxd.conf
 ~~~~
 
 ## Settings for white-box switches

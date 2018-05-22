@@ -13,33 +13,18 @@ The files under `etc/playbooks` are configuration files. In this page, `lxd-*.ym
 beluganos/
     etc/
         playbooks/
-            hosts                           # Inventry file
-            lxd-sample.yml                  # Sample
-            dp_sample.yml                   # Sample
-            lxd-<group-name>.yml            # Playbook
-            dp-<datapath-name>.yml          # Playbook
+            hosts                            # Container name (inventory)
+            lxd-sample.yml                   # Sample playbook of container basic settings
+            lxd-<group-name>.yml             # Container basic settings (playbook)
             roles/
-                dpath/
-                    vars/                   # Do NOT edit.
-                    tasks/                  # Do NOT edit.
-                    files/
-                        common/             # Do NOT edit.
-                        sample_sw/
-                            fibc.yml        # Sample
-                        <switch-name>/
-                            fibc.yml
                 lxd/
-                    vars/                   # Do NOT edit.
-                    handlers/               # Do NOT edit.
-                    tasks/
-                        main.yml            # Do NOT edit.
-                        create.yml          # Do NOT edit.
-                        setup.yml           # Do NOT edit.
-                        host.yml            # Do NOT edit.
+                    vars/                    # Do NOT edit
+                    handlers/                # Do NOT edit
+                    tasks/                   # Do NOT edit
                     files/
-                        common/             # Do NOT edit.
-                        sample/             # Sample 
-                        <container-name>/
+                        common/              # Do NOT edit
+                        sample/              # Sample files of router settings
+                        <container-name>/    # Router settings
                             lxd_profile.yml
                             netplan.yaml
                             sysctl.conf
@@ -57,7 +42,7 @@ beluganos/
 
 At first, you should edit [inventory file](http://docs.ansible.com/ansible/latest/intro_inventory.html) at `etc/playbooks/hosts`. The container name and group name should be described here. This name will be only used internal configurations.
 
-In general, one-to-one correspondence between group name and container name is assumed except VRF environments. For example, if your group name is *lxd-group* and your container name (i.e. routing instance name) is *master-instance*, please edit as follows:
+In general, one-to-one correspondence between group name and container name is assumed except VRF environments. For example, if your group name is "*lxd-group*" and your container name (i.e. routing instance name) is "*master*", please edit as follows:
 
 ```
 $ cd ~/beluganos/etc/playbooks/
@@ -68,22 +53,21 @@ $ vi hosts
 localhost    # DO NOT EDIT.
 
 [lxd-group]
-master-instance
+master
 ```
 
 **For VRF environments only:** To configure multiple routing-instances, you should describe multiple container name.
 
 ```
 [lxd-group-vpn]
-master-instance
+master
 vrf10
 vrf20
 ```
 
 ### 2. Container basic settings (playbook)
 
-**The sample playbook is `lxd-sample.yml`**. You may copy this file and rename to your group name. For example, if your group name at inventory is *lxd-group*, please edit following:
-
+**The sample playbook is `etc/playbooks/lxd-sample.yml`**. You may copy this file and rename to your group name. For example, if your group name at inventory is "*lxd-group*", please edit following:
 
 ```
 $ cd ~/beluganos/etc/playbooks
@@ -115,7 +99,7 @@ $ vi lxd-group.yml
         name: lxd
       vars:
         mode: create
-      with_items:  # Edit "lxd-group" to your group name in inventry file.
+      with_items:      # Edit "lxd-group" to your group name in inventry file.
         - "{{ groups['lxd-group'] }}"
       loop_control:
         loop_var: lxcname
@@ -123,7 +107,7 @@ $ vi lxd-group.yml
     - create
     - lxd
 
-- hosts: lxd-group  # Edit "lxd-group" to your setting in inventry file.
+- hosts: lxd-group     # Edit "lxd-group" to your setting in inventry file.
   connection: lxd
   roles:
     - { role: lxd, lxcname: "{{ inventory_hostname }}", mode: setup }
@@ -132,19 +116,26 @@ $ vi lxd-group.yml
     - lxd
 ```
 
-### 3. Container interface names (playbook)
+### Reflect changes
 
-**The sample configuration file is `roles/lxd/tasks/sample.yml`**. At first, you should create task files for ansible. In task files, you can determine about **interface name of Linux container**.
+The reflection of "Settings for Linux Containers" should be done after editting "Router settings".
 
-If your container name is *"master-instance"*, please edit task files as follows:
+## Router settings
+
+**The sample files are under `etc/playbboks/roles/lxd/files/sample`**. You have copied this folder in previous. If your container name is *master*, you can copy by folllowing commands:
 
 ```
-$ cd ~/beluganos/etc/playbooks
-$ cp -r roles/lxd/files/sample roles/lxd/files/master-instance
-$ vi roles/lxd/files/master-instance/lxd_profile.yml
+$ cd ~/beluganos/etc/playbooks/roles/lxd/files
+$ cp -r sample master
+$ ls master
+daemons fibc.yml frr.conf gobgp.conf gobgpd.conf netplan.yaml ribxd.conf sysctl.conf
+```
 
----
+### 1. lxd-profile.yml
 
+In this files, you can determine **interface name of your switch** like "*eth1*". The sample is following:
+
+```
 - name: create profile
   lxd_profile:
     name: "{{ lxcname }}"
@@ -166,13 +157,21 @@ $ vi roles/lxd/files/master-instance/lxd_profile.yml
         name: eth2
         host_name: "{{ lxcname }}.2"
         nictype: p2p
+      eth3:
+        type: nic
+        name: eth3
+        host_name: "{{ lxcname }}.3"
+        nictype: p2p
+      eth4:
+        type: nic
+        name: eth4
+        host_name: "{{ lxcname }}.4"
+        nictype: p2p
       root:
         path: /
         pool: default
         type: disk
 ```
-
-**For VRF environments only:** The task files should be created per routing-instance.
 
 The syntax is following:
 
@@ -193,12 +192,9 @@ The syntax is following:
         name: <lxc-interface-name>
         host_name: "{{ lxcname }}.<lxc-interface-number>"
         nictype: p2p
-      <lxc-interface-name>:
-        type: nic
-        name: <lxc-interface-name>
-        host_name: "{{ lxcname }}.<lxc-interface-number>"
-        nictype: p2p
+
       ....
+      
       root:
         path: /
         pool: default
@@ -207,25 +203,14 @@ The syntax is following:
 
 - devices
 	- `eth0`: The management interface for internal use. Do NOT edit.
-	- `<lxc-interface-name>`: The interface name of container. This interface name should be unique between other containers.
+	- `<lxc-interface-name>`: The interface name of Linux container. This interface name should be unique between other containers.
+		- type: nic. Do NOT edit.
+		- name (`<lxc-interface-name>`): The interface name of Linux container. Should be same value as this section.
 		- host_name (`{{ lxcname }}.<lxc-interface-number>`): Beluganos's main module recognize container's interface by this value. `<lxc-interface-number>` should be a sequential number starting from 1 for each container.
+		- nictype: p2p. Do NOT edit.
 	- `root`: Strage pool settings for container. Do NOT edit.
 
-### Reflect changes
-
-The reflection of "Settings for Linux Containers" should be done after editting "Router settings".
-
-## Router settings
-
-**The sample files are under `roles/lxd/files/sample`**. You may copy and rename these files. If your container name is *master-instance*, you can copy by folllowing commands:
-
-```
-$ cd ~/beluganos/etc/playbooks
-$ ls roles/lxd/files/master-instance
-daemons fibc.yml frr.conf gobgp.conf gobgpd.conf netplan.yaml ribxd.conf sysctl.conf
-```
-
-### 1. fibc.yml: global settings of this router
+### 2. fibc.yml: global settings of this router
 
 In `fibc.yml`, you may set general settings. FIBC is one of the main components of Beluganos.
 
@@ -234,15 +219,13 @@ Especially, you can determine about **interface mapping between your white-box s
 Please note that only physical interface should be described at `fibc.yml`. Logical (VLAN) settings should be described another files (`netplan.yml`).
 
 ```
-$ vi roles/lxd/files/master-instance/fibc.yml
-
 routers:
   - desc: sample-router
-    re_id: 10.0.1.6                                    # Router entity id (=router-id)
-    datapath: switchA                                  # dpname
+    re_id: 10.0.1.6                                # Router entity id (=router-id)
+    datapath: switchA                              # dpname
     ports:
-      - { name: eth1,     port: 1 }                    # nid=0, lxc-iface=eth1, dp-port=1
-      - { name: eth2,     port: 2 }                    # nid=0, lxc-iface=eth2, dp-port=2
+      - { name: eth1,     port: 1 }                # nid=0, lxc-iface=eth1, dp-port=1
+      - { name: eth2,     port: 2 }                # nid=0, lxc-iface=eth2, dp-port=2
 ```
 
 Syntax is following:
@@ -258,19 +241,19 @@ routers:
 
 - desc (`<description>`): Your preferable descriptions.
 - re_id (`<router-entity-id>`): Router entity id for internal use. In general, router-id is recomended.
-	- **For VRF environments only**: Please set **master-instance's** router-id for all routing instances.
-- datapath (`<switch-name>`): Your switch name which is declared previously.
+	- **For VRF environments only**: Please set **master instance's** router-id for all routing instances.
+- datapath (`<switch-name>`): Your switch name which is declared at `etc/playbooks/dp-sample.yml`. Please refer [setup-guide.md](setup-guide.md).
 - ports
-    - name (`<lxc-interface-name>`): Specify interface name in Beluganos.
-            -  `<lxc-interface-name>` should be matched with the value in `roles/lxd/tasks/<container-name>.yml`. For example, *eth1*.
-    - port (`<switch-interface-number>`): Specify interface number in White-box switches. 
+    - name (`<lxc-interface-name>`): Specify interface name in Beluganos's Linux container.
+    	- Note: `<lxc-interface-name>` should be matched with the value in `lxd_profile.yml`.
+    - port (`<switch-interface-number>`): Specify interface number of white-box switches.
 
 
-### 2. netplan.yaml: interfaces configurations
+### 3. netplan.yaml: interfaces configurations
 
-This file will be located to `/etc/netplan/02-beluganos.yaml` in linux container by ansible. Please refer [netplan design](https://wiki.ubuntu.com/Netplan/Design) to edit.
+In latest Ubuntu, netplan is used for interface configurations. This file will be located to `/etc/netplan/02-beluganos.yaml` in linux container.
 
-"eth3", "eth3.10" and "eth4.20" will be configured in following examples:
+For example, you can configure subinterface (VLAN) settings by this file. "eth3", "eth3.10" and "eth4.20" will be configured in following examples:
 
 ```
 ---
@@ -289,7 +272,9 @@ network:
       id: 20       # VLAN-ID
 ```
 
-### 3. sysctl.conf: MPLS basic configurations: sysctl.conf
+For more detail, please refer [netplan design](https://wiki.ubuntu.com/Netplan/Design).
+
+### 4. sysctl.conf: MPLS basic configurations: sysctl.conf
 
 This file will be located under `/etc/sysctl.d/` in Linux container. If you want to enable MPLS for all interfaces, you have to disable `rp_filter` and set `net.mpls.conf` as follows:
 
@@ -312,7 +297,7 @@ net.mpls.conf.eth1.input=1
 net.mpls.conf.eth2/100.input=1
 ```
 
-### 4. daemons: Routing protocols which you want to use
+### 5. daemons: Routing protocols which you want to use
 
 This is FRRouting setting. Please note that IP Multicast routing is not supported yet.
 
@@ -331,12 +316,12 @@ nhrpd=no
 
 **For MPLS-VPN environments only**: In MPLS-VPN, only GoBGP is supported. Do NOT enable `bgpd` of FRRouting.
 
-### 5. frr.conf: Each routing protocol settings
+### 6. frr.conf: Each routing protocol settings
 
 Each daemon configuration of FRRouting.
  See [FRRouting user-guide](https://frrouting.org/user-guide/).
 
-### 6. gobgp.conf: GoBGP daemon settings
+### 7. gobgp.conf: GoBGP daemon settings
 
 This file is about gobgp booting, **NOT gobgpd itself**. In general, please do not edit.
 
@@ -350,13 +335,13 @@ PPROF_OPT = --pprof-disable
 API_HOSTS = 127.0.0.1:50051
 ```
 
-### 7. gobgpd.conf: GoBGP itselfs configurations
+### 8. gobgpd.conf: GoBGP itselfs configurations
 
 GoBGP configurations. See [GoBGP configurations.md](https://github.com/osrg/gobgp/blob/master/docs/sources/configuration.md).
 
 **For MPLS-VPN environments only**: In MPLS-VPN, some optional settings about GoBGP is required. For more detail, please check `doc/setup-guide-l3vpn.md`.
 
-### 8. ribxd.conf: Beluganos's settings
+### 9. ribxd.conf: Beluganos's settings
 
 This is the main configuration file of Beluganos itself. For example, following configuration will be assumed:
 
@@ -366,7 +351,8 @@ This is the main configuration file of Beluganos itself. For example, following 
 [node]
 nid   = 0
 reid  = "10.0.1.6"
-allow_duplicate_ifname = false
+label = 100000
+#allow_duplicate_ifname = false
 
 [log]
 level = 5
@@ -381,6 +367,16 @@ fibc  = "192.169.1.1:50070"
 
 [ribs]
 disable = true
+# core = "sample:50071"
+# api  = "127.0.0.1:50072"
+
+# [ribs.bgpd]
+# addr = "127.0.0.1"
+# # port = 50051
+
+# [ribs.nexthops]
+# mode = "translate"
+# args = "1.1.0.0/24"
 
 [ribp]
 api = "127.0.0.1:50091"
@@ -443,11 +439,12 @@ interval = <beluganos-ribp-interval>
 
 ### Reflect changes
 
-In case group name is *lxd-group* and container name is *master-instance*:
+In case group name is "*lxd-group*" and container name is "*master*":
 
 ```
-$ ansible-playbook -i etc/playbooks/hosts -K etc/playbooks/lxd-group.yml
-$ lxc stop master-instance
+$ cd ~/beluganos/etc/playbooks
+$ ansible-playbook -i hosts -K lxd-group.yml
+$ lxc stop master
 ```
 
 ## Start Beluganos
@@ -456,10 +453,10 @@ When you finished the beluganos's settings, Let's start Beluganos! You can start
 
 ```
 $ beluganos start
-$ beluganos add master-instance
+$ beluganos add master
 ```
 
-For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md).
+Please note that "*master*" means your container name. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md).
 
 ## Note
 

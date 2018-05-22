@@ -78,6 +78,12 @@ $ ssh -s <server-ip> -p 830 netconf
 
 After exchanging `<hello>` message, you can operate `<get-config>` or `<edit-config>` operations. The example log is located at the bottom of this page.
 
+Moreover, you can also use NETOPEER2's cli like following:
+
+```
+$ netopeer2-cli
+```
+
 ### Yang moudles and configuration XML
 
 The yam of Beluganos is published under [netconf/etc/openconfig](https://github.com/beluganos/netconf/tree/master/etc/openconfig). Beluganos support three modules ([network-instances](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-network-instance.yang), [interfaces](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-interfaces.yang), [routing-policy](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-routing-policy.yang)). Note that the sample NETCONF XML are available at [netconf/doc/examples](https://github.com/beluganos/netconf/tree/master/doc/examples).
