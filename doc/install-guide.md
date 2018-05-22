@@ -7,7 +7,7 @@ This document shows how to install beluganos in your systems. Automation scripts
 Generally, network OS is installed into white-box switches. In Beluganos, you can also build Beluganos into the white-box switches. However, at first, preparing extra server (or VM) and installing here are recommended at first.
 
 - Ubuntu server
-	- **Ubuntu 17.10** (17.10.1-server-amd64) is strongly recommended (Note that supporting Ubuntu 18.04 is scheduled).
+	- **Ubuntu 18.04** (18.04-live-server-amd64) is strongly recommended.
 	- **Two or more network interfaces** are required.
 	- Some LXC instance will be created. More than **12GB HDD** is recommended.
 - White-box switches

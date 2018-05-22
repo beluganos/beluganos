@@ -7,13 +7,13 @@ This case is suitable for a beginner of Beluganos, because not only Beluganos's 
 In this case, two servers are needed. The virtual machine (VM) is acceptable. **IP reachability is needed** between server 1 and 2.
 
 - Server 1 (for Beluganos)
-	- Ubuntu 17.10 server
+	- Ubuntu 18.04 server
 	- 10GB+ storage
 	- At least two NICs
 		- One should be connected with server 2. The other is used for your login via SSH. 
 		- Please set IP addresses before following setup procedure.
 - Server 2 (for OVS and other routers)
-	- Ubuntu 17.10 server
+	- Ubuntu 18.04 server
 	- 12GB+ storage
 	- At least one NICs
 		- This should be connected with server 1.

@@ -1,0 +1,105 @@
+diff --git a/debianpkg/Makefile.am b/debianpkg/Makefile.am
+index 6bb01dffb..2e2c58b8c 100644
+--- a/debianpkg/Makefile.am
++++ b/debianpkg/Makefile.am
+@@ -33,6 +33,10 @@ EXTRA_DIST = README.Debian README.Maintainer \
+ 	backports/ubuntu17.10/debian/source/format \
+ 	backports/ubuntu17.10/exclude \
+ 	backports/ubuntu17.10/versionext \
++	backports/ubuntu18.04/debian/control \
++	backports/ubuntu18.04/debian/source/format \
++	backports/ubuntu18.04/exclude \
++	backports/ubuntu18.04/versionext \
+ 	frr-doc.docs frr-doc.info frr-doc.install \
+ 	frr-doc.lintian-overrides frr.conf \
+ 	frr.dirs frr.docs frr.install \
+diff --git a/debianpkg/backports/ubuntu18.04/debian/control b/debianpkg/backports/ubuntu18.04/debian/control
+new file mode 100644
+index 000000000..d28f9332c
+--- /dev/null
++++ b/debianpkg/backports/ubuntu18.04/debian/control
+@@ -0,0 +1,54 @@
++Source: frr
++Section: net
++Priority: optional
++Maintainer: Nobody <nobody@frrouting.org>
++Uploaders: Nobody <nobody@frrouting.org>
++XSBC-Original-Maintainer: <maintainers@frrouting.org>
++Build-Depends: debhelper (>= 7.0.50~), libncurses5-dev, libreadline-dev, texlive-latex-base, texlive-generic-recommended, libpam0g-dev | libpam-dev, libcap-dev, texinfo (>= 4.7), imagemagick, ghostscript, groff, autotools-dev, libpcre3-dev, gawk, chrpath, libsnmp-dev, git, dh-autoreconf, libjson-c-dev, libjson-c2 | libjson-c3, dh-systemd, libsystemd-dev, bison, flex, libc-ares-dev, pkg-config, python (>= 2.7), python-ipaddr, python-sphinx
++Standards-Version: 3.9.6
++Homepage: http://www.frrouting.org/
++
++Package: frr
++Architecture: any
++Depends: ${shlibs:Depends}, logrotate (>= 3.2-11), iproute2 | iproute, ${misc:Depends}, libc-ares2
++Pre-Depends: adduser
++Conflicts: zebra, zebra-pj, quagga
++Replaces: zebra, zebra-pj
++Suggests: snmpd
++Description: BGP/OSPF/RIP/RIPng/ISIS/PIM/LDP routing daemon forked from Quagga
++ FRR is free software which manages TCP/IP based routing protocols.
++ It supports BGP4, BGP4+, OSPFv2, OSPFv3, IS-IS, RIPv1, RIPv2, RIPng,
++ PIM and LDP as well as the IPv6 versions of these.
++ .
++ FRR is a fork of Quagga with an open community model. The main git
++ lives on https://github.com/frrouting/frr.git
++
++Package: frr-dbg
++Architecture: any
++Depends: ${shlibs:Depends}, ${misc:Depends}, frr (= ${binary:Version})
++Priority: optional
++Section: debug
++Description: BGP/OSPF/RIP/RIPng/ISIS/PIM/LDP routing daemon (debug symbols)
++ This package provides debugging symbols for all binary packages built 
++ from frr source package. It's highly recommended to have this package
++ installed before reporting any FRR crashes to either FRR developers or 
++ Debian package maintainers.
++
++Package: frr-doc
++Section: net
++Architecture: all
++Depends: ${misc:Depends}
++Suggests: frr
++Description: BGP/OSPF/RIP/RIPng/ISIS/PIM/LDP routing daemon (documentation)
++ This package includes info files for frr, a free software which manages
++ TCP/IP based routing protocols.  It supports BGP4, BGP4+, OSPFv2, OSPFv3,
++ IS-IS, RIPv1, RIPv2, RIPng, PIM and LDP as well as the IPv6 versions of these.
++
++Package: frr-pythontools
++Section: net
++Architecture: all
++Depends: ${misc:Depends}, frr (= ${binary:Version}), python (>= 2.7), python-ipaddr
++Description: BGP/OSPF/RIP/RIPng/ISIS/PIM/LDP routing daemon (Python Tools)
++ This package includes info files for frr, a free software which manages
++ TCP/IP based routing protocols.  It supports BGP4, BGP4+, OSPFv2, OSPFv3,
++ IS-IS, RIPv1, RIPv2, RIPng, PIM and LDP as well as the IPv6 versions of these.
+diff --git a/debianpkg/backports/ubuntu18.04/debian/source/format b/debianpkg/backports/ubuntu18.04/debian/source/format
+new file mode 100644
+index 000000000..163aaf8d8
+--- /dev/null
++++ b/debianpkg/backports/ubuntu18.04/debian/source/format
+@@ -0,0 +1 @@
++3.0 (quilt)
+diff --git a/debianpkg/backports/ubuntu18.04/exclude b/debianpkg/backports/ubuntu18.04/exclude
+new file mode 100644
+index 000000000..e69de29bb
+diff --git a/debianpkg/backports/ubuntu18.04/versionext b/debianpkg/backports/ubuntu18.04/versionext
+new file mode 100644
+index 000000000..832fb4c32
+--- /dev/null
++++ b/debianpkg/backports/ubuntu18.04/versionext
+@@ -0,0 +1 @@
++-1~ubuntu18.04+1
+diff --git a/debianpkg/rules b/debianpkg/rules
+index a6a9077da..2d1a824f3 100755
+--- a/debianpkg/rules
++++ b/debianpkg/rules
+@@ -190,7 +190,7 @@ override_dh_systemd_enable:
+ 
+ # backports
+ SRCPKG = frr
+-KNOWN_BACKPORTS = debian8 debian9 ubuntu12.04 ubuntu14.04 ubuntu16.04 ubuntu17.10
++KNOWN_BACKPORTS = debian8 debian9 ubuntu12.04 ubuntu14.04 ubuntu16.04 ubuntu17.10 ubuntu18.04
+ DEBIAN_VERSION := $(shell dh_testdir && \
+ 		dpkg-parsechangelog -c1 < debian/changelog | \
+ 		sed -rn 's/^Version: ?//p')
