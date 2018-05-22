@@ -180,7 +180,7 @@ func (c *BgpClient) AddBgpPath(path *table.Path) error {
 	req := &api.AddPathRequest{
 		Resource: api.Resource_GLOBAL,
 		VrfId:    "",
-		Path:     api.ToPathApi(path),
+		Path:     api.ToPathApi(path, nil),
 	}
 	if _, err := c.Api.AddPath(context.Background(), req); err != nil {
 		return err
@@ -193,7 +193,7 @@ func (c *BgpClient) DelBgpPath(path *table.Path) error {
 	req := &api.DeletePathRequest{
 		Resource: api.Resource_GLOBAL,
 		VrfId:    "",
-		Path:     api.ToPathApi(path),
+		Path:     api.ToPathApi(path, nil),
 	}
 	if _, err := c.Api.DeletePath(context.Background(), req); err != nil {
 		return err

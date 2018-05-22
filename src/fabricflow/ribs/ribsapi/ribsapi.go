@@ -67,7 +67,7 @@ func DeserializePath(b []byte) (*table.Path, error) {
 }
 
 func SerializePath(path *table.Path) ([]byte, error) {
-	p := gobgpapi.ToPathApi(path)
+	p := gobgpapi.ToPathApi(path, nil)
 	return proto.Marshal(p)
 }
 
