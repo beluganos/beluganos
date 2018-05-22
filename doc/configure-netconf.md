@@ -2,7 +2,7 @@
 
 ## Pre-requirements
 - Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
-	- In setup, you may specify switch name and dp_id. In this documents, the sample file's value (`name: sample_sw`, `dp_id: 153`) is assumed. If you changed this value, please change to match it.
+	- In setup, you may specify switch name and `dp_id`. In this documents, the sample file's value (`name: sample_sw`, `dp_id: 153`) is assumed. If you changed this value, please change to match it.
 
 ## Step 1. Prepare for launch
 
@@ -54,7 +54,7 @@ The syntax of `etc/playbooks/lxd-netconf.yml` is following:
 
 ## Step 2. Launch components
 
-You have already finished to launch Beluganos! The configuring by NETCONF will be enabled after launching. Please start Beluganos by following commands.
+Actually, you have already finished to launch Beluganos! The configuring by NETCONF will be enabled after launching. Please start Beluganos by following commands.
 
 ```
 $ sudo systemctl start fibcd
@@ -62,7 +62,7 @@ $ sudo systemctl start netopeer2-server
 $ sudo systemctl start ncm.target
 ```
 
-You can use `beluganos start` instead of `systemctl start fibcd`. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md).
+You can also use `beluganos start` instead of `systemctl start fibcd`. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md).
 
 ## Step 3. Configure by NETCONF
 
@@ -80,13 +80,11 @@ After exchanging `<hello>` message, you can operate `<get-config>` or `<edit-con
 
 ### Yang moudles and configuration XML
 
-The yam of Beluganos is published under [netconf/etc/openconfig](https://github.com/beluganos/netconf/tree/master/etc/openconfig). Beluganos support three modules ([network-instances](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-network-instance.yang), [interfaces](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-interfaces.yang), [routing-policy](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-routing-policy.yang))
-
-Note that the sample NETCONF XML are available at [netconf/doc/examples](https://github.com/beluganos/netconf/tree/master/doc/examples).
+The yam of Beluganos is published under [netconf/etc/openconfig](https://github.com/beluganos/netconf/tree/master/etc/openconfig). Beluganos support three modules ([network-instances](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-network-instance.yang), [interfaces](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-interfaces.yang), [routing-policy](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-routing-policy.yang)). Note that the sample NETCONF XML are available at [netconf/doc/examples](https://github.com/beluganos/netconf/tree/master/doc/examples).
 
 #### network-instance
 
-At least one **network-instance** is required. Even if it is general IP routers, single **network-instance** exists is assumed. The type and route-target of **network-instance** is used for Beluganos's settings.
+At least one **network-instance** is required. Even if you will configure general IP routers, single network-instance exists is assumed. **The important point is that the type and route-target of network-instance is used for Beluganos's settings.**
 
 ```
 module: beluganos-network-instance
