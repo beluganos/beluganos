@@ -14,7 +14,7 @@ beluganos/
         playbooks/
             hosts                           # Inventry file
             dp_sample.yml                   # Sample of playbok
-            dp-<switch-name>.yml          # Playbook
+            dp-<switch-name>.yml            # Playbook
             roles/
                 dpath/
                     vars/                   # DO NOT EDIT.
@@ -95,7 +95,7 @@ The value of `dp-id` means OpenFlow datapath ID of your switch. The value of `mo
 	- dp_id (`<switch-dp-id>`): OpenFlow datapath ID of your switch. Integer.
 	- mode (`<switch-type>`): Your switch types. Currently Beluganos has three options.
  		1. `ofdpa2`: OF-DPA 2.0 switch. [https://github.com/Broadcom-Switch/of-dpa](https://github.com/Broadcom-Switch/of-dpa)
-		1. `generic`: OpenFlow 1.3 compaliable switches. (e.g. Lagopus)
+		1. `generic`: OpenFlow 1.3 compatible switches. (e.g. Lagopus)
 		1. `ovs`: Open vSwitch (Limited support).
 
 ### Reflect changes
@@ -106,8 +106,6 @@ In case `<switch-name>` is *switchA*:
 $ cd ~/beluganos/etc/playbooks
 $ ansible-playbook -i hosts -K dp-switchA.yml
 ~~~~
-
-## 
 
 ## Next steps
 After reflecting your changes, please refer configure guide. You can choose two methods.

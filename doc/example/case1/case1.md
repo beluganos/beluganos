@@ -8,7 +8,7 @@ In this case, two servers are needed. The virtual machine (VM) is acceptable. **
 
 - Server 1 (for Beluganos)
 	- Ubuntu 18.04 server
-	- 10GB+ storage
+	- 12GB+ storage
 	- At least two NICs
 		- One should be connected with server 2. The other is used for your login via SSH. 
 		- Please set IP addresses before following setup procedure.

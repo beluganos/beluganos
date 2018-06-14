@@ -16,7 +16,7 @@ For more details, please check [doc/architecture.md](doc/architecture.md).
 
 ## Getting Started
 
-### 1. Quick start
+### 1. Quick start by example
 In order to try Beluganos quickly, **some example cases are prepared**. This example can configure automatically not only Beluganos but also other routers to connect with Beluganos. If you wish to use this, please refer to [doc/example/case1/case1.md](doc/example/case1/case1.md) instead of the following description.
 
 ### 2. Step-by-step procedure

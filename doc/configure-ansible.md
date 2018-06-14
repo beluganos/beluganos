@@ -3,7 +3,7 @@ You can configure router options like IP addresses or settings of routing protoc
 
 ## Pre-requirements
 - Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
-- In ansible, only startup config can be edited. If you already start Beluganos by `beluganos run` or `beluganos start` command, please stop before starting ansible playbooks.
+- In ansible, only startup-config can be edited. If you already start Beluganos by `beluganos run` or `beluganos start` command, please stop before starting ansible playbooks.
 - If you will configure L3VPN routers, please refer not only this documents but also [configure-ansible-l3vpn.md](configure-ansible-l3vpn.md).
 
 ## Config files at a glance
@@ -118,11 +118,11 @@ $ vi lxd-group.yml
 
 ### Reflect changes
 
-The reflection of "Settings for Linux Containers" should be done after editting "Router settings".
+The reflection of "Settings for Linux Containers" should be done after editing "Router settings".
 
 ## Router settings
 
-**The sample files are under `etc/playbboks/roles/lxd/files/sample`**. You have copied this folder in previous. If your container name is *master*, you can copy by folllowing commands:
+**The sample files are under `etc/playbboks/roles/lxd/files/sample`**. You have copied this folder in previous. If your container name is *master*, you can copy by following commands:
 
 ```
 $ cd ~/beluganos/etc/playbooks/roles/lxd/files
@@ -194,7 +194,7 @@ The syntax is following:
         nictype: p2p
 
       ....
-      
+
       root:
         path: /
         pool: default
@@ -240,7 +240,7 @@ routers:
 ```
 
 - desc (`<description>`): Your preferable descriptions.
-- re_id (`<router-entity-id>`): Router entity id for internal use. In general, router-id is recomended.
+- re_id (`<router-entity-id>`): Router entity id for internal use. In general, router-id is recommended.
 	- **For VRF environments only**: Please set **master instance's** router-id for all routing instances.
 - datapath (`<switch-name>`): Your switch name which is declared at `etc/playbooks/dp-sample.yml`. Please refer [setup-guide.md](setup-guide.md).
 - ports
@@ -299,7 +299,7 @@ net.mpls.conf.eth2/100.input=1
 
 ### 5. daemons: Routing protocols which you want to use
 
-This is FRRouting setting. Please note that IP Multicast routing is not supported yet.
+This is FRRouting setting. Please note that IP Multi-cast routing is not supported yet.
 
 ```
 zebra=yes
@@ -351,8 +351,8 @@ This is the main configuration file of Beluganos itself. For example, following 
 [node]
 nid   = 0
 reid  = "10.0.1.6"
-label = 100000
-#allow_duplicate_ifname = false
+# label = 100000
+allow_duplicate_ifname = false
 
 [log]
 level = 5
@@ -391,7 +391,7 @@ interval = 5000
 [node]
 nid   = 0
 reid  = "<router-entity-id>"
-allow_duplicate_ifname = <allow-duplicate-ifname>
+allow_duplicate_ifname = <>
 
 [log]
 level = <beluganos-log-level>
@@ -416,7 +416,7 @@ interval = <beluganos-ribp-interval>
 - [node]
 	- nid (`<instance-number>`): Linux container ID. Except VRF environments, you should set to `0` to instance number.
 	- reid (`<router-entity-id>`): Router entity id for internal use. In general, router-id is recommended. This value should match the value in `fibc.yml`.
-	- allow\_duplicate\_ifname: The settings to allow overlapping of interface names between different containers, except "lo" and "eth0". Default settings is "false".
+	- allow\_duplicate\_ifname (`<allow-duplicate-ifname>`): The settings to allow overlapping of interface names between different containers, except "lo" and "eth0". Default settings is "false".
 - [log]
 	- level (`<beluganos-log-level>`): Log level. 0〜5. 5 is the most detailed value.
 	- dump (`<beluganos-debug>`): Debug flag. If you don't need debug log, please set to 0.
@@ -449,7 +449,7 @@ $ lxc stop master
 
 ## Start Beluganos
 
-When you finished the beluganos's settings, Let's start Beluganos! You can start main module of Beluganos by following commands:
+Once you finished the Beluganos's settings, Let's start Beluganos! You can start main module of Beluganos by following commands:
 
 ```
 $ beluganos start

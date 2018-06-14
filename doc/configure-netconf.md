@@ -6,6 +6,8 @@
 
 ## Step 1. Prepare for launch
 
+### 1-1. playbooks
+
 You have to execute minimum playbooks even if you configure only by NETCONF before configuring.
 
 ```
@@ -24,8 +26,6 @@ $ vi lxd-netconf.yml
     datapath: sample_sw
     dp_id: 153
     bridge: dp0
-
-$ ansible-playbook -i hosts -K lxd-netconf.yml
 ```
 
 The syntax of `etc/playbooks/lxd-netconf.yml` is following:
@@ -51,6 +51,63 @@ The syntax of `etc/playbooks/lxd-netconf.yml` is following:
 		- Router identified name. Only Beluganos's main component will use this value to identify routers. This value is only internal use.
 	- datapath (`<switch-name>`) and dp_id (`<switch-dp-id>`)
 		- White-box hardware settings. The value of `fibc.yml` which was edited at [setup-guide.md](setup-guide.md) should be filled.
+
+To reflect, please execute ansible for setup.
+
+```
+$ ansible-playbook -i hosts -K lxd-netconf.yml
+```
+
+### 1-2. lxcinit
+In NETCONF module of Beluganos, once you create `network-instance` by NETCONF, `/etc/lxcinit/<container-type>/lxcinit.sh` will be executed. This script contains initial settings. You should configure about this script by editing `ribxd.conf` at `/etc/lxcinit/<container-type>/conf`.
+
+#### container-type
+
+`<container-type>` means the type of routing instance. Generally, `std_mic` should be selected. In case of VRF-Lite or MPLS-VPN environments, please refer following tables:
+
+| container-type | description                          |
+| -------------- | ------------------------------------ |
+| std_mic        | Standard network instance            |
+| std_ric        | Virtual router (VRF-Lite)            |
+| vpn_mic        | Standard network instance with L3VPN |
+| vpn_ric        | VRF for L3VPN                        |
+
+#### ribxd.conf
+
+In `std_mic`, the syntax is following. There is no reflection commands.
+
+```
+# -*- coding: utf-8; mode: toml -*-
+
+[node]
+nid   = 0
+reid  = "<router-entity-id>"
+label = 100000
+allow_duplicate_ifname = false
+# nid_from_ifaddr = "eth0"
+
+[log]
+level = 5
+dump  = 0
+
+[nla]
+core  = "127.0.0.1:50061"
+api   = "127.0.0.1:50062"
+
+[ribc]
+fibc  = "192.169.1.1:50070"
+
+[ribs]
+disable = true
+
+[ribp]
+api = "127.0.0.1:50091"
+```
+- [node]
+	- reid (`<router-entity-id>`)
+		- Router identified name. Only Beluganos's main component will use this value to identify routers. This value is only internal use.
+
+In other case (`std_ric`, `vpn_mic`, and `vpn_ric`), please refer [configure-ansible.md](https://github.com/beluganos/beluganos/blob/master/doc/configure-ansible.md#8-ribxdconf-beluganoss-settings).
 
 ## Step 2. Launch components
 
@@ -86,7 +143,7 @@ $ netopeer2-cli
 
 ### Yang moudles and configuration XML
 
-The yam of Beluganos is published under [netconf/etc/openconfig](https://github.com/beluganos/netconf/tree/master/etc/openconfig). Beluganos support three modules ([network-instances](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-network-instance.yang), [interfaces](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-interfaces.yang), [routing-policy](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-routing-policy.yang)). Note that the sample NETCONF XML are available at [netconf/doc/examples](https://github.com/beluganos/netconf/tree/master/doc/examples).
+The yang modules of Beluganos are published under [netconf/etc/openconfig](https://github.com/beluganos/netconf/tree/master/etc/openconfig). Currently, Beluganos support three modules ([network-instances](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-network-instance.yang), [interfaces](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-interfaces.yang), [routing-policy](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-routing-policy.yang)). Note that the sample NETCONF XML are available at [netconf/doc/examples](https://github.com/beluganos/netconf/tree/master/doc/examples).
 
 #### network-instance
 
@@ -103,10 +160,10 @@ module: beluganos-network-instance
           |  +--rw ....
 ```
 
-The supported network instance (i.e. Linux container) type is following: 
+The supported network instance (i.e. Linux container) type is following:
 
 | Type             | Route-target | Description                          |
-| ---------------- | -------------| ------------------------------------ | 
+| ---------------- | -------------| ------------------------------------ |
 | DEFAULT_INSTANCE | No           | Standard network instance            |
 | L3VRF            | No           | Virtual router (VRF-Lite)            |
 | DEFAULT_INSTANCE | Yes(*1)      | Standard network instance with L3VPN |
@@ -149,13 +206,15 @@ The naming rules of interface are `eth<n>` (`<n>` is a interface index). The max
 ### Restrictions
 
 - Datastores
-	- For proper network operation, you cannot edit running-configuration datastore directly. You should use candidate-configuration datasotre by `<commit>` operations.
-	- The startup-configuration is automacally copied from running-configurations. You don't have to operate `<copy-config>`.
+	- For proper network operation, you cannot edit running-configuration datastore directly. You should use candidate-configuration datastore by `<commit>` operations.
+	- The startup-configuration is automatically copied from running-configurations. You don't have to operate `<copy-config>`.
 - Operations
-	- The operation of `<validate>` will do nothing. Actually, the minimum valification will be done in `<edit-config>` to candidate-configuration. This is because `<validate>` has no meanings in Beluganos's implimentation.
+	- The operation of `<validate>` will do nothing. Actually, the minimum verification will be done in `<edit-config>` to candidate-configuration. This is because `<validate>` has no meanings in Beluganos's implementation.
 - Others
-	- The settings of whitebox switches (like `dp_id`) cannot changed by NETCONF. You should use ansible.
+	- The settings of white-box switches (like `dp_id`) cannot changed by NETCONF. You should use ansible.
 	- The settings of sub-IF (VLAN at routed port) should be operated at the same time of physical IF.
+	- The interface settings under beluganos-interfaced module should be added **before** adding interface under beluganos-network-instances.
+	- The settings of network instance's name should be matched at `ribxd.conf` which is located at `/etc/lxcinit/<container-type>`. This restrictions will be removed at next release.
 
 ### Sample operations
 
