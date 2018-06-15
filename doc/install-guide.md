@@ -1,16 +1,17 @@
 # Install guide
-This document shows how to install beluganos in your systems. Automation scripts are prepared.
+This document shows how to install Beluganos in your systems. Automation scripts are prepared.
 
 ## Pre-requirements
 
 ### Resources
-You can also build Beluganos into the white-box switches, but installing another Ubuntu server is recommended at first.
+Generally, network OS is installed into white-box switches. In Beluganos, you can also build Beluganos into the white-box switches. However, at first, preparing extra server (or VM) and installing here are recommended at first.
 
 - Ubuntu server
-	- **Ubuntu 17.10** (17.10.1-server-amd64) is strongly recommended (Note that supporting Ubuntu 18.04 is scheduled).
+	- **Ubuntu 18.04** (18.04-live-server-amd64) is strongly recommended.
 	- **Two or more network interfaces** are required.
+	- Some LXC instance will be created. More than **12GB HDD** is recommended.
 - White-box switches
-	- **[OF-DPA 2.0](https://github.com/Broadcom-Switch/of-dpa/) switch** and OpenFlow agent are required. OF-DPA application in Edge-core switches is also available at [here] (https://github.com/edge-core/beluganos-forwarding-app).
+	- **[OF-DPA 2.0](https://github.com/Broadcom-Switch/of-dpa/) switch** and OpenFlow agent are required. OF-DPA application in Edge-core switches is also available at [Edge-core's repository](https://github.com/edge-core/beluganos-forwarding-app).
 	- If you don't have OF-DPA switches, any OpenFlow 1.3 switches are acceptable to try Beluganos. In this case, [Lagopus switch](http://www.lagopus.org/) is recommended.
 
 ### LXC settings
@@ -21,7 +22,7 @@ If LXC have not configured yet, please set up LXC before starting to build Belug
 - The size of new loop device is depend on number of VRF which you will configure at most. ( Num-of-VRF + 2 ) GB or more is required.
 
 ```
-$ lxd init
+$ sudo lxd init
 Do you want to configure a new storage pool (yes/no) [default=yes]?
 Name of the new storage pool [default=default]:
 Name of the storage backend to use (dir, btrfs, lvm) [default=btrfs]:
@@ -49,20 +50,20 @@ $ vi create.ini
   # Proxy
   #
   # PROXY=http://<ip>:<port>       # (Optional) Comment out if you need internet proxy server
-  
+
   #
   # Host
   #
   BELUG_MNG_IFACE=ens3             # Set your management interface name for remote login
   BELUG_OFC_IFACE=ens4             # Set your secure channel interface name connected to switches
   BELUG_OFC_ADDR=172.16.0.55/24    # (Optional) You can change BELUG_OFC_IFACE's IP address and prefix-length if needed
-  
+
 $ ./create.sh
 ```
 
 ## 2. Register as a service
 
-Generally, registering Beluganos's main module as a linux service is recommended. 
+Generally, registering Beluganos's main module as a Linux service is recommended.
 
 ```
 $ cd ~/beluganos
@@ -77,4 +78,4 @@ $ sudo make install-services
 ```
 
 ## Next steps
-You should register your whitebox swithes (or OpenFlow switches) to Beluganos's main module. Please refer [setup-guide.md](setup-guide.md) for more details.
+You should register your white-box switches (or OpenFlow switches) to Beluganos's main module. Please refer [setup-guide.md](setup-guide.md) for more details.

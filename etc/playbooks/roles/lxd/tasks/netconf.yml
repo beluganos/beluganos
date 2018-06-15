@@ -12,6 +12,15 @@
     - "{{ dirs }}"
 
 
+- name: copy binary files
+  copy:
+    src: "{{ gopath }}/bin/{{ item }}"
+    dest: "/usr/bin/{{ item }}"
+    mode: 0755
+  with_items:
+    - "{{ binfiles }}"
+
+
 - name: create ovs bridge
   openvswitch_bridge:
     bridge: "{{ bridge }}"

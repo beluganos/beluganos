@@ -48,7 +48,7 @@ index 0000000..bb11deb
 +
 +const RTNLGRP_MPLS_ROUTE = 27
 diff --git a/nl/syscall.go b/nl/syscall.go
-index fc631e0..a79dd33 100644
+index 0ff1bba..31382cb 100644
 --- a/nl/syscall.go
 +++ b/nl/syscall.go
 @@ -47,6 +47,7 @@ const (
@@ -89,10 +89,10 @@ index 0000000..08d5709
 +	return &route, err
 +}
 diff --git a/route_linux.go b/route_linux.go
-index 3f85671..b1de3f9 100644
+index 7233549..bdd543c 100644
 --- a/route_linux.go
 +++ b/route_linux.go
-@@ -603,6 +603,8 @@ func deserializeRoute(m []byte) (Route, error) {
+@@ -786,6 +786,8 @@ func deserializeRoute(m []byte) (Route, error) {
  		switch attr.Attr.Type {
  		case unix.RTA_GATEWAY:
  			route.Gw = net.IP(attr.Value)
@@ -101,7 +101,7 @@ index 3f85671..b1de3f9 100644
  		case unix.RTA_PREFSRC:
  			route.Src = net.IP(attr.Value)
  		case unix.RTA_DST:
-@@ -649,6 +651,8 @@ func deserializeRoute(m []byte) (Route, error) {
+@@ -832,6 +834,8 @@ func deserializeRoute(m []byte) (Route, error) {
  					switch attr.Attr.Type {
  					case unix.RTA_GATEWAY:
  						info.Gw = net.IP(attr.Value)
