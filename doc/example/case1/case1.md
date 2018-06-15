@@ -7,13 +7,13 @@ This case is suitable for a beginner of Beluganos, because not only Beluganos's 
 In this case, two servers are needed. The virtual machine (VM) is acceptable. **IP reachability is needed** between server 1 and 2.
 
 - Server 1 (for Beluganos)
-	- Ubuntu 17.10 server
-	- 10GB+ storage
+	- Ubuntu 18.04 server
+	- 12GB+ storage
 	- At least two NICs
 		- One should be connected with server 2. The other is used for your login via SSH. 
 		- Please set IP addresses before following setup procedure.
 - Server 2 (for OVS and other routers)
-	- Ubuntu 17.10 server
+	- Ubuntu 18.04 server
 	- 12GB+ storage
 	- At least one NICs
 		- This should be connected with server 1.
@@ -104,11 +104,11 @@ By using scripts described following capter, you can create following environmen
 The server 1 will be used as Beluganos. Please check `doc/install-guide.md` for install. Please note that `FFLOW_OFC_IFACE` should be set to the interface which is connected with server 2. If you need to change this interface name or IP address, please change `create.ini` before execute `create.sh`.
 
 ~~~~
+server1$ cd ~/beluganos
 server1$ vi create.ini
   FFLOW_MNG_IFACE=ens3             # Set your management interface name for remote login
   FFLOW_OFC_IFACE=ens4             # Set your secure channel interface name connected to switches
   FFLOW_OFC_ADDR=172.16.0.55       # (Optional) You can change FFLOW_OFC_IFACE's IP address if needed
-  FFLOW_OFC_MASK=255.255.255.0     # (Optional) You can change FFLOW_OFC_IFACE's subnet mask if needed
 ~~~~
 
 ### Step 1-2. Settings for switches
@@ -122,6 +122,7 @@ server1$ ansible-playbook -i hosts -K dp-sample.yml
 ### Step 1-3. Settings for containers
 
 ~~~~
+server1$ cd ~/beluganos/etc/playbooks
 server1$ ansible-playbook -i hosts -K lxd-sample.yml
 server1$ lxc stop sample
 ~~~~
@@ -196,10 +197,8 @@ server2$ lxc start sample-p1 sample-p2 sample-p3 sample-p4
 
 ### Step 3-2. start Beluganos
 
-Please execute following commands. You should have two terminals of server 1 because `beluganos run` command will take the standard input from you.
-
 ~~~~
-server1$ beluganos run
+server1$ beluganos start
 server1$ beluganos add sample
 ~~~~
 
@@ -295,9 +294,8 @@ If there is any trouble unfortunately, please stop and restart this case.
 
 ~~~~
 server1$ beluganos del sample
+server1$ beluganos stop
 ~~~~
-
-Note that the script `beluganos run` can be stopped by `Ctrl-c`. You should stop this script after executing `beluganos del sample`.
 
 ### Step 5-2. stop environments
 
@@ -361,12 +359,9 @@ server1$ vi etc/playbooks/roles/lxd/files/sample/frr.conf
 If you change the files under `roles/lxd/files/sample/`, you may execute playbook of `lxd-sample.yml` after stopping Beluganos.
 
 ~~~~
+server1$ cd ~/belugganos/etc/playbooks/
 server1$ ansible-playbook -i hosts -K lxd-sample.yml
 server1$ lxc stop sample
 ~~~~
 
-For more detail, see `doc/setup-guide.md`.
-
-### Start Beluganos as daemon
-
-When you execute `beluganos run`, you will be token the standard input by this script. This mode is useful for debugging, but some trouble will occur in production. Of course you can use daemon mode of Beluganos. For using, you should edit `.service` file. For more detail, see `doc/operation-guide.md`.
+For more detail, please refer `doc/configure-ansible.md`. Moreover, If you want to use NETCONF to change Beluganos's settings, please refer `doc/configure-netconf.md`.

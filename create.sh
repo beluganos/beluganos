@@ -167,10 +167,12 @@ frr_pkg() {
     else
         git clone $FRR_URL $FRR_DIR || { echo "frr_pkg/clone error."; exit 1; }
         cp etc/frr/frr.patch /tmp/
+        cp etc/frr/frr-stable-3.0-for-ubuntu-1804.patch /tmp/
 
         pushd $FRR_DIR
         git checkout -b $FRR_BRANCH origin/stable/$FRR_BRANCH
         patch -p1 < /tmp/frr.patch
+        patch -p1 < /tmp/frr-stable-3.0-for-ubuntu-1804.patch
         ln -s debianpkg debian
     fi
 
@@ -224,7 +226,7 @@ lxd_base() {
     lxc exec ${LXD_IMAGE_TEMP} apt ${APT_PROXY} -- -y update || { echo "lxd_base/update error."; exit 1; }
     lxc exec ${LXD_IMAGE_TEMP} apt ${APT_PROXY} -- -y dist-upgrade || { echo "lxd_base upgrade error"; exit 1; }
     lxc exec ${LXD_IMAGE_TEMP} apt ${APT_PROXY} -- -y install ${LXD_APT_PKGS} || { echo "lxd_base/install error."; exit 1; }
-    lxc exec ${LXD_IMAGE_TEMP} apt ${APT_PROXY} -- -y autoremomve
+    lxc exec ${LXD_IMAGE_TEMP} apt ${APT_PROXY} -- -y autoremove
 
     echo "Push ${FRR_PKG} to ${LXD_IMAGE_TEMP}"
     lxc file push ${LXD_WORK_DIR}/${FRR_PKG} ${LXD_IMAGE_TEMP}/tmp/

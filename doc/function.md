@@ -82,15 +82,13 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 - \*1: OpenFlow metadata fields is utilized for VRF. OFSwitch needs to support metadata fields.
 - \*2: No DN bits support.
 
-## L2VPN
+## VXLAN
 | Function | OF-DPA | OFSwitch | OpenNSL |
 |:---------|:-------|:---------|:--------|
-|VXLAN|No Roadmap|No Roadmap|Planned|
-|VXLAN - Ingress Replication|No Roadmap|No Roadmap|Planned|
-|VXLAN - EVPN|No Roadmap|No Roadmap|Planned|
-|VXLAN - Multi-homing|No Roadmap|No Roadmap|Planned|
-
-
+|VXLAN encap/decap|No Roadmap|No Roadmap|Planned|
+|Ingress Replication|No Roadmap|No Roadmap|Planned|
+|EVPN BGP|No Roadmap|No Roadmap|Planned|
+|Multi-homing|No Roadmap|No Roadmap|Planned|
 
 ## Management
 | Function | OF-DPA | OFSwitch | OpenNSL |
