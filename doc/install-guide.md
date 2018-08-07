@@ -4,7 +4,7 @@ This document shows how to install Beluganos in your systems. Automation scripts
 ## Pre-requirements
 
 ### Resources
-Generally, network OS is installed into white-box switches. In Beluganos, you can also build Beluganos into the white-box switches. However, at first, preparing extra server (or VM) and installing here are recommended at first.
+Generally, network OS is installed into the white-box switches. In Beluganos, you can also build Beluganos into the white-box switches. However, at first, preparing extra server (or VM) and installing here are recommended at first.
 
 - Ubuntu server
 	- **Ubuntu 18.04** (18.04-live-server-amd64) is strongly recommended.
@@ -80,4 +80,11 @@ $ sudo make install-service
 ```
 
 ## Next steps
+
+You may choose two options.
+
+### Quick start by example
+If you want to try our example cases like [case1 (IP/MPLS router)](example/case1/case1.md) or [case2 (MPLS-VPN PE router)](example/case2/case2.md), please get back the example documentations.
+
+### Step-by-step procedure
 You should register your white-box switches (or OpenFlow switches) to Beluganos's main module. Please refer [setup-guide.md](setup-guide.md) for more details.

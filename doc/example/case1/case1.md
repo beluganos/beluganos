@@ -1,10 +1,11 @@
 # Case 1: LDP with OSPFv2
 
-This case is suitable for a beginner of Beluganos, because not only Beluganos's sample configurations but also network environments are prepared. In this case, Beluganos will work label switch router (LSR) with LDP and OSPFv2.
+This case is suitable for a beginner of Beluganos. In this case, not only Beluganos itselfs but also network environments are prepared automatically. In this case, Beluganos works as label switch router (LSR) with LDP and OSPFv2.
 
 ## Pre-requirements
 
-In this case, two servers are needed. The virtual machine (VM) is acceptable. **IP reachability is needed** between server 1 and 2.
+### Resources
+In this case, two servers are required. The virtual machine (VM) is acceptable. **IP reachability is required** between server 1 and 2.
 
 - Server 1 (for Beluganos)
 	- Ubuntu 18.04 server
@@ -14,7 +15,7 @@ In this case, two servers are needed. The virtual machine (VM) is acceptable. **
 		- Please set IP addresses before following setup procedure.
 - Server 2 (for OVS and other routers)
 	- Ubuntu 18.04 server
-	- 12GB+ storage
+	- 14GB+ storage
 	- At least one NICs
 		- This should be connected with server 1.
 		- Please set IP address before following setup procedure.
@@ -101,7 +102,7 @@ By using scripts described following capter, you can create following environmen
 
 ### Step 1-1. Install Beluganos
 
-The server 1 will be used as Beluganos. Please check `doc/install-guide.md` for install. Please note that `FFLOW_OFC_IFACE` should be set to the interface which is connected with server 2. If you need to change this interface name or IP address, please change `create.ini` before execute `create.sh`.
+The server 1 will be configured as Beluganos. Please refer [install-guide.md](../../install-guide.md) for install. Please note that `FFLOW_OFC_IFACE` should be set to the interface which is connected with server 2. If you need to change this interface name or IP address, please change `create.ini` before execute `create.sh`.
 
 ~~~~
 server1$ cd ~/beluganos
@@ -118,6 +119,7 @@ server1$ cd ~/beluganos/etc/playbooks
 server1$ ansible-playbook -i hosts -K dp-sample.yml
 ~~~~
 
+If you want to know the detail of this playbooks, please refer [setup-guide.md](../../setup-guide.md).
 
 ### Step 1-3. Settings for containers
 
@@ -127,6 +129,7 @@ server1$ ansible-playbook -i hosts -K lxd-sample.yml
 server1$ lxc stop sample
 ~~~~
 
+If you want to know the detail of this playbooks, please refer [configure-ansible.md](../../configure-ansible.md).
 
 ## Step 2. setup server 2
 
@@ -308,7 +311,7 @@ server2$ lxc stop sample-p1 sample-p2 sample-p3 sample-p4
 
 ### Use real white-box switches
 
-In this sample, we use OpenvSwitch instead of white-box switches. This is just for simplicity, so that you can use real white-box switches.
+In this sample, we use OpenvSwitch instead of white-box switches. This is just for simplicity, so that you can also use real white-box switches.
 
 In this case, you don't need prepare for server 2. Only server 1 is needed. Moreover, please change `fibc.yml` by following commands:
 
@@ -359,9 +362,9 @@ server1$ vi etc/playbooks/roles/lxd/files/sample/frr.conf
 If you change the files under `roles/lxd/files/sample/`, you may execute playbook of `lxd-sample.yml` after stopping Beluganos.
 
 ~~~~
-server1$ cd ~/belugganos/etc/playbooks/
+server1$ cd ~/beluganos/etc/playbooks/
 server1$ ansible-playbook -i hosts -K lxd-sample.yml
 server1$ lxc stop sample
 ~~~~
 
-For more detail, please refer `doc/configure-ansible.md`. Moreover, If you want to use NETCONF to change Beluganos's settings, please refer `doc/configure-netconf.md`.
+For more detail, please refer [configure-ansible.md](../../configure-ansible.md). Moreover, If you want to use NETCONF to change Beluganos's settings, please refer [configure-netconf.md](../../configure-netconf.md).

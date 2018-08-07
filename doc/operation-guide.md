@@ -13,7 +13,7 @@ In this page, operation about NETCONF module is also described. If you will not 
 
 You have two options to start/stop Beluganos. Generally, because you have already registered Beluganos as a linux service at [install-guide.md](install-guide.md), **daemon mode** is recommended in production.
 
-### (Recommend) Daemon mode
+### Daemon mode [Recommended]
 
 To start,
 
@@ -150,6 +150,8 @@ sample#
 ## Remarks
 
 ### Automatic start-up
+
+Automatic startup is just beta version.
 
 ```
 $ sudo systemctl enable fibcd
