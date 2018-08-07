@@ -28,9 +28,9 @@ In this case, two servers are required. The virtual machine (VM) is acceptable. 
                  |     Beluganos     |
                  +-------------------+
                         (ens4)
-                          | .53
-                    172.16.0.0/24
                           | .55
+                    172.16.0.0/24
+                          | .53
                         (ens3)
                  +-------------------+
                  |     server 2      |
@@ -150,38 +150,43 @@ Following network will be created by following introduction. To quickly try Belu
 
 ### Step 2-1. Transfer required file
 
-Once you execute `create.sh` at server 1, some files which required in server 2 are created at home directory. You may copy these files to server 2's home directory. The required files are `frr_3.0_amd64.deb`, `ubuntu-16.04-server-cloudimg-amd64-*` and the files under `beluganos/`.
+Once you execute `create.sh` at server 1, some files which required in server 2 are created at home directory. You may copy these files to server 2's home directory. The required files are `frr_3.0.3-1~ubuntu18.04+1_amd64.deb` and the files under `beluganos/`.
 
 ~~~~
 server2$ sftp <IP-address-of-server-1>
 sftp> ls
 beluganos
 frr
-frr-dbg_3.0_amd64.deb
-frr-doc_3.0_all.deb
-frr_3.0_amd64.deb
+frr-3.0.3
+frr-dbg_3.0.3-1~ubuntu18.04+1_amd64.deb
+frr-doc_3.0.3-1~ubuntu18.04+1_all.deb
+frr_3.0.3-1~ubuntu18.04+1_amd64.deb
+frr-pythontools_3.0.3-1~ubuntu18.04+1_all.deb
 go
-mypython
-ubuntu-16.04-server-cloudimg-amd64-lxd.tar.xz
-ubuntu-16.04-server-cloudimg-amd64-root.tar.xz
+netconf
 
-sftp> put frr_3.0_amd54.deb
-sftp> put ubuntu-16.04-server-cloudimg-amd64-*
-sftp> put -R beluganos
+sftp> get frr_3.0.3-1~ubuntu18.04+1_amd64.deb
+sftp> get -R beluganos
 sftp> exit
 
 server2$ ls
-beluganos/ frr-doc_3.0_all.deb ubuntu-16.04-server-cloudimg-amd64-lxd.tar.xz ubuntu-16.04-server-cloudimg-amd64-root.tar.xz
+beluganos/ frr_3.0.3-1~ubuntu18.04+1_amd64.deb
 ~~~~
 
-### Step 2-2. pre-install required package
+### Step 2-2. setup lxd
+
+~~~~
+server2$ sudo lxd init
+~~~~
+
+### Step 2-3. pre-install required package
 
 ~~~~
 server2$ cd ~/beluganos/
 server2$ ./create.sh min
 ~~~~
 
-### Step 2-3. setup P1 to P4
+### Step 2-4. setup P1 to P4
 
 ~~~~
 server2$ cd ~/beluganos/etc/playbooks
@@ -194,7 +199,7 @@ server2$ lxc stop sample-p1 sample-p2 sample-p3 sample-p4
 ### Step 3-1. start environment
 
 ~~~~
-server2$ sudo service openvswitch-switch start
+server2$ sudo systemctl start openvswitch-switch
 server2$ lxc start sample-p1 sample-p2 sample-p3 sample-p4
 ~~~~
 
