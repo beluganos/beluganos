@@ -61,7 +61,7 @@ make_virtenv() {
 # install deb packages
 #
 apt_install() {
-    sudo ${HTTP_PROXY} apt -y install ${APT_PKGS} || { echo "apt_install error."; exit 1; }
+    sudo ${HTTP_PROXY} ${APT_OPTION} apt -y install ${APT_PKGS} || { echo "apt_install error."; exit 1; }
     sudo apt -y autoremove
 }
 
@@ -373,7 +373,7 @@ do_all() {
 do_minimal() {
     confirm "Install minimal" || exit 1
 
-    sudo ${HTTP_PROXY} apt -y install ${APT_MINS}
+    sudo ${HTTP_PROXY} ${APT_OPTION} apt -y install ${APT_MINS}
     make_virtenv
     . ./setenv.sh
     $PIP install -U ${PIP_PROXY} ansible
