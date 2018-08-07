@@ -146,6 +146,17 @@ gobgp_patch() {
 }
 
 #
+# GoBGP specific version.
+#
+gobgp_checkout() {
+    pushd ~/go/src/github.com/osrg/gobgp
+    git checkout -B ${GOBGP_VER} ${GOBGP_VER}
+    go install ./gobgpd || { echo "gobgp_checkout error."; exit 1; }
+    go install ./gobgp || { echo "gobgp_checkout error."; exit 1; }
+    popd
+}
+
+#
 # Ryu ofdpa patch
 #
 ryu_patch() {
@@ -359,6 +370,7 @@ do_all() {
     pip_install
     gopkg_install
     netlink_patch
+    gobgp_checkout
     ryu_patch
 
     # create frr deb package
@@ -416,6 +428,7 @@ case $1 in
     gopkg)
         gopkg_install
         netlink_patch
+        gobgp_checkout
         ;;
     min)
         do_minimal
