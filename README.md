@@ -5,7 +5,7 @@ Beluganos is a **new network OS** designed for **white-box switches**, which can
 - IP Routing (BGP, OSPF, ...)
 - **IP/MPLS**, BGP/MPLS IP-VPNs
 - **Interoperability** with conventional IP or IP/MPLS router
-- ASIC based **full hardware processing**
+- ASIC based **hardware packet processing**
 
 The feature matrix of Beluganos is available at [doc/function.md](doc/function.md). Beluganos was named after [beluga whale](https://en.wikipedia.org/wiki/Beluga_whale).
 

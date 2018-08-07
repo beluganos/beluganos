@@ -135,7 +135,7 @@ $ ssh -s <server-ip> -p 830 netconf
 
 After exchanging `<hello>` message, you can operate `<get-config>` or `<edit-config>` operations. The example log is located at the bottom of this page.
 
-Moreover, you can also use NETOPEER2's cli like following:
+Moreover, you can also use NETOPEER2's CLI like following:
 
 ```
 $ netopeer2-cli

@@ -11,7 +11,7 @@ In this page, operation about NETCONF module is also described. If you will not 
 
 ## Step 1. Run main module
 
-You have two options to start/stop Beluganos. Generally, because you have already registered Beluganos as a linux service at [install-guide.md](install-guide.md), **daemon mode** is recommended in production.
+You have two options to start/stop Beluganos. Generally, because you have already registered Beluganos as a Linux service at [install-guide.md](install-guide.md), **daemon mode** is recommended in production.
 
 ### Daemon mode [Recommended]
 
@@ -38,7 +38,7 @@ $ sudo systemctl stop ncms               #Only using NETCONF
 $ beluganos run
 ```
 
-In this method, Beluganos can be worked in your terminal for debug. This command will snatch your standard output. `Ctrl-c` to stop. 
+In this method, Beluganos can be worked in your terminal for debug. This command will snatch your standard output. `Ctrl-c` to stop.
 
 ### Remarks
 `fibcd` service and `beluganos run` command will make start to connect with OpenFlow agent. Before executing this commands, starting OF-DPA apps is recommended.
@@ -47,7 +47,7 @@ In this method, Beluganos can be worked in your terminal for debug. This command
 
 After starting main module of Beluganos, you should add Linux containers. In general, one container should be added. Only in VRF environments like MPLS-VPN, you should add all routing instance's containers.
 
-**Important Notice:** When NETCONF is used for configure, you do **NOT** have to manually add linux containers. Following steps are required only the case which you have configured by [configure-ansible.md](configure-ansible.md).
+**Important Notice:** When NETCONF is used for configure, you do **NOT** have to manually add Linux containers. Following steps are required only the case which you have configured by [configure-ansible.md](configure-ansible.md).
 
 To add:
 
@@ -61,7 +61,7 @@ To delete:
 $ beluganos del <container-name>
 ```
 
-You forgot container name? In the procedure of [configure-ansible.md](configure-ansible.md), you should have already specified this name. Please check inventory file (`etc/playbooks/hosts`) or task foloder (`etc/playbooks/roles/lxd/tasks/<container-name>.yml`) to remember your container name.
+You forgot container name? In the procedure of [configure-ansible.md](configure-ansible.md), you should have already specified this name. Please check inventory file (`etc/playbooks/hosts`) or task folder (`etc/playbooks/roles/lxd/tasks/<container-name>.yml`) to remember your container name.
 
 ## Confirm
 
@@ -76,7 +76,7 @@ $ sudo systemctl status fibcd
    Active: active (running) since Tue 2018-05-08 20:50:26 JST; 2min 7s ago
 ```
 
-### Confirm linux container's status
+### Confirm Linux container's status
 
 ```
 $ beluganos status <container-name>
@@ -160,7 +160,7 @@ $ sudo systemctl enable ncm.target        #Only using NETCONF
 ```
 
 ### Command
-The command of `beluganos` is created automatically by `create.sh`. The file (python script) is located at `/usr/local/bin/beluganos`. 
+The command of `beluganos` is created automatically by `create.sh`. The file (python script) is located at `/usr/local/bin/beluganos`.
 
 ~~~~
 $ beluganos -h

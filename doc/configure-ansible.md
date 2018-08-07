@@ -208,7 +208,7 @@ The syntax is following:
 		- name (`<lxc-interface-name>`): The interface name of Linux container. Should be same value as this section.
 		- host_name (`{{ lxcname }}.<lxc-interface-number>`): Beluganos's main module recognize container's interface by this value. `<lxc-interface-number>` should be a sequential number starting from 1 for each container.
 		- nictype: p2p. Do NOT edit.
-	- `root`: Strage pool settings for container. Do NOT edit.
+	- `root`: Storage pool settings for container. Do NOT edit.
 
 ### 2. fibc.yml: global settings of this router
 

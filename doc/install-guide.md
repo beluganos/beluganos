@@ -84,7 +84,7 @@ $ sudo make install-service
 You may choose two options.
 
 ### Quick start by example
-If you want to try our example cases like [case1 (IP/MPLS router)](example/case1/case1.md) or [case2 (MPLS-VPN PE router)](example/case2/case2.md), please get back the example documentations.
+If you want to try our example cases like [case 1 (IP/MPLS router)](example/case1/case1.md) or [case 2 (MPLS-VPN PE router)](example/case2/case2.md), please get back the example documentations.
 
 ### Step-by-step procedure
 You should register your white-box switches (or OpenFlow switches) to Beluganos's main module. Please refer [setup-guide.md](setup-guide.md) for more details.

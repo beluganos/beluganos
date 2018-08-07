@@ -1,6 +1,6 @@
 # Case 1: LDP with OSPFv2
 
-This case is suitable for a beginner of Beluganos. In this case, not only Beluganos itselfs but also network environments are prepared automatically. In this case, Beluganos works as label switch router (LSR) with LDP and OSPFv2.
+This case is suitable for a beginner of Beluganos. In this case, not only Beluganos itself but also network environments are prepared automatically. In this case, Beluganos works as label switch router (LSR) with LDP and OSPFv2.
 
 ## Pre-requirements
 
@@ -11,7 +11,7 @@ In this case, two servers are required. The virtual machine (VM) is acceptable. 
 	- Ubuntu 18.04 server
 	- 12GB+ storage
 	- At least two NICs
-		- One should be connected with server 2. The other is used for your login via SSH. 
+		- One should be connected with server 2. The other is used for your login via SSH.
 		- Please set IP addresses before following setup procedure.
 - Server 2 (for OVS and other routers)
 	- Ubuntu 18.04 server
@@ -42,7 +42,7 @@ In this case, two servers are required. The virtual machine (VM) is acceptable. 
 
 ## Network environment
 
-By using scripts described following capter, you can create following environments at server 2 automatically. The router of *sample* is OpenvSwitch which will be connected with server 1 by OpenFlow. The routers of P1, P2, P3, and P4 are Linux containers installed FRRouting.
+In following chapter, you will get following environments at server 2 automatically. The router of *sample* is OpenvSwitch which will be connected with server 1 by OpenFlow. The routers of P1, P2, P3, and P4 are Linux containers installed FRRouting.
 
 ~~~~
                              |
