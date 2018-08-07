@@ -4,7 +4,7 @@ This document shows how to install Beluganos in your systems. Automation scripts
 ## Pre-requirements
 
 ### Resources
-Generally, network OS is installed into white-box switches. In Beluganos, you can also build Beluganos into the white-box switches. However, at first, preparing extra server (or VM) and installing here are recommended at first.
+Generally, network OS is installed into the white-box switches. In Beluganos, you can also build Beluganos into the white-box switches. However, at first, preparing extra server (or VM) and installing here are recommended at first.
 
 - Ubuntu server
 	- **Ubuntu 18.04** (18.04-live-server-amd64) is strongly recommended.
@@ -23,19 +23,21 @@ If LXC have not configured yet, please set up LXC before starting to build Belug
 
 ```
 $ sudo lxd init
-Do you want to configure a new storage pool (yes/no) [default=yes]?
+Would you like to use LXD clustering? (yes/no) [default=no]:
+Do you want to configure a new storage pool? (yes/no) [default=yes]:
 Name of the new storage pool [default=default]:
-Name of the storage backend to use (dir, btrfs, lvm) [default=btrfs]:
-Create a new BTRFS pool (yes/no) [default=yes]?
-Would you like to use an existing block device (yes/no) [default=no]?
+Name of the storage backend to use (btrfs, dir, lvm) [default=btrfs]:
+Create a new BTRFS pool? (yes/no) [default=yes]:
+Would you like to use an existing block device? (yes/no) [default=no]:
 Size in GB of the new loop device (1GB minimum) [default=15GB]: 8
-Would you like LXD to be available over the network (yes/no) [default=no]?
-Would you like stale cached images to be updated automatically (yes/no) [default=yes]?
-Would you like to create a new network bridge (yes/no) [default=yes]?
-What should the new bridge be called [default=lxdbr0]?
-What IPv4 address should be used (CIDR subnet notation, “auto” or “non [default=auto]?
-What IPv6 address should be used (CIDR subnet notation, “auto” or “non [default=auto]?
-LXD has been successfully configured.
+Would you like to connect to a MAAS server? (yes/no) [default=no]:
+Would you like to create a new network bridge? (yes/no) [default=yes]:
+What should the new bridge be called? [default=lxdbr0]:
+What IPv4 address should be used? (CIDR subnet notation, “auto” or “none”) [default=auto]:
+What IPv6 address should be used? (CIDR subnet notation, “auto” or “none”) [default=auto]:
+Would you like LXD to be available over the network? (yes/no) [default=no]:
+Would you like stale cached images to be updated automatically? (yes/no) [default=yes]
+Would you like a YAML "lxd init" preseed to be printed? (yes/no) [default=no]:
 ```
 
 ## 1. Build
@@ -78,4 +80,11 @@ $ sudo make install-service
 ```
 
 ## Next steps
+
+You may choose two options.
+
+### Quick start by example
+If you want to try our example cases like [case 1 (IP/MPLS router)](example/case1/case1.md) or [case 2 (MPLS-VPN PE router)](example/case2/case2.md), please get back the example documentations.
+
+### Step-by-step procedure
 You should register your white-box switches (or OpenFlow switches) to Beluganos's main module. Please refer [setup-guide.md](setup-guide.md) for more details.

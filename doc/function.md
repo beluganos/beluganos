@@ -1,6 +1,6 @@
 # Beluganos Function Matrix
 
-Supported feature and planned feature of Beluganos is described in this page. The implimantation plan is subject to change.
+Supported feature and planned feature of Beluganos is described in this page. The implementation plan is subject to change.
 
 ## Basic
 

@@ -4,8 +4,9 @@ The one of advantage using Beluganos is MPLS-VPN. In this case, the sample confi
 
 ## Pre-requirements
 
+## Resources
 - Ubuntu 18.04 server
-	- 10GB+ strage
+	- 14GB+ strage
 	- At least two NICs
 		- One of this should be connected with white-box switch. Please set IP address before following setup procedure.
 		- Another one is used for your login via SSH.
@@ -68,7 +69,7 @@ This sample case will create only "..SAMPLE-VPN.." zone described following. The
 
 ### Step 1-1. Install Beluganos
 
-Please check `doc/install-guide.md` for install.
+Please refer [install-guide.md](../../install-guide.md) for install.
 
 ### Step 1-2. Settings for switches
 
@@ -84,7 +85,7 @@ datapaths:
 $ ansible-playbook -i hosts -K dp-whitebox1.yml
 ~~~~
 
-This settings should be modified as your white-box switches. For more detail, see `doc/setup-guide.md`.
+This settings should be modified as your white-box switches. For more detail, see [setup-guide.md](../../setup-guide.md) .
 
 ### Step 1-3. Settings for containers
 
@@ -96,10 +97,10 @@ $ lxc stop sample-mic sample-ric10 sample-ric11
 
 ## Step 2. start this case
 
-Please execute following commands. You should have two terminals because `beluganos.py run` command will take the standard input from you.
+Please execute following commands to start.
 
 ~~~~
-$ beluganos run
+$ sudo systemctl start fibcd
 $ beluganos add sample
 $ beluganos add sample-ric10
 $ beluganos add sample-ric11

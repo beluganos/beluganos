@@ -61,19 +61,25 @@ make_virtenv() {
 # install deb packages
 #
 apt_install() {
-    sudo ${HTTP_PROXY} apt -y install ${APT_PKGS} || { echo "apt_install error."; exit 1; }
+    sudo ${HTTP_PROXY} ${APT_OPTION} apt -y install ${APT_PKGS} || { echo "apt_install error."; exit 1; }
     sudo apt -y autoremove
+}
+
+#
+# install pip by get_pip.py
+#
+get_pip() {
+    if [ "${ENABLE_VIRTUALENV}" != "yes" ]; then
+        wget -nc -P /tmp ${GET_PIP_URL}/${GET_PIP_FILE} || { echo "pip_install/wget error."; exit 1; }
+        sudo python /tmp/${GET_PIP_FILE} --proxy="${PROXY}" || { echo "pip_install/python error."; exit 1; }
+    fi
 }
 
 #
 # install python packages
 #
 pip_install() {
-    if [ "${ENABLE_VIRTUALENV}" != "yes" ]; then
-        wget -nc -P /tmp ${GET_PIP_URL}/${GET_PIP_FILE} || { echo "pip_install/wget error."; exit 1; }
-        sudo python /tmp/${GET_PIP_FILE} --proxy="${PROXY}" || { echo "pip_install/python error."; exit 1; }
-    fi
-
+    get_pip
     $PIP install -U ${PIP_PKGS} || { echo "pip_install/pip error."; exit 1; }
 }
 
@@ -136,6 +142,17 @@ gobgp_patch() {
     pushd ~/go/src/github.com/osrg/gobgp
     patch -p1 < /tmp/gobgp_for_frr.patch
     go install --tags=frr ./... || { echo "gobgp_patch/install error."; exit 1; }
+    popd
+}
+
+#
+# GoBGP specific version.
+#
+gobgp_checkout() {
+    pushd ~/go/src/github.com/osrg/gobgp
+    git checkout -B ${GOBGP_VER} ${GOBGP_VER}
+    go install ./gobgpd || { echo "gobgp_checkout error."; exit 1; }
+    go install ./gobgp || { echo "gobgp_checkout error."; exit 1; }
     popd
 }
 
@@ -353,6 +370,7 @@ do_all() {
     pip_install
     gopkg_install
     netlink_patch
+    gobgp_checkout
     ryu_patch
 
     # create frr deb package
@@ -373,9 +391,10 @@ do_all() {
 do_minimal() {
     confirm "Install minimal" || exit 1
 
-    sudo ${HTTP_PROXY} apt -y install ${APT_MINS}
+    sudo ${HTTP_PROXY} ${APT_OPTION} apt -y install ${APT_MINS}
     make_virtenv
     . ./setenv.sh
+    get_pip
     $PIP install -U ${PIP_PROXY} ansible
     init_lxd
     init_sys
@@ -409,6 +428,7 @@ case $1 in
     gopkg)
         gopkg_install
         netlink_patch
+        gobgp_checkout
         ;;
     min)
         do_minimal
