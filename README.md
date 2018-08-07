@@ -5,7 +5,7 @@ Beluganos is a **new network OS** designed for **white-box switches**, which can
 - IP Routing (BGP, OSPF, ...)
 - **IP/MPLS**, BGP/MPLS IP-VPNs
 - **Interoperability** with conventional IP or IP/MPLS router
-- ASIC based **full hardware processing**
+- ASIC based **hardware packet processing**
 
 The feature matrix of Beluganos is available at [doc/function.md](doc/function.md). Beluganos was named after [beluga whale](https://en.wikipedia.org/wiki/Beluga_whale).
 
@@ -35,7 +35,7 @@ In order to try Beluganos quickly, **some example cases are prepared**. This exa
 	- To configure by NETCONF, please see [doc/configure-netconf.md](doc/configure-netconf.md).
 
 ## Support
-Github issue page and e-mail are available. If you prefer to use e-mail, please contact `msf-contact [at] lab.ntt.co.jp`.
+Github issue page and e-mail are available. If you prefer to use e-mail, please contact `msf-contact-ml [at] hco.ntt.co.jp`.
 
 ## Development & Contribution
 Any contribution is encouraged. The main component is written in Go and Python. If you wish to create pull-request on github.com, please kindly create your request for **develop branch**, not master branch. If you find any issue, please kindly notify us by github issue pages.

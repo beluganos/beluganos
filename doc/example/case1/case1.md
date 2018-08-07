@@ -1,20 +1,21 @@
 # Case 1: LDP with OSPFv2
 
-This case is suitable for a beginner of Beluganos, because not only Beluganos's sample configurations but also network environments are prepared. In this case, Beluganos will work label switch router (LSR) with LDP and OSPFv2.
+This case is suitable for a beginner of Beluganos. In this case, not only Beluganos itself but also network environments are prepared automatically. In this case, Beluganos works as label switch router (LSR) with LDP and OSPFv2.
 
 ## Pre-requirements
 
-In this case, two servers are needed. The virtual machine (VM) is acceptable. **IP reachability is needed** between server 1 and 2.
+### Resources
+In this case, two servers are required. The virtual machine (VM) is acceptable. **IP reachability is required** between server 1 and 2.
 
 - Server 1 (for Beluganos)
 	- Ubuntu 18.04 server
 	- 12GB+ storage
 	- At least two NICs
-		- One should be connected with server 2. The other is used for your login via SSH. 
+		- One should be connected with server 2. The other is used for your login via SSH.
 		- Please set IP addresses before following setup procedure.
 - Server 2 (for OVS and other routers)
 	- Ubuntu 18.04 server
-	- 12GB+ storage
+	- 14GB+ storage
 	- At least one NICs
 		- This should be connected with server 1.
 		- Please set IP address before following setup procedure.
@@ -27,9 +28,9 @@ In this case, two servers are needed. The virtual machine (VM) is acceptable. **
                  |     Beluganos     |
                  +-------------------+
                         (ens4)
-                          | .53
-                    172.16.0.0/24
                           | .55
+                    172.16.0.0/24
+                          | .53
                         (ens3)
                  +-------------------+
                  |     server 2      |
@@ -41,7 +42,7 @@ In this case, two servers are needed. The virtual machine (VM) is acceptable. **
 
 ## Network environment
 
-By using scripts described following capter, you can create following environments at server 2 automatically. The router of *sample* is OpenvSwitch which will be connected with server 1 by OpenFlow. The routers of P1, P2, P3, and P4 are Linux containers installed FRRouting.
+In following chapter, you will get following environments at server 2 automatically. The router of *sample* is OpenvSwitch which will be connected with server 1 by OpenFlow. The routers of P1, P2, P3, and P4 are Linux containers installed FRRouting.
 
 ~~~~
                              |
@@ -101,7 +102,7 @@ By using scripts described following capter, you can create following environmen
 
 ### Step 1-1. Install Beluganos
 
-The server 1 will be used as Beluganos. Please check `doc/install-guide.md` for install. Please note that `FFLOW_OFC_IFACE` should be set to the interface which is connected with server 2. If you need to change this interface name or IP address, please change `create.ini` before execute `create.sh`.
+The server 1 will be configured as Beluganos. Please refer [install-guide.md](../../install-guide.md) for install. Please note that `FFLOW_OFC_IFACE` should be set to the interface which is connected with server 2. If you need to change this interface name or IP address, please change `create.ini` before execute `create.sh`.
 
 ~~~~
 server1$ cd ~/beluganos
@@ -118,6 +119,7 @@ server1$ cd ~/beluganos/etc/playbooks
 server1$ ansible-playbook -i hosts -K dp-sample.yml
 ~~~~
 
+If you want to know the detail of this playbooks, please refer [setup-guide.md](../../setup-guide.md).
 
 ### Step 1-3. Settings for containers
 
@@ -127,6 +129,7 @@ server1$ ansible-playbook -i hosts -K lxd-sample.yml
 server1$ lxc stop sample
 ~~~~
 
+If you want to know the detail of this playbooks, please refer [configure-ansible.md](../../configure-ansible.md).
 
 ## Step 2. setup server 2
 
@@ -147,38 +150,43 @@ Following network will be created by following introduction. To quickly try Belu
 
 ### Step 2-1. Transfer required file
 
-Once you execute `create.sh` at server 1, some files which required in server 2 are created at home directory. You may copy these files to server 2's home directory. The required files are `frr_3.0_amd64.deb`, `ubuntu-16.04-server-cloudimg-amd64-*` and the files under `beluganos/`.
+Once you execute `create.sh` at server 1, some files which required in server 2 are created at home directory. You may copy these files to server 2's home directory. The required files are `frr_3.0.3-1~ubuntu18.04+1_amd64.deb` and the files under `beluganos/`.
 
 ~~~~
 server2$ sftp <IP-address-of-server-1>
 sftp> ls
 beluganos
 frr
-frr-dbg_3.0_amd64.deb
-frr-doc_3.0_all.deb
-frr_3.0_amd64.deb
+frr-3.0.3
+frr-dbg_3.0.3-1~ubuntu18.04+1_amd64.deb
+frr-doc_3.0.3-1~ubuntu18.04+1_all.deb
+frr_3.0.3-1~ubuntu18.04+1_amd64.deb
+frr-pythontools_3.0.3-1~ubuntu18.04+1_all.deb
 go
-mypython
-ubuntu-16.04-server-cloudimg-amd64-lxd.tar.xz
-ubuntu-16.04-server-cloudimg-amd64-root.tar.xz
+netconf
 
-sftp> put frr_3.0_amd54.deb
-sftp> put ubuntu-16.04-server-cloudimg-amd64-*
-sftp> put -R beluganos
+sftp> get frr_3.0.3-1~ubuntu18.04+1_amd64.deb
+sftp> get -R beluganos
 sftp> exit
 
 server2$ ls
-beluganos/ frr-doc_3.0_all.deb ubuntu-16.04-server-cloudimg-amd64-lxd.tar.xz ubuntu-16.04-server-cloudimg-amd64-root.tar.xz
+beluganos/ frr_3.0.3-1~ubuntu18.04+1_amd64.deb
 ~~~~
 
-### Step 2-2. pre-install required package
+### Step 2-2. setup lxd
+
+~~~~
+server2$ sudo lxd init
+~~~~
+
+### Step 2-3. pre-install required package
 
 ~~~~
 server2$ cd ~/beluganos/
 server2$ ./create.sh min
 ~~~~
 
-### Step 2-3. setup P1 to P4
+### Step 2-4. setup P1 to P4
 
 ~~~~
 server2$ cd ~/beluganos/etc/playbooks
@@ -191,7 +199,7 @@ server2$ lxc stop sample-p1 sample-p2 sample-p3 sample-p4
 ### Step 3-1. start environment
 
 ~~~~
-server2$ sudo service openvswitch-switch start
+server2$ sudo systemctl start openvswitch-switch
 server2$ lxc start sample-p1 sample-p2 sample-p3 sample-p4
 ~~~~
 
@@ -308,7 +316,7 @@ server2$ lxc stop sample-p1 sample-p2 sample-p3 sample-p4
 
 ### Use real white-box switches
 
-In this sample, we use OpenvSwitch instead of white-box switches. This is just for simplicity, so that you can use real white-box switches.
+In this sample, we use OpenvSwitch instead of white-box switches. This is just for simplicity, so that you can also use real white-box switches.
 
 In this case, you don't need prepare for server 2. Only server 1 is needed. Moreover, please change `fibc.yml` by following commands:
 
@@ -359,9 +367,9 @@ server1$ vi etc/playbooks/roles/lxd/files/sample/frr.conf
 If you change the files under `roles/lxd/files/sample/`, you may execute playbook of `lxd-sample.yml` after stopping Beluganos.
 
 ~~~~
-server1$ cd ~/belugganos/etc/playbooks/
+server1$ cd ~/beluganos/etc/playbooks/
 server1$ ansible-playbook -i hosts -K lxd-sample.yml
 server1$ lxc stop sample
 ~~~~
 
-For more detail, please refer `doc/configure-ansible.md`. Moreover, If you want to use NETCONF to change Beluganos's settings, please refer `doc/configure-netconf.md`.
+For more detail, please refer [configure-ansible.md](../../configure-ansible.md). Moreover, If you want to use NETCONF to change Beluganos's settings, please refer [configure-netconf.md](../../configure-netconf.md).
