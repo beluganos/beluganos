@@ -66,14 +66,20 @@ apt_install() {
 }
 
 #
-# install python packages
+# install pip by get_pip.py
 #
-pip_install() {
+get_pip() {
     if [ "${ENABLE_VIRTUALENV}" != "yes" ]; then
         wget -nc -P /tmp ${GET_PIP_URL}/${GET_PIP_FILE} || { echo "pip_install/wget error."; exit 1; }
         sudo python /tmp/${GET_PIP_FILE} --proxy="${PROXY}" || { echo "pip_install/python error."; exit 1; }
     fi
+}
 
+#
+# install python packages
+#
+pip_install() {
+    get_pip
     $PIP install -U ${PIP_PKGS} || { echo "pip_install/pip error."; exit 1; }
 }
 
@@ -376,6 +382,7 @@ do_minimal() {
     sudo ${HTTP_PROXY} ${APT_OPTION} apt -y install ${APT_MINS}
     make_virtenv
     . ./setenv.sh
+    get_pip
     $PIP install -U ${PIP_PROXY} ansible
     init_lxd
     init_sys
