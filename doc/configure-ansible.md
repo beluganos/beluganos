@@ -452,11 +452,11 @@ $ lxc stop master
 Once you finished the Beluganos's settings, Let's start Beluganos! You can start main module of Beluganos by following commands:
 
 ```
-$ beluganos start
+$ sudo systemctl start fibcd
 $ beluganos add master
 ```
 
-Please note that "*master*" means your container name. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md).
+"*master*" means your container name. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md). Please note that above two operations describe at step 1 and step 2 at [operation-guide.md](operation-guide.md), 
 
 ## Note
 
