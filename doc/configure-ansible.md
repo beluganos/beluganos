@@ -3,7 +3,7 @@ You can configure router options like IP addresses or settings of routing protoc
 
 ## Pre-requirements
 - Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
-- In ansible, only startup-config can be edited. If you already start Beluganos by `beluganos run` or `beluganos start` command, please stop before starting ansible playbooks.
+- In ansible, only startup-config can be edited. If you already start Beluganos by `beluganos run` or `beluganos start` or `systemctl start fibcd`command, please stop before starting ansible playbooks.
 - If you will configure L3VPN routers, please refer not only this documents but also [configure-ansible-l3vpn.md](configure-ansible-l3vpn.md).
 
 ## Config files at a glance
@@ -128,10 +128,10 @@ The reflection of "Settings for Linux Containers" should be done after editing "
 $ cd ~/beluganos/etc/playbooks/roles/lxd/files
 $ cp -r sample master
 $ ls master
-daemons fibc.yml frr.conf gobgp.conf gobgpd.conf netplan.yaml ribxd.conf sysctl.conf
+daemons fibc.yml frr.conf gobgp.conf lxd_proifle.yml gobgpd.conf netplan.yaml ribxd.conf sysctl.conf
 ```
 
-### 1. lxd-profile.yml
+### 1. lxd_profile.yml
 
 In this files, you can determine **interface name of your switch** like "*eth1*". The sample is following:
 
@@ -391,7 +391,7 @@ interval = 5000
 [node]
 nid   = 0
 reid  = "<router-entity-id>"
-allow_duplicate_ifname = <>
+allow_duplicate_ifname = <allow-duplicate-ifname>
 
 [log]
 level = <beluganos-log-level>
@@ -452,11 +452,11 @@ $ lxc stop master
 Once you finished the Beluganos's settings, Let's start Beluganos! You can start main module of Beluganos by following commands:
 
 ```
-$ beluganos start
+$ sudo systemctl start fibcd
 $ beluganos add master
 ```
 
-Please note that "*master*" means your container name. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md).
+"*master*" means your container name. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md). Please note that above two operations describe at step 1 and step 2 at [operation-guide.md](operation-guide.md), 
 
 ## Note
 

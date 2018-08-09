@@ -35,7 +35,7 @@ $ sudo systemctl stop ncms               #Only using NETCONF
 ### CLI mode
 
 ```
-$ beluganos run
+$ sudo beluganos run
 ```
 
 In this method, Beluganos can be worked in your terminal for debug. This command will snatch your standard output. `Ctrl-c` to stop.

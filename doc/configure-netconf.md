@@ -119,7 +119,7 @@ $ sudo systemctl start netopeer2-server
 $ sudo systemctl start ncm.target
 ```
 
-You can also use `beluganos start` instead of `systemctl start fibcd`. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md).
+You can also use `beluganos start` instead of `systemctl start fibcd`. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md). Note that above commands are describes at step 1 in this document. Moreover, in NETCONF case, step 2 is not required.
 
 ## Step 3. Configure by NETCONF
 
