@@ -32,4 +32,4 @@ The reason why RIBC and FIBC are separated is to support MPLS-VPN. In MPLS-VPN c
 
 ## Management layer
 
-The management function will be required for network OS. NETCONF is already available at [https://github.com/beluganos/netconf](https://github.com/beluganos/netconf). SNMP, syslog, CLI function is under developing now.
+The management function will be required for network OS. NETCONF is already available at [https://github.com/beluganos/netconf](https://github.com/beluganos/netconf). [ansible](configure-ansible.md) is also available for setup. SNMP, syslog, CLI function is under developing now.

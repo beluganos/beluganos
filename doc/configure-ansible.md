@@ -449,7 +449,7 @@ $ lxc stop master
 
 ## Start Beluganos
 
-Once you finished the Beluganos's settings, Let's start Beluganos! You can start main module of Beluganos by following commands:
+Once you finished the Beluganos's settings, let's start Beluganos! You can start main module of Beluganos by following commands:
 
 ```
 $ sudo systemctl start fibcd
