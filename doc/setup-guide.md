@@ -1,5 +1,5 @@
 # Setup guide
-This document describes about Beluganos's setup for white-box switches.
+This document describes about Beluganos's setup for hardware (white-box switches).
 
 ## Pre-requirements
 - Please refer [install-guide.md](install-guide.md) before proceeding.
@@ -28,6 +28,8 @@ beluganos/
 ~~~~
 
 ## Settings for white-box switches
+
+### 1. edit playbook
 
 **The sample playbook is `etc/playbooks/dp-sample.yml`**. You may copy sample file and rename this playbook. Any switch name (dpname) are acceptable, and this name is only used for internal configurations. If your switch name is *switchA*, please edit as follows:
 
@@ -61,7 +63,7 @@ The syntax of this playbook is following:
 - roles
 	- dpname (`<switch-name>`): Your preferable switch name (A-Z,a-z,0-9,_-). Do not contain space.
 
-### 2. switch type
+### 2. edit switch type
 **The sample configuration files are under `etc/playbooks/roles/dpath/files/sample_sw`**. The files under `roles/dpath` will determine the type of white-box switches. Beluganos will optimize the writing method to FIB for each switch type. If your switch's name is *switchA*, you may copy sample file and rename to dpname as follows:
 
 ~~~~
