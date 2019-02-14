@@ -19,4 +19,12 @@
 
 export GOPATH=$HOME/go:`pwd`
 export PATH=/usr/local/go/bin:$HOME/go/bin:$PATH
-export PYTHONPATH=$PYTHONPATH:`pwd`/src
+export LD_LIBRARY_PATH=/usr/local/lib
+
+
+ARG=$1
+if [ "${ARG}"x == "local"x ]; then
+    echo "Use local package."
+    export PYTHONPATH=$PYTHONPATH:`pwd`/src
+fi
+

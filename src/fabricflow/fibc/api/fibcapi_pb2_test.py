@@ -117,6 +117,24 @@ class TestPortConfig(unittest.TestCase):
         msg = pb.PortConfig(cmd="ADD", re_id="1.1.1.1", ifname="ethX", port_id=10)
         # print msg
 
+
+class TestMultipart(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_new_request_port(self):
+        dp_id = 0x123456789a
+        port_no = 1
+        m = api.new_ff_multipart_request_port(dp_id, port_no)
+        self.assertEqual(m.mp_type, pb.FFMultipart.PORT)
+
+        b = m.SerializeToString()
+        m = api.parse_ff_multipart_request(b)
+        self.assertEqual(m.port, pb.FFMultipart.PortRequest(port_no=1))
+
 TESTS = [
     TestPortConfig,
     TestVLANFlow,
@@ -124,6 +142,7 @@ TESTS = [
     TestMPLS1Flow,
     TestL2InterfaceGroup,
     TestMplsLabelGroup,
+    TestMultipart,
 ]
 
 if __name__ == "__main__":

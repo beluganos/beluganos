@@ -137,6 +137,8 @@ class FIBCDbPortMapTable(object):
         if key in self.ports:
             return self.ports.pop(key, None)
 
+        return None
+
 
     def delete_by_name(self, re_id, name):
         """

@@ -21,6 +21,10 @@
         name: eth2
         host_name: "{{ lxcname }}.2"
         nictype: p2p
+      logdir:
+        path: /var/log
+        source: /var/log/beluganos/{{ lxcname }}
+        type: disk
       root:
         path: /
         pool: default

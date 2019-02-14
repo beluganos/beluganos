@@ -3485,877 +3485,232 @@ Route = _reflection.GeneratedProtocolMessageType('Route', (_message.Message,), d
 _sym_db.RegisterMessage(Route)
 
 
-try:
-  # THESE ELEMENTS WILL BE DEPRECATED.
-  # Please use the generated *_pb2_grpc.py files instead.
-  import grpc
-  from grpc.beta import implementations as beta_implementations
-  from grpc.beta import interfaces as beta_interfaces
-  from grpc.framework.common import cardinality
-  from grpc.framework.interfaces.face import utilities as face_utilities
 
+_NLACOREAPI = _descriptor.ServiceDescriptor(
+  name='NLACoreApi',
+  full_name='nlaapi.NLACoreApi',
+  file=DESCRIPTOR,
+  index=0,
+  options=None,
+  serialized_start=6324,
+  serialized_end=6481,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='SendNetlinkMessage',
+    full_name='nlaapi.NLACoreApi.SendNetlinkMessage',
+    index=0,
+    containing_service=None,
+    input_type=_NETLINKMESSAGE,
+    output_type=_NETLINKMESSAGEREPLY,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='MonNetlinkMessage',
+    full_name='nlaapi.NLACoreApi.MonNetlinkMessage',
+    index=1,
+    containing_service=None,
+    input_type=_NODE,
+    output_type=_NETLINKMESSAGEUNION,
+    options=None,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_NLACOREAPI)
+
+DESCRIPTOR.services_by_name['NLACoreApi'] = _NLACOREAPI
+
+
+_NLAAPI = _descriptor.ServiceDescriptor(
+  name='NLAApi',
+  full_name='nlaapi.NLAApi',
+  file=DESCRIPTOR,
+  index=1,
+  options=None,
+  serialized_start=6484,
+  serialized_end=7577,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='ModVpn',
+    full_name='nlaapi.NLAApi.ModVpn',
+    index=0,
+    containing_service=None,
+    input_type=_MODVPNREQUEST,
+    output_type=_MODVPNREPLY,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='ModNetlink',
+    full_name='nlaapi.NLAApi.ModNetlink',
+    index=1,
+    containing_service=None,
+    input_type=_NETLINKMESSAGEUNION,
+    output_type=_MODNETLINKREPLY,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='MonNetlink',
+    full_name='nlaapi.NLAApi.MonNetlink',
+    index=2,
+    containing_service=None,
+    input_type=_MONNETLINKREQUEST,
+    output_type=_NETLINKMESSAGEUNION,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetLink',
+    full_name='nlaapi.NLAApi.GetLink',
+    index=3,
+    containing_service=None,
+    input_type=_LINKKEY,
+    output_type=_LINK,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetAddr',
+    full_name='nlaapi.NLAApi.GetAddr',
+    index=4,
+    containing_service=None,
+    input_type=_ADDRKEY,
+    output_type=_ADDR,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetNeigh',
+    full_name='nlaapi.NLAApi.GetNeigh',
+    index=5,
+    containing_service=None,
+    input_type=_NEIGHKEY,
+    output_type=_NEIGH,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetRoute',
+    full_name='nlaapi.NLAApi.GetRoute',
+    index=6,
+    containing_service=None,
+    input_type=_ROUTEKEY,
+    output_type=_ROUTE,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetMpls',
+    full_name='nlaapi.NLAApi.GetMpls',
+    index=7,
+    containing_service=None,
+    input_type=_MPLSKEY,
+    output_type=_ROUTE,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetNode',
+    full_name='nlaapi.NLAApi.GetNode',
+    index=8,
+    containing_service=None,
+    input_type=_NODEKEY,
+    output_type=_NODE,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetVpn',
+    full_name='nlaapi.NLAApi.GetVpn',
+    index=9,
+    containing_service=None,
+    input_type=_VPNKEY,
+    output_type=_VPN,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetEncapInfo',
+    full_name='nlaapi.NLAApi.GetEncapInfo',
+    index=10,
+    containing_service=None,
+    input_type=_ENCAPINFOKEY,
+    output_type=_ENCAPINFO,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetLinks',
+    full_name='nlaapi.NLAApi.GetLinks',
+    index=11,
+    containing_service=None,
+    input_type=_GETLINKSREQUEST,
+    output_type=_LINK,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetAddrs',
+    full_name='nlaapi.NLAApi.GetAddrs',
+    index=12,
+    containing_service=None,
+    input_type=_GETADDRSREQUEST,
+    output_type=_ADDR,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetNeighs',
+    full_name='nlaapi.NLAApi.GetNeighs',
+    index=13,
+    containing_service=None,
+    input_type=_GETNEIGHSREQUEST,
+    output_type=_NEIGH,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetRoutes',
+    full_name='nlaapi.NLAApi.GetRoutes',
+    index=14,
+    containing_service=None,
+    input_type=_GETROUTESREQUEST,
+    output_type=_ROUTE,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetMplss',
+    full_name='nlaapi.NLAApi.GetMplss',
+    index=15,
+    containing_service=None,
+    input_type=_GETMPLSSREQUEST,
+    output_type=_ROUTE,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetNodes',
+    full_name='nlaapi.NLAApi.GetNodes',
+    index=16,
+    containing_service=None,
+    input_type=_GETNODESREQUEST,
+    output_type=_NODE,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetVpns',
+    full_name='nlaapi.NLAApi.GetVpns',
+    index=17,
+    containing_service=None,
+    input_type=_GETVPNSREQUEST,
+    output_type=_VPN,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetEncapInfos',
+    full_name='nlaapi.NLAApi.GetEncapInfos',
+    index=18,
+    containing_service=None,
+    input_type=_GETENCAPINFOSREQUEST,
+    output_type=_ENCAPINFO,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetStats',
+    full_name='nlaapi.NLAApi.GetStats',
+    index=19,
+    containing_service=None,
+    input_type=_GETSTATSREQUEST,
+    output_type=_STAT,
+    options=None,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_NLAAPI)
+
+DESCRIPTOR.services_by_name['NLAApi'] = _NLAAPI
 
-  class NLACoreApiStub(object):
-    """
-    Core API
-
-    """
-
-    def __init__(self, channel):
-      """Constructor.
-
-      Args:
-        channel: A grpc.Channel.
-      """
-      self.SendNetlinkMessage = channel.unary_unary(
-          '/nlaapi.NLACoreApi/SendNetlinkMessage',
-          request_serializer=NetlinkMessage.SerializeToString,
-          response_deserializer=NetlinkMessageReply.FromString,
-          )
-      self.MonNetlinkMessage = channel.unary_stream(
-          '/nlaapi.NLACoreApi/MonNetlinkMessage',
-          request_serializer=Node.SerializeToString,
-          response_deserializer=NetlinkMessageUnion.FromString,
-          )
-
-
-  class NLACoreApiServicer(object):
-    """
-    Core API
-
-    """
-
-    def SendNetlinkMessage(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def MonNetlinkMessage(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-
-  def add_NLACoreApiServicer_to_server(servicer, server):
-    rpc_method_handlers = {
-        'SendNetlinkMessage': grpc.unary_unary_rpc_method_handler(
-            servicer.SendNetlinkMessage,
-            request_deserializer=NetlinkMessage.FromString,
-            response_serializer=NetlinkMessageReply.SerializeToString,
-        ),
-        'MonNetlinkMessage': grpc.unary_stream_rpc_method_handler(
-            servicer.MonNetlinkMessage,
-            request_deserializer=Node.FromString,
-            response_serializer=NetlinkMessageUnion.SerializeToString,
-        ),
-    }
-    generic_handler = grpc.method_handlers_generic_handler(
-        'nlaapi.NLACoreApi', rpc_method_handlers)
-    server.add_generic_rpc_handlers((generic_handler,))
-
-
-  class NLAApiStub(object):
-    """
-    Application API
-
-    """
-
-    def __init__(self, channel):
-      """Constructor.
-
-      Args:
-        channel: A grpc.Channel.
-      """
-      self.ModVpn = channel.unary_unary(
-          '/nlaapi.NLAApi/ModVpn',
-          request_serializer=ModVpnRequest.SerializeToString,
-          response_deserializer=ModVpnReply.FromString,
-          )
-      self.ModNetlink = channel.unary_unary(
-          '/nlaapi.NLAApi/ModNetlink',
-          request_serializer=NetlinkMessageUnion.SerializeToString,
-          response_deserializer=ModNetlinkReply.FromString,
-          )
-      self.MonNetlink = channel.unary_stream(
-          '/nlaapi.NLAApi/MonNetlink',
-          request_serializer=MonNetlinkRequest.SerializeToString,
-          response_deserializer=NetlinkMessageUnion.FromString,
-          )
-      self.GetLink = channel.unary_unary(
-          '/nlaapi.NLAApi/GetLink',
-          request_serializer=LinkKey.SerializeToString,
-          response_deserializer=Link.FromString,
-          )
-      self.GetAddr = channel.unary_unary(
-          '/nlaapi.NLAApi/GetAddr',
-          request_serializer=AddrKey.SerializeToString,
-          response_deserializer=Addr.FromString,
-          )
-      self.GetNeigh = channel.unary_unary(
-          '/nlaapi.NLAApi/GetNeigh',
-          request_serializer=NeighKey.SerializeToString,
-          response_deserializer=Neigh.FromString,
-          )
-      self.GetRoute = channel.unary_unary(
-          '/nlaapi.NLAApi/GetRoute',
-          request_serializer=RouteKey.SerializeToString,
-          response_deserializer=Route.FromString,
-          )
-      self.GetMpls = channel.unary_unary(
-          '/nlaapi.NLAApi/GetMpls',
-          request_serializer=MplsKey.SerializeToString,
-          response_deserializer=Route.FromString,
-          )
-      self.GetNode = channel.unary_unary(
-          '/nlaapi.NLAApi/GetNode',
-          request_serializer=NodeKey.SerializeToString,
-          response_deserializer=Node.FromString,
-          )
-      self.GetVpn = channel.unary_unary(
-          '/nlaapi.NLAApi/GetVpn',
-          request_serializer=VpnKey.SerializeToString,
-          response_deserializer=Vpn.FromString,
-          )
-      self.GetEncapInfo = channel.unary_unary(
-          '/nlaapi.NLAApi/GetEncapInfo',
-          request_serializer=EncapInfoKey.SerializeToString,
-          response_deserializer=EncapInfo.FromString,
-          )
-      self.GetLinks = channel.unary_stream(
-          '/nlaapi.NLAApi/GetLinks',
-          request_serializer=GetLinksRequest.SerializeToString,
-          response_deserializer=Link.FromString,
-          )
-      self.GetAddrs = channel.unary_stream(
-          '/nlaapi.NLAApi/GetAddrs',
-          request_serializer=GetAddrsRequest.SerializeToString,
-          response_deserializer=Addr.FromString,
-          )
-      self.GetNeighs = channel.unary_stream(
-          '/nlaapi.NLAApi/GetNeighs',
-          request_serializer=GetNeighsRequest.SerializeToString,
-          response_deserializer=Neigh.FromString,
-          )
-      self.GetRoutes = channel.unary_stream(
-          '/nlaapi.NLAApi/GetRoutes',
-          request_serializer=GetRoutesRequest.SerializeToString,
-          response_deserializer=Route.FromString,
-          )
-      self.GetMplss = channel.unary_stream(
-          '/nlaapi.NLAApi/GetMplss',
-          request_serializer=GetMplssRequest.SerializeToString,
-          response_deserializer=Route.FromString,
-          )
-      self.GetNodes = channel.unary_stream(
-          '/nlaapi.NLAApi/GetNodes',
-          request_serializer=GetNodesRequest.SerializeToString,
-          response_deserializer=Node.FromString,
-          )
-      self.GetVpns = channel.unary_stream(
-          '/nlaapi.NLAApi/GetVpns',
-          request_serializer=GetVpnsRequest.SerializeToString,
-          response_deserializer=Vpn.FromString,
-          )
-      self.GetEncapInfos = channel.unary_stream(
-          '/nlaapi.NLAApi/GetEncapInfos',
-          request_serializer=GetEncapInfosRequest.SerializeToString,
-          response_deserializer=EncapInfo.FromString,
-          )
-      self.GetStats = channel.unary_stream(
-          '/nlaapi.NLAApi/GetStats',
-          request_serializer=GetStatsRequest.SerializeToString,
-          response_deserializer=Stat.FromString,
-          )
-
-
-  class NLAApiServicer(object):
-    """
-    Application API
-
-    """
-
-    def ModVpn(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def ModNetlink(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def MonNetlink(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetLink(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetAddr(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetNeigh(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetRoute(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetMpls(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetNode(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetVpn(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetEncapInfo(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetLinks(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetAddrs(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetNeighs(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetRoutes(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetMplss(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetNodes(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetVpns(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetEncapInfos(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetStats(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-
-  def add_NLAApiServicer_to_server(servicer, server):
-    rpc_method_handlers = {
-        'ModVpn': grpc.unary_unary_rpc_method_handler(
-            servicer.ModVpn,
-            request_deserializer=ModVpnRequest.FromString,
-            response_serializer=ModVpnReply.SerializeToString,
-        ),
-        'ModNetlink': grpc.unary_unary_rpc_method_handler(
-            servicer.ModNetlink,
-            request_deserializer=NetlinkMessageUnion.FromString,
-            response_serializer=ModNetlinkReply.SerializeToString,
-        ),
-        'MonNetlink': grpc.unary_stream_rpc_method_handler(
-            servicer.MonNetlink,
-            request_deserializer=MonNetlinkRequest.FromString,
-            response_serializer=NetlinkMessageUnion.SerializeToString,
-        ),
-        'GetLink': grpc.unary_unary_rpc_method_handler(
-            servicer.GetLink,
-            request_deserializer=LinkKey.FromString,
-            response_serializer=Link.SerializeToString,
-        ),
-        'GetAddr': grpc.unary_unary_rpc_method_handler(
-            servicer.GetAddr,
-            request_deserializer=AddrKey.FromString,
-            response_serializer=Addr.SerializeToString,
-        ),
-        'GetNeigh': grpc.unary_unary_rpc_method_handler(
-            servicer.GetNeigh,
-            request_deserializer=NeighKey.FromString,
-            response_serializer=Neigh.SerializeToString,
-        ),
-        'GetRoute': grpc.unary_unary_rpc_method_handler(
-            servicer.GetRoute,
-            request_deserializer=RouteKey.FromString,
-            response_serializer=Route.SerializeToString,
-        ),
-        'GetMpls': grpc.unary_unary_rpc_method_handler(
-            servicer.GetMpls,
-            request_deserializer=MplsKey.FromString,
-            response_serializer=Route.SerializeToString,
-        ),
-        'GetNode': grpc.unary_unary_rpc_method_handler(
-            servicer.GetNode,
-            request_deserializer=NodeKey.FromString,
-            response_serializer=Node.SerializeToString,
-        ),
-        'GetVpn': grpc.unary_unary_rpc_method_handler(
-            servicer.GetVpn,
-            request_deserializer=VpnKey.FromString,
-            response_serializer=Vpn.SerializeToString,
-        ),
-        'GetEncapInfo': grpc.unary_unary_rpc_method_handler(
-            servicer.GetEncapInfo,
-            request_deserializer=EncapInfoKey.FromString,
-            response_serializer=EncapInfo.SerializeToString,
-        ),
-        'GetLinks': grpc.unary_stream_rpc_method_handler(
-            servicer.GetLinks,
-            request_deserializer=GetLinksRequest.FromString,
-            response_serializer=Link.SerializeToString,
-        ),
-        'GetAddrs': grpc.unary_stream_rpc_method_handler(
-            servicer.GetAddrs,
-            request_deserializer=GetAddrsRequest.FromString,
-            response_serializer=Addr.SerializeToString,
-        ),
-        'GetNeighs': grpc.unary_stream_rpc_method_handler(
-            servicer.GetNeighs,
-            request_deserializer=GetNeighsRequest.FromString,
-            response_serializer=Neigh.SerializeToString,
-        ),
-        'GetRoutes': grpc.unary_stream_rpc_method_handler(
-            servicer.GetRoutes,
-            request_deserializer=GetRoutesRequest.FromString,
-            response_serializer=Route.SerializeToString,
-        ),
-        'GetMplss': grpc.unary_stream_rpc_method_handler(
-            servicer.GetMplss,
-            request_deserializer=GetMplssRequest.FromString,
-            response_serializer=Route.SerializeToString,
-        ),
-        'GetNodes': grpc.unary_stream_rpc_method_handler(
-            servicer.GetNodes,
-            request_deserializer=GetNodesRequest.FromString,
-            response_serializer=Node.SerializeToString,
-        ),
-        'GetVpns': grpc.unary_stream_rpc_method_handler(
-            servicer.GetVpns,
-            request_deserializer=GetVpnsRequest.FromString,
-            response_serializer=Vpn.SerializeToString,
-        ),
-        'GetEncapInfos': grpc.unary_stream_rpc_method_handler(
-            servicer.GetEncapInfos,
-            request_deserializer=GetEncapInfosRequest.FromString,
-            response_serializer=EncapInfo.SerializeToString,
-        ),
-        'GetStats': grpc.unary_stream_rpc_method_handler(
-            servicer.GetStats,
-            request_deserializer=GetStatsRequest.FromString,
-            response_serializer=Stat.SerializeToString,
-        ),
-    }
-    generic_handler = grpc.method_handlers_generic_handler(
-        'nlaapi.NLAApi', rpc_method_handlers)
-    server.add_generic_rpc_handlers((generic_handler,))
-
-
-  class BetaNLACoreApiServicer(object):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This class was generated
-    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
-    """
-    Core API
-
-    """
-    def SendNetlinkMessage(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def MonNetlinkMessage(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-
-
-  class BetaNLACoreApiStub(object):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This class was generated
-    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
-    """
-    Core API
-
-    """
-    def SendNetlinkMessage(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    SendNetlinkMessage.future = None
-    def MonNetlinkMessage(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-
-
-  def beta_create_NLACoreApi_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This function was
-    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
-    request_deserializers = {
-      ('nlaapi.NLACoreApi', 'MonNetlinkMessage'): Node.FromString,
-      ('nlaapi.NLACoreApi', 'SendNetlinkMessage'): NetlinkMessage.FromString,
-    }
-    response_serializers = {
-      ('nlaapi.NLACoreApi', 'MonNetlinkMessage'): NetlinkMessageUnion.SerializeToString,
-      ('nlaapi.NLACoreApi', 'SendNetlinkMessage'): NetlinkMessageReply.SerializeToString,
-    }
-    method_implementations = {
-      ('nlaapi.NLACoreApi', 'MonNetlinkMessage'): face_utilities.unary_stream_inline(servicer.MonNetlinkMessage),
-      ('nlaapi.NLACoreApi', 'SendNetlinkMessage'): face_utilities.unary_unary_inline(servicer.SendNetlinkMessage),
-    }
-    server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
-    return beta_implementations.server(method_implementations, options=server_options)
-
-
-  def beta_create_NLACoreApi_stub(channel, host=None, metadata_transformer=None, pool=None, pool_size=None):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This function was
-    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
-    request_serializers = {
-      ('nlaapi.NLACoreApi', 'MonNetlinkMessage'): Node.SerializeToString,
-      ('nlaapi.NLACoreApi', 'SendNetlinkMessage'): NetlinkMessage.SerializeToString,
-    }
-    response_deserializers = {
-      ('nlaapi.NLACoreApi', 'MonNetlinkMessage'): NetlinkMessageUnion.FromString,
-      ('nlaapi.NLACoreApi', 'SendNetlinkMessage'): NetlinkMessageReply.FromString,
-    }
-    cardinalities = {
-      'MonNetlinkMessage': cardinality.Cardinality.UNARY_STREAM,
-      'SendNetlinkMessage': cardinality.Cardinality.UNARY_UNARY,
-    }
-    stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
-    return beta_implementations.dynamic_stub(channel, 'nlaapi.NLACoreApi', cardinalities, options=stub_options)
-
-
-  class BetaNLAApiServicer(object):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This class was generated
-    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
-    """
-    Application API
-
-    """
-    def ModVpn(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def ModNetlink(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def MonNetlink(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetLink(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetAddr(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetNeigh(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetRoute(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetMpls(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetNode(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetVpn(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetEncapInfo(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetLinks(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetAddrs(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetNeighs(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetRoutes(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetMplss(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetNodes(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetVpns(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetEncapInfos(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetStats(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-
-
-  class BetaNLAApiStub(object):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This class was generated
-    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
-    """
-    Application API
-
-    """
-    def ModVpn(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    ModVpn.future = None
-    def ModNetlink(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    ModNetlink.future = None
-    def MonNetlink(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def GetLink(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    GetLink.future = None
-    def GetAddr(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    GetAddr.future = None
-    def GetNeigh(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    GetNeigh.future = None
-    def GetRoute(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    GetRoute.future = None
-    def GetMpls(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    GetMpls.future = None
-    def GetNode(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    GetNode.future = None
-    def GetVpn(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    GetVpn.future = None
-    def GetEncapInfo(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    GetEncapInfo.future = None
-    def GetLinks(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def GetAddrs(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def GetNeighs(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def GetRoutes(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def GetMplss(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def GetNodes(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def GetVpns(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def GetEncapInfos(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def GetStats(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-
-
-  def beta_create_NLAApi_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This function was
-    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
-    request_deserializers = {
-      ('nlaapi.NLAApi', 'GetAddr'): AddrKey.FromString,
-      ('nlaapi.NLAApi', 'GetAddrs'): GetAddrsRequest.FromString,
-      ('nlaapi.NLAApi', 'GetEncapInfo'): EncapInfoKey.FromString,
-      ('nlaapi.NLAApi', 'GetEncapInfos'): GetEncapInfosRequest.FromString,
-      ('nlaapi.NLAApi', 'GetLink'): LinkKey.FromString,
-      ('nlaapi.NLAApi', 'GetLinks'): GetLinksRequest.FromString,
-      ('nlaapi.NLAApi', 'GetMpls'): MplsKey.FromString,
-      ('nlaapi.NLAApi', 'GetMplss'): GetMplssRequest.FromString,
-      ('nlaapi.NLAApi', 'GetNeigh'): NeighKey.FromString,
-      ('nlaapi.NLAApi', 'GetNeighs'): GetNeighsRequest.FromString,
-      ('nlaapi.NLAApi', 'GetNode'): NodeKey.FromString,
-      ('nlaapi.NLAApi', 'GetNodes'): GetNodesRequest.FromString,
-      ('nlaapi.NLAApi', 'GetRoute'): RouteKey.FromString,
-      ('nlaapi.NLAApi', 'GetRoutes'): GetRoutesRequest.FromString,
-      ('nlaapi.NLAApi', 'GetStats'): GetStatsRequest.FromString,
-      ('nlaapi.NLAApi', 'GetVpn'): VpnKey.FromString,
-      ('nlaapi.NLAApi', 'GetVpns'): GetVpnsRequest.FromString,
-      ('nlaapi.NLAApi', 'ModNetlink'): NetlinkMessageUnion.FromString,
-      ('nlaapi.NLAApi', 'ModVpn'): ModVpnRequest.FromString,
-      ('nlaapi.NLAApi', 'MonNetlink'): MonNetlinkRequest.FromString,
-    }
-    response_serializers = {
-      ('nlaapi.NLAApi', 'GetAddr'): Addr.SerializeToString,
-      ('nlaapi.NLAApi', 'GetAddrs'): Addr.SerializeToString,
-      ('nlaapi.NLAApi', 'GetEncapInfo'): EncapInfo.SerializeToString,
-      ('nlaapi.NLAApi', 'GetEncapInfos'): EncapInfo.SerializeToString,
-      ('nlaapi.NLAApi', 'GetLink'): Link.SerializeToString,
-      ('nlaapi.NLAApi', 'GetLinks'): Link.SerializeToString,
-      ('nlaapi.NLAApi', 'GetMpls'): Route.SerializeToString,
-      ('nlaapi.NLAApi', 'GetMplss'): Route.SerializeToString,
-      ('nlaapi.NLAApi', 'GetNeigh'): Neigh.SerializeToString,
-      ('nlaapi.NLAApi', 'GetNeighs'): Neigh.SerializeToString,
-      ('nlaapi.NLAApi', 'GetNode'): Node.SerializeToString,
-      ('nlaapi.NLAApi', 'GetNodes'): Node.SerializeToString,
-      ('nlaapi.NLAApi', 'GetRoute'): Route.SerializeToString,
-      ('nlaapi.NLAApi', 'GetRoutes'): Route.SerializeToString,
-      ('nlaapi.NLAApi', 'GetStats'): Stat.SerializeToString,
-      ('nlaapi.NLAApi', 'GetVpn'): Vpn.SerializeToString,
-      ('nlaapi.NLAApi', 'GetVpns'): Vpn.SerializeToString,
-      ('nlaapi.NLAApi', 'ModNetlink'): ModNetlinkReply.SerializeToString,
-      ('nlaapi.NLAApi', 'ModVpn'): ModVpnReply.SerializeToString,
-      ('nlaapi.NLAApi', 'MonNetlink'): NetlinkMessageUnion.SerializeToString,
-    }
-    method_implementations = {
-      ('nlaapi.NLAApi', 'GetAddr'): face_utilities.unary_unary_inline(servicer.GetAddr),
-      ('nlaapi.NLAApi', 'GetAddrs'): face_utilities.unary_stream_inline(servicer.GetAddrs),
-      ('nlaapi.NLAApi', 'GetEncapInfo'): face_utilities.unary_unary_inline(servicer.GetEncapInfo),
-      ('nlaapi.NLAApi', 'GetEncapInfos'): face_utilities.unary_stream_inline(servicer.GetEncapInfos),
-      ('nlaapi.NLAApi', 'GetLink'): face_utilities.unary_unary_inline(servicer.GetLink),
-      ('nlaapi.NLAApi', 'GetLinks'): face_utilities.unary_stream_inline(servicer.GetLinks),
-      ('nlaapi.NLAApi', 'GetMpls'): face_utilities.unary_unary_inline(servicer.GetMpls),
-      ('nlaapi.NLAApi', 'GetMplss'): face_utilities.unary_stream_inline(servicer.GetMplss),
-      ('nlaapi.NLAApi', 'GetNeigh'): face_utilities.unary_unary_inline(servicer.GetNeigh),
-      ('nlaapi.NLAApi', 'GetNeighs'): face_utilities.unary_stream_inline(servicer.GetNeighs),
-      ('nlaapi.NLAApi', 'GetNode'): face_utilities.unary_unary_inline(servicer.GetNode),
-      ('nlaapi.NLAApi', 'GetNodes'): face_utilities.unary_stream_inline(servicer.GetNodes),
-      ('nlaapi.NLAApi', 'GetRoute'): face_utilities.unary_unary_inline(servicer.GetRoute),
-      ('nlaapi.NLAApi', 'GetRoutes'): face_utilities.unary_stream_inline(servicer.GetRoutes),
-      ('nlaapi.NLAApi', 'GetStats'): face_utilities.unary_stream_inline(servicer.GetStats),
-      ('nlaapi.NLAApi', 'GetVpn'): face_utilities.unary_unary_inline(servicer.GetVpn),
-      ('nlaapi.NLAApi', 'GetVpns'): face_utilities.unary_stream_inline(servicer.GetVpns),
-      ('nlaapi.NLAApi', 'ModNetlink'): face_utilities.unary_unary_inline(servicer.ModNetlink),
-      ('nlaapi.NLAApi', 'ModVpn'): face_utilities.unary_unary_inline(servicer.ModVpn),
-      ('nlaapi.NLAApi', 'MonNetlink'): face_utilities.unary_stream_inline(servicer.MonNetlink),
-    }
-    server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
-    return beta_implementations.server(method_implementations, options=server_options)
-
-
-  def beta_create_NLAApi_stub(channel, host=None, metadata_transformer=None, pool=None, pool_size=None):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This function was
-    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
-    request_serializers = {
-      ('nlaapi.NLAApi', 'GetAddr'): AddrKey.SerializeToString,
-      ('nlaapi.NLAApi', 'GetAddrs'): GetAddrsRequest.SerializeToString,
-      ('nlaapi.NLAApi', 'GetEncapInfo'): EncapInfoKey.SerializeToString,
-      ('nlaapi.NLAApi', 'GetEncapInfos'): GetEncapInfosRequest.SerializeToString,
-      ('nlaapi.NLAApi', 'GetLink'): LinkKey.SerializeToString,
-      ('nlaapi.NLAApi', 'GetLinks'): GetLinksRequest.SerializeToString,
-      ('nlaapi.NLAApi', 'GetMpls'): MplsKey.SerializeToString,
-      ('nlaapi.NLAApi', 'GetMplss'): GetMplssRequest.SerializeToString,
-      ('nlaapi.NLAApi', 'GetNeigh'): NeighKey.SerializeToString,
-      ('nlaapi.NLAApi', 'GetNeighs'): GetNeighsRequest.SerializeToString,
-      ('nlaapi.NLAApi', 'GetNode'): NodeKey.SerializeToString,
-      ('nlaapi.NLAApi', 'GetNodes'): GetNodesRequest.SerializeToString,
-      ('nlaapi.NLAApi', 'GetRoute'): RouteKey.SerializeToString,
-      ('nlaapi.NLAApi', 'GetRoutes'): GetRoutesRequest.SerializeToString,
-      ('nlaapi.NLAApi', 'GetStats'): GetStatsRequest.SerializeToString,
-      ('nlaapi.NLAApi', 'GetVpn'): VpnKey.SerializeToString,
-      ('nlaapi.NLAApi', 'GetVpns'): GetVpnsRequest.SerializeToString,
-      ('nlaapi.NLAApi', 'ModNetlink'): NetlinkMessageUnion.SerializeToString,
-      ('nlaapi.NLAApi', 'ModVpn'): ModVpnRequest.SerializeToString,
-      ('nlaapi.NLAApi', 'MonNetlink'): MonNetlinkRequest.SerializeToString,
-    }
-    response_deserializers = {
-      ('nlaapi.NLAApi', 'GetAddr'): Addr.FromString,
-      ('nlaapi.NLAApi', 'GetAddrs'): Addr.FromString,
-      ('nlaapi.NLAApi', 'GetEncapInfo'): EncapInfo.FromString,
-      ('nlaapi.NLAApi', 'GetEncapInfos'): EncapInfo.FromString,
-      ('nlaapi.NLAApi', 'GetLink'): Link.FromString,
-      ('nlaapi.NLAApi', 'GetLinks'): Link.FromString,
-      ('nlaapi.NLAApi', 'GetMpls'): Route.FromString,
-      ('nlaapi.NLAApi', 'GetMplss'): Route.FromString,
-      ('nlaapi.NLAApi', 'GetNeigh'): Neigh.FromString,
-      ('nlaapi.NLAApi', 'GetNeighs'): Neigh.FromString,
-      ('nlaapi.NLAApi', 'GetNode'): Node.FromString,
-      ('nlaapi.NLAApi', 'GetNodes'): Node.FromString,
-      ('nlaapi.NLAApi', 'GetRoute'): Route.FromString,
-      ('nlaapi.NLAApi', 'GetRoutes'): Route.FromString,
-      ('nlaapi.NLAApi', 'GetStats'): Stat.FromString,
-      ('nlaapi.NLAApi', 'GetVpn'): Vpn.FromString,
-      ('nlaapi.NLAApi', 'GetVpns'): Vpn.FromString,
-      ('nlaapi.NLAApi', 'ModNetlink'): ModNetlinkReply.FromString,
-      ('nlaapi.NLAApi', 'ModVpn'): ModVpnReply.FromString,
-      ('nlaapi.NLAApi', 'MonNetlink'): NetlinkMessageUnion.FromString,
-    }
-    cardinalities = {
-      'GetAddr': cardinality.Cardinality.UNARY_UNARY,
-      'GetAddrs': cardinality.Cardinality.UNARY_STREAM,
-      'GetEncapInfo': cardinality.Cardinality.UNARY_UNARY,
-      'GetEncapInfos': cardinality.Cardinality.UNARY_STREAM,
-      'GetLink': cardinality.Cardinality.UNARY_UNARY,
-      'GetLinks': cardinality.Cardinality.UNARY_STREAM,
-      'GetMpls': cardinality.Cardinality.UNARY_UNARY,
-      'GetMplss': cardinality.Cardinality.UNARY_STREAM,
-      'GetNeigh': cardinality.Cardinality.UNARY_UNARY,
-      'GetNeighs': cardinality.Cardinality.UNARY_STREAM,
-      'GetNode': cardinality.Cardinality.UNARY_UNARY,
-      'GetNodes': cardinality.Cardinality.UNARY_STREAM,
-      'GetRoute': cardinality.Cardinality.UNARY_UNARY,
-      'GetRoutes': cardinality.Cardinality.UNARY_STREAM,
-      'GetStats': cardinality.Cardinality.UNARY_STREAM,
-      'GetVpn': cardinality.Cardinality.UNARY_UNARY,
-      'GetVpns': cardinality.Cardinality.UNARY_STREAM,
-      'ModNetlink': cardinality.Cardinality.UNARY_UNARY,
-      'ModVpn': cardinality.Cardinality.UNARY_UNARY,
-      'MonNetlink': cardinality.Cardinality.UNARY_STREAM,
-    }
-    stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
-    return beta_implementations.dynamic_stub(channel, 'nlaapi.NLAApi', cardinalities, options=stub_options)
-except ImportError:
-  pass
 # @@protoc_insertion_point(module_scope)

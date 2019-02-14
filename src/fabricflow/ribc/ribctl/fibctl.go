@@ -18,116 +18,54 @@
 package ribctl
 
 import (
-	"fabricflow/fibc/api"
 	"fabricflow/fibc/net"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
 
-const FIBC_CONNECT_INTERVAL_MSEC = 1000 * time.Millisecond
+type FIBCData struct {
+	Hdr  *fibcnet.Header
+	Data []byte
+}
+
+func NewFIBCData(h *fibcnet.Header, data []byte) *FIBCData {
+	return &FIBCData{
+		Hdr:  h,
+		Data: data,
+	}
+}
 
 type FIBController struct {
-	active bool
-	fibcon *fibcapi.FIBCon
-	connCh chan bool
-	recvCh chan fibcnet.Message
+	*fibcnet.Client
+	recvCh chan *FIBCData
 }
 
 func NewFIBController(addr string) *FIBController {
 	return &FIBController{
-		active: false,
-		fibcon: fibcapi.NewFIBCon(addr),
-		connCh: make(chan bool),
-		recvCh: make(chan fibcnet.Message),
-	}
-}
-
-func (f *FIBController) Conn() <-chan bool {
-	return f.connCh
-}
-
-func (f *FIBController) Recv() <-chan fibcnet.Message {
-	return f.recvCh
-}
-
-func (f *FIBController) Start() {
-	f.active = true
-
-	go func() {
-		for {
-			if err := f.fibcon.Connect(); err == nil {
-				f.Monitor()
-			}
-			if f.active != true {
-				break
-			}
-			log.Debug("FIBController: Connectiong...")
-			time.Sleep(FIBC_CONNECT_INTERVAL_MSEC)
-		}
-	}()
-}
-
-func (f *FIBController) Stop() {
-	f.active = false
-	f.fibcon.Close()
-	time.Sleep(FIBC_CONNECT_INTERVAL_MSEC)
-}
-
-func (f *FIBController) Monitor() {
-	f.connCh <- true // connected
-	defer func() {
-		f.connCh <- false // disconnected
-	}()
-
-	log.Infof("FIBController: Monitor START.")
-
-	for {
-		hdr, data, err := f.fibcon.Read()
-		if err != nil {
-			log.Errorf("FIBController: Monitor EXIT. Read error. %s", err)
-			return
-		}
-
-		switch fibcapi.FFM(hdr.Type) {
-		case fibcapi.FFM_PORT_STATUS:
-			msg, err := fibcapi.NewPortStatusFromBytes(data)
-			if err != nil {
-				log.Errorf("FIBController: PortStatus error. %s", err)
-				continue
-			}
-			f.recvCh <- msg
-
-		case fibcapi.FFM_DP_STATUS:
-			msg, err := fibcapi.NewDpStatusFromBytes(data)
-			if err != nil {
-				log.Errorf("FIBController: DpStatus error. %s", err)
-				continue
-			}
-			f.recvCh <- msg
-
-		default:
-			log.Warnf("FIBController: Drop message. %v", hdr)
-		}
+		Client: fibcnet.NewClient(addr),
+		recvCh: make(chan *FIBCData),
 	}
 }
 
 func (f *FIBController) Send(msg fibcnet.Message, xid uint32) error {
-	return f.fibcon.Write(msg, xid)
+	return f.Client.Write(msg, xid)
 }
 
-type FIBCHandler interface {
-	OnPortStatus(*fibcapi.PortStatus)
-	OnDpStatus(*fibcapi.DpStatus)
+func (f *FIBController) Recv() <-chan *FIBCData {
+	return f.recvCh
 }
 
-func FIBCDispatch(msg fibcnet.Message, h FIBCHandler) {
-	msgType := fibcapi.FFM(msg.Type())
-	switch msgType {
-	case fibcapi.FFM_PORT_STATUS:
-		h.OnPortStatus(msg.(*fibcapi.PortStatus))
-	case fibcapi.FFM_DP_STATUS:
-		h.OnDpStatus(msg.(*fibcapi.DpStatus))
-	default:
-		log.Warnf("RIBController: Drop FIBC message. %v", msg)
-	}
+func (f *FIBController) Start() {
+	go f.Client.Start(func(client *fibcnet.Client) {
+		log.Infof("FIBController: Monitor START.")
+
+		for {
+			hdr, data, err := client.Read()
+			if err != nil {
+				log.Errorf("FIBController: Monitor EXIT. Read error. %s", err)
+				return
+			}
+
+			f.recvCh <- NewFIBCData(hdr, data)
+		}
+	})
 }

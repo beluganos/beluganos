@@ -60,5 +60,5 @@ func main() {
 	}
 	reply, err := c.SendFFPacket(context.Background(), req)
 
-	log.Debug("reply: %v, err: %s", reply, err)
+	log.Debugf("reply: %v, err: %s", reply, err)
 }

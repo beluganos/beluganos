@@ -19,6 +19,7 @@ package ribctl
 
 import (
 	"fabricflow/fibc/api"
+	"fabricflow/fibc/lib"
 	"fabricflow/fibc/net"
 	"fmt"
 	"gonla/nlamsg"
@@ -108,9 +109,11 @@ func (r *RIBController) Serve(done <-chan struct{}) {
 				r.SendPortConfigs()
 			}
 		case msg := <-r.nla.Recv():
-			r.OnNetlinkMessage(msg)
+			nlamsg.DispatchUnion(msg, r)
 		case msg := <-r.fib.Recv():
-			r.OnFIBCMessage(msg)
+			if err := fibclib.Dispatch(msg.Hdr, msg.Data, r); err != nil {
+				log.Errorf("fibcnet.Dispatch error. %v %s", msg.Hdr, err)
+			}
 		case <-done:
 			return
 		}
@@ -121,19 +124,16 @@ func (r *RIBController) Start(done <-chan struct{}) {
 	go r.Serve(done)
 }
 
-func (r *RIBController) OnFIBCMessage(msg fibcnet.Message) {
-	FIBCDispatch(msg, r)
-}
-
-func (r *RIBController) OnDpStatus(msg *fibcapi.DpStatus) {
-	log.Debugf("RIBController: OnDpStatus %v", msg)
+func (r *RIBController) FIBCDpStatus(hdr *fibcnet.Header, msg *fibcapi.DpStatus) {
+	log.Debugf("RIBController: FIBCDpStatus %v", msg)
 	if msg.Status == fibcapi.DpStatus_ENTER {
 		r.SendLoopbackFlows(fibcapi.FlowMod_ADD, r.nid)
+		// r.SendLinklocalFlows(fibcapi.FlowMod_ADD, r.nid)
 	}
 }
 
-func (r *RIBController) OnPortStatus(msg *fibcapi.PortStatus) {
-	log.Debugf("RIBController: OnPortStatus %v", msg)
+func (r *RIBController) FIBCPortStatus(hdr *fibcnet.Header, msg *fibcapi.PortStatus) {
+	log.Debugf("RIBController: FIBCPortStatus %v", msg)
 
 	_, ifname := ParseLinkName(msg.Ifname)
 	nid, _ := ParsePortId(msg.PortId)
@@ -192,10 +192,6 @@ func (r *RIBController) OnPortStatus(msg *fibcapi.PortStatus) {
 			log.Errorf("RIBController: ModLinkStatus error. %d/%s Down", nid, ifname)
 		}
 	}
-}
-
-func (r *RIBController) OnNetlinkMessage(nlmsg *nlamsg.NetlinkMessageUnion) {
-	nlamsg.DispatchUnion(nlmsg, r)
 }
 
 func (r *RIBController) NetlinkNode(nlmsg *nlamsg.NetlinkMessage, node *nlamsg.Node) {
@@ -461,6 +457,18 @@ func (r *RIBController) SendLoopbackFlows(cmd fibcapi.FlowMod_Cmd, nid uint8) {
 
 	r.nla.GetAddrs(nid, func(addr *nlamsg.Addr) error {
 		if _, ok := links[addr.Index]; ok {
+			if err := r.SendACLFlowByAddr(cmd, addr); err != nil {
+				log.Errorf("RIBController: ACL FLow(Addr) error. %s", err)
+				return err
+			}
+		}
+		return nil
+	})
+}
+
+func (r *RIBController) SendLinklocalFlows(cmd fibcapi.FlowMod_Cmd, nid uint8) {
+	r.nla.GetAddrs(nid, func(addr *nlamsg.Addr) error {
+		if len(addr.Label) == 0 && addr.NId == nid {
 			if err := r.SendACLFlowByAddr(cmd, addr); err != nil {
 				log.Errorf("RIBController: ACL FLow(Addr) error. %s", err)
 				return err

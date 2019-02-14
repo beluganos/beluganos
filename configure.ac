@@ -28,15 +28,27 @@ AC_ARG_WITH([go-prefix],
 GOPREFIX="$with_go_prefix"
 AC_SUBST([GOPREFIX])
 
+AC_ARG_WITH([opennsl],
+            [AS_HELP_STRING([--with-opennsl], [enable OpenNSL. @<:@default=no@:>@])],
+            [],
+            [with_opennsl=no])
+
+AM_CONDITIONAL([ENABLE_OPENNSL], [test "$with_opennsl" = "yes"])
+
 #
 # Makefiles
 #
 AC_CONFIG_FILES([Makefile
-                 src/Makefile
+		 etc/Makefile
+		 etc/installer/Makefile
+		 src/Makefile
 		 src/goryu/Makefile
 		 src/goryu/ryulib/Makefile
 		 src/goryu/ofproto/Makefile
 		 src/goryu/encoding/Makefile
+		 src/gonsl/Makefile
+		 src/gonsl/lib/Makefile
+		 src/gonsl/api/Makefile
 		 src/fabricflow/Makefile
 		 src/fabricflow/util/Makefile
 		 src/fabricflow/util/net/Makefile
@@ -47,6 +59,7 @@ AC_CONFIG_FILES([Makefile
 		 src/fabricflow/fibc/dbm/Makefile
 		 src/fabricflow/fibc/lib/Makefile
 		 src/fabricflow/fibc/ofc/Makefile
+		 src/fabricflow/fibs/Makefile
 		 src/fabricflow/ribc/Makefile
 		 src/fabricflow/ribc/ribctl/Makefile
 		 src/fabricflow/ribp/Makefile

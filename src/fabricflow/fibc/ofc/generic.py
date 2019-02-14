@@ -418,8 +418,8 @@ def mpls_l3_vpn_group(dpath, mod, ofctl, mpls_bos=True):
             return fibcapi.mpls_interface_group_id(entry.ne_id)
         elif entry.new_dst_id != 0:
             return fibcapi.mpls_label_group_id(3, entry.new_dst_id)
-        else:
-            pass
+
+        return None
 
     entry = mod.mpls_label
     cmd = fibcapi.group_mod_cmd(mod.cmd, dpath.ofproto)
@@ -508,3 +508,63 @@ def l2_unfiltered_interface_group(dpath, mod, ofctl):
     L2 Unfiltered Interface Group.
     """
     _LOG.debug("L2 Unfiltered Interface Group: %d %s %s", dpath.id, mod, ofctl)
+
+
+def pkt_out(dpath, port_id, strip_vlan, data):
+    """
+    PacketOut
+    """
+    _LOG.debug("PacketOUT: %s %s", dpath.id, len(data))
+
+    parser = dpath.ofproto_parser
+    ofp = dpath.ofproto
+
+    actions = [parser.OFPActionOutput(port_id)]
+    if strip_vlan:
+        actions.insert(0, parser.OFPActionPopVlan())
+
+    msg = parser.OFPPacketOut(datapath=dpath,
+                              buffer_id=ofp.OFP_NO_BUFFER,
+                              in_port=ofp.OFPP_ANY,
+                              actions=actions,
+                              data=data)
+
+    dpath.send_msg(msg)
+
+
+def get_port_stats(dpath, waiters, port_id, ofctl):
+    """
+    get port stats
+    """
+    # pylint: disable=unused-argument
+    _LOG.debug("get_port_stats: %d %s", dpath.id, port_id)
+
+    stats = ofctl.get_port_stats(dpath, waiters, port_id)
+    return _fix_port_stats_names(stats)
+
+
+def _fix_port_stats_names(stats):
+    key_map = {
+        'rx_packets': "ifInUcastPkts",
+        'tx_packets': "ifOutUcastPkts",
+        'rx_bytes': "ifInOctets",
+        'tx_bytes': "ifOutOctets",
+        'rx_dropped':"ifInDiscards",
+        'tx_dropped': "ifOutDiscards",
+        'rx_errors': "ifInErrors",
+        'tx_errors': "ifOutErrors",
+        'rx_frame_err': "etherStatsJabbers",
+        'rx_over_err': "etherStatsOversizePkts",
+        'rx_crc_err': "etherStatsCRCAlignErrors",
+        'collisions': "etherStatsCollisions",
+    }
+
+    def _new_port_stats(port_stats):
+        port_stats["ifInNUcastPkts"] = 0
+        port_stats["ifOutNUcastPkts"] = 0
+        return {key_map.get(key, key): val for key, val in port_stats.items()}
+
+    def _new_port_stats_list(port_stats_list):
+        return [_new_port_stats(port_stats) for port_stats in port_stats_list]
+
+    return {dpid:_new_port_stats_list(port_stats_list) for dpid, port_stats_list in stats.items()}

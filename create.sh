@@ -21,6 +21,16 @@
 PIP=pip
 PATCH=patch
 
+INST_HOME=`pwd`/etc/installer
+. $INST_HOME/sys.sh
+. $INST_HOME/frr.sh
+. $INST_HOME/lxd.sh
+. $INST_HOME/ovs.sh
+. $INST_HOME/golang.sh
+. $INST_HOME/python.sh
+. $INST_HOME/opennsl.sh
+. $INST_HOME/beluganos.sh
+
 set_proxy() {
     if [ "${PROXY}"x != ""x ]; then
         APT_PROXY="--env http_proxy=${PROXY}"
@@ -44,314 +54,6 @@ set_sudo() {
     fi
 }
 
-#
-# python virtualenv
-#
-make_virtenv() {
-    if [ "${ENABLE_VIRTUALENV}" = "yes" ]; then
-        if [ -d ${VIRTUALENV} ]; then
-            echo "${VIRTUALENV} already exist."
-        else
-            virtualenv ${VIRTUALENV}
-        fi
-    fi
-}
-
-#
-# install deb packages
-#
-apt_install() {
-    sudo ${HTTP_PROXY} ${APT_OPTION} apt -y install ${APT_PKGS} || { echo "apt_install error."; exit 1; }
-    sudo apt -y autoremove
-}
-
-#
-# install pip by get_pip.py
-#
-get_pip() {
-    if [ "${ENABLE_VIRTUALENV}" != "yes" ]; then
-        wget -nc -P /tmp ${GET_PIP_URL}/${GET_PIP_FILE} || { echo "pip_install/wget error."; exit 1; }
-        sudo python /tmp/${GET_PIP_FILE} --proxy="${PROXY}" || { echo "pip_install/python error."; exit 1; }
-    fi
-}
-
-#
-# install python packages
-#
-pip_install() {
-    get_pip
-    $PIP install -U ${PIP_PKGS} || { echo "pip_install/pip error."; exit 1; }
-}
-
-#
-# install go-lang
-#
-golang_install() {
-    local GO_FILE=go${GO_VER}.linux-amd64.tar.gz
-
-    echo "Downloading ${GO_URL}/${GO_FILE}"
-    wget -nc -P /tmp ${GO_URL}/${GO_FILE} || { echo "golang_install/wget error."; exit 1; }
-
-    echo "Extracting /tmp/${GO_FILE}"
-    sudo tar xf /tmp/${GO_FILE} -C /usr/local || { echo "golang_install/tar error."; exit 1; }
-}
-
-#
-# install protobuf
-#
-protoc_install() {
-    local PROTOC_FILE=protoc-${PROTOC_VER}-linux-x86_64.zip
-
-    echo "Downloading ${PROTOC_URL}/${PROTOC_FILE}"
-    wget -nc -P /tmp ${PROTOC_URL}/${PROTOC_FILE} || { echo "protoc_install/wget error."; exit 1; }
-
-    echo "Extracting /tmp/${PROTOC_FILE}"
-    sudo unzip -o -d /usr/local/go /tmp/${PROTOC_FILE} || { echo "protoc_install/unzip error."; exit 1; }
-
-    sudo chmod +x /usr/local/go/bin/protoc
-}
-
-#
-# install go packages
-#
-gopkg_install() {
-    for PKG in ${GO_PKGS}; do
-        echo "go get ${PKG}"
-        go get --tags=frr -u ${PKG} || { echo "gopkg_install error."; exit 1; }
-    done
-}
-
-#
-# patch for netlink
-#
-netlink_patch() {
-    cp ./etc/netlink/netlink_gonla.patch /tmp/
-
-    pushd ~/go/src/github.com/vishvananda/netlink/
-    patch -p1 < /tmp/netlink_gonla.patch
-    go install || { echo "netlink_patch/install error."; exit 1; }
-    popd
-}
-
-#
-# patch for gobgp
-#
-gobgp_patch() {
-    cp ./etc/gobgp/gobgp_for_frr.patch /tmp/
-
-    pushd ~/go/src/github.com/osrg/gobgp
-    patch -p1 < /tmp/gobgp_for_frr.patch
-    go install --tags=frr ./... || { echo "gobgp_patch/install error."; exit 1; }
-    popd
-}
-
-#
-# GoBGP specific version.
-#
-gobgp_checkout() {
-    pushd ~/go/src/github.com/osrg/gobgp
-    git checkout -B ${GOBGP_VER} ${GOBGP_VER}
-    go install ./gobgpd || { echo "gobgp_checkout error."; exit 1; }
-    go install ./gobgp || { echo "gobgp_checkout error."; exit 1; }
-    popd
-}
-
-#
-# Ryu ofdpa patch
-#
-ryu_patch() {
-    cp ./etc/ryu/ryu_ofdpa2.patch /tmp/
-
-    if [ "${ENABLE_VIRTUALENV}" = "yes" ]; then
-        pushd ${VIRTUALENV}/lib/python2.7/site-packages
-    else
-        pushd /usr/local/lib/python2.7/dist-packages
-    fi
-
-    $PATCH -b -p1 < /tmp/ryu_ofdpa2.patch
-
-    popd
-}
-
-#
-# frr deb package
-#
-frr_pkg() {
-    local FRR_DIR=${LXD_WORK_DIR}/frr
-
-    if [ -e $FRR_DIR ]; then
-        pushd $FRR_DIR
-    else
-        git clone $FRR_URL $FRR_DIR || { echo "frr_pkg/clone error."; exit 1; }
-        cp etc/frr/frr.patch /tmp/
-        cp etc/frr/frr-stable-3.0-for-ubuntu-1804.patch /tmp/
-
-        pushd $FRR_DIR
-        git checkout -b $FRR_BRANCH origin/stable/$FRR_BRANCH
-        patch -p1 < /tmp/frr.patch
-        patch -p1 < /tmp/frr-stable-3.0-for-ubuntu-1804.patch
-        ln -s debianpkg debian
-    fi
-
-    ./bootstrap.sh
-    ./configure
-    make dist
-    make -f debian/rules backports
-
-    cd ${LXD_WORK_DIR}
-    tar xvf ${FRR_DIR}/frr_*.orig.tar.gz
-    cd frr-*
-    . /etc/os-release
-    tar xvf ${FRR_DIR}/frr_*${ID}${VERSION_ID}*.debian.tar.xz
-
-    fakeroot ./debian/rules binary
-
-    popd
-}
-
-#
-# lxdbr0 setting
-#
-lxd_network() {
-    lxc network set ${LXD_BRIDGE} ipv4.address ${LXD_NETWORK}
-    lxc network show ${LXD_BRIDGE}
-}
-
-#
-# ubuntu image
-#
-lxd_image() {
-    lxc image copy ${LXD_IMAGE_ORIG} local: --alias ${LXD_IMAGE_BARE}
-    lxc image info ${LXD_IMAGE_BARE}
-}
-
-#
-# base image
-#
-lxd_base() {
-    local LXD_IMAGE_TEMP="temp"
-
-    if [ ! -e ${LXD_WORK_DIR}/${FRR_PKG} ]; then
-        echo "${LXD_WORK_DIR}/${FRR_PKG} not exist!!"
-        exit -1
-    fi
-
-    lxc launch ${LXD_IMAGE_BARE} ${LXD_IMAGE_TEMP}
-    sleep 10
-
-    echo "Installing packages"
-    lxc exec ${LXD_IMAGE_TEMP} apt ${APT_PROXY} -- -y update || { echo "lxd_base/update error."; exit 1; }
-    lxc exec ${LXD_IMAGE_TEMP} apt ${APT_PROXY} -- -y dist-upgrade || { echo "lxd_base upgrade error"; exit 1; }
-    lxc exec ${LXD_IMAGE_TEMP} apt ${APT_PROXY} -- -y install ${LXD_APT_PKGS} || { echo "lxd_base/install error."; exit 1; }
-    lxc exec ${LXD_IMAGE_TEMP} apt ${APT_PROXY} -- -y autoremove
-
-    echo "Push ${FRR_PKG} to ${LXD_IMAGE_TEMP}"
-    lxc file push ${LXD_WORK_DIR}/${FRR_PKG} ${LXD_IMAGE_TEMP}/tmp/
-
-    echo "Installing ${FRR_PKG} ..."
-    lxc exec ${LXD_IMAGE_TEMP} dpkg -- -i /tmp/${FRR_PKG} || { echo "lxd_base/dpkg error."; exit 1; }
-
-    echo "Stopping container ${LXD_IMAGE_TEMP} ..."
-    lxc stop ${LXD_IMAGE_TEMP}
-
-    echo "Publishing container ${LXD_IMAGE_TEMP} as ${LXD_IMAGE_BASE} ..."
-    lxc publish ${LXD_IMAGE_TEMP} --alias ${LXD_IMAGE_BASE} || { echo "lxd_base/publish error."; exit 1; }
-
-    echo "Deleting container ${LXD_IMAGE_TEMP} ..."
-    lxc delete -f ${LXD_IMAGE_TEMP}
-
-    lxc image info ${LXD_IMAGE_BASE}
-
-    echo "done"
-}
-
-init_lxd() {
-    lxd_network
-    lxd_image
-    lxd_base
-}
-
-init_sys() {
-    sudo cp -v etc/modules/modules.conf  /etc/modules-load.d/beluganos.conf
-    sudo cp -v etc/modules/modprobe.conf /etc/modprobe.d/beluganos.conf
-    sudo modprobe -a belbonding mpls_router mpls_iptunnel
-    sudo netplan apply
-}
-
-init_host() {
-    sudo useradd -s /sbin/nologin -r ${BELUG_USER}
-    sudo mkdir -v -p ${BELUG_HOME}
-    sudo mkdir -v -p ${BELUG_DIR}
-
-    local IFACE_TEMP=/tmp/interfaces_temp
-    cat >  ${IFACE_TEMP} <<EOF
-# -*- coding: utf-8 -*-
-network:
-  version: 2
-  renderer: networkd
-  ethernets:
-    ${BELUG_OFC_IFACE}:
-      addresses:
-        - ${BELUG_OFC_ADDR}
-EOF
-    sudo cp ${IFACE_TEMP} /etc/netplan/02-beluganos.yaml
-
-    init_sys
-}
-
-init_ovs() {
-    local BRIDGE=$1
-    local OFCADDR=$2
-    local DPID=$3
-
-    sudo ovs-vsctl add-br ${BRIDGE}
-    sudo ovs-vsctl set-controller ${BRIDGE} tcp:${OFCADDR}
-    if [ "$DPID"x != ""x ]; then
-        sudo ovs-vsctl set bridge ${BRIDGE} other-config:datapath-id=${DPID}
-    fi
-    sudo ovs-vsctl show
-    sudo ovs-ofctl show ${BRIDGE}
-}
-
-beluganos_install() {
-    ./bootstrap.sh
-    if [ "${ENABLE_VIRTUALENV}" = "yes" ]; then
-        make release
-    else
-        make install
-        make fflow-install
-        sudo make fibc-install
-    fi
-}
-
-netconf_install() {
-    if [ "${BEL_NC_ENABLE}" = "yes" ]; then
-        local NC_DIR=${LXD_WORK_DIR}/netconf
-
-        if [ -e $NC_DIR ]; then
-            pushd $NC_DIR
-        else
-            git clone $BEL_NC_URL $NC_DIR || { echo "beluganos_netconf/clone error."; exit 1; }
-            pushd $NC_DIR
-        fi
-
-        PROXY=${PROXY} ./create.sh beluganos-netconf
-
-        popd
-    fi
-}
-
-confirm() {
-    MSG=$1
-
-    echo "$MSG [y/N]"
-    read ans
-    case $ans in
-        [yY]) return 0;;
-        *) return 1;;
-    esac
-}
-
 do_all() {
     confirm "Install ALL" || exit 1
 
@@ -359,6 +61,7 @@ do_all() {
     apt_install
     golang_install
     protoc_install
+    opennsl_install
 
     # create virtual env
     make_virtenv
@@ -369,8 +72,9 @@ do_all() {
     # install packages
     pip_install
     gopkg_install
+    opennsl_pkg_install
     netlink_patch
-    gobgp_checkout
+    gobgp_upgrade
     ryu_patch
 
     # create frr deb package
@@ -378,7 +82,7 @@ do_all() {
 
     # initailize systems
     init_lxd
-    init_host
+    init_sys
     init_ovs ${BELUG_OVS_BRIDGE} 127.0.0.1
 
     # beluganos-netconf
@@ -399,6 +103,13 @@ do_minimal() {
     init_lxd
     init_sys
     init_ovs ${SAMPLE_OVS_BRIDGE} ${BELUG_OFC_ADDR} ${SAMPLE_OVS_DPID}
+}
+
+do_opennsl() {
+    opennsl_install
+    . ./setenv.sh
+    opennsl_pkg_install
+    beluganos_install
 }
 
 do_usage() {
@@ -427,14 +138,18 @@ case $1 in
         ;;
     gopkg)
         gopkg_install
+        opennsl_pkg_install
         netlink_patch
-        gobgp_checkout
+        gobgp_upgrade
         ;;
     min)
         do_minimal
         ;;
     netconf)
         netconf_install
+        ;;
+    opennsl)
+        do_opennsl
         ;;
     help)
         do_usage

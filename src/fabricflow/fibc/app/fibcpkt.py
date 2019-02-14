@@ -30,6 +30,7 @@ from fabricflow.fibc.net import ffpacket
 from fabricflow.fibc.dbm import fibcdbm
 from fabricflow.fibc.lib import fibcevt
 from fabricflow.fibc.lib import fibclog
+from fabricflow.fibc.ofc import ofc
 
 _LOG = logging.getLogger(__name__)
 
@@ -61,20 +62,34 @@ class FIBCPktApp(app_manager.RyuApp):
         fibcevt.EventFIBCVsPortConfig,
     ]
 
-    # pylint: disable=broad-except
-    # pylint: disable=no-member
-    @handler.set_ev_cls(ofp_event.EventOFPPacketIn, handler.MAIN_DISPATCHER)
+    @handler.set_ev_cls(ofp_event.EventOFPPacketIn, handler.MAIN_DISPATCHER) # pylint: disable=no-member
     def on_packet_in(self, evt):
         """
         Process PacketIN event.
         """
+        msg = evt.msg
+        dp_id = msg.datapath.id
+        port_id = get_in_port(msg)
+        self._on_packet_in(msg, dp_id, port_id)
+
+
+    @handler.set_ev_cls(fibcevt.EventFIBCPacketIn, handler.MAIN_DISPATCHER)
+    def on_ff_packet_in(self, evt):
+        """
+        Process FFPacketIN event.
+        """
+        msg = evt.msg
+        dp_id = msg.dp_id
+        port_id = msg.port_no
+        self._on_packet_in(msg, dp_id, port_id)
+
+
+    # pylint: disable=broad-except
+    # pylint: disable=no-member
+    def _on_packet_in(self, msg, dp_id, port_id):
         try:
             if fibclog.dump_msg():
-                _LOG.debug("packet_in(%s)", evt.msg)
-
-            msg = evt.msg
-            dp_id = msg.datapath.id
-            port_id = get_in_port(msg)
+                _LOG.debug("packet_in(%s)", msg)
 
             pkt = packet.Packet(msg.data)
             ffpkt = pkt.get_protocol(ffpacket.FFPacket)
@@ -97,22 +112,24 @@ class FIBCPktApp(app_manager.RyuApp):
             hexdump(msg.data)
 
 
-
     def forward_pkt(self, pkt, dp_id, port_id):
         """
         forward packet.
         """
+        vlan_hdr = pkt.get_protocol(vlan.vlan)
+        strip_vlan = True if vlan_hdr is not None and \
+                     vlan_hdr.vid == fibcapi.OFPVID_UNTAGGED else False
+
         try:
             port = fibcdbm.portmap().find_by_dp(dp_id, port_id)
             vs_port = port["vs"]
-            vlan_hdr = pkt.get_protocol(vlan.vlan)
-            strip_vlan = True if vlan_hdr is not None and \
-                         vlan_hdr.vid == fibcapi.OFPVID_UNTAGGED else False
 
             _LOG.debug("forwarding DP(%d, %d) -> VS(%d, %d)",
                        dp_id, port_id, vs_port.id, vs_port.port)
 
-            self.packetout(pkt, vs_port.id, vs_port.port, strip_vlan)
+            dpath, mode = fibcdbm.dps().find_by_id(vs_port.id)
+            pkt_out = ofc.pkt_out(mode)
+            pkt_out(dpath, vs_port.port, strip_vlan, pkt.data)
 
             return
 
@@ -127,7 +144,9 @@ class FIBCPktApp(app_manager.RyuApp):
             _LOG.debug("forwarding VS(%d, %d) -> DP(%d, %d)",
                        dp_id, port_id, dp_port.id, dp_port.port)
 
-            self.packetout(pkt, dp_port.id, dp_port.port)
+            dpath, mode = fibcdbm.dps().find_by_id(dp_port.id)
+            pkt_out = ofc.pkt_out(mode)
+            pkt_out(dpath, dp_port.port, strip_vlan, pkt.data)
 
             return
 
@@ -135,27 +154,6 @@ class FIBCPktApp(app_manager.RyuApp):
             _LOG.warn("drop src(%d, %d)", dp_id, port_id)
             if fibclog.dump_pkt():
                 _LOG.debug("drop %s", pkt)
-
-
-    def packetout(self, pkt, dp_id, port_id, strip_vlan=False):
-        """
-        Send Packetout message.
-        """
-        dpath = fibcdbm.dps().find_by_id(dp_id)
-
-        actions = [dpath.ofproto_parser.OFPActionOutput(port_id)]
-        if strip_vlan:
-            actions.insert(0, dpath.ofproto_parser.OFPActionPopVlan())
-
-        msg = dpath.ofproto_parser.OFPPacketOut(datapath=dpath,
-                                                buffer_id=dpath.ofproto.OFP_NO_BUFFER,
-                                                in_port=dpath.ofproto.OFPP_ANY,
-                                                actions=actions,
-                                                data=pkt.data)
-        if fibclog.dump_msg():
-            _LOG.debug("PacketOUT(%s)", msg)
-
-        dpath.send_msg(msg)
 
 
 def get_in_port(msg):

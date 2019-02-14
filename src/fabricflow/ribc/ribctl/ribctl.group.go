@@ -30,6 +30,9 @@ func NewL2InterfaceGroup(link *nlamsg.Link) *fibcapi.L2InterfaceGroup {
 		NewPortId(link),
 		link.VlanId(),
 		false, // vlanTranslation
+		link.Attrs().HardwareAddr,
+		link.Attrs().MTU,
+		link.NId,
 	)
 }
 
@@ -62,6 +65,15 @@ func NewL3UnicastGroup(link *nlamsg.Link, neigh *nlamsg.Neigh) *fibcapi.L3Unicas
 }
 
 func (r *RIBController) SendL3UnicastGroup(cmd fibcapi.GroupMod_Cmd, neigh *nlamsg.Neigh) error {
+	hwtype, err := fibcapi.ParseHardwareAddrType(neigh.HardwareAddr)
+	if err != nil {
+		return err
+	}
+
+	if hwtype != fibcapi.HWADDR_TYPE_NONE {
+		return nil
+	}
+
 	link, err := r.nla.GetLink_GroupMod(cmd, neigh.NId, neigh.LinkIndex)
 	if err != nil {
 		return err

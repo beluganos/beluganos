@@ -30,14 +30,30 @@ func (g *GroupMod) Bytes() ([]byte, error) {
 	return proto.Marshal(g)
 }
 
+func NewGroupModFromBytes(data []byte) (*GroupMod, error) {
+	group_mod := &GroupMod{}
+	if err := proto.Unmarshal(data, group_mod); err != nil {
+		return nil, err
+	}
+
+	return group_mod, nil
+}
+
 //
 // L2 Interface Group
 //
-func NewL2InterfaceGroup(portId uint32, vlanId uint16, vlanTranslation bool) *L2InterfaceGroup {
+func NewL2InterfaceGroupID(portId uint32, vlanId uint16) uint32 {
+	return (AdjustVlanVID(vlanId) << 16) + (portId & 0xffff)
+}
+
+func NewL2InterfaceGroup(portId uint32, vlanId uint16, vlanTranslation bool, hwAddr net.HardwareAddr, mtu int, vrf uint8) *L2InterfaceGroup {
 	return &L2InterfaceGroup{
 		PortId:          portId,
 		VlanVid:         uint32(vlanId),
 		VlanTranslation: vlanTranslation,
+		HwAddr:          hwAddr.String(),
+		Mtu:             uint32(mtu),
+		Vrf:             uint32(vrf),
 	}
 }
 
@@ -51,12 +67,19 @@ func (g *L2InterfaceGroup) ToMod(cmd GroupMod_Cmd, reId string) *GroupMod {
 }
 
 //
-// L2 Rewrite Group Id
+// L2 Rewrite Group
 //
+func NewL2RewriteGroupID(neighId uint32) uint32 {
+	return 0x10000000 + (neighId & 0x0fffffff)
+}
 
 //
 // L3 Unicast Group
 //
+func NewL3UnicastGroupID(neighId uint32) uint32 {
+	return 0x20000000 + (neighId & 0x0fffffff)
+}
+
 func NewL3UnicastGroup(neId, portId uint32, vlanVid uint16, ethDst, ethSrc net.HardwareAddr) *L3UnicastGroup {
 	return &L3UnicastGroup{
 		NeId:    neId,
@@ -77,32 +100,57 @@ func (g *L3UnicastGroup) ToMod(cmd GroupMod_Cmd, reId string) *GroupMod {
 }
 
 //
-// L2 Multicast Group Id
+// L2 Multicast Group
 //
+func NewL2MulticastGroupID(mcId uint16, vlanId uint16) uint32 {
+	return 0x30000000 + ((AdjustVlanVID(vlanId) << 16) & 0x0fff0000) + ((uint32)(mcId) & 0xffff)
+}
 
 //
-// L2 Flood Group Id
+// L2 Flood Group
 //
+func NewL2FloodGroupID(floodId uint16, vlanId uint16) uint32 {
+	return 0x40000000 + ((AdjustVlanVID(vlanId) << 16) & 0x0fff0000) + (uint32(floodId) & 0xffff)
+}
 
 //
 // L3 Interface Group Id
 //
+func NewL3InterfaceGroupID(neighId uint32) uint32 {
+	return 0x50000000 + (neighId & 0x0fffffff)
+}
 
 //
-// L3 Multicast Group Id
+// L3 Multicast Group
 //
+func NewL3MulticastGroupID(mcId uint16, vlanId uint16) uint32 {
+	return 0x60000000 + ((AdjustVlanVID(vlanId) << 16) & 0x0fff0000) + (uint32(mcId) & 0xffff)
+}
 
 //
-// L3 ECMP Group Id
+// L3 ECMP Group
 //
+func NewL3EcmpGroupId(ecmpId uint32) uint32 {
+	return 0x70000000 + (ecmpId & 0x0fffffff)
+}
 
 //
-// L2 Overlay Group Id
+// L2 Overlay Group
 //
+func NewOverlayGroupID(tunnelId uint16, subType uint16, index uint16) uint32 {
+	return 0x80000000 +
+		(((uint32)(tunnelId) << 12) & 0x0ffff000) +
+		(((uint32)(subType) << 10) & 0x0800) +
+		((uint32)(index) & 0x07ff)
+}
 
 //
-// MPLS Interface Group Id
+// MPLS Interface Group
 //
+func NewMPLSInterfaceGroupID(neighId uint32) uint32 {
+	return 0x90000000 + (neighId & 0x00ffffff)
+}
+
 func NewMPLSInterfaceGroup(neId, portId uint32, vlanVid uint16, ethDst, ethSrc net.HardwareAddr) *MPLSInterfaceGroup {
 	return &MPLSInterfaceGroup{
 		NeId:    neId,
@@ -133,6 +181,10 @@ var MPLSLabelGroup_subtype = map[GroupMod_GType]uint32{
 	GroupMod_MPLS_SWAP:    5,
 }
 
+func NewMPLSLabelGroupID(subType uint32, label uint32) uint32 {
+	return 0x90000000 + ((subType << 24) & 0x0f000000) + (label & 0x00ffffff)
+}
+
 func NewMPLSLabelGroup(gType GroupMod_GType, dstId, newLabel, neId, newDstId uint32) *MPLSLabelGroup {
 	return &MPLSLabelGroup{
 		GType:    gType,
@@ -150,4 +202,25 @@ func (g *MPLSLabelGroup) ToMod(cmd GroupMod_Cmd, reId string) *GroupMod {
 		ReId:  reId,
 		Entry: &GroupMod_MplsLabel{MplsLabel: g},
 	}
+}
+
+//
+// MPLS FastFailover Group
+//
+func NewMPLSFastFailoverGroupID(index uint32) uint32 {
+	return 0xa6000000 + (index & 0x00ffffff)
+}
+
+//
+// MPLS ECMP Group
+//
+func NewMPLSEcmpGroupID(index uint32) uint32 {
+	return 0xa8000000 + (index & 0x00ffffff)
+}
+
+//
+// Unfiltered Interface Group
+//
+func NewUnfilteredInterfaceGroupID(portId uint32) uint32 {
+	return 0xb0000000 + (portId & 0xffff)
 }

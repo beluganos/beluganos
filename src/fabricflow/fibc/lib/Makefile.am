@@ -5,8 +5,13 @@ PYLIST = \
 	fibccnv.py \
 	fibclog.py
 
+PHONY: go-test py-test
+
+go-test:
+	go test -coverprofile=cover.out
+
 py-test:
 	pylint --ignore-imports yes $(PYLIST)
 	./suite.py
 
-check-local: py-test
+check-local: go-test py-test

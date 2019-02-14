@@ -165,3 +165,33 @@ def l2_unfiltered_interface_group(dpath, mod, ofctl):
     L2 Unfiltered Interface Group.
     """
     _LOG.debug("L2 Unfiltered Interface Group: %d %s %s", dpath.id, mod, ofctl)
+
+
+def pkt_out(dpath, port_id, strip_vlan, data):
+    """
+    PacketOut
+    """
+    _LOG.debug("PacketOUT: %s %d %d", dpath.id, port_id, len(data))
+
+    parser = dpath.ofproto_parser
+    ofp = dpath.ofproto
+
+    actions = [parser.OFPActionOutput(port_id)]
+    if strip_vlan:
+        actions.insert(0, parser.OFPActionPopVlan())
+
+    msg = parser.OFPPacketOut(datapath=dpath,
+                              buffer_id=ofp.OFP_NO_BUFFER,
+                              in_port=ofp.OFPP_ANY,
+                              actions=actions,
+                              data=data)
+
+    dpath.send_msg(msg)
+
+
+def get_port_stats(dpath, waiters, port_id, ofctl):
+    """
+    get port stats
+    """
+    # pylint: disable=unused-argument
+    _LOG.debug("get_port_stats: %d %s", dpath.id, port_id)

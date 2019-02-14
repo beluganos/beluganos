@@ -13,6 +13,12 @@ enum FFM {
     FLOW_MOD      = 4;
     GROUP_MOD     = 5;
     DP_STATUS     = 6;
+    FF_HELLO      = 7;
+    FF_MULTIPART_REQUEST = 8;
+    FF_MULTIPART_REPLY   = 9;
+    FF_PACKET_IN  = 10;
+    FF_PACKET_OUT = 11;
+    FF_PORT_STATUS= 12;
 }
 
 message Hello {
@@ -22,8 +28,8 @@ message Hello {
 message DpStatus {
     enum Status {
         NOP   = 0;  // unused
-	ENTER = 1;
-	LEAVE = 2;
+        ENTER = 1;
+        LEAVE = 2;
     }
 
     Status status = 1;
@@ -233,9 +239,16 @@ message MPLSFlow {
 }
 
 message UnicastRoutingFlow {
+    enum Origin {
+        UNSPEC = 0;
+        NEIGH  = 1;
+        ROUTE  = 2;
+    }
+
     message Match {
         string ip_dst = 1; // ip/mask
-        uint32 vrf    = 2;
+        uint32 vrf    = 2; // uint8
+        Origin origin = 3;
     }
 
     message Action {
@@ -278,7 +291,11 @@ message BridgingFlow {
 message PolicyACLFlow {
     message Match {
         string ip_dst = 1; // <ip>/<mask>
-        uint32 vrf    = 2; // 0: unspec
+        uint32 vrf    = 2; // uint8 (0: unspec)
+        uint32 eth_type = 3; // uint16 (0: unspec)
+        uint32 ip_proto = 4; // uint8 (0: unspec)
+        uint32 tp_src   = 5; // uint16 (0: unspec)
+        uint32 tp_dst   = 6; // uint16 (0: unspec)
     }
 
     message Action {
@@ -296,9 +313,12 @@ message PolicyACLFlow {
 
 // 0x0vvvPPPP (vvv:VID, PPPP:port_id)
 message L2InterfaceGroup {
-    uint32 port_id  = 1; // VRF+LnId
-    uint32 vlan_vid = 2; // uint16 (0:POP_VLAN)
-    bool   vlan_translation = 3;
+  uint32 port_id  = 1; // VRF+LnId
+  uint32 vlan_vid = 2; // uint16 (0:POP_VLAN)
+  bool   vlan_translation = 3;
+  string hw_addr  = 4;
+  uint32 mtu      = 5; // uint16
+  uint32 vrf      = 6; // uint8
 }
 
 // 0x20VVNNNN (VV:VRF, NNNN:NeId)
@@ -326,4 +346,114 @@ message MPLSLabelGroup {
     uint32  ne_id         = 3;  // VRF+NeId     (encap single label)
     uint32  new_dst_id    = 4;  // New Encap Id (encap double label)
     GroupMod.GType g_type = 5;
+}
+
+// FFHello
+message FFHello {
+  enum DpType {
+    NOP     = 0; // unused
+    OPENNSL = 1;
+  }
+  uint64 dp_id   = 1;
+  DpType dp_type = 2;
+}
+
+// FFPort
+message FFPort {
+  uint32 port_no    = 1;
+  string hw_addr    = 2;
+  string name       = 3;
+  uint32 config     = 4;
+  uint32 state      = 5;
+  uint32 curr       = 6;
+  uint32 advertised = 7;
+  uint32 curr_speed = 8;
+  uint32 max_speed  = 9;
+}
+
+// Port Stats
+message FFPortStats {
+  uint32 port_no = 1;
+  map<string, uint64> values = 2;
+}
+
+// Multipart
+message FFMultipart {
+  enum MpType {
+    NOP           = 0; // unused
+    FLOW          = 1;
+    AGGREGATE     = 2;
+    TABLE         = 3;
+    PORT          = 4;
+    QUEUE         = 5;
+    GROUP         = 6;
+    GROUP_DESC    = 7;
+    METER         = 9;
+    METER_CONFIG  = 10;
+    METER_FEATURE = 11;
+    TABLE_FEATURE = 12;
+    PORT_DESC     = 13;
+    EXPERIMENTER  = 0xffff;
+  }
+
+  message PortRequest {
+    uint32 port_no = 1;
+    repeated string names = 2;
+  }
+  message PortReply {
+    repeated FFPortStats stats = 1;
+  }
+
+  message PortDescRequest {
+    bool internal = 1;
+  }
+  message PortDescReply {
+    bool internal = 1;
+    repeated FFPort port = 2;
+  }
+
+  message Request {
+    uint64 dp_id   = 1;
+    MpType mp_type = 2;
+    oneof body {
+      PortRequest     port      = 3;
+      PortDescRequest port_desc = 4;
+    }
+  }
+
+  message Reply {
+    uint64 dp_id   = 1;
+    MpType mp_type = 2;
+    oneof body {
+      PortReply     port      = 3;
+      PortDescReply port_desc = 4;
+    }
+  }
+}
+
+// PacketIn
+message FFPacketIn {
+  uint64 dp_id     = 1;
+  uint32 port_no   = 2;
+  bytes  data      = 3;
+}
+
+// PacketOUT
+message FFPacketOut {
+  uint64 dp_id     = 1;
+  uint32 port_no   = 2;
+  bytes  data      = 3;
+}
+
+// Port Status
+message FFPortStatus {
+  enum Reason {
+    ADD    = 0; // OFPPR_ADD
+    DELETE = 1; // OFPPR_DELETE
+    MODIFY = 2; // OFPPR_MODIFY
+  }
+
+  uint64 dp_id   = 1;
+  FFPort port    = 2;
+  Reason reason  = 3;
 }

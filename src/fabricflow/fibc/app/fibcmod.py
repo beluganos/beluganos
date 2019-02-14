@@ -36,7 +36,7 @@ _SEND_MOD_WAIT_SEC = 0.025
 
 def _find_dp_by_re_id(re_id):
     dp_id = fibcdbm.idmap().find_by_re_id(re_id)["dp_id"]
-    return fibcdbm.dps().find_by_id(dp_id), fibcdbm.dps().get_mode(dp_id, "default")
+    return fibcdbm.dps().find_by_id(dp_id)
 
 
 # pylint: disable=no-self-use
@@ -46,7 +46,8 @@ class FIBCModApp(app_manager.RyuApp):
     """
     # pylint: disable=no-self-use
     # pylint: disable=broad-except
-    @handler.set_ev_cls(dpset.EventDP, dpset.DPSET_EV_DISPATCHER)
+    @handler.set_ev_cls([dpset.EventDP,
+                         fibcevt.EventFIBCEnterDP], dpset.DPSET_EV_DISPATCHER)
     def on_dp(self, evt):
         """
         Process Dp Entre event

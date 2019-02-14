@@ -1,0 +1,36 @@
+---
+
+handlers:
+  - oid : .1.3.6.1.4.99999.31.1.1.1.1
+    name: ifName
+    type: string
+  - oid : .1.3.6.1.4.99999.31.1.1.1.2
+    name: ifInOctets
+    type: integer
+  - oid : .1.3.6.1.4.99999.31.1.1.1.3
+    name: ifInUcastPkts
+    type: integer
+  - oid : .1.3.6.1.4.99999.31.1.1.1.4
+    name: ifInNUcastPkts
+    type: integer
+  - oid : .1.3.6.1.4.99999.31.1.1.1.5
+    name: ifInDiscards
+    type: integer
+  - oid : .1.3.6.1.4.99999.31.1.1.1.6
+    name: ifInErrors
+    type: integer
+  - oid : .1.3.6.1.4.99999.31.1.1.1.7
+    name: ifOutOctets
+    type: integer
+  - oid : .1.3.6.1.4.99999.31.1.1.1.8
+    name: ifOutUcastPkts
+    type: integer
+  - oid : .1.3.6.1.4.99999.31.1.1.1.9
+    name: ifOutNUcastPkts
+    type: integer
+  - oid : .1.3.6.1.4.99999.31.1.1.1.10
+    name: ifOutDiscards
+    type: integer
+  - oid : .1.3.6.1.4.99999.31.1.1.1.11
+    name: ifOutErrors
+    type: integer

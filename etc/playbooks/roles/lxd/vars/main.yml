@@ -6,6 +6,8 @@ commondir: "roles/lxd/files/common"
 
 confdir: "/etc/beluganos"
 
+lxclogdir: "/var/log/beluganos/{{ lxcname }}"
+
 gopath: "~/go"
 
 users:

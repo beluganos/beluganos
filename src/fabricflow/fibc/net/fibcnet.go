@@ -20,7 +20,10 @@ package fibcnet
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"io"
+	"net"
+	"time"
 )
 
 const HEADER_LEN = 8
@@ -91,4 +94,118 @@ func Write(w io.Writer, t uint16, xid uint32, b []byte) error {
 	}
 
 	return binary.Write(w, binary.BigEndian, b)
+}
+
+//
+// Connection
+//
+type Connection struct {
+	addr string
+	conn net.Conn
+}
+
+func NewConnection(addr string) *Connection {
+	return &Connection{
+		addr: addr,
+		conn: nil,
+	}
+}
+
+func (c *Connection) Connect() error {
+	c.Close()
+
+	conn, err := net.Dial("tcp", c.addr)
+	if err != nil {
+		return err
+	}
+
+	c.conn = conn
+	return nil
+}
+
+func (c *Connection) Close() {
+	if c.conn != nil {
+		c.conn.Close()
+		c.conn = nil
+	}
+}
+
+func (c *Connection) Read() (*Header, []byte, error) {
+	if c.conn == nil {
+		return nil, nil, fmt.Errorf("Connection: Read error. DISCONNECTED.")
+	}
+	return Read(c.conn)
+}
+
+func (c *Connection) Write(msg Message, xid uint32) error {
+	if c.conn == nil {
+		return fmt.Errorf("Connection: Write error. DISCONNECTED.")
+	}
+	return WriteMessage(c.conn, msg, xid)
+}
+
+//
+// Client
+//
+type Client struct {
+	active bool
+	conn   *Connection
+	connCh chan bool
+	retry  time.Duration
+}
+
+func NewClient(addr string) *Client {
+	return &Client{
+		active: false,
+		conn:   NewConnection(addr),
+		connCh: make(chan bool),
+		retry:  time.Millisecond * 1000,
+	}
+}
+
+func (c *Client) SetRetyTime(msec time.Duration) {
+	c.retry = time.Millisecond * msec
+}
+
+func (c *Client) Conn() <-chan bool {
+	return c.connCh
+}
+
+func (c *Client) Read() (*Header, []byte, error) {
+	return c.conn.Read()
+}
+
+func (c *Client) Write(msg Message, xid uint32) error {
+	return c.conn.Write(msg, xid)
+}
+
+type ClientConnectedCallback func(client *Client)
+
+func (c *Client) Start(callback ClientConnectedCallback) {
+	c.active = true
+
+	for {
+		if err := c.conn.Connect(); err == nil {
+			c.onConnected(callback)
+		}
+		if !c.active {
+			break
+		}
+		time.Sleep(c.retry)
+	}
+}
+
+func (c *Client) Stop() {
+	c.active = false
+	c.conn.Close()
+	time.Sleep(c.retry)
+}
+
+func (c *Client) onConnected(callback ClientConnectedCallback) {
+	c.connCh <- true
+	defer func() {
+		c.connCh <- false // disconnected
+	}()
+
+	callback(c)
 }

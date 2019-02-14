@@ -20,7 +20,34 @@ package ribctl
 import (
 	"fabricflow/fibc/api"
 	"gonla/nlamsg"
+	"net"
 )
+
+func checkIPNet(ip *net.IPNet) bool {
+	if ip == nil {
+		return false
+	}
+	return checkIP(ip.IP)
+}
+
+func checkIP(ip net.IP) bool {
+	switch {
+	case ip == nil:
+		return false
+	case ip.IsInterfaceLocalMulticast():
+		return false
+	case ip.IsLinkLocalMulticast():
+		return false
+	case ip.IsLoopback():
+		return false
+	case ip.IsMulticast():
+		return false
+	case ip.IsUnspecified():
+		return false
+	default:
+		return true
+	}
+}
 
 //
 // VLAN Flow()
@@ -79,8 +106,10 @@ func (r *RIBController) SendVLANFlow(cmd fibcapi.FlowMod_Cmd, link *nlamsg.Link)
 //
 func NewTermMACFlowIPv4(link *nlamsg.Link) *fibcapi.TerminationMacFlow {
 	m := fibcapi.NewTermMACMatch(
+		NewPortId(link),
 		fibcapi.ETHTYPE_IPV4,
 		link.Attrs().HardwareAddr.String(),
+		link.VlanId(),
 	)
 	a := []*fibcapi.TerminationMacFlow_Action{}
 	return fibcapi.NewTermMACFlow(m, a, uint32(fibcapi.FlowMod_UNICAST_ROUTING))
@@ -88,8 +117,10 @@ func NewTermMACFlowIPv4(link *nlamsg.Link) *fibcapi.TerminationMacFlow {
 
 func NewTermMACFlowIPv6(link *nlamsg.Link) *fibcapi.TerminationMacFlow {
 	m := fibcapi.NewTermMACMatch(
+		NewPortId(link),
 		fibcapi.ETHTYPE_IPV6,
 		link.Attrs().HardwareAddr.String(),
+		link.VlanId(),
 	)
 	a := []*fibcapi.TerminationMacFlow_Action{}
 	return fibcapi.NewTermMACFlow(m, a, uint32(fibcapi.FlowMod_UNICAST_ROUTING))
@@ -97,8 +128,10 @@ func NewTermMACFlowIPv6(link *nlamsg.Link) *fibcapi.TerminationMacFlow {
 
 func NewTermMACFlowMPLS(link *nlamsg.Link) *fibcapi.TerminationMacFlow {
 	m := fibcapi.NewTermMACMatch(
+		NewPortId(link),
 		fibcapi.ETHTYPE_MPLS,
 		link.Attrs().HardwareAddr.String(),
+		link.VlanId(),
 	)
 	a := []*fibcapi.TerminationMacFlow_Action{}
 	return fibcapi.NewTermMACFlow(m, a, uint32(fibcapi.FlowMod_MPLS1))
@@ -191,13 +224,12 @@ func (r *RIBController) SendMPLSFlowSwap(cmd fibcapi.FlowMod_Cmd, route *nlamsg.
 // Unicast Routing (for Neighbor)
 //
 func NewUnicastRoutingFlowNeigh(neigh *nlamsg.Neigh) *fibcapi.UnicastRoutingFlow {
-	ipDst := NewIPNetFromIP(neigh.IP)
-	m := fibcapi.NewUnicastRoutingMatch(ipDst, neigh.NId)
+	m := fibcapi.NewUnicastRoutingMatchNeigh(neigh.IP, neigh.NId)
 	return fibcapi.NewUnicastRoutingFlow(m, nil, fibcapi.GroupMod_L3_UNICAST, NewNeighId(neigh))
 }
 
 func (r *RIBController) SendUnicastRoutingFlowNeigh(cmd fibcapi.FlowMod_Cmd, neigh *nlamsg.Neigh) error {
-	if !neigh.IP.IsGlobalUnicast() {
+	if !checkIP(neigh.IP) {
 		return nil
 	}
 
@@ -209,12 +241,12 @@ func (r *RIBController) SendUnicastRoutingFlowNeigh(cmd fibcapi.FlowMod_Cmd, nei
 // Unicast Routing (for Route)
 //
 func NewUnicastRoutingFlow(neigh *nlamsg.Neigh, route *nlamsg.Route) *fibcapi.UnicastRoutingFlow {
-	m := fibcapi.NewUnicastRoutingMatch(route.GetDst(), route.NId)
+	m := fibcapi.NewUnicastRoutingMatchRoute(route.GetDst(), route.NId)
 	return fibcapi.NewUnicastRoutingFlow(m, nil, fibcapi.GroupMod_L3_UNICAST, NewNeighId(neigh))
 }
 
 func (r *RIBController) SendUnicastRoutingFlow(cmd fibcapi.FlowMod_Cmd, route *nlamsg.Route) error {
-	if !route.GetDst().IP.IsGlobalUnicast() {
+	if !checkIPNet(route.GetDst()) {
 		return nil
 	}
 
@@ -232,7 +264,7 @@ func (r *RIBController) SendUnicastRoutingFlow(cmd fibcapi.FlowMod_Cmd, route *n
 //
 func NewUnicastRoutingFlowMPLS(route *nlamsg.Route) *fibcapi.UnicastRoutingFlow {
 	enId := route.EnIds[len(route.EnIds)-1]
-	m := fibcapi.NewUnicastRoutingMatch(route.GetDst(), route.NId)
+	m := fibcapi.NewUnicastRoutingMatchRoute(route.GetDst(), route.NId)
 	return fibcapi.NewUnicastRoutingFlow(m, nil, fibcapi.GroupMod_MPLS_L3_VPN, enId)
 }
 
@@ -245,11 +277,11 @@ func (r *RIBController) SendUnicastRoutingFlowMPLS(cmd fibcapi.FlowMod_Cmd, rout
 // PolicyACL (match ip_dst and send controller)
 //
 func NewACLFlowByAddr(addr *nlamsg.Addr) *fibcapi.PolicyACLFlow {
-	return fibcapi.NewPolicyACLFlowByAddr(addr.IPNet.IP, addr.NId)
+	return fibcapi.NewPolicyACLFlowByAddr(addr.Family, addr.IPNet.IP, addr.NId)
 }
 
 func (r *RIBController) SendACLFlowByAddr(cmd fibcapi.FlowMod_Cmd, addr *nlamsg.Addr) error {
-	if !addr.IP.IsGlobalUnicast() {
+	if !checkIP(addr.IP) {
 		return nil
 	}
 

@@ -22,7 +22,6 @@ FIB Controller
 import logging
 from ryu.base import app_manager
 from ryu.ofproto import ofproto_v1_3 as ofproto
-from ryu.lib import hub
 from ryu.controller import dpset
 from ryu.app.wsgi import WSGIApplication
 from fabricflow.fibc.dbm import fibcdbm
@@ -36,14 +35,6 @@ from fabricflow.fibc.app import fibcwap
 from fabricflow.fibc.app import fibcncm
 
 _LOG = logging.getLogger(__name__)
-
-def stream_server(host, func):
-    """
-    spawn service on StreamServer.
-    """
-    sserver = hub.StreamServer(host, func)
-    sserver.serve_forever()
-
 
 def get_config():
     """
@@ -87,10 +78,7 @@ class FIBCApp(app_manager.RyuApp):
         config = get_config()
 
         dps = kwargs["dpset"]
-        fibcdbm.create(dps)
-
-        ptm = kwargs["ptmapp"]
-        ptm.create(fibccfg.load_dir(config.cfg_path))
+        fibcdbm.create(dps, fibccfg.load_dir(config.cfg_path))
 
         ncm = kwargs["ncmapp"]
         ncm.init(config.ncm_path)
@@ -100,4 +88,4 @@ class FIBCApp(app_manager.RyuApp):
         webapp.create(wsgi)
 
         apiapp = kwargs["apiapp"]
-        hub.spawn(stream_server, (config.api_addr, config.api_port), apiapp.on_connect)
+        apiapp.start_server((config.api_addr, config.api_port))

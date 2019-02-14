@@ -19,6 +19,11 @@ which make     > /dev/null || { echo "make not installed."     ; exit 1; }
 which automake > /dev/null || { echo "automake not installed." ; exit 1; }
 which autoconf > /dev/null || { echo "autoconf not installed." ; exit 1; }
 
+if [ "$OPTS" = "" ]; then
+    OPTS="$OPTS --with-opennsl"
+fi
+echo "OPTS=$OPTS"
+
 aclocal
 automake -ac
 autoconf

@@ -30,6 +30,7 @@ const (
 	LINK_TYPE_VLAN    = "vlan"
 	LINK_TYPE_VXLAN   = "vxlan"
 	LINK_TYPE_VTI     = "vti"
+	LINK_TYPE_VTI6    = "vti6"
 	LINK_TYPE_VETH    = "veth"
 	LINK_TYPE_BOND    = "bond"
 	LINK_TYPE_GENERIC = "generic"

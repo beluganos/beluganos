@@ -39,14 +39,15 @@ class FIBCOfcApp(app_manager.RyuApp):
         fibcevt.EventFIBCDpConfig,
     ]
 
-    @handler.set_ev_cls(dpset.EventDP, dpset.DPSET_EV_DISPATCHER)
+    @handler.set_ev_cls([dpset.EventDP,
+                         fibcevt.EventFIBCEnterDP], dpset.DPSET_EV_DISPATCHER)
     def on_dp(self, evt):
         """
         Process DP enter event.
         """
         dp_id = evt.dp.id
 
-        _LOG.debug("dp_id:%s", dp_id)
+        _LOG.debug("dp_id:%s enter:%s", dp_id, evt.enter)
 
         if fibcdbm.dps().get_mode(dp_id) is None:
             return
@@ -54,46 +55,45 @@ class FIBCOfcApp(app_manager.RyuApp):
         dp_status_evt = fibcevt.EventFIBCDpConfig(None, dp_id=dp_id, enter=evt.enter)
         self.send_event_to_observers(dp_status_evt)
 
-        ofp = evt.dp.ofproto
-        reason = ofp.OFPPR_ADD if evt.enter else ofp.OFPPR_DELETE
         for port in evt.ports:
-            self.send_dp_port_config(evt.dp, port, reason)
+            self.send_dp_port_config(evt.dp, port, evt.enter)
 
 
     # pylint: disable=no-member
-    @handler.set_ev_cls(ofp_event.EventOFPPortStatus, handler.MAIN_DISPATCHER)
+    @handler.set_ev_cls([ofp_event.EventOFPPortStatus,
+                         fibcevt.EventFIBCFFPortStatus], handler.MAIN_DISPATCHER)
     def on_port_status(self, evt):
         """
         Process Port Status event.
         """
         msg = evt.msg
-        dp_id = msg.datapath.id
+        dpath = msg.datapath
         port = msg.desc
         reason = msg.reason
 
-        _LOG.debug("dp_id:%s port:%s reason: %d", dp_id, port, reason)
+        _LOG.debug("dp_id:%s port:%s reason: %d", dpath.id, port, reason)
 
-        if fibcdbm.dps().get_mode(dp_id) is None:
+        if fibcdbm.dps().get_mode(dpath.id) is None:
             return
 
-        self.send_dp_port_config(msg.datapath, port, reason)
+        def _enter():
+            ofp = dpath.ofproto
+            return reason != ofp.OFPPR_DELETE
+
+        self.send_dp_port_config(dpath, port, _enter())
 
 
-    def send_dp_port_config(self, dpath, port, reason):
+    def send_dp_port_config(self, dpath, port, enter):
         """
         Send DpPortConfig event.
         """
-        ofp = dpath.ofproto
-        def _enter():
-            if reason == ofp.OFPPR_DELETE:
-                return False
+        if enter:
+            # if port is down, change enter to False
+            ofp = dpath.ofproto
+            enter = (port.state & ofp.OFPPS_LINK_DOWN) == 0
 
-            return (port.state & ofp.OFPPS_LINK_DOWN) == 0
-
-        enter = _enter()
-
-        _LOG.info("DpPortConfig: dp_id=%d, port_id=%d, enter=%s, reason=%s",
-                  dpath.id, port.port_no, enter, reason)
+        _LOG.info("DpPortConfig: dp_id=%d, port_id=%d, enter=%s",
+                  dpath.id, port.port_no, enter)
 
         evt = fibcevt.EventFIBCDpPortConfig(port, dpath.id, port.port_no, enter)
         self.send_event_to_observers(evt)

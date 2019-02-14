@@ -65,18 +65,6 @@ class FIBCPtmApp(app_manager.RyuApp):
         fibcevt.EventFIBCPortStatus,
     ]
 
-    def create(self, cfg):
-        """
-        Create Tables from config.
-        """
-        for dpmap in cfg.dpaths:
-            self._set_dpmap("add", dpmap)
-
-        for router in cfg.routers:
-            self._set_idmap("add", fibcdbm.create_idmap(router))
-            for port in fibcdbm.create_ports(router):
-                self._set_portmap("add", port)
-
 
     def send_port_status_event(self, port, status):
         """
@@ -289,16 +277,27 @@ class FIBCPtmApp(app_manager.RyuApp):
 
     @staticmethod
     def _set_dpmap(cmd, msg):
+        """
+        cmd: "add" or "delete"
+        msg:
+          name  : <string>
+          dp_id : <int>
+          mode  : <"geneic" or "ofdpa2" or "ovs"
+        """
         if cmd == "add":
-            fibcdbm.dps().add(msg)
+            fibcdbm.dps().add_entry(msg)
         elif cmd == "delete":
-            fibcdbm.dps().delete_by_dp_id(msg["dp_id"])
+            fibcdbm.dps().del_entry(msg["dp_id"])
         else:
             _LOG.error("invalid portmap command. %s", cmd)
 
 
     @staticmethod
     def _set_portmap(cmd, msg):
+        """
+        cmd: "add" or "delete"
+        msg: FIBCPortEntry
+        """
         if cmd == "add":
             fibcdbm.portmap().add(msg)
         elif cmd == "delete":
@@ -309,6 +308,12 @@ class FIBCPtmApp(app_manager.RyuApp):
 
     @staticmethod
     def _set_idmap(cmd, msg):
+        """
+        cmd: "add" or "delete"
+        msg:
+          re_id: <string>
+          dp_id: <int>
+        """
         if cmd == "add":
             fibcdbm.idmap().add(**msg)
         elif cmd == "delete":

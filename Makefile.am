@@ -1,4 +1,4 @@
-SUBDIRS = src
+SUBDIRS = src etc
 
 .PHONY: cover gopkg fibc-install fibc-egg
 
@@ -16,6 +16,11 @@ clean-local:
 	-find . -name cover.out  | xargs rm -f
 	-find . -name cover.log  | xargs rm -f
 
+distclean-local:
+	-find . -name "Makefile.in" | xargs rm -f
+	-rm -f aclocal.m4 config.log config.status
+	-rm -fr ./autom4te.cache
+
 fibc-install:
 	python ./setup.py install
 
@@ -23,14 +28,16 @@ fibc-egg:
 	python ./setup.py bdist_egg --bdist-dir=dist --dist-dir=bin
 
 install-service:
-	sudo install -v -C `pwd`/etc/systemd/fibcd.conf /etc/beluganos/
-	sudo install -v -C `pwd`/etc/systemd/fibcd.service /etc/systemd/system/
-	sudo systemctl daemon-reload
+	sudo make -C ./etc/installer install-fibc
 
 uninstall-service:
-	sudo rm -v -f /etc/beluganos/fibcd.conf
-	sudo rm -v -f /etc/systemd/system/fibcd.service
-	sudo systemctl daemon-reload
+	sudo make -C ./etc/installer uninstall-fibc
+
+install-stats:
+	sudo make -C ./etc/installer install-fibs
+
+uninstall-stats:
+	sudo make -C ./etc/installer uninstall-fibs
 
 install-exec-local: fibc-egg
 

@@ -1,0 +1,322 @@
+// -*- coding: utf-8 -*-
+
+// Copyright (C) 2018 Nippon Telegraph and Telephone Corporation.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+// implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package gonslib
+
+import (
+	api "gonsl/api"
+	"net"
+
+	"github.com/beluganos/go-opennsl/opennsl"
+
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+
+	log "github.com/sirupsen/logrus"
+)
+
+const (
+	l3HostTraverseMax  = 1024
+	l3RouteTraverseMax = 1024
+)
+
+//
+// APIServer is api server.
+//
+type APIServer struct {
+	server *Server
+}
+
+//
+// NewAPIServer returns new instance.
+//
+func NewAPIServer(server *Server) *APIServer {
+	return &APIServer{
+		server: server,
+	}
+}
+
+//
+// Start starts sub modules.
+//
+func (s *APIServer) Start(addr string) error {
+	lis, err := net.Listen("tcp", addr)
+	if err != nil {
+		return err
+	}
+
+	grpcServer := grpc.NewServer()
+	api.RegisterGoNSLApiServer(grpcServer, s)
+	go grpcServer.Serve(lis)
+
+	log.Infof("Api service started.")
+	return nil
+}
+
+//
+// GetFieldEntries process api.GetFieldEntriesRequest.
+//
+func (s *APIServer) GetFieldEntries(ctxt context.Context, req *api.GetFieldEntriesRequest) (*api.GetFieldEntriesReply, error) {
+	var entries []opennsl.FieldEntry
+	var err error
+
+	fields := s.server.Fields
+	result := []*api.FieldEntry{}
+
+	if entries, err = fields.EthType.GetEntries(); err != nil {
+		return nil, err
+	}
+
+	for _, entry := range entries {
+		ethType, err := fields.EthType.GetEntry(entry)
+		if err != nil {
+			log.Warnf("Api.GetFieldEntries: GetEntry error. %d %s", entry, err)
+		} else {
+			result = append(result, api.NewFieldEntryEthType(uint16(ethType)))
+		}
+	}
+
+	if entries, err = fields.DstIPv4.GetEntries(); err != nil {
+		return nil, err
+	}
+
+	for _, entry := range entries {
+		ethType, dstIP, err := fields.DstIPv4.GetEntry(entry)
+		if err != nil {
+			log.Warnf("Api.GetFieldEntries: GetEntry error. %d %s", entry, err)
+		} else {
+			result = append(result, api.NewFieldEntryDstIP(uint16(ethType), dstIP.String()))
+		}
+	}
+
+	if entries, err = fields.DstIPv6.GetEntries(); err != nil {
+		return nil, err
+	}
+
+	for _, entry := range entries {
+		ethType, dstIP, err := fields.DstIPv6.GetEntry(entry)
+		if err != nil {
+			log.Warnf("Api.GetFieldEntries: GetEntry error. %d %s", entry, err)
+		} else {
+			result = append(result, api.NewFieldEntryDstIP(uint16(ethType), dstIP.String()))
+		}
+	}
+
+	if entries, err = fields.IPProto.GetEntries(); err != nil {
+		return nil, err
+	}
+
+	for _, entry := range entries {
+		ethType, ipProto, err := fields.IPProto.GetEntry(entry)
+		if err != nil {
+			log.Warnf("Api.GetFieldEntries: GetEntry error. %d %s", entry, err)
+		} else {
+			result = append(result, api.NewFieldEntryIPProto(uint16(ethType), uint8(ipProto)))
+		}
+	}
+
+	return api.NewGetFieldEntriesReply(result), nil
+}
+
+//
+// GetVlans process api.GetVlansRequest.
+//
+func (s *APIServer) GetVlans(ctxt context.Context, req *api.GetVlansRequest) (*api.GetVlansReply, error) {
+	entries := []*api.VlanEntry{}
+	err := opennsl.VlanTraverse(s.server.Unit, func(unit int, vlan opennsl.Vlan, pbmp *opennsl.PBmp, ubmp *opennsl.PBmp) opennsl.OpenNSLError {
+		entries = append(entries, api.NewVlanEntryFromNative(vlan, pbmp, ubmp))
+		return opennsl.E_NONE
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return api.NewGetVlansReply(entries), nil
+}
+
+//
+// GetL2Addrs process api.GetL2AddrsRequest.
+//
+func (s *APIServer) GetL2Addrs(ctxt context.Context, req *api.GetL2AddrsRequest) (*api.GetL2AddrsReply, error) {
+	l2addrs := []*api.L2Addr{}
+	err := opennsl.L2Traverse(s.server.Unit, func(unit int, l2addr *opennsl.L2Addr) opennsl.OpenNSLError {
+		l2addrs = append(l2addrs, api.NewL2AddrFromNative(l2addr))
+		return opennsl.E_NONE
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return api.NewGetL2AddrsReply(l2addrs), nil
+}
+
+//
+// GetL2Stations process api.GetL2StationsRequest.
+//
+func (s *APIServer) GetL2Stations(ctxt context.Context, req *api.GetL2StationsRequest) (*api.GetL2StationsReply, error) {
+	l2stations := []*api.L2Station{}
+	s.server.idmaps.L2Stations.Traverse(func(gid uint32, l2stationId opennsl.L2StationID) bool {
+		l2station, err := l2stationId.Get(s.server.Unit)
+		if err != nil {
+			log.Errorf("L2StationGet error. %d %s", l2stationId, err)
+		} else {
+			l2stations = append(l2stations, api.NewL2StationFromNative(l2station))
+		}
+		return true
+	})
+
+	return api.NewGetL2StationsReply(l2stations), nil
+}
+
+//
+// FindL3Iface process api.FindL3IfaceRequest.
+//
+func (s *APIServer) FindL3Iface(ctxt context.Context, req *api.FindL3IfaceRequest) (*api.FindL3IfaceReply, error) {
+	mac, err := net.ParseMAC(req.Mac)
+	if err != nil {
+		return nil, err
+	}
+
+	l3iface, err := opennsl.L3IfaceFind(s.server.Unit, mac, opennsl.Vlan(req.Vid))
+	if err != nil {
+		return nil, err
+	}
+
+	return api.NewFindL3IfaceReply(api.NewL3IfaceFromNative(l3iface)), nil
+}
+
+//
+// GetL3Iface process api.GetL3IfaceRequest.
+//
+func (s *APIServer) GetL3Iface(ctxt context.Context, req *api.GetL3IfaceRequest) (*api.GetL3IfaceReply, error) {
+	l3iface, err := opennsl.L3IfaceGet(s.server.Unit, opennsl.L3IfaceID(req.IfaceId))
+	if err != nil {
+		return nil, err
+	}
+
+	return api.NewGetL3IfaceReply(api.NewL3IfaceFromNative(l3iface)), nil
+}
+
+//
+// GetL3Ifaces process api.GetL3IfacesRequest.
+//
+func (s *APIServer) GetL3Ifaces(ctxt context.Context, req *api.GetL3IfacesRequest) (*api.GetL3IfacesReply, error) {
+
+	l3Ifaces := []*api.L3Iface{}
+	s.server.idmaps.L3Ifaces.Traverse(func(key uint32, ifaceId opennsl.L3IfaceID) bool {
+		l3iface, err := opennsl.L3IfaceGet(s.server.Unit, ifaceId)
+		if err != nil {
+			log.Errorf("Api.GetL3Ifaces: L3IfaceGet error. %d %s", ifaceId, err)
+		} else {
+			l3Ifaces = append(l3Ifaces, api.NewL3IfaceFromNative(l3iface))
+		}
+
+		return true
+	})
+
+	return api.NewGetL3IfacesReply(l3Ifaces), nil
+}
+
+//
+// GetL3Egresses process api.GetL3EgressesRequest.
+//
+func (s *APIServer) GetL3Egresses(ctxt context.Context, req *api.GetL3EgressesRequest) (*api.GetL3EgressesReply, error) {
+	l3egrs := []*api.L3Egress{}
+	err := opennsl.L3EgressTraverse(s.server.Unit, func(unit int, l3egrId opennsl.L3EgressID, l3egr *opennsl.L3Egress) opennsl.OpenNSLError {
+		l3egrs = append(l3egrs, api.NewL3EgressFromNative(l3egrId, l3egr))
+		return opennsl.E_NONE
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return api.NewGetL3EgressesReply(l3egrs), nil
+}
+
+//
+// GetL3Hosts process api.GetL3HostsRequest.
+//
+func (s *APIServer) GetL3Hosts(ctxt context.Context, req *api.GetL3HostsRequest) (*api.GetL3HostsReply, error) {
+	hosts := []*api.L3Host{}
+	err := opennsl.L3HostTraverse(s.server.Unit, 0, 0, l3HostTraverseMax, func(unit int, index int, host *opennsl.L3Host) opennsl.OpenNSLError {
+		hosts = append(hosts, api.NewL3HostFromNative(host))
+		return opennsl.E_NONE
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = opennsl.L3HostTraverse(s.server.Unit, uint32(opennsl.L3_IP6), 0, l3HostTraverseMax, func(unit int, index int, host *opennsl.L3Host) opennsl.OpenNSLError {
+		hosts = append(hosts, api.NewL3HostFromNative(host))
+		return opennsl.E_NONE
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return api.NewGetL3HostsReply(hosts), nil
+}
+
+//
+// GetL3Routes process api.GetL3RoutesRequest.
+//
+func (s *APIServer) GetL3Routes(ctxt context.Context, req *api.GetL3RoutesRequest) (*api.GetL3RoutesReply, error) {
+	routes := []*api.L3Route{}
+	err := opennsl.L3RouteTraverse(s.server.Unit, 0, 0, l3RouteTraverseMax, func(unit int, index int, route *opennsl.L3Route) opennsl.OpenNSLError {
+		routes = append(routes, api.NewL3RouteFromNative(route))
+		return opennsl.E_NONE
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = opennsl.L3RouteTraverse(s.server.Unit, uint32(opennsl.L3_IP6), 0, l3RouteTraverseMax, func(unit int, index int, route *opennsl.L3Route) opennsl.OpenNSLError {
+		routes = append(routes, api.NewL3RouteFromNative(route))
+		return opennsl.E_NONE
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return api.NewGetL3RoutesReply(routes), nil
+}
+
+//
+// GetIDMapEntries process api.GetIDMapEntriesRequest.
+//
+func (s *APIServer) GetIDMapEntries(ctxt context.Context, req *api.GetIDMapEntriesRequest) (*api.GetIDMapEntriesReply, error) {
+	entries := []*api.IDMapEntry{}
+	s.server.idmaps.L3Ifaces.Traverse(func(key uint32, value opennsl.L3IfaceID) bool {
+		entry := api.NewIDMapEntry(api.IDMapNameL3Iface, key, uint32(value))
+		entries = append(entries, entry)
+		return true
+	})
+
+	s.server.idmaps.L3Egress.Traverse(func(key uint32, value opennsl.L3EgressID) bool {
+		entry := api.NewIDMapEntry(api.IDMapNameL3Egress, key, uint32(value))
+		entries = append(entries, entry)
+		return true
+	})
+	return api.NewGetIDMapEntriesReply(entries), nil
+}

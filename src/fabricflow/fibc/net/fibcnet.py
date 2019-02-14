@@ -25,6 +25,42 @@ import struct
 _HEADER_FMT = "!HHI"
 _HEADER_LEN = 8
 
+def set_fib_header_type(hdr, typ):
+    """
+    Set type.
+    """
+    hdr[0] = typ
+
+def get_fib_header_type(hdr):
+    """
+    Get type.
+    """
+    return hdr[0]
+
+def set_fib_header_len(hdr, length):
+    """
+    Set length.
+    """
+    hdr[1] = length
+
+def get_fib_header_len(hdr):
+    """
+    Get length.
+    """
+    return hdr[1]
+
+def set_fib_header_xid(hdr, xid):
+    """
+    Set XID.
+    """
+    hdr[2] = xid
+
+def get_fib_header_xid(hdr):
+    """
+    Get XID.
+    """
+    return hdr[2]
+
 def unpack_fib_header(data):
     """
     Unpack FIBC API Header. binary->(type, length, xid)
@@ -36,7 +72,12 @@ def pack_fib_header(hdr):
     """
     Pack IBC API Header. (type, length, xid) -> binary
     """
-    return struct.pack(_HEADER_FMT, hdr[0], hdr[1], hdr[2])
+    return struct.pack(
+        _HEADER_FMT,
+        get_fib_header_type(hdr),
+        get_fib_header_len(hdr),
+        get_fib_header_xid(hdr)
+    )
 
 
 def read_data(soc, length):
@@ -73,8 +114,9 @@ def read_fib_msg(soc):
     """
     hdr = read_fib_header(soc)
     if hdr is not None:
-        body = read_data(soc, hdr[1])
-        if len(body) == hdr[1]:
+        body_len = get_fib_header_len(hdr)
+        body = read_data(soc, body_len)
+        if len(body) == body_len:
             return hdr, body
 
     return None, None
