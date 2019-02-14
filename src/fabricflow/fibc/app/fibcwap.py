@@ -45,6 +45,7 @@ class FIBCRestApp(app_manager.RyuApp):
 
     _EVENTS = [
         fibcevt.EventFIBCPortMap,
+        fibcevt.EventFIBCVmConfig,
         fibcevt.EventFIBCPortConfig,
         fibcevt.EventFIBCDpPortConfig,
         fibcevt.EventFIBCVsPortConfig,
@@ -105,6 +106,13 @@ class FIBCRestApp(app_manager.RyuApp):
         mapper.connect("fib", url,
                        controller=FIBCRestController,
                        action="port_config",
+                       condition=dict(method=["POST"]))
+
+
+        url = path + "/vmcfg"
+        mapper.connect("fib", url,
+                       controller=FIBCRestController,
+                       action="vm_config",
                        condition=dict(method=["POST"]))
 
 
@@ -259,6 +267,17 @@ class FIBCRestController(ControllerBase):
             pass
 
 
+    def vm_config(self, req, **kwargs):
+        """
+        simulate vm config
+        """
+        msg = json.loads(req.body)
+        print msg
+        re_id = msg["re_id"]
+        enter = msg.get("cmd", "ENTER") == "ENTER"
+        evt = fibcevt.EventFIBCVmConfig(pb.Hello(re_id=re_id), enter)
+        self.app.send_event_to_observers(evt)
+
     def port_config(self, req, name, **kwargs):
         """
         simulate port config
@@ -289,7 +308,9 @@ class FIBCRestController(ControllerBase):
                 re_id=re_id,
                 ifname=arg["ifname"],
                 port_id=arg["port"],
-                status=arg.get("status", "NOP"))
+                link=arg.get("link", ""),
+                status=arg.get("status", "NOP"),
+                dp_port=arg.get("dp_port", 0))
             evt = fibcevt.EventFIBCPortConfig(cfg)
             self.app.send_event_to_observers(evt)
 
@@ -491,7 +512,12 @@ class FIBCRestController(ControllerBase):
                                     port_id=arg["port"],
                                     vlan_vid=arg["vlan"],
                                     eth_dst=arg["eth_dst"],
-                                    eth_src=arg["eth_src"])
+                                    eth_src=arg["eth_src"],
+                                    phy_port_id=arg.get("phy_port", arg["port"]),
+                                    tun_type=arg.get("tun_type", "NOP"),
+                                    tun_remote=arg.get("tun_remote", ""),
+                                    tun_local=arg.get("tun_local", ""),
+            )
             mod = pb.GroupMod(cmd=cmd, g_type="L3_UNICAST", re_id=re_id, l3_unicast=grp)
             evt = fibcevt.EventFIBCGroupMod(mod)
 

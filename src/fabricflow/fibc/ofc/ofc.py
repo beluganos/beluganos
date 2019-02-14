@@ -108,3 +108,10 @@ def get_port_stats(mode):
     get_port_stats(dp, waiters, port)
     """
     return _get_func(mode, "get_port_stats")
+
+def port_mod(mode):
+    """
+    Get PortMod function.
+    port_mod(dpath, port_mod)
+    """
+    return _get_func(mode, "port_mod")

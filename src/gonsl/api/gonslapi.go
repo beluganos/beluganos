@@ -1,7 +1,5 @@
 // -*- coding: utf-8 -*-
 
-// -*- coding: utf-8 -*-
-
 // Copyright (C) 2018 Nippon Telegraph and Telephone Corporation.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -471,5 +469,92 @@ func NewGetIDMapEntriesRequest() *GetIDMapEntriesRequest {
 func NewGetIDMapEntriesReply(entries []*IDMapEntry) *GetIDMapEntriesReply {
 	return &GetIDMapEntriesReply{
 		Entries: entries,
+	}
+}
+
+func NewTunnelInitiatorFromNative(tunnel *opennsl.TunnelInitiator) *TunnelInitiator {
+	dstIp, srcIp := func() (string, string) {
+		switch tunnel.Type() {
+		case opennsl.TunnelTypeIPIP4encap:
+			return tunnel.DstIP4().String(), tunnel.SrcIP4().String()
+		case opennsl.TunnelTypeIPIP6encap:
+			return tunnel.DstIP6().String(), tunnel.SrcIP6().String()
+		default:
+			return tunnel.Type().String(), tunnel.Type().String()
+		}
+	}()
+
+	return &TunnelInitiator{
+		Flags:      uint32(tunnel.Flags()),
+		TunnelId:   uint32(tunnel.TunnelID()),
+		TunnelType: tunnel.Type().String(),
+		L3IfaceId:  uint32(tunnel.L3IfaceID()),
+		DstMac:     tunnel.DstMAC().String(),
+		SrcMac:     tunnel.SrcMAC().String(),
+		DstIp:      dstIp,
+		SrcIp:      srcIp,
+		DstPort:    uint32(tunnel.UdpDstPort()),
+		SrcPort:    uint32(tunnel.UdpSrcPort()),
+		Ttl:        uint32(tunnel.TTL()),
+		Mtu:        uint32(tunnel.MTU()),
+		Vlan:       uint32(tunnel.VID()),
+	}
+}
+
+//
+// NewGetTunnelInitiatorsRequest returns new instance.
+//
+func NewGetTunnelInitiatorsRequest() *GetTunnelInitiatorsRequest {
+	return &GetTunnelInitiatorsRequest{}
+}
+
+//
+// NewGetTunnelInitiatorsReply returns new instance.
+//
+func NewGetTunnelInitiatorsReply(entries []*TunnelInitiator) *GetTunnelInitiatorsReply {
+	return &GetTunnelInitiatorsReply{
+		Tunnels: entries,
+	}
+}
+
+func NewTunnelTerminatorFromNative(tunnel *opennsl.TunnelTerminator) *TunnelTerminator {
+	dstIp, srcIp := func() (string, string) {
+		switch tunnel.Type() {
+		case opennsl.TunnelTypeIPIP4toIP4, opennsl.TunnelTypeIPIP4toIP6:
+			return tunnel.DstIPNet4().String(), tunnel.SrcIPNet4().String()
+		case opennsl.TunnelTypeIPIP6toIP4, opennsl.TunnelTypeIPIP6toIP6:
+			return tunnel.DstIPNet6().String(), tunnel.SrcIPNet6().String()
+		default:
+			return tunnel.Type().String(), tunnel.Type().String()
+		}
+	}()
+
+	return &TunnelTerminator{
+		Flags:      uint32(tunnel.Flags()),
+		TunnelId:   uint32(tunnel.TunnelID()),
+		TunnelType: tunnel.Type().String(),
+		RemotePort: uint32(tunnel.RemotePort()),
+		DstIp:      dstIp,
+		SrcIp:      srcIp,
+		DstPort:    uint32(tunnel.UdpDstPort()),
+		SrcPort:    uint32(tunnel.UdpSrcPort()),
+		Vlan:       uint32(tunnel.VID()),
+		Vrf:        uint32(tunnel.VRF()),
+	}
+}
+
+//
+// NewGetTunnelTerminatorsRequest returns new instance.
+//
+func NewGetTunnelTerminatorsRequest() *GetTunnelTerminatorsRequest {
+	return &GetTunnelTerminatorsRequest{}
+}
+
+//
+// NewGetTunnelTerminatorsReply returns new instance.
+//
+func NewGetTunnelTerminatorsReply(entries []*TunnelTerminator) *GetTunnelTerminatorsReply {
+	return &GetTunnelTerminatorsReply{
+		Tunnels: entries,
 	}
 }

@@ -264,6 +264,23 @@ func notifyFFPortStatus(header *fibcnet.Header, data []byte, handler interface{}
 	return nil
 }
 
+func notifyFFPortMod(header *fibcnet.Header, data []byte, handler interface{}) error {
+	if h, ok := handler.(FFPortModHandler); ok {
+		m, err := fibcapi.NewFFPortModFromBytes(data)
+		if err != nil {
+			return err
+		}
+
+		if err := notifyMessage(header, m, handler); err != nil {
+			return err
+		}
+
+		h.FIBCFFPortMod(header, m)
+	}
+
+	return nil
+}
+
 func Dispatch(h *fibcnet.Header, data []byte, handler interface{}) error {
 
 	switch fibcapi.FFM(h.Type) {
@@ -291,6 +308,8 @@ func Dispatch(h *fibcnet.Header, data []byte, handler interface{}) error {
 		return notifyFFPacketOut(h, data, handler)
 	case fibcapi.FFM_FF_PORT_STATUS:
 		return notifyFFPortStatus(h, data, handler)
+	case fibcapi.FFM_FF_PORT_MOD:
+		return notifyFFPortMod(h, data, handler)
 	default:
 		return fmt.Errorf("Invalid Message Type. %d", h.Type)
 	}
@@ -349,6 +368,10 @@ func DispatchMsg(header *fibcnet.Header, m fibcnet.Message, handler interface{})
 	case fibcapi.FFM_FF_PORT_STATUS:
 		if h, ok := handler.(FFPortStatusHandler); ok {
 			h.FIBCFFPortStatus(header, m.(*fibcapi.FFPortStatus))
+		}
+	case fibcapi.FFM_FF_PORT_MOD:
+		if h, ok := handler.(FFPortModHandler); ok {
+			h.FIBCFFPortMod(header, m.(*fibcapi.FFPortMod))
 		}
 	default:
 		return fmt.Errorf("Invalid Message Type. %d", header.Type)

@@ -59,9 +59,11 @@ protoc_install() {
 #
 netlink_patch() {
     cp ./etc/netlink/netlink_gonla.patch /tmp/
+    cp ./etc/netlink/netlink_ip6tnl.patch /tmp/
 
     pushd ~/go/src/github.com/vishvananda/netlink/
     patch -p1 < /tmp/netlink_gonla.patch
+    patch -p1 < /tmp/netlink_ip6tnl.patch
     go install || { echo "netlink_patch/install error."; exit 1; }
     popd
 }
@@ -72,16 +74,38 @@ netlink_patch() {
 gobgp_upgrade() {
     # prepare
     cp ./etc/gobgp/gobgp-zapi-ver5-v1.33.patch /tmp/gobgp-zapi-ver5-v1.33.patch
+    cp ./etc/gobgp/gobgp-encap-ipv6-v1.33.patch /tmp/gobgp-encap-ipv6-v1.33.patch
+    cp ./etc/gobgp/gobgp-mp-nexthop-v1.33.patch /tmp/gobgp-mp-nexthop-v1.33.patch
+    cp ./etc/gobgp/gobgp-vmx-v1.33.patch /tmp/gobgp-vmx-v1.33.patch
+    cp ./etc/gobgp/gobgp-influxdata-v1.33.patch /tmp/gobgp-influxdata-v1.33.patch
 
     pushd ~/go/src/github.com/osrg/gobgp
 
     # change to specific version.
     git checkout -B ${GOBGP_VER} ${GOBGP_VER}
+
     # patch
     patch -p1 < /tmp/gobgp-zapi-ver5-v1.33.patch
+    patch -p1 < /tmp/gobgp-encap-ipv6-v1.33.patch
+    patch -p1 < /tmp/gobgp-mp-nexthop-v1.33.patch
+    patch -p1 < /tmp/gobgp-vmx-v1.33.patch
+    patch -p1 < /tmp/gobgp-influxdata-v1.33.patch
+
     # reinstall
     go install ./gobgpd || { echo "gobgp_checkout error."; exit 1; }
     go install ./gobgp || { echo "gobgp_checkout error."; exit 1; }
 
+    popd
+}
+
+#
+# patch for snmp library.
+#
+snmplib_patch() {
+    cp ./etc/snmp/romonLogicalis-asn1.patch /tmp/
+
+    pushd ~/go/src/github.com/PromonLogicalis/asn1
+    patch -p1 < /tmp/romonLogicalis-asn1.patch
+    go install || { echo "snmplib_patch/install error."; exit 1; }
     popd
 }

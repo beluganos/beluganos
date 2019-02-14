@@ -20,6 +20,8 @@ package main
 import (
 	"strings"
 	"testing"
+
+	lib "fabricflow/fibs/fibslib"
 )
 
 func TestSnmpReply_WriteTo_string(t *testing.T) {
@@ -27,7 +29,7 @@ func TestSnmpReply_WriteTo_string(t *testing.T) {
 	data := ".1.2.3\nstring\ntest\n"
 	sb := strings.Builder{}
 
-	total, err := NewSnmpReply(oid, SnmpTypeString, "test").WriteTo(&sb)
+	total, err := NewSnmpReply(oid, lib.SnmpTypeString, "test").WriteTo(&sb)
 
 	if err != nil {
 		t.Errorf("SnmpReply.WriteTo error. %s", err)
@@ -47,7 +49,7 @@ func TestSnmpReply_WriteTo_integer(t *testing.T) {
 	data := ".1.2.3\ninteger\n1024\n"
 	sb := strings.Builder{}
 
-	total, err := NewSnmpReply(oid, SnmpTypeInteger, 1024).WriteTo(&sb)
+	total, err := NewSnmpReply(oid, lib.SnmpTypeInteger, 1024).WriteTo(&sb)
 
 	if err != nil {
 		t.Errorf("SnmpReply.WriteTo error. %s", err)
@@ -64,7 +66,7 @@ func TestSnmpReply_WriteTo_integer(t *testing.T) {
 
 func TestParseOID_0(t *testing.T) {
 	oidStr := "."
-	oid := ParseOID(oidStr)
+	oid := lib.ParseOID(oidStr)
 
 	if v := len(oid); v != 0 {
 		t.Errorf("ParseOID unmatch. len=%v", v)
@@ -73,7 +75,7 @@ func TestParseOID_0(t *testing.T) {
 
 func TestParseOID_1(t *testing.T) {
 	oidStr := ".1"
-	oid := ParseOID(oidStr)
+	oid := lib.ParseOID(oidStr)
 
 	if v := len(oid); v != 1 {
 		t.Errorf("ParseOID unmatch. len=%v", v)
@@ -86,7 +88,7 @@ func TestParseOID_1(t *testing.T) {
 
 func TestParseOID_n(t *testing.T) {
 	oidStr := ".1.10.0"
-	oid := ParseOID(oidStr)
+	oid := lib.ParseOID(oidStr)
 
 	if v := len(oid); v != 3 {
 		t.Errorf("ParseOID unmatch. len=%v", v)
@@ -104,7 +106,7 @@ func TestParseOID_n(t *testing.T) {
 }
 
 func TestGetIndexOfOID(t *testing.T) {
-	oid := []int{10}
+	oid := []uint{10}
 	index, ok := GetIndexOfOID(oid)
 
 	if !ok {
@@ -116,7 +118,7 @@ func TestGetIndexOfOID(t *testing.T) {
 }
 
 func TestGetIndexOfOID_err(t *testing.T) {
-	oid := []int{1, 10}
+	oid := []uint{1, 10}
 	_, ok := GetIndexOfOID(oid)
 
 	if ok {
@@ -125,7 +127,7 @@ func TestGetIndexOfOID_err(t *testing.T) {
 }
 
 func TestGetNextIndexOfOID_0(t *testing.T) {
-	oid := []int{}
+	oid := []uint{}
 	index, ok := GetNextIndexOfOID(oid, 10)
 
 	if !ok {
@@ -137,8 +139,8 @@ func TestGetNextIndexOfOID_0(t *testing.T) {
 }
 
 func TestGetNextIndexOfOID(t *testing.T) {
-	oid := []int{10}
-	index, ok := GetNextIndexOfOID(oid, -1)
+	oid := []uint{10}
+	index, ok := GetNextIndexOfOID(oid, 0)
 
 	if !ok {
 		t.Errorf("GetIndexOfOID error. %v", oid)
@@ -149,24 +151,10 @@ func TestGetNextIndexOfOID(t *testing.T) {
 }
 
 func TestGetNextIndexOfOID_err(t *testing.T) {
-	oid := []int{1, 10}
+	oid := []uint{1, 10}
 	_, ok := GetNextIndexOfOID(oid, 9)
 
 	if ok {
 		t.Errorf("GetIndexOfOID error. %v", oid)
-	}
-}
-
-func TestNewOID(t *testing.T) {
-	if s := NewOID([]int{}); s != "" {
-		t.Errorf("NewOID unmatch. %s", s)
-	}
-
-	if s := NewOID([]int{1}); s != ".1" {
-		t.Errorf("NewOID unmatch. %s", s)
-	}
-
-	if s := NewOID([]int{1, 10, 0}); s != ".1.10.0" {
-		t.Errorf("NewOID unmatch. %s", s)
 	}
 }

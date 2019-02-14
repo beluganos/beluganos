@@ -74,7 +74,7 @@ func (s *Server) FIBCUnicastRoutingFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 
 				l3host.SetEgressID(l3egrID)
 
-				if err := l3host.Add(s.Unit); err != nil {
+				if err := l3host.Add(s.Unit()); err != nil {
 					log.Errorf("Server: UC-RoutingFlow: L3Host add error. %s", err)
 				}
 
@@ -82,7 +82,7 @@ func (s *Server) FIBCUnicastRoutingFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 				log.Errorf("Server: UC-RoutingFlow: L3Host modify unsupported.")
 
 			case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
-				if err := l3host.Delete(s.Unit); err != nil {
+				if err := l3host.Delete(s.Unit()); err != nil {
 					log.Errorf("Server: UC-RoutingFlow: L3Host delete error. %s", err)
 				}
 
@@ -118,7 +118,7 @@ func (s *Server) FIBCUnicastRoutingFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 
 				l3route.SetEgressID(l3egrID)
 
-				if err := l3route.Add(s.Unit); err != nil {
+				if err := l3route.Add(s.Unit()); err != nil {
 					log.Errorf("Server: UC-RoutingFlow: L3Route add error. %s", err)
 				}
 
@@ -126,7 +126,7 @@ func (s *Server) FIBCUnicastRoutingFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 				log.Errorf("Server: UC-RoutingFlow: L3Route modify unsupported.")
 
 			case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
-				if err := l3route.Delete(s.Unit); err != nil {
+				if err := l3route.Delete(s.Unit()); err != nil {
 					log.Errorf("Server: UC-RoutingFlow: L3Route delete error. %s", err)
 				}
 

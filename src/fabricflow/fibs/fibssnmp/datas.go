@@ -85,6 +85,8 @@ func (d *DataServer) touchFile(path string) error {
 		}
 		defer f.Close()
 
+		f.Chmod(0666)
+
 		log.Debugf("Touch file success. %s", path)
 		return nil
 

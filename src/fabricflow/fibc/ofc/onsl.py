@@ -45,6 +45,9 @@ def setup_flow(dpath, mod, ofctl):
         fibcapi.new_policy_acl_match(eth_type=0x86dd, ip_dst=fibcapi.MCADDR6_L_LOCAL),
         fibcapi.new_policy_acl_match(eth_type=0x86dd, ip_dst=fibcapi.MCADDR6_S_LOCAL),
         fibcapi.new_policy_acl_match(eth_type=0x86dd, ip_dst=fibcapi.UCADDR6_L_LOCAL),
+
+        fibcapi.new_policy_acl_match(eth_dst=fibcapi.HWADDR_ISIS_LEVEL1),
+        fibcapi.new_policy_acl_match(eth_dst=fibcapi.HWADDR_ISIS_LEVEL2),
     ]
     action = fibcapi.new_policy_acl_action("OUTPUT")
 
@@ -266,3 +269,12 @@ def get_port_stats(dpath, waiters, port_id, ofctl):
             stats_list.append(stats_entry)
 
     return {dpath.id: stats_list}
+
+
+def port_mod(dpath, mod, ofctl):
+    """
+    PotMod
+    """
+    _LOG.debug("port_mod: %s %s", dpath, mod)
+
+    dpath.send_msg(pb.FF_PORT_MOD, mod)

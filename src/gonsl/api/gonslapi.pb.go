@@ -3,13 +3,12 @@
 
 package gonslapi
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
-
 import (
-	context "golang.org/x/net/context"
+	context "context"
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -21,7 +20,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type FieldEntry_EntryType int32
 
@@ -30,6 +29,7 @@ const (
 	FieldEntry_ETH_TYPE FieldEntry_EntryType = 1
 	FieldEntry_DST_IP   FieldEntry_EntryType = 2
 	FieldEntry_IP_PROTO FieldEntry_EntryType = 3
+	FieldEntry_ETH_DST  FieldEntry_EntryType = 4
 )
 
 var FieldEntry_EntryType_name = map[int32]string{
@@ -37,19 +37,23 @@ var FieldEntry_EntryType_name = map[int32]string{
 	1: "ETH_TYPE",
 	2: "DST_IP",
 	3: "IP_PROTO",
+	4: "ETH_DST",
 }
+
 var FieldEntry_EntryType_value = map[string]int32{
 	"NOP":      0,
 	"ETH_TYPE": 1,
 	"DST_IP":   2,
 	"IP_PROTO": 3,
+	"ETH_DST":  4,
 }
 
 func (x FieldEntry_EntryType) String() string {
 	return proto.EnumName(FieldEntry_EntryType_name, int32(x))
 }
+
 func (FieldEntry_EntryType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{0, 0}
+	return fileDescriptor_a6347f14b9114d11, []int{0, 0}
 }
 
 //
@@ -61,6 +65,7 @@ type FieldEntry struct {
 	//	*FieldEntry_EthType
 	//	*FieldEntry_DstIp
 	//	*FieldEntry_IpProto
+	//	*FieldEntry_EthDst
 	Entry                isFieldEntry_Entry `protobuf_oneof:"entry"`
 	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
 	XXX_unrecognized     []byte             `json:"-"`
@@ -71,16 +76,17 @@ func (m *FieldEntry) Reset()         { *m = FieldEntry{} }
 func (m *FieldEntry) String() string { return proto.CompactTextString(m) }
 func (*FieldEntry) ProtoMessage()    {}
 func (*FieldEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{0}
+	return fileDescriptor_a6347f14b9114d11, []int{0}
 }
+
 func (m *FieldEntry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldEntry.Unmarshal(m, b)
 }
 func (m *FieldEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_FieldEntry.Marshal(b, m, deterministic)
 }
-func (dst *FieldEntry) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FieldEntry.Merge(dst, src)
+func (m *FieldEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FieldEntry.Merge(m, src)
 }
 func (m *FieldEntry) XXX_Size() int {
 	return xxx_messageInfo_FieldEntry.Size(m)
@@ -114,11 +120,17 @@ type FieldEntry_IpProto struct {
 	IpProto *IpProtoFieldEntry `protobuf:"bytes,4,opt,name=ip_proto,json=ipProto,proto3,oneof"`
 }
 
+type FieldEntry_EthDst struct {
+	EthDst *EthDstFieldEntry `protobuf:"bytes,5,opt,name=eth_dst,json=ethDst,proto3,oneof"`
+}
+
 func (*FieldEntry_EthType) isFieldEntry_Entry() {}
 
 func (*FieldEntry_DstIp) isFieldEntry_Entry() {}
 
 func (*FieldEntry_IpProto) isFieldEntry_Entry() {}
+
+func (*FieldEntry_EthDst) isFieldEntry_Entry() {}
 
 func (m *FieldEntry) GetEntry() isFieldEntry_Entry {
 	if m != nil {
@@ -148,97 +160,68 @@ func (m *FieldEntry) GetIpProto() *IpProtoFieldEntry {
 	return nil
 }
 
-// XXX_OneofFuncs is for the internal use of the proto package.
-func (*FieldEntry) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
-	return _FieldEntry_OneofMarshaler, _FieldEntry_OneofUnmarshaler, _FieldEntry_OneofSizer, []interface{}{
-		(*FieldEntry_EthType)(nil),
-		(*FieldEntry_DstIp)(nil),
-		(*FieldEntry_IpProto)(nil),
-	}
-}
-
-func _FieldEntry_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
-	m := msg.(*FieldEntry)
-	// entry
-	switch x := m.Entry.(type) {
-	case *FieldEntry_EthType:
-		b.EncodeVarint(2<<3 | proto.WireBytes)
-		if err := b.EncodeMessage(x.EthType); err != nil {
-			return err
-		}
-	case *FieldEntry_DstIp:
-		b.EncodeVarint(3<<3 | proto.WireBytes)
-		if err := b.EncodeMessage(x.DstIp); err != nil {
-			return err
-		}
-	case *FieldEntry_IpProto:
-		b.EncodeVarint(4<<3 | proto.WireBytes)
-		if err := b.EncodeMessage(x.IpProto); err != nil {
-			return err
-		}
-	case nil:
-	default:
-		return fmt.Errorf("FieldEntry.Entry has unexpected type %T", x)
+func (m *FieldEntry) GetEthDst() *EthDstFieldEntry {
+	if x, ok := m.GetEntry().(*FieldEntry_EthDst); ok {
+		return x.EthDst
 	}
 	return nil
 }
 
-func _FieldEntry_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
-	m := msg.(*FieldEntry)
-	switch tag {
-	case 2: // entry.eth_type
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		msg := new(EthTypeFieldEntry)
-		err := b.DecodeMessage(msg)
-		m.Entry = &FieldEntry_EthType{msg}
-		return true, err
-	case 3: // entry.dst_ip
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		msg := new(DstIpFieldEntry)
-		err := b.DecodeMessage(msg)
-		m.Entry = &FieldEntry_DstIp{msg}
-		return true, err
-	case 4: // entry.ip_proto
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		msg := new(IpProtoFieldEntry)
-		err := b.DecodeMessage(msg)
-		m.Entry = &FieldEntry_IpProto{msg}
-		return true, err
-	default:
-		return false, nil
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*FieldEntry) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*FieldEntry_EthType)(nil),
+		(*FieldEntry_DstIp)(nil),
+		(*FieldEntry_IpProto)(nil),
+		(*FieldEntry_EthDst)(nil),
 	}
 }
 
-func _FieldEntry_OneofSizer(msg proto.Message) (n int) {
-	m := msg.(*FieldEntry)
-	// entry
-	switch x := m.Entry.(type) {
-	case *FieldEntry_EthType:
-		s := proto.Size(x.EthType)
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(s))
-		n += s
-	case *FieldEntry_DstIp:
-		s := proto.Size(x.DstIp)
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(s))
-		n += s
-	case *FieldEntry_IpProto:
-		s := proto.Size(x.IpProto)
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(s))
-		n += s
-	case nil:
-	default:
-		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+type EthDstFieldEntry struct {
+	EthDst               string   `protobuf:"bytes,1,opt,name=eth_dst,json=ethDst,proto3" json:"eth_dst,omitempty"`
+	EthMask              string   `protobuf:"bytes,2,opt,name=eth_mask,json=ethMask,proto3" json:"eth_mask,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *EthDstFieldEntry) Reset()         { *m = EthDstFieldEntry{} }
+func (m *EthDstFieldEntry) String() string { return proto.CompactTextString(m) }
+func (*EthDstFieldEntry) ProtoMessage()    {}
+func (*EthDstFieldEntry) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a6347f14b9114d11, []int{1}
+}
+
+func (m *EthDstFieldEntry) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EthDstFieldEntry.Unmarshal(m, b)
+}
+func (m *EthDstFieldEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EthDstFieldEntry.Marshal(b, m, deterministic)
+}
+func (m *EthDstFieldEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EthDstFieldEntry.Merge(m, src)
+}
+func (m *EthDstFieldEntry) XXX_Size() int {
+	return xxx_messageInfo_EthDstFieldEntry.Size(m)
+}
+func (m *EthDstFieldEntry) XXX_DiscardUnknown() {
+	xxx_messageInfo_EthDstFieldEntry.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EthDstFieldEntry proto.InternalMessageInfo
+
+func (m *EthDstFieldEntry) GetEthDst() string {
+	if m != nil {
+		return m.EthDst
 	}
-	return n
+	return ""
+}
+
+func (m *EthDstFieldEntry) GetEthMask() string {
+	if m != nil {
+		return m.EthMask
+	}
+	return ""
 }
 
 type EthTypeFieldEntry struct {
@@ -252,16 +235,17 @@ func (m *EthTypeFieldEntry) Reset()         { *m = EthTypeFieldEntry{} }
 func (m *EthTypeFieldEntry) String() string { return proto.CompactTextString(m) }
 func (*EthTypeFieldEntry) ProtoMessage()    {}
 func (*EthTypeFieldEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{1}
+	return fileDescriptor_a6347f14b9114d11, []int{2}
 }
+
 func (m *EthTypeFieldEntry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EthTypeFieldEntry.Unmarshal(m, b)
 }
 func (m *EthTypeFieldEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EthTypeFieldEntry.Marshal(b, m, deterministic)
 }
-func (dst *EthTypeFieldEntry) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EthTypeFieldEntry.Merge(dst, src)
+func (m *EthTypeFieldEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EthTypeFieldEntry.Merge(m, src)
 }
 func (m *EthTypeFieldEntry) XXX_Size() int {
 	return xxx_messageInfo_EthTypeFieldEntry.Size(m)
@@ -291,16 +275,17 @@ func (m *DstIpFieldEntry) Reset()         { *m = DstIpFieldEntry{} }
 func (m *DstIpFieldEntry) String() string { return proto.CompactTextString(m) }
 func (*DstIpFieldEntry) ProtoMessage()    {}
 func (*DstIpFieldEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{2}
+	return fileDescriptor_a6347f14b9114d11, []int{3}
 }
+
 func (m *DstIpFieldEntry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DstIpFieldEntry.Unmarshal(m, b)
 }
 func (m *DstIpFieldEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DstIpFieldEntry.Marshal(b, m, deterministic)
 }
-func (dst *DstIpFieldEntry) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DstIpFieldEntry.Merge(dst, src)
+func (m *DstIpFieldEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DstIpFieldEntry.Merge(m, src)
 }
 func (m *DstIpFieldEntry) XXX_Size() int {
 	return xxx_messageInfo_DstIpFieldEntry.Size(m)
@@ -337,16 +322,17 @@ func (m *IpProtoFieldEntry) Reset()         { *m = IpProtoFieldEntry{} }
 func (m *IpProtoFieldEntry) String() string { return proto.CompactTextString(m) }
 func (*IpProtoFieldEntry) ProtoMessage()    {}
 func (*IpProtoFieldEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{3}
+	return fileDescriptor_a6347f14b9114d11, []int{4}
 }
+
 func (m *IpProtoFieldEntry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_IpProtoFieldEntry.Unmarshal(m, b)
 }
 func (m *IpProtoFieldEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_IpProtoFieldEntry.Marshal(b, m, deterministic)
 }
-func (dst *IpProtoFieldEntry) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_IpProtoFieldEntry.Merge(dst, src)
+func (m *IpProtoFieldEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IpProtoFieldEntry.Merge(m, src)
 }
 func (m *IpProtoFieldEntry) XXX_Size() int {
 	return xxx_messageInfo_IpProtoFieldEntry.Size(m)
@@ -381,16 +367,17 @@ func (m *GetFieldEntriesRequest) Reset()         { *m = GetFieldEntriesRequest{}
 func (m *GetFieldEntriesRequest) String() string { return proto.CompactTextString(m) }
 func (*GetFieldEntriesRequest) ProtoMessage()    {}
 func (*GetFieldEntriesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{4}
+	return fileDescriptor_a6347f14b9114d11, []int{5}
 }
+
 func (m *GetFieldEntriesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetFieldEntriesRequest.Unmarshal(m, b)
 }
 func (m *GetFieldEntriesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetFieldEntriesRequest.Marshal(b, m, deterministic)
 }
-func (dst *GetFieldEntriesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetFieldEntriesRequest.Merge(dst, src)
+func (m *GetFieldEntriesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetFieldEntriesRequest.Merge(m, src)
 }
 func (m *GetFieldEntriesRequest) XXX_Size() int {
 	return xxx_messageInfo_GetFieldEntriesRequest.Size(m)
@@ -412,16 +399,17 @@ func (m *GetFieldEntriesReply) Reset()         { *m = GetFieldEntriesReply{} }
 func (m *GetFieldEntriesReply) String() string { return proto.CompactTextString(m) }
 func (*GetFieldEntriesReply) ProtoMessage()    {}
 func (*GetFieldEntriesReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{5}
+	return fileDescriptor_a6347f14b9114d11, []int{6}
 }
+
 func (m *GetFieldEntriesReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetFieldEntriesReply.Unmarshal(m, b)
 }
 func (m *GetFieldEntriesReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetFieldEntriesReply.Marshal(b, m, deterministic)
 }
-func (dst *GetFieldEntriesReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetFieldEntriesReply.Merge(dst, src)
+func (m *GetFieldEntriesReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetFieldEntriesReply.Merge(m, src)
 }
 func (m *GetFieldEntriesReply) XXX_Size() int {
 	return xxx_messageInfo_GetFieldEntriesReply.Size(m)
@@ -455,16 +443,17 @@ func (m *VlanEntry) Reset()         { *m = VlanEntry{} }
 func (m *VlanEntry) String() string { return proto.CompactTextString(m) }
 func (*VlanEntry) ProtoMessage()    {}
 func (*VlanEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{6}
+	return fileDescriptor_a6347f14b9114d11, []int{7}
 }
+
 func (m *VlanEntry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VlanEntry.Unmarshal(m, b)
 }
 func (m *VlanEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VlanEntry.Marshal(b, m, deterministic)
 }
-func (dst *VlanEntry) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VlanEntry.Merge(dst, src)
+func (m *VlanEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VlanEntry.Merge(m, src)
 }
 func (m *VlanEntry) XXX_Size() int {
 	return xxx_messageInfo_VlanEntry.Size(m)
@@ -506,16 +495,17 @@ func (m *GetVlansRequest) Reset()         { *m = GetVlansRequest{} }
 func (m *GetVlansRequest) String() string { return proto.CompactTextString(m) }
 func (*GetVlansRequest) ProtoMessage()    {}
 func (*GetVlansRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{7}
+	return fileDescriptor_a6347f14b9114d11, []int{8}
 }
+
 func (m *GetVlansRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetVlansRequest.Unmarshal(m, b)
 }
 func (m *GetVlansRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetVlansRequest.Marshal(b, m, deterministic)
 }
-func (dst *GetVlansRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetVlansRequest.Merge(dst, src)
+func (m *GetVlansRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetVlansRequest.Merge(m, src)
 }
 func (m *GetVlansRequest) XXX_Size() int {
 	return xxx_messageInfo_GetVlansRequest.Size(m)
@@ -537,16 +527,17 @@ func (m *GetVlansReply) Reset()         { *m = GetVlansReply{} }
 func (m *GetVlansReply) String() string { return proto.CompactTextString(m) }
 func (*GetVlansReply) ProtoMessage()    {}
 func (*GetVlansReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{8}
+	return fileDescriptor_a6347f14b9114d11, []int{9}
 }
+
 func (m *GetVlansReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetVlansReply.Unmarshal(m, b)
 }
 func (m *GetVlansReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetVlansReply.Marshal(b, m, deterministic)
 }
-func (dst *GetVlansReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetVlansReply.Merge(dst, src)
+func (m *GetVlansReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetVlansReply.Merge(m, src)
 }
 func (m *GetVlansReply) XXX_Size() int {
 	return xxx_messageInfo_GetVlansReply.Size(m)
@@ -581,16 +572,17 @@ func (m *L2Addr) Reset()         { *m = L2Addr{} }
 func (m *L2Addr) String() string { return proto.CompactTextString(m) }
 func (*L2Addr) ProtoMessage()    {}
 func (*L2Addr) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{9}
+	return fileDescriptor_a6347f14b9114d11, []int{10}
 }
+
 func (m *L2Addr) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_L2Addr.Unmarshal(m, b)
 }
 func (m *L2Addr) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_L2Addr.Marshal(b, m, deterministic)
 }
-func (dst *L2Addr) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_L2Addr.Merge(dst, src)
+func (m *L2Addr) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_L2Addr.Merge(m, src)
 }
 func (m *L2Addr) XXX_Size() int {
 	return xxx_messageInfo_L2Addr.Size(m)
@@ -639,16 +631,17 @@ func (m *GetL2AddrsRequest) Reset()         { *m = GetL2AddrsRequest{} }
 func (m *GetL2AddrsRequest) String() string { return proto.CompactTextString(m) }
 func (*GetL2AddrsRequest) ProtoMessage()    {}
 func (*GetL2AddrsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{10}
+	return fileDescriptor_a6347f14b9114d11, []int{11}
 }
+
 func (m *GetL2AddrsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL2AddrsRequest.Unmarshal(m, b)
 }
 func (m *GetL2AddrsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL2AddrsRequest.Marshal(b, m, deterministic)
 }
-func (dst *GetL2AddrsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL2AddrsRequest.Merge(dst, src)
+func (m *GetL2AddrsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL2AddrsRequest.Merge(m, src)
 }
 func (m *GetL2AddrsRequest) XXX_Size() int {
 	return xxx_messageInfo_GetL2AddrsRequest.Size(m)
@@ -670,16 +663,17 @@ func (m *GetL2AddrsReply) Reset()         { *m = GetL2AddrsReply{} }
 func (m *GetL2AddrsReply) String() string { return proto.CompactTextString(m) }
 func (*GetL2AddrsReply) ProtoMessage()    {}
 func (*GetL2AddrsReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{11}
+	return fileDescriptor_a6347f14b9114d11, []int{12}
 }
+
 func (m *GetL2AddrsReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL2AddrsReply.Unmarshal(m, b)
 }
 func (m *GetL2AddrsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL2AddrsReply.Marshal(b, m, deterministic)
 }
-func (dst *GetL2AddrsReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL2AddrsReply.Merge(dst, src)
+func (m *GetL2AddrsReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL2AddrsReply.Merge(m, src)
 }
 func (m *GetL2AddrsReply) XXX_Size() int {
 	return xxx_messageInfo_GetL2AddrsReply.Size(m)
@@ -717,16 +711,17 @@ func (m *L2Station) Reset()         { *m = L2Station{} }
 func (m *L2Station) String() string { return proto.CompactTextString(m) }
 func (*L2Station) ProtoMessage()    {}
 func (*L2Station) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{12}
+	return fileDescriptor_a6347f14b9114d11, []int{13}
 }
+
 func (m *L2Station) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_L2Station.Unmarshal(m, b)
 }
 func (m *L2Station) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_L2Station.Marshal(b, m, deterministic)
 }
-func (dst *L2Station) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_L2Station.Merge(dst, src)
+func (m *L2Station) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_L2Station.Merge(m, src)
 }
 func (m *L2Station) XXX_Size() int {
 	return xxx_messageInfo_L2Station.Size(m)
@@ -796,16 +791,17 @@ func (m *GetL2StationsRequest) Reset()         { *m = GetL2StationsRequest{} }
 func (m *GetL2StationsRequest) String() string { return proto.CompactTextString(m) }
 func (*GetL2StationsRequest) ProtoMessage()    {}
 func (*GetL2StationsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{13}
+	return fileDescriptor_a6347f14b9114d11, []int{14}
 }
+
 func (m *GetL2StationsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL2StationsRequest.Unmarshal(m, b)
 }
 func (m *GetL2StationsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL2StationsRequest.Marshal(b, m, deterministic)
 }
-func (dst *GetL2StationsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL2StationsRequest.Merge(dst, src)
+func (m *GetL2StationsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL2StationsRequest.Merge(m, src)
 }
 func (m *GetL2StationsRequest) XXX_Size() int {
 	return xxx_messageInfo_GetL2StationsRequest.Size(m)
@@ -827,16 +823,17 @@ func (m *GetL2StationsReply) Reset()         { *m = GetL2StationsReply{} }
 func (m *GetL2StationsReply) String() string { return proto.CompactTextString(m) }
 func (*GetL2StationsReply) ProtoMessage()    {}
 func (*GetL2StationsReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{14}
+	return fileDescriptor_a6347f14b9114d11, []int{15}
 }
+
 func (m *GetL2StationsReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL2StationsReply.Unmarshal(m, b)
 }
 func (m *GetL2StationsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL2StationsReply.Marshal(b, m, deterministic)
 }
-func (dst *GetL2StationsReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL2StationsReply.Merge(dst, src)
+func (m *GetL2StationsReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL2StationsReply.Merge(m, src)
 }
 func (m *GetL2StationsReply) XXX_Size() int {
 	return xxx_messageInfo_GetL2StationsReply.Size(m)
@@ -875,16 +872,17 @@ func (m *L3Iface) Reset()         { *m = L3Iface{} }
 func (m *L3Iface) String() string { return proto.CompactTextString(m) }
 func (*L3Iface) ProtoMessage()    {}
 func (*L3Iface) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{15}
+	return fileDescriptor_a6347f14b9114d11, []int{16}
 }
+
 func (m *L3Iface) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_L3Iface.Unmarshal(m, b)
 }
 func (m *L3Iface) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_L3Iface.Marshal(b, m, deterministic)
 }
-func (dst *L3Iface) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_L3Iface.Merge(dst, src)
+func (m *L3Iface) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_L3Iface.Merge(m, src)
 }
 func (m *L3Iface) XXX_Size() int {
 	return xxx_messageInfo_L3Iface.Size(m)
@@ -963,16 +961,17 @@ func (m *FindL3IfaceRequest) Reset()         { *m = FindL3IfaceRequest{} }
 func (m *FindL3IfaceRequest) String() string { return proto.CompactTextString(m) }
 func (*FindL3IfaceRequest) ProtoMessage()    {}
 func (*FindL3IfaceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{16}
+	return fileDescriptor_a6347f14b9114d11, []int{17}
 }
+
 func (m *FindL3IfaceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FindL3IfaceRequest.Unmarshal(m, b)
 }
 func (m *FindL3IfaceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_FindL3IfaceRequest.Marshal(b, m, deterministic)
 }
-func (dst *FindL3IfaceRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FindL3IfaceRequest.Merge(dst, src)
+func (m *FindL3IfaceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FindL3IfaceRequest.Merge(m, src)
 }
 func (m *FindL3IfaceRequest) XXX_Size() int {
 	return xxx_messageInfo_FindL3IfaceRequest.Size(m)
@@ -1008,16 +1007,17 @@ func (m *FindL3IfaceReply) Reset()         { *m = FindL3IfaceReply{} }
 func (m *FindL3IfaceReply) String() string { return proto.CompactTextString(m) }
 func (*FindL3IfaceReply) ProtoMessage()    {}
 func (*FindL3IfaceReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{17}
+	return fileDescriptor_a6347f14b9114d11, []int{18}
 }
+
 func (m *FindL3IfaceReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FindL3IfaceReply.Unmarshal(m, b)
 }
 func (m *FindL3IfaceReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_FindL3IfaceReply.Marshal(b, m, deterministic)
 }
-func (dst *FindL3IfaceReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FindL3IfaceReply.Merge(dst, src)
+func (m *FindL3IfaceReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FindL3IfaceReply.Merge(m, src)
 }
 func (m *FindL3IfaceReply) XXX_Size() int {
 	return xxx_messageInfo_FindL3IfaceReply.Size(m)
@@ -1046,16 +1046,17 @@ func (m *GetL3IfaceRequest) Reset()         { *m = GetL3IfaceRequest{} }
 func (m *GetL3IfaceRequest) String() string { return proto.CompactTextString(m) }
 func (*GetL3IfaceRequest) ProtoMessage()    {}
 func (*GetL3IfaceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{18}
+	return fileDescriptor_a6347f14b9114d11, []int{19}
 }
+
 func (m *GetL3IfaceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL3IfaceRequest.Unmarshal(m, b)
 }
 func (m *GetL3IfaceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL3IfaceRequest.Marshal(b, m, deterministic)
 }
-func (dst *GetL3IfaceRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL3IfaceRequest.Merge(dst, src)
+func (m *GetL3IfaceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL3IfaceRequest.Merge(m, src)
 }
 func (m *GetL3IfaceRequest) XXX_Size() int {
 	return xxx_messageInfo_GetL3IfaceRequest.Size(m)
@@ -1084,16 +1085,17 @@ func (m *GetL3IfaceReply) Reset()         { *m = GetL3IfaceReply{} }
 func (m *GetL3IfaceReply) String() string { return proto.CompactTextString(m) }
 func (*GetL3IfaceReply) ProtoMessage()    {}
 func (*GetL3IfaceReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{19}
+	return fileDescriptor_a6347f14b9114d11, []int{20}
 }
+
 func (m *GetL3IfaceReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL3IfaceReply.Unmarshal(m, b)
 }
 func (m *GetL3IfaceReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL3IfaceReply.Marshal(b, m, deterministic)
 }
-func (dst *GetL3IfaceReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL3IfaceReply.Merge(dst, src)
+func (m *GetL3IfaceReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL3IfaceReply.Merge(m, src)
 }
 func (m *GetL3IfaceReply) XXX_Size() int {
 	return xxx_messageInfo_GetL3IfaceReply.Size(m)
@@ -1121,16 +1123,17 @@ func (m *GetL3IfacesRequest) Reset()         { *m = GetL3IfacesRequest{} }
 func (m *GetL3IfacesRequest) String() string { return proto.CompactTextString(m) }
 func (*GetL3IfacesRequest) ProtoMessage()    {}
 func (*GetL3IfacesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{20}
+	return fileDescriptor_a6347f14b9114d11, []int{21}
 }
+
 func (m *GetL3IfacesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL3IfacesRequest.Unmarshal(m, b)
 }
 func (m *GetL3IfacesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL3IfacesRequest.Marshal(b, m, deterministic)
 }
-func (dst *GetL3IfacesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL3IfacesRequest.Merge(dst, src)
+func (m *GetL3IfacesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL3IfacesRequest.Merge(m, src)
 }
 func (m *GetL3IfacesRequest) XXX_Size() int {
 	return xxx_messageInfo_GetL3IfacesRequest.Size(m)
@@ -1152,16 +1155,17 @@ func (m *GetL3IfacesReply) Reset()         { *m = GetL3IfacesReply{} }
 func (m *GetL3IfacesReply) String() string { return proto.CompactTextString(m) }
 func (*GetL3IfacesReply) ProtoMessage()    {}
 func (*GetL3IfacesReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{21}
+	return fileDescriptor_a6347f14b9114d11, []int{22}
 }
+
 func (m *GetL3IfacesReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL3IfacesReply.Unmarshal(m, b)
 }
 func (m *GetL3IfacesReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL3IfacesReply.Marshal(b, m, deterministic)
 }
-func (dst *GetL3IfacesReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL3IfacesReply.Merge(dst, src)
+func (m *GetL3IfacesReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL3IfacesReply.Merge(m, src)
 }
 func (m *GetL3IfacesReply) XXX_Size() int {
 	return xxx_messageInfo_GetL3IfacesReply.Size(m)
@@ -1199,16 +1203,17 @@ func (m *L3Egress) Reset()         { *m = L3Egress{} }
 func (m *L3Egress) String() string { return proto.CompactTextString(m) }
 func (*L3Egress) ProtoMessage()    {}
 func (*L3Egress) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{22}
+	return fileDescriptor_a6347f14b9114d11, []int{23}
 }
+
 func (m *L3Egress) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_L3Egress.Unmarshal(m, b)
 }
 func (m *L3Egress) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_L3Egress.Marshal(b, m, deterministic)
 }
-func (dst *L3Egress) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_L3Egress.Merge(dst, src)
+func (m *L3Egress) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_L3Egress.Merge(m, src)
 }
 func (m *L3Egress) XXX_Size() int {
 	return xxx_messageInfo_L3Egress.Size(m)
@@ -1278,16 +1283,17 @@ func (m *GetL3EgressesRequest) Reset()         { *m = GetL3EgressesRequest{} }
 func (m *GetL3EgressesRequest) String() string { return proto.CompactTextString(m) }
 func (*GetL3EgressesRequest) ProtoMessage()    {}
 func (*GetL3EgressesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{23}
+	return fileDescriptor_a6347f14b9114d11, []int{24}
 }
+
 func (m *GetL3EgressesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL3EgressesRequest.Unmarshal(m, b)
 }
 func (m *GetL3EgressesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL3EgressesRequest.Marshal(b, m, deterministic)
 }
-func (dst *GetL3EgressesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL3EgressesRequest.Merge(dst, src)
+func (m *GetL3EgressesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL3EgressesRequest.Merge(m, src)
 }
 func (m *GetL3EgressesRequest) XXX_Size() int {
 	return xxx_messageInfo_GetL3EgressesRequest.Size(m)
@@ -1309,16 +1315,17 @@ func (m *GetL3EgressesReply) Reset()         { *m = GetL3EgressesReply{} }
 func (m *GetL3EgressesReply) String() string { return proto.CompactTextString(m) }
 func (*GetL3EgressesReply) ProtoMessage()    {}
 func (*GetL3EgressesReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{24}
+	return fileDescriptor_a6347f14b9114d11, []int{25}
 }
+
 func (m *GetL3EgressesReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL3EgressesReply.Unmarshal(m, b)
 }
 func (m *GetL3EgressesReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL3EgressesReply.Marshal(b, m, deterministic)
 }
-func (dst *GetL3EgressesReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL3EgressesReply.Merge(dst, src)
+func (m *GetL3EgressesReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL3EgressesReply.Merge(m, src)
 }
 func (m *GetL3EgressesReply) XXX_Size() int {
 	return xxx_messageInfo_GetL3EgressesReply.Size(m)
@@ -1355,16 +1362,17 @@ func (m *L3Host) Reset()         { *m = L3Host{} }
 func (m *L3Host) String() string { return proto.CompactTextString(m) }
 func (*L3Host) ProtoMessage()    {}
 func (*L3Host) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{25}
+	return fileDescriptor_a6347f14b9114d11, []int{26}
 }
+
 func (m *L3Host) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_L3Host.Unmarshal(m, b)
 }
 func (m *L3Host) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_L3Host.Marshal(b, m, deterministic)
 }
-func (dst *L3Host) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_L3Host.Merge(dst, src)
+func (m *L3Host) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_L3Host.Merge(m, src)
 }
 func (m *L3Host) XXX_Size() int {
 	return xxx_messageInfo_L3Host.Size(m)
@@ -1427,16 +1435,17 @@ func (m *GetL3HostsRequest) Reset()         { *m = GetL3HostsRequest{} }
 func (m *GetL3HostsRequest) String() string { return proto.CompactTextString(m) }
 func (*GetL3HostsRequest) ProtoMessage()    {}
 func (*GetL3HostsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{26}
+	return fileDescriptor_a6347f14b9114d11, []int{27}
 }
+
 func (m *GetL3HostsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL3HostsRequest.Unmarshal(m, b)
 }
 func (m *GetL3HostsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL3HostsRequest.Marshal(b, m, deterministic)
 }
-func (dst *GetL3HostsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL3HostsRequest.Merge(dst, src)
+func (m *GetL3HostsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL3HostsRequest.Merge(m, src)
 }
 func (m *GetL3HostsRequest) XXX_Size() int {
 	return xxx_messageInfo_GetL3HostsRequest.Size(m)
@@ -1458,16 +1467,17 @@ func (m *GetL3HostsReply) Reset()         { *m = GetL3HostsReply{} }
 func (m *GetL3HostsReply) String() string { return proto.CompactTextString(m) }
 func (*GetL3HostsReply) ProtoMessage()    {}
 func (*GetL3HostsReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{27}
+	return fileDescriptor_a6347f14b9114d11, []int{28}
 }
+
 func (m *GetL3HostsReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL3HostsReply.Unmarshal(m, b)
 }
 func (m *GetL3HostsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL3HostsReply.Marshal(b, m, deterministic)
 }
-func (dst *GetL3HostsReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL3HostsReply.Merge(dst, src)
+func (m *GetL3HostsReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL3HostsReply.Merge(m, src)
 }
 func (m *GetL3HostsReply) XXX_Size() int {
 	return xxx_messageInfo_GetL3HostsReply.Size(m)
@@ -1503,16 +1513,17 @@ func (m *L3Route) Reset()         { *m = L3Route{} }
 func (m *L3Route) String() string { return proto.CompactTextString(m) }
 func (*L3Route) ProtoMessage()    {}
 func (*L3Route) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{28}
+	return fileDescriptor_a6347f14b9114d11, []int{29}
 }
+
 func (m *L3Route) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_L3Route.Unmarshal(m, b)
 }
 func (m *L3Route) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_L3Route.Marshal(b, m, deterministic)
 }
-func (dst *L3Route) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_L3Route.Merge(dst, src)
+func (m *L3Route) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_L3Route.Merge(m, src)
 }
 func (m *L3Route) XXX_Size() int {
 	return xxx_messageInfo_L3Route.Size(m)
@@ -1568,16 +1579,17 @@ func (m *GetL3RoutesRequest) Reset()         { *m = GetL3RoutesRequest{} }
 func (m *GetL3RoutesRequest) String() string { return proto.CompactTextString(m) }
 func (*GetL3RoutesRequest) ProtoMessage()    {}
 func (*GetL3RoutesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{29}
+	return fileDescriptor_a6347f14b9114d11, []int{30}
 }
+
 func (m *GetL3RoutesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL3RoutesRequest.Unmarshal(m, b)
 }
 func (m *GetL3RoutesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL3RoutesRequest.Marshal(b, m, deterministic)
 }
-func (dst *GetL3RoutesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL3RoutesRequest.Merge(dst, src)
+func (m *GetL3RoutesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL3RoutesRequest.Merge(m, src)
 }
 func (m *GetL3RoutesRequest) XXX_Size() int {
 	return xxx_messageInfo_GetL3RoutesRequest.Size(m)
@@ -1599,16 +1611,17 @@ func (m *GetL3RoutesReply) Reset()         { *m = GetL3RoutesReply{} }
 func (m *GetL3RoutesReply) String() string { return proto.CompactTextString(m) }
 func (*GetL3RoutesReply) ProtoMessage()    {}
 func (*GetL3RoutesReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{30}
+	return fileDescriptor_a6347f14b9114d11, []int{31}
 }
+
 func (m *GetL3RoutesReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetL3RoutesReply.Unmarshal(m, b)
 }
 func (m *GetL3RoutesReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetL3RoutesReply.Marshal(b, m, deterministic)
 }
-func (dst *GetL3RoutesReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetL3RoutesReply.Merge(dst, src)
+func (m *GetL3RoutesReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetL3RoutesReply.Merge(m, src)
 }
 func (m *GetL3RoutesReply) XXX_Size() int {
 	return xxx_messageInfo_GetL3RoutesReply.Size(m)
@@ -1622,6 +1635,403 @@ var xxx_messageInfo_GetL3RoutesReply proto.InternalMessageInfo
 func (m *GetL3RoutesReply) GetRoutes() []*L3Route {
 	if m != nil {
 		return m.Routes
+	}
+	return nil
+}
+
+//
+// Tunnel
+//
+type TunnelInitiator struct {
+	Flags                uint32   `protobuf:"varint,1,opt,name=flags,proto3" json:"flags,omitempty"`
+	TunnelId             uint32   `protobuf:"varint,2,opt,name=tunnel_id,json=tunnelId,proto3" json:"tunnel_id,omitempty"`
+	TunnelType           string   `protobuf:"bytes,3,opt,name=tunnel_type,json=tunnelType,proto3" json:"tunnel_type,omitempty"`
+	L3IfaceId            uint32   `protobuf:"varint,4,opt,name=l3_iface_id,json=l3IfaceId,proto3" json:"l3_iface_id,omitempty"`
+	DstMac               string   `protobuf:"bytes,5,opt,name=dst_mac,json=dstMac,proto3" json:"dst_mac,omitempty"`
+	SrcMac               string   `protobuf:"bytes,6,opt,name=src_mac,json=srcMac,proto3" json:"src_mac,omitempty"`
+	DstIp                string   `protobuf:"bytes,7,opt,name=dst_ip,json=dstIp,proto3" json:"dst_ip,omitempty"`
+	SrcIp                string   `protobuf:"bytes,8,opt,name=src_ip,json=srcIp,proto3" json:"src_ip,omitempty"`
+	DstPort              uint32   `protobuf:"varint,9,opt,name=dst_port,json=dstPort,proto3" json:"dst_port,omitempty"`
+	SrcPort              uint32   `protobuf:"varint,10,opt,name=src_port,json=srcPort,proto3" json:"src_port,omitempty"`
+	Ttl                  uint32   `protobuf:"varint,11,opt,name=ttl,proto3" json:"ttl,omitempty"`
+	Mtu                  uint32   `protobuf:"varint,12,opt,name=mtu,proto3" json:"mtu,omitempty"`
+	Vlan                 uint32   `protobuf:"varint,13,opt,name=vlan,proto3" json:"vlan,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *TunnelInitiator) Reset()         { *m = TunnelInitiator{} }
+func (m *TunnelInitiator) String() string { return proto.CompactTextString(m) }
+func (*TunnelInitiator) ProtoMessage()    {}
+func (*TunnelInitiator) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a6347f14b9114d11, []int{32}
+}
+
+func (m *TunnelInitiator) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TunnelInitiator.Unmarshal(m, b)
+}
+func (m *TunnelInitiator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TunnelInitiator.Marshal(b, m, deterministic)
+}
+func (m *TunnelInitiator) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TunnelInitiator.Merge(m, src)
+}
+func (m *TunnelInitiator) XXX_Size() int {
+	return xxx_messageInfo_TunnelInitiator.Size(m)
+}
+func (m *TunnelInitiator) XXX_DiscardUnknown() {
+	xxx_messageInfo_TunnelInitiator.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TunnelInitiator proto.InternalMessageInfo
+
+func (m *TunnelInitiator) GetFlags() uint32 {
+	if m != nil {
+		return m.Flags
+	}
+	return 0
+}
+
+func (m *TunnelInitiator) GetTunnelId() uint32 {
+	if m != nil {
+		return m.TunnelId
+	}
+	return 0
+}
+
+func (m *TunnelInitiator) GetTunnelType() string {
+	if m != nil {
+		return m.TunnelType
+	}
+	return ""
+}
+
+func (m *TunnelInitiator) GetL3IfaceId() uint32 {
+	if m != nil {
+		return m.L3IfaceId
+	}
+	return 0
+}
+
+func (m *TunnelInitiator) GetDstMac() string {
+	if m != nil {
+		return m.DstMac
+	}
+	return ""
+}
+
+func (m *TunnelInitiator) GetSrcMac() string {
+	if m != nil {
+		return m.SrcMac
+	}
+	return ""
+}
+
+func (m *TunnelInitiator) GetDstIp() string {
+	if m != nil {
+		return m.DstIp
+	}
+	return ""
+}
+
+func (m *TunnelInitiator) GetSrcIp() string {
+	if m != nil {
+		return m.SrcIp
+	}
+	return ""
+}
+
+func (m *TunnelInitiator) GetDstPort() uint32 {
+	if m != nil {
+		return m.DstPort
+	}
+	return 0
+}
+
+func (m *TunnelInitiator) GetSrcPort() uint32 {
+	if m != nil {
+		return m.SrcPort
+	}
+	return 0
+}
+
+func (m *TunnelInitiator) GetTtl() uint32 {
+	if m != nil {
+		return m.Ttl
+	}
+	return 0
+}
+
+func (m *TunnelInitiator) GetMtu() uint32 {
+	if m != nil {
+		return m.Mtu
+	}
+	return 0
+}
+
+func (m *TunnelInitiator) GetVlan() uint32 {
+	if m != nil {
+		return m.Vlan
+	}
+	return 0
+}
+
+type TunnelTerminator struct {
+	Flags                uint32   `protobuf:"varint,1,opt,name=flags,proto3" json:"flags,omitempty"`
+	TunnelId             uint32   `protobuf:"varint,2,opt,name=tunnel_id,json=tunnelId,proto3" json:"tunnel_id,omitempty"`
+	TunnelType           string   `protobuf:"bytes,3,opt,name=tunnel_type,json=tunnelType,proto3" json:"tunnel_type,omitempty"`
+	RemotePort           uint32   `protobuf:"varint,4,opt,name=remote_port,json=remotePort,proto3" json:"remote_port,omitempty"`
+	DstIp                string   `protobuf:"bytes,5,opt,name=dst_ip,json=dstIp,proto3" json:"dst_ip,omitempty"`
+	SrcIp                string   `protobuf:"bytes,6,opt,name=src_ip,json=srcIp,proto3" json:"src_ip,omitempty"`
+	DstPort              uint32   `protobuf:"varint,7,opt,name=dst_port,json=dstPort,proto3" json:"dst_port,omitempty"`
+	SrcPort              uint32   `protobuf:"varint,8,opt,name=src_port,json=srcPort,proto3" json:"src_port,omitempty"`
+	Vlan                 uint32   `protobuf:"varint,9,opt,name=vlan,proto3" json:"vlan,omitempty"`
+	Vrf                  uint32   `protobuf:"varint,10,opt,name=vrf,proto3" json:"vrf,omitempty"`
+	Pbmp                 []uint32 `protobuf:"varint,11,rep,packed,name=pbmp,proto3" json:"pbmp,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *TunnelTerminator) Reset()         { *m = TunnelTerminator{} }
+func (m *TunnelTerminator) String() string { return proto.CompactTextString(m) }
+func (*TunnelTerminator) ProtoMessage()    {}
+func (*TunnelTerminator) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a6347f14b9114d11, []int{33}
+}
+
+func (m *TunnelTerminator) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TunnelTerminator.Unmarshal(m, b)
+}
+func (m *TunnelTerminator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TunnelTerminator.Marshal(b, m, deterministic)
+}
+func (m *TunnelTerminator) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TunnelTerminator.Merge(m, src)
+}
+func (m *TunnelTerminator) XXX_Size() int {
+	return xxx_messageInfo_TunnelTerminator.Size(m)
+}
+func (m *TunnelTerminator) XXX_DiscardUnknown() {
+	xxx_messageInfo_TunnelTerminator.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TunnelTerminator proto.InternalMessageInfo
+
+func (m *TunnelTerminator) GetFlags() uint32 {
+	if m != nil {
+		return m.Flags
+	}
+	return 0
+}
+
+func (m *TunnelTerminator) GetTunnelId() uint32 {
+	if m != nil {
+		return m.TunnelId
+	}
+	return 0
+}
+
+func (m *TunnelTerminator) GetTunnelType() string {
+	if m != nil {
+		return m.TunnelType
+	}
+	return ""
+}
+
+func (m *TunnelTerminator) GetRemotePort() uint32 {
+	if m != nil {
+		return m.RemotePort
+	}
+	return 0
+}
+
+func (m *TunnelTerminator) GetDstIp() string {
+	if m != nil {
+		return m.DstIp
+	}
+	return ""
+}
+
+func (m *TunnelTerminator) GetSrcIp() string {
+	if m != nil {
+		return m.SrcIp
+	}
+	return ""
+}
+
+func (m *TunnelTerminator) GetDstPort() uint32 {
+	if m != nil {
+		return m.DstPort
+	}
+	return 0
+}
+
+func (m *TunnelTerminator) GetSrcPort() uint32 {
+	if m != nil {
+		return m.SrcPort
+	}
+	return 0
+}
+
+func (m *TunnelTerminator) GetVlan() uint32 {
+	if m != nil {
+		return m.Vlan
+	}
+	return 0
+}
+
+func (m *TunnelTerminator) GetVrf() uint32 {
+	if m != nil {
+		return m.Vrf
+	}
+	return 0
+}
+
+func (m *TunnelTerminator) GetPbmp() []uint32 {
+	if m != nil {
+		return m.Pbmp
+	}
+	return nil
+}
+
+type GetTunnelInitiatorsRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetTunnelInitiatorsRequest) Reset()         { *m = GetTunnelInitiatorsRequest{} }
+func (m *GetTunnelInitiatorsRequest) String() string { return proto.CompactTextString(m) }
+func (*GetTunnelInitiatorsRequest) ProtoMessage()    {}
+func (*GetTunnelInitiatorsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a6347f14b9114d11, []int{34}
+}
+
+func (m *GetTunnelInitiatorsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTunnelInitiatorsRequest.Unmarshal(m, b)
+}
+func (m *GetTunnelInitiatorsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTunnelInitiatorsRequest.Marshal(b, m, deterministic)
+}
+func (m *GetTunnelInitiatorsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTunnelInitiatorsRequest.Merge(m, src)
+}
+func (m *GetTunnelInitiatorsRequest) XXX_Size() int {
+	return xxx_messageInfo_GetTunnelInitiatorsRequest.Size(m)
+}
+func (m *GetTunnelInitiatorsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTunnelInitiatorsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTunnelInitiatorsRequest proto.InternalMessageInfo
+
+type GetTunnelInitiatorsReply struct {
+	Tunnels              []*TunnelInitiator `protobuf:"bytes,1,rep,name=tunnels,proto3" json:"tunnels,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *GetTunnelInitiatorsReply) Reset()         { *m = GetTunnelInitiatorsReply{} }
+func (m *GetTunnelInitiatorsReply) String() string { return proto.CompactTextString(m) }
+func (*GetTunnelInitiatorsReply) ProtoMessage()    {}
+func (*GetTunnelInitiatorsReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a6347f14b9114d11, []int{35}
+}
+
+func (m *GetTunnelInitiatorsReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTunnelInitiatorsReply.Unmarshal(m, b)
+}
+func (m *GetTunnelInitiatorsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTunnelInitiatorsReply.Marshal(b, m, deterministic)
+}
+func (m *GetTunnelInitiatorsReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTunnelInitiatorsReply.Merge(m, src)
+}
+func (m *GetTunnelInitiatorsReply) XXX_Size() int {
+	return xxx_messageInfo_GetTunnelInitiatorsReply.Size(m)
+}
+func (m *GetTunnelInitiatorsReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTunnelInitiatorsReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTunnelInitiatorsReply proto.InternalMessageInfo
+
+func (m *GetTunnelInitiatorsReply) GetTunnels() []*TunnelInitiator {
+	if m != nil {
+		return m.Tunnels
+	}
+	return nil
+}
+
+type GetTunnelTerminatorsRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetTunnelTerminatorsRequest) Reset()         { *m = GetTunnelTerminatorsRequest{} }
+func (m *GetTunnelTerminatorsRequest) String() string { return proto.CompactTextString(m) }
+func (*GetTunnelTerminatorsRequest) ProtoMessage()    {}
+func (*GetTunnelTerminatorsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a6347f14b9114d11, []int{36}
+}
+
+func (m *GetTunnelTerminatorsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTunnelTerminatorsRequest.Unmarshal(m, b)
+}
+func (m *GetTunnelTerminatorsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTunnelTerminatorsRequest.Marshal(b, m, deterministic)
+}
+func (m *GetTunnelTerminatorsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTunnelTerminatorsRequest.Merge(m, src)
+}
+func (m *GetTunnelTerminatorsRequest) XXX_Size() int {
+	return xxx_messageInfo_GetTunnelTerminatorsRequest.Size(m)
+}
+func (m *GetTunnelTerminatorsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTunnelTerminatorsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTunnelTerminatorsRequest proto.InternalMessageInfo
+
+type GetTunnelTerminatorsReply struct {
+	Tunnels              []*TunnelTerminator `protobuf:"bytes,1,rep,name=tunnels,proto3" json:"tunnels,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
+	XXX_unrecognized     []byte              `json:"-"`
+	XXX_sizecache        int32               `json:"-"`
+}
+
+func (m *GetTunnelTerminatorsReply) Reset()         { *m = GetTunnelTerminatorsReply{} }
+func (m *GetTunnelTerminatorsReply) String() string { return proto.CompactTextString(m) }
+func (*GetTunnelTerminatorsReply) ProtoMessage()    {}
+func (*GetTunnelTerminatorsReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a6347f14b9114d11, []int{37}
+}
+
+func (m *GetTunnelTerminatorsReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTunnelTerminatorsReply.Unmarshal(m, b)
+}
+func (m *GetTunnelTerminatorsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTunnelTerminatorsReply.Marshal(b, m, deterministic)
+}
+func (m *GetTunnelTerminatorsReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTunnelTerminatorsReply.Merge(m, src)
+}
+func (m *GetTunnelTerminatorsReply) XXX_Size() int {
+	return xxx_messageInfo_GetTunnelTerminatorsReply.Size(m)
+}
+func (m *GetTunnelTerminatorsReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTunnelTerminatorsReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTunnelTerminatorsReply proto.InternalMessageInfo
+
+func (m *GetTunnelTerminatorsReply) GetTunnels() []*TunnelTerminator {
+	if m != nil {
+		return m.Tunnels
 	}
 	return nil
 }
@@ -1642,16 +2052,17 @@ func (m *IDMapEntry) Reset()         { *m = IDMapEntry{} }
 func (m *IDMapEntry) String() string { return proto.CompactTextString(m) }
 func (*IDMapEntry) ProtoMessage()    {}
 func (*IDMapEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{31}
+	return fileDescriptor_a6347f14b9114d11, []int{38}
 }
+
 func (m *IDMapEntry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_IDMapEntry.Unmarshal(m, b)
 }
 func (m *IDMapEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_IDMapEntry.Marshal(b, m, deterministic)
 }
-func (dst *IDMapEntry) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_IDMapEntry.Merge(dst, src)
+func (m *IDMapEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IDMapEntry.Merge(m, src)
 }
 func (m *IDMapEntry) XXX_Size() int {
 	return xxx_messageInfo_IDMapEntry.Size(m)
@@ -1693,16 +2104,17 @@ func (m *GetIDMapEntriesRequest) Reset()         { *m = GetIDMapEntriesRequest{}
 func (m *GetIDMapEntriesRequest) String() string { return proto.CompactTextString(m) }
 func (*GetIDMapEntriesRequest) ProtoMessage()    {}
 func (*GetIDMapEntriesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{32}
+	return fileDescriptor_a6347f14b9114d11, []int{39}
 }
+
 func (m *GetIDMapEntriesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetIDMapEntriesRequest.Unmarshal(m, b)
 }
 func (m *GetIDMapEntriesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetIDMapEntriesRequest.Marshal(b, m, deterministic)
 }
-func (dst *GetIDMapEntriesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetIDMapEntriesRequest.Merge(dst, src)
+func (m *GetIDMapEntriesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetIDMapEntriesRequest.Merge(m, src)
 }
 func (m *GetIDMapEntriesRequest) XXX_Size() int {
 	return xxx_messageInfo_GetIDMapEntriesRequest.Size(m)
@@ -1724,16 +2136,17 @@ func (m *GetIDMapEntriesReply) Reset()         { *m = GetIDMapEntriesReply{} }
 func (m *GetIDMapEntriesReply) String() string { return proto.CompactTextString(m) }
 func (*GetIDMapEntriesReply) ProtoMessage()    {}
 func (*GetIDMapEntriesReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gonslapi_60260ed47b0eea0e, []int{33}
+	return fileDescriptor_a6347f14b9114d11, []int{40}
 }
+
 func (m *GetIDMapEntriesReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetIDMapEntriesReply.Unmarshal(m, b)
 }
 func (m *GetIDMapEntriesReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GetIDMapEntriesReply.Marshal(b, m, deterministic)
 }
-func (dst *GetIDMapEntriesReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetIDMapEntriesReply.Merge(dst, src)
+func (m *GetIDMapEntriesReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetIDMapEntriesReply.Merge(m, src)
 }
 func (m *GetIDMapEntriesReply) XXX_Size() int {
 	return xxx_messageInfo_GetIDMapEntriesReply.Size(m)
@@ -1752,7 +2165,9 @@ func (m *GetIDMapEntriesReply) GetEntries() []*IDMapEntry {
 }
 
 func init() {
+	proto.RegisterEnum("gonslapi.FieldEntry_EntryType", FieldEntry_EntryType_name, FieldEntry_EntryType_value)
 	proto.RegisterType((*FieldEntry)(nil), "gonslapi.FieldEntry")
+	proto.RegisterType((*EthDstFieldEntry)(nil), "gonslapi.EthDstFieldEntry")
 	proto.RegisterType((*EthTypeFieldEntry)(nil), "gonslapi.EthTypeFieldEntry")
 	proto.RegisterType((*DstIpFieldEntry)(nil), "gonslapi.DstIpFieldEntry")
 	proto.RegisterType((*IpProtoFieldEntry)(nil), "gonslapi.IpProtoFieldEntry")
@@ -1783,10 +2198,116 @@ func init() {
 	proto.RegisterType((*L3Route)(nil), "gonslapi.L3Route")
 	proto.RegisterType((*GetL3RoutesRequest)(nil), "gonslapi.GetL3RoutesRequest")
 	proto.RegisterType((*GetL3RoutesReply)(nil), "gonslapi.GetL3RoutesReply")
+	proto.RegisterType((*TunnelInitiator)(nil), "gonslapi.TunnelInitiator")
+	proto.RegisterType((*TunnelTerminator)(nil), "gonslapi.TunnelTerminator")
+	proto.RegisterType((*GetTunnelInitiatorsRequest)(nil), "gonslapi.GetTunnelInitiatorsRequest")
+	proto.RegisterType((*GetTunnelInitiatorsReply)(nil), "gonslapi.GetTunnelInitiatorsReply")
+	proto.RegisterType((*GetTunnelTerminatorsRequest)(nil), "gonslapi.GetTunnelTerminatorsRequest")
+	proto.RegisterType((*GetTunnelTerminatorsReply)(nil), "gonslapi.GetTunnelTerminatorsReply")
 	proto.RegisterType((*IDMapEntry)(nil), "gonslapi.IDMapEntry")
 	proto.RegisterType((*GetIDMapEntriesRequest)(nil), "gonslapi.GetIDMapEntriesRequest")
 	proto.RegisterType((*GetIDMapEntriesReply)(nil), "gonslapi.GetIDMapEntriesReply")
-	proto.RegisterEnum("gonslapi.FieldEntry_EntryType", FieldEntry_EntryType_name, FieldEntry_EntryType_value)
+}
+
+func init() { proto.RegisterFile("gonslapi.proto", fileDescriptor_a6347f14b9114d11) }
+
+var fileDescriptor_a6347f14b9114d11 = []byte{
+	// 1520 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x57, 0x4b, 0x6f, 0xdb, 0x46,
+	0x10, 0xb6, 0x24, 0x8b, 0xa4, 0x46, 0x71, 0x22, 0x6f, 0x9c, 0x58, 0x92, 0x5d, 0xc7, 0xd8, 0xbe,
+	0xdc, 0x8b, 0x0b, 0xc8, 0x6d, 0x90, 0xa6, 0x08, 0xd0, 0xb4, 0x7e, 0x09, 0x70, 0x62, 0x95, 0x56,
+	0x03, 0xf4, 0x44, 0x30, 0xe2, 0xca, 0x21, 0xac, 0x07, 0x4b, 0xae, 0x12, 0xe8, 0xda, 0xbf, 0xd0,
+	0x7b, 0x6f, 0x05, 0x7a, 0xe9, 0x3f, 0xe9, 0xad, 0xff, 0xa7, 0x28, 0x66, 0x77, 0xb9, 0x7c, 0x2a,
+	0x06, 0x0a, 0xb4, 0x17, 0x69, 0x77, 0x1e, 0xbb, 0x33, 0xdf, 0xcc, 0xce, 0x0c, 0xe1, 0xee, 0xf5,
+	0x7c, 0x16, 0x4d, 0xdc, 0xc0, 0x3f, 0x0c, 0xc2, 0x39, 0x9f, 0x13, 0x2b, 0xde, 0xd3, 0xbf, 0xab,
+	0x00, 0xa7, 0x3e, 0x9b, 0x78, 0x27, 0x33, 0x1e, 0x2e, 0xc9, 0x33, 0x00, 0x86, 0x0b, 0x87, 0x2f,
+	0x03, 0xd6, 0xae, 0xec, 0x57, 0x0e, 0xee, 0xf6, 0xf6, 0x0e, 0xb5, 0x76, 0x22, 0x79, 0x28, 0x7e,
+	0x87, 0xcb, 0x80, 0xd9, 0x0d, 0x16, 0x2f, 0xc9, 0x13, 0xb0, 0x18, 0x7f, 0x23, 0x95, 0xab, 0xfb,
+	0x95, 0x83, 0x66, 0x6f, 0x27, 0x51, 0x3e, 0xe1, 0x6f, 0x50, 0x28, 0x39, 0xe3, 0x7c, 0xcd, 0x36,
+	0x99, 0x24, 0x92, 0x1e, 0x18, 0x5e, 0xc4, 0x1d, 0x3f, 0x68, 0xd7, 0x84, 0x5e, 0x27, 0xd1, 0x3b,
+	0x8e, 0x78, 0x3f, 0xc8, 0x68, 0xd5, 0x3d, 0x24, 0xe1, 0x6d, 0x7e, 0xe0, 0x08, 0x8f, 0xda, 0xeb,
+	0xf9, 0xdb, 0xfa, 0xc1, 0x00, 0x19, 0xd9, 0xdb, 0x7c, 0x49, 0x24, 0x5f, 0x02, 0x5e, 0xec, 0x78,
+	0x11, 0x6f, 0xd7, 0x85, 0x62, 0x37, 0x63, 0xe6, 0x71, 0xc4, 0x33, 0x7a, 0x06, 0x13, 0x34, 0xda,
+	0x87, 0x86, 0x76, 0x9b, 0x98, 0x50, 0x7b, 0x79, 0x39, 0x68, 0xad, 0x91, 0x3b, 0x60, 0x9d, 0x0c,
+	0xcf, 0x9d, 0xe1, 0x8f, 0x83, 0x93, 0x56, 0x85, 0x00, 0x18, 0xc7, 0x57, 0x43, 0xa7, 0x3f, 0x68,
+	0x55, 0x91, 0xd3, 0x1f, 0x38, 0x03, 0xfb, 0x72, 0x78, 0xd9, 0xaa, 0x91, 0x26, 0x98, 0x28, 0x77,
+	0x7c, 0x35, 0x6c, 0xad, 0x7f, 0x6b, 0x42, 0x5d, 0xc0, 0x46, 0x4f, 0xa1, 0x95, 0xbf, 0x91, 0x6c,
+	0x27, 0xe6, 0x61, 0x08, 0x1a, 0xb1, 0x01, 0xa4, 0x23, 0xf1, 0x9d, 0xba, 0xd1, 0x8d, 0xc0, 0xb7,
+	0x21, 0x00, 0x7c, 0xe1, 0x46, 0x37, 0xf4, 0x10, 0x36, 0x0b, 0x00, 0xc7, 0xf2, 0x3a, 0x98, 0x1b,
+	0x1a, 0x70, 0xfa, 0x1d, 0xdc, 0xcb, 0x01, 0xfb, 0x1e, 0x69, 0xf2, 0x00, 0x0c, 0x3f, 0x10, 0x06,
+	0xc9, 0x6b, 0xeb, 0x7e, 0x20, 0x01, 0xd9, 0x2c, 0xe0, 0xfc, 0xbe, 0x63, 0x3a, 0xa9, 0x88, 0x55,
+	0x25, 0x4b, 0x85, 0x84, 0xb6, 0xe1, 0xe1, 0x19, 0x4b, 0x40, 0xf0, 0x59, 0x64, 0xb3, 0x9f, 0x16,
+	0x2c, 0xe2, 0xf4, 0x14, 0xb6, 0x0a, 0x9c, 0x60, 0xb2, 0x24, 0x87, 0x60, 0x32, 0xb9, 0x6f, 0x57,
+	0xf6, 0x6b, 0x07, 0xcd, 0xde, 0x56, 0x59, 0xa2, 0xda, 0xb1, 0x10, 0x1d, 0x42, 0xe3, 0xd5, 0xc4,
+	0x9d, 0x49, 0x23, 0x5b, 0x50, 0x7b, 0xeb, 0x7b, 0xca, 0x3e, 0x5c, 0x92, 0x2d, 0xa8, 0x07, 0xf3,
+	0x90, 0x47, 0xed, 0xea, 0x7e, 0xed, 0x60, 0xc3, 0x96, 0x1b, 0xf2, 0x08, 0x9a, 0x8b, 0x19, 0x77,
+	0xaf, 0x1d, 0xc9, 0xab, 0x09, 0x1e, 0x08, 0xd2, 0x00, 0x29, 0x74, 0x13, 0xee, 0x9d, 0x31, 0x8e,
+	0x07, 0x6b, 0x83, 0x9f, 0xc2, 0x46, 0x42, 0x42, 0x4b, 0x3f, 0x83, 0xfa, 0x5b, 0xdc, 0x29, 0x3b,
+	0xef, 0x27, 0x76, 0x6a, 0x83, 0x6c, 0x29, 0x41, 0x5f, 0x81, 0x71, 0xd1, 0x7b, 0xee, 0x79, 0x21,
+	0xda, 0x33, 0x9e, 0xb8, 0xd7, 0x91, 0xb2, 0x51, 0x6e, 0xd0, 0xee, 0xa9, 0x3b, 0x52, 0x51, 0xc0,
+	0x65, 0xec, 0x49, 0x2d, 0xf1, 0x84, 0xc0, 0x3a, 0x5a, 0x2b, 0xde, 0xc4, 0x86, 0x2d, 0xd6, 0xf4,
+	0x3e, 0x6c, 0x9e, 0x31, 0x2e, 0x8f, 0xd6, 0x86, 0x7e, 0x25, 0x6c, 0xd7, 0x44, 0x34, 0xf5, 0x13,
+	0xa8, 0xbb, 0xb8, 0x53, 0xa6, 0xb6, 0x12, 0x53, 0xa5, 0x98, 0x2d, 0xd9, 0xf4, 0xcf, 0x0a, 0x34,
+	0x2e, 0x7a, 0x57, 0xdc, 0xe5, 0xfe, 0x7c, 0xb6, 0xc2, 0xd6, 0x6d, 0x30, 0xf1, 0x4d, 0x27, 0xf6,
+	0xe2, 0x13, 0x7f, 0xe1, 0x8e, 0xc8, 0x3e, 0xdc, 0x51, 0x0c, 0x99, 0xca, 0x35, 0xc1, 0x05, 0xc9,
+	0xc5, 0x6c, 0x46, 0x17, 0x10, 0x8f, 0xd8, 0x05, 0x5c, 0x93, 0x1d, 0x68, 0xe0, 0xbf, 0x54, 0xa9,
+	0x0b, 0x86, 0x85, 0x04, 0xa1, 0xd0, 0x01, 0x2b, 0x0a, 0x47, 0x22, 0x4a, 0x6d, 0x43, 0x66, 0x56,
+	0x14, 0x8e, 0x30, 0x44, 0x84, 0xc2, 0x46, 0xcc, 0x92, 0xba, 0xa6, 0xe0, 0x37, 0x15, 0x5f, 0xbc,
+	0x9e, 0x87, 0x22, 0xc7, 0xb4, 0x43, 0x1a, 0xa1, 0x13, 0x20, 0x39, 0x3a, 0x82, 0xf4, 0x39, 0x58,
+	0x91, 0x22, 0x14, 0x43, 0xaa, 0x85, 0x6d, 0x2d, 0x44, 0xff, 0xa8, 0x80, 0x79, 0x71, 0xd4, 0x1f,
+	0xbb, 0x23, 0xb6, 0x02, 0x2b, 0x7c, 0x19, 0xc8, 0x76, 0x7c, 0x4f, 0xbf, 0x0c, 0xdc, 0xf7, 0xbd,
+	0x38, 0xe4, 0xb5, 0x4c, 0xc8, 0xa7, 0x7c, 0xa1, 0xc0, 0xc1, 0x25, 0x42, 0x3d, 0xe5, 0x0b, 0x67,
+	0xfc, 0xce, 0x53, 0xc8, 0x18, 0x53, 0xbe, 0x38, 0x7d, 0x27, 0x94, 0x39, 0x9f, 0x28, 0x48, 0x70,
+	0x19, 0xe7, 0x8b, 0x99, 0xe4, 0x0b, 0x52, 0xc2, 0x71, 0xdb, 0x52, 0x94, 0x70, 0x4c, 0x9f, 0x00,
+	0x39, 0xf5, 0x67, 0x9e, 0x32, 0x59, 0x81, 0x11, 0x1b, 0x52, 0x29, 0xe4, 0x5e, 0x55, 0x9f, 0x45,
+	0xbf, 0x86, 0x56, 0x46, 0x13, 0xe1, 0xfa, 0x14, 0xea, 0xc2, 0x17, 0xa1, 0xd9, 0xec, 0x6d, 0xa6,
+	0xb0, 0x52, 0x62, 0x92, 0x8f, 0x35, 0x0c, 0xd1, 0xce, 0xde, 0x9a, 0x46, 0xa6, 0x92, 0x41, 0x86,
+	0x3e, 0x95, 0xf9, 0xfb, 0xaf, 0xee, 0xda, 0x92, 0x91, 0x95, 0x44, 0x1d, 0xef, 0x67, 0xd0, 0xca,
+	0x50, 0xe5, 0xeb, 0x35, 0x84, 0x4a, 0x1c, 0xeb, 0x92, 0x33, 0x95, 0x00, 0xfd, 0xbd, 0x02, 0xd6,
+	0xc5, 0xd1, 0xc9, 0x75, 0xc8, 0xa2, 0x68, 0x45, 0xa0, 0x1f, 0x82, 0x21, 0x16, 0x3d, 0x85, 0x9a,
+	0xda, 0x61, 0x76, 0x33, 0xa1, 0xe7, 0xe8, 0xc7, 0x6c, 0x49, 0x42, 0xdf, 0xcb, 0x60, 0xb0, 0x5e,
+	0x9a, 0x1d, 0xf5, 0x42, 0x50, 0x8c, 0x62, 0x41, 0x30, 0x53, 0x05, 0x41, 0x65, 0xbc, 0x32, 0x36,
+	0x41, 0xe0, 0x58, 0xe1, 0x92, 0xd0, 0x65, 0xad, 0x55, 0xc6, 0x68, 0x14, 0x48, 0x1a, 0x05, 0x29,
+	0x6c, 0x6b, 0x19, 0xfa, 0x4b, 0x05, 0x8c, 0x8b, 0xa3, 0xf3, 0x79, 0xc4, 0x57, 0xc0, 0x90, 0x71,
+	0xb7, 0x9a, 0x73, 0x77, 0x1b, 0x4c, 0x3f, 0x70, 0xb0, 0xd0, 0xa8, 0xac, 0x37, 0xfc, 0x40, 0xd4,
+	0x44, 0xd1, 0x3f, 0x1e, 0x4b, 0xce, 0xba, 0xec, 0x7f, 0x7e, 0xf0, 0x58, 0xb0, 0xca, 0x71, 0x08,
+	0xc7, 0x1a, 0x87, 0x70, 0x1c, 0x17, 0x41, 0x61, 0x57, 0xbe, 0x08, 0xc6, 0x44, 0x55, 0x04, 0xdf,
+	0xe0, 0xae, 0xa4, 0x08, 0x0a, 0x31, 0x5b, 0xb2, 0xe9, 0xcf, 0xe2, 0x59, 0xdb, 0xf3, 0x05, 0x67,
+	0xff, 0xa3, 0x9b, 0xe8, 0x54, 0x3d, 0x71, 0x2a, 0x4e, 0x64, 0x61, 0x46, 0x21, 0x91, 0x63, 0xaa,
+	0x4a, 0xe4, 0x50, 0x6c, 0xcb, 0x12, 0x59, 0x08, 0xda, 0x4a, 0x80, 0xfe, 0x55, 0x85, 0x7b, 0xc3,
+	0xc5, 0x6c, 0xc6, 0x26, 0xfd, 0x99, 0xcf, 0x7d, 0x97, 0xcf, 0xc3, 0xd5, 0x1e, 0x72, 0x21, 0x98,
+	0xf2, 0x50, 0x12, 0xfa, 0x1e, 0x76, 0x4f, 0xc5, 0x14, 0xd3, 0x80, 0xaa, 0xf3, 0x92, 0x24, 0x06,
+	0x82, 0x3d, 0x68, 0x4e, 0x8e, 0x9c, 0x5c, 0x6e, 0x37, 0x26, 0xf2, 0x59, 0x49, 0x88, 0xe2, 0x16,
+	0x52, 0xcf, 0xb4, 0x90, 0x6d, 0xc0, 0xfa, 0x2e, 0x18, 0x86, 0x64, 0x44, 0xe1, 0x08, 0x19, 0x0f,
+	0xf4, 0x20, 0x69, 0xca, 0x49, 0x45, 0xce, 0x8a, 0x0f, 0x00, 0x05, 0x90, 0x6c, 0x49, 0x72, 0x14,
+	0x8e, 0xfa, 0x01, 0x22, 0x8d, 0xd2, 0xe2, 0x75, 0x34, 0xe4, 0xc3, 0xf2, 0x22, 0x2e, 0xda, 0x46,
+	0xba, 0xa3, 0x40, 0xb6, 0xa3, 0xa8, 0xa2, 0xda, 0xcc, 0x14, 0x55, 0xac, 0xc8, 0x77, 0x92, 0x8a,
+	0x1c, 0x77, 0xb0, 0x8d, 0xa4, 0x83, 0xd1, 0xdf, 0xaa, 0xd0, 0x92, 0xa8, 0x0e, 0x59, 0x38, 0xf5,
+	0x67, 0xff, 0x19, 0xac, 0x8f, 0xa0, 0x19, 0xb2, 0xe9, 0x9c, 0x33, 0x27, 0x35, 0x08, 0x80, 0x24,
+	0x09, 0x0f, 0x12, 0x94, 0xea, 0xe5, 0x28, 0x19, 0xab, 0x50, 0x32, 0x57, 0xa3, 0x64, 0x65, 0x51,
+	0x8a, 0x11, 0x68, 0xa4, 0x7a, 0xb8, 0x4a, 0x5f, 0xd0, 0xe9, 0x2b, 0x6a, 0xd3, 0xeb, 0x69, 0xd0,
+	0x6e, 0x8a, 0xc9, 0x4a, 0xac, 0xe9, 0x2e, 0x74, 0xcf, 0x18, 0xcf, 0xe5, 0x9f, 0x4e, 0xed, 0x4b,
+	0x68, 0x97, 0x72, 0x31, 0xc5, 0x8f, 0xc0, 0x94, 0x30, 0xc4, 0x39, 0x9e, 0xfa, 0x8e, 0xc8, 0x69,
+	0xd8, 0xb1, 0x24, 0xfd, 0x00, 0x76, 0xf4, 0x81, 0x49, 0x60, 0xf4, 0x7d, 0xdf, 0x43, 0xa7, 0x9c,
+	0x8d, 0x17, 0x7e, 0x91, 0xbf, 0xb0, 0x9b, 0xbf, 0x30, 0x51, 0x49, 0x6e, 0x3c, 0x07, 0xe8, 0x1f,
+	0xbf, 0x70, 0x03, 0x39, 0x8b, 0x12, 0x58, 0x9f, 0xb9, 0x53, 0xa6, 0x1a, 0xab, 0x58, 0x23, 0x50,
+	0x37, 0x6c, 0x19, 0x77, 0xd6, 0x1b, 0xb6, 0xc4, 0x3c, 0x79, 0xeb, 0x4e, 0x16, 0x4c, 0x35, 0x07,
+	0xb9, 0x51, 0x63, 0xb3, 0x3e, 0xac, 0x30, 0x36, 0x67, 0x39, 0xb7, 0x8d, 0xcd, 0x89, 0x51, 0x7a,
+	0x6c, 0xee, 0xfd, 0x6a, 0x81, 0x75, 0x36, 0x7f, 0x79, 0x75, 0xf1, 0x3c, 0xf0, 0xc9, 0x0f, 0xa2,
+	0x58, 0xa6, 0x67, 0x71, 0xb2, 0x9f, 0xa8, 0x97, 0x0f, 0xf0, 0xdd, 0xbd, 0xf7, 0x48, 0x04, 0x93,
+	0x25, 0x5d, 0x23, 0xdf, 0x80, 0x15, 0x4f, 0xcc, 0xa4, 0x93, 0x91, 0x4e, 0x0f, 0xd6, 0xdd, 0xed,
+	0x32, 0x96, 0x3c, 0xe1, 0x14, 0x20, 0x19, 0x65, 0xc9, 0x4e, 0x46, 0x30, 0x3b, 0xf5, 0x76, 0x3b,
+	0xe5, 0x4c, 0x79, 0xce, 0xa5, 0x98, 0xdd, 0x93, 0x81, 0x8f, 0xec, 0xe5, 0xa4, 0x73, 0x13, 0x62,
+	0x77, 0x77, 0x25, 0x5f, 0x1e, 0xd8, 0x87, 0x66, 0x6a, 0x20, 0x22, 0xbb, 0xe9, 0x6f, 0x94, 0xfc,
+	0x84, 0xd5, 0xed, 0xae, 0xe0, 0x66, 0x7c, 0x54, 0x27, 0xe5, 0x7c, 0xcc, 0x1e, 0xd4, 0x29, 0x67,
+	0x6a, 0x93, 0x52, 0x43, 0x0e, 0xd9, 0x2d, 0x93, 0x8d, 0x4a, 0x4c, 0xca, 0x4f, 0x46, 0x09, 0x5c,
+	0x7a, 0x5a, 0xc8, 0xc3, 0x95, 0x1f, 0x2f, 0xf2, 0x70, 0x65, 0xc7, 0x8c, 0x94, 0x8f, 0xa2, 0x1b,
+	0x17, 0x7c, 0x4c, 0x37, 0xee, 0x82, 0x8f, 0x49, 0x03, 0x4f, 0xf9, 0x28, 0xfb, 0x5f, 0xc1, 0xc7,
+	0x4c, 0xb3, 0x2c, 0xf8, 0x98, 0x6a, 0x9a, 0x74, 0x4d, 0xe5, 0x7c, 0xfa, 0x21, 0xe5, 0x72, 0xbe,
+	0xe4, 0xf5, 0xe5, 0x72, 0xbe, 0xf0, 0x0a, 0xe9, 0x1a, 0x71, 0xe1, 0x7e, 0x49, 0x19, 0x23, 0x1f,
+	0x65, 0x14, 0x57, 0xd4, 0xc0, 0x2e, 0xbd, 0x45, 0x4a, 0x5e, 0xe1, 0x89, 0x12, 0x50, 0xa8, 0x5c,
+	0xe4, 0xe3, 0x12, 0xed, 0x62, 0xe1, 0xeb, 0x7e, 0x78, 0x9b, 0x98, 0xb8, 0xe5, 0xb5, 0x21, 0xbe,
+	0xe7, 0x8f, 0xfe, 0x09, 0x00, 0x00, 0xff, 0xff, 0x87, 0x61, 0x72, 0x07, 0x65, 0x12, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1812,6 +2333,8 @@ type GoNSLApiClient interface {
 	GetL3Hosts(ctx context.Context, in *GetL3HostsRequest, opts ...grpc.CallOption) (*GetL3HostsReply, error)
 	GetL3Routes(ctx context.Context, in *GetL3RoutesRequest, opts ...grpc.CallOption) (*GetL3RoutesReply, error)
 	GetIDMapEntries(ctx context.Context, in *GetIDMapEntriesRequest, opts ...grpc.CallOption) (*GetIDMapEntriesReply, error)
+	GetTunnelInitiators(ctx context.Context, in *GetTunnelInitiatorsRequest, opts ...grpc.CallOption) (*GetTunnelInitiatorsReply, error)
+	GetTunnelTerminators(ctx context.Context, in *GetTunnelTerminatorsRequest, opts ...grpc.CallOption) (*GetTunnelTerminatorsReply, error)
 }
 
 type goNSLApiClient struct {
@@ -1921,6 +2444,24 @@ func (c *goNSLApiClient) GetIDMapEntries(ctx context.Context, in *GetIDMapEntrie
 	return out, nil
 }
 
+func (c *goNSLApiClient) GetTunnelInitiators(ctx context.Context, in *GetTunnelInitiatorsRequest, opts ...grpc.CallOption) (*GetTunnelInitiatorsReply, error) {
+	out := new(GetTunnelInitiatorsReply)
+	err := c.cc.Invoke(ctx, "/gonslapi.GoNSLApi/GetTunnelInitiators", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *goNSLApiClient) GetTunnelTerminators(ctx context.Context, in *GetTunnelTerminatorsRequest, opts ...grpc.CallOption) (*GetTunnelTerminatorsReply, error) {
+	out := new(GetTunnelTerminatorsReply)
+	err := c.cc.Invoke(ctx, "/gonslapi.GoNSLApi/GetTunnelTerminators", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GoNSLApiServer is the server API for GoNSLApi service.
 type GoNSLApiServer interface {
 	GetFieldEntries(context.Context, *GetFieldEntriesRequest) (*GetFieldEntriesReply, error)
@@ -1934,6 +2475,8 @@ type GoNSLApiServer interface {
 	GetL3Hosts(context.Context, *GetL3HostsRequest) (*GetL3HostsReply, error)
 	GetL3Routes(context.Context, *GetL3RoutesRequest) (*GetL3RoutesReply, error)
 	GetIDMapEntries(context.Context, *GetIDMapEntriesRequest) (*GetIDMapEntriesReply, error)
+	GetTunnelInitiators(context.Context, *GetTunnelInitiatorsRequest) (*GetTunnelInitiatorsReply, error)
+	GetTunnelTerminators(context.Context, *GetTunnelTerminatorsRequest) (*GetTunnelTerminatorsReply, error)
 }
 
 func RegisterGoNSLApiServer(s *grpc.Server, srv GoNSLApiServer) {
@@ -2138,6 +2681,42 @@ func _GoNSLApi_GetIDMapEntries_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GoNSLApi_GetTunnelInitiators_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTunnelInitiatorsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoNSLApiServer).GetTunnelInitiators(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gonslapi.GoNSLApi/GetTunnelInitiators",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoNSLApiServer).GetTunnelInitiators(ctx, req.(*GetTunnelInitiatorsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GoNSLApi_GetTunnelTerminators_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTunnelTerminatorsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoNSLApiServer).GetTunnelTerminators(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gonslapi.GoNSLApi/GetTunnelTerminators",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoNSLApiServer).GetTunnelTerminators(ctx, req.(*GetTunnelTerminatorsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _GoNSLApi_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "gonslapi.GoNSLApi",
 	HandlerType: (*GoNSLApiServer)(nil),
@@ -2186,88 +2765,15 @@ var _GoNSLApi_serviceDesc = grpc.ServiceDesc{
 			MethodName: "GetIDMapEntries",
 			Handler:    _GoNSLApi_GetIDMapEntries_Handler,
 		},
+		{
+			MethodName: "GetTunnelInitiators",
+			Handler:    _GoNSLApi_GetTunnelInitiators_Handler,
+		},
+		{
+			MethodName: "GetTunnelTerminators",
+			Handler:    _GoNSLApi_GetTunnelTerminators_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "gonslapi.proto",
-}
-
-func init() { proto.RegisterFile("gonslapi.proto", fileDescriptor_gonslapi_60260ed47b0eea0e) }
-
-var fileDescriptor_gonslapi_60260ed47b0eea0e = []byte{
-	// 1188 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0xcb, 0x4e, 0x23, 0x47,
-	0x17, 0xc6, 0x36, 0xee, 0x6e, 0x1f, 0x0f, 0x33, 0xa6, 0x86, 0x7f, 0xb0, 0x0d, 0xe2, 0xb7, 0x6a,
-	0x91, 0x90, 0x0d, 0x91, 0x8c, 0x34, 0x9a, 0x4c, 0x32, 0x52, 0x26, 0xc1, 0x80, 0x25, 0x33, 0x58,
-	0x8d, 0x33, 0x52, 0x56, 0xad, 0x0e, 0x5d, 0x86, 0x16, 0xbe, 0x74, 0xba, 0xcb, 0x8c, 0xbc, 0xcd,
-	0x2b, 0xe4, 0x25, 0xb2, 0xc9, 0x0b, 0xe4, 0x19, 0xb2, 0xcd, 0xfb, 0x44, 0xa7, 0xaa, 0xba, 0xfa,
-	0x6a, 0x22, 0x65, 0x91, 0x0d, 0x54, 0x9d, 0x9b, 0xbf, 0xf3, 0xd5, 0xb9, 0x34, 0x3c, 0xbf, 0x5b,
-	0x2e, 0xa2, 0x99, 0x1b, 0xf8, 0x27, 0x41, 0xb8, 0xe4, 0x4b, 0x62, 0xc5, 0x77, 0xfa, 0x47, 0x15,
-	0xe0, 0xdc, 0x67, 0x33, 0x6f, 0xb0, 0xe0, 0xe1, 0x9a, 0xbc, 0x03, 0x60, 0x78, 0x70, 0xf8, 0x3a,
-	0x60, 0xed, 0x4a, 0xaf, 0x72, 0xfc, 0xbc, 0x7f, 0x74, 0xa2, 0xbd, 0x13, 0xcb, 0x13, 0xf1, 0x77,
-	0xb2, 0x0e, 0x98, 0xdd, 0x60, 0xf1, 0x91, 0xbc, 0x01, 0x8b, 0xf1, 0x7b, 0xe9, 0x5c, 0xed, 0x55,
-	0x8e, 0x9b, 0xfd, 0x83, 0xc4, 0x79, 0xc0, 0xef, 0xd1, 0x28, 0x89, 0x71, 0xb9, 0x65, 0x9b, 0x4c,
-	0x0a, 0x49, 0x1f, 0x0c, 0x2f, 0xe2, 0x8e, 0x1f, 0xb4, 0x6b, 0xc2, 0xaf, 0x93, 0xf8, 0x9d, 0x45,
-	0x7c, 0x18, 0x64, 0xbc, 0xea, 0x1e, 0x8a, 0xf0, 0xd7, 0xfc, 0xc0, 0x11, 0x19, 0xb5, 0xb7, 0xf3,
-	0xbf, 0x36, 0x0c, 0xc6, 0xa8, 0xc8, 0xfe, 0x9a, 0x2f, 0x85, 0xf4, 0x1b, 0x68, 0x68, 0xfc, 0xc4,
-	0x84, 0xda, 0x87, 0xeb, 0x71, 0x6b, 0x8b, 0x3c, 0x03, 0x6b, 0x30, 0xb9, 0x74, 0x26, 0x3f, 0x8e,
-	0x07, 0xad, 0x0a, 0x01, 0x30, 0xce, 0x6e, 0x26, 0xce, 0x70, 0xdc, 0xaa, 0xa2, 0x66, 0x38, 0x76,
-	0xc6, 0xf6, 0xf5, 0xe4, 0xba, 0x55, 0xfb, 0xce, 0x84, 0xba, 0x48, 0x99, 0x9e, 0xc0, 0x6e, 0x21,
-	0x29, 0xd2, 0x49, 0x71, 0x80, 0x04, 0xee, 0xe8, 0x24, 0xe9, 0xf7, 0xf0, 0x22, 0x97, 0xcc, 0x13,
-	0xd6, 0xe4, 0x7f, 0x60, 0xf8, 0x81, 0xe3, 0x45, 0x5c, 0x50, 0xd9, 0xb0, 0xeb, 0x7e, 0x70, 0x16,
-	0x71, 0x3a, 0x84, 0xdd, 0x42, 0x6e, 0x4f, 0x85, 0xe9, 0xa4, 0x58, 0xaa, 0x4a, 0x55, 0x4c, 0x43,
-	0x1b, 0x5e, 0x5d, 0x30, 0xae, 0xc3, 0xf8, 0x2c, 0xb2, 0xd9, 0xcf, 0x2b, 0x16, 0x71, 0x7a, 0x0e,
-	0x7b, 0x05, 0x4d, 0x30, 0x5b, 0x93, 0x13, 0x30, 0x99, 0xbc, 0xb7, 0x2b, 0xbd, 0xda, 0x71, 0xb3,
-	0xbf, 0x57, 0x56, 0x1c, 0x76, 0x6c, 0x44, 0x27, 0xd0, 0xf8, 0x38, 0x73, 0x17, 0x12, 0x64, 0x0b,
-	0x6a, 0x8f, 0xbe, 0xa7, 0xf0, 0xe1, 0x91, 0xec, 0x41, 0x3d, 0x58, 0x86, 0x3c, 0x6a, 0x57, 0x7b,
-	0xb5, 0xe3, 0x1d, 0x5b, 0x5e, 0xc8, 0xff, 0xa1, 0xb9, 0x5a, 0x70, 0xf7, 0xce, 0x91, 0xba, 0x9a,
-	0xd0, 0x81, 0x10, 0x8d, 0x51, 0x42, 0x77, 0xe1, 0xc5, 0x05, 0xe3, 0x18, 0x58, 0x03, 0x7e, 0x0b,
-	0x3b, 0x89, 0x08, 0x91, 0x7e, 0x01, 0xf5, 0x47, 0xbc, 0x29, 0x9c, 0x2f, 0x13, 0x9c, 0x1a, 0x90,
-	0x2d, 0x2d, 0xe8, 0x47, 0x30, 0x46, 0xfd, 0xf7, 0x9e, 0x17, 0x22, 0x9e, 0xe9, 0xcc, 0xbd, 0x8b,
-	0x14, 0x46, 0x79, 0x41, 0xdc, 0x73, 0xf7, 0x56, 0xbd, 0x02, 0x1e, 0xe3, 0x4c, 0x6a, 0x49, 0x26,
-	0x04, 0xb6, 0x11, 0xad, 0xa8, 0xc3, 0x1d, 0x5b, 0x9c, 0xe9, 0x4b, 0xd8, 0xbd, 0x60, 0x5c, 0x86,
-	0xd6, 0x40, 0xbf, 0x12, 0xd8, 0xb5, 0x10, 0xa1, 0x7e, 0x06, 0x75, 0x17, 0x6f, 0x0a, 0x6a, 0x2b,
-	0x81, 0x2a, 0xcd, 0x6c, 0xa9, 0xa6, 0x7f, 0x56, 0xa0, 0x31, 0xea, 0xdf, 0x70, 0x97, 0xfb, 0xcb,
-	0xc5, 0x06, 0xac, 0xfb, 0x60, 0x62, 0x1f, 0x25, 0x78, 0xb1, 0xad, 0xae, 0xdc, 0x5b, 0xd2, 0x83,
-	0x67, 0x4a, 0xe1, 0xcc, 0xdd, 0xe8, 0x41, 0x60, 0x6f, 0xd8, 0x20, 0xb5, 0x57, 0x6e, 0xf4, 0x80,
-	0x29, 0x20, 0x1f, 0x71, 0x0a, 0x78, 0x26, 0x07, 0xd0, 0xc0, 0xff, 0xd2, 0xa5, 0x2e, 0x14, 0x16,
-	0x0a, 0x84, 0x43, 0x07, 0xac, 0x28, 0xbc, 0x15, 0xaf, 0xd4, 0x36, 0x64, 0x65, 0x45, 0xe1, 0x2d,
-	0x3e, 0x11, 0xa1, 0xb0, 0x13, 0xab, 0xa4, 0xaf, 0x29, 0xf4, 0x4d, 0xa5, 0x47, 0x77, 0xfa, 0x4a,
-	0xd4, 0x98, 0x4e, 0x48, 0x33, 0x34, 0x00, 0x92, 0x93, 0x23, 0x49, 0x5f, 0x82, 0x15, 0x29, 0x41,
-	0xf1, 0x49, 0xb5, 0xb1, 0xad, 0x8d, 0xe8, 0xef, 0x15, 0x30, 0x47, 0xa7, 0xc3, 0xa9, 0x7b, 0xcb,
-	0x36, 0x70, 0x85, 0x9d, 0x81, 0x6a, 0xc7, 0xf7, 0x74, 0x67, 0xe0, 0x7d, 0xe8, 0xc5, 0x4f, 0x5e,
-	0xcb, 0x3c, 0xf9, 0x9c, 0xaf, 0x14, 0x39, 0x78, 0x44, 0xaa, 0xe7, 0x7c, 0xe5, 0x4c, 0x3f, 0x79,
-	0x8a, 0x19, 0x63, 0xce, 0x57, 0xe7, 0x9f, 0x84, 0x33, 0xe7, 0x33, 0x45, 0x09, 0x1e, 0xe3, 0x7a,
-	0x31, 0x93, 0x7a, 0x41, 0x49, 0x38, 0x6d, 0x5b, 0x4a, 0x12, 0x4e, 0xe9, 0x1b, 0x20, 0xe7, 0xfe,
-	0xc2, 0x53, 0x90, 0x15, 0x19, 0x31, 0x90, 0x4a, 0xa1, 0xf6, 0xaa, 0x3a, 0x16, 0xfd, 0x1a, 0x5a,
-	0x19, 0x4f, 0xa4, 0xeb, 0x73, 0xa8, 0x8b, 0x5c, 0x84, 0x67, 0xb3, 0xbf, 0x9b, 0xe2, 0x4a, 0x99,
-	0x49, 0x3d, 0xce, 0x30, 0x64, 0x3b, 0xfb, 0xab, 0x69, 0x66, 0x2a, 0x19, 0x66, 0xe8, 0x5b, 0x59,
-	0xbf, 0xff, 0xea, 0xb7, 0xf6, 0xe4, 0xcb, 0x4a, 0xa1, 0x7e, 0xef, 0x77, 0xd0, 0xca, 0x48, 0x65,
-	0xf7, 0x1a, 0xc2, 0x25, 0x7e, 0xeb, 0x92, 0x98, 0xca, 0x80, 0xfe, 0x56, 0x01, 0x6b, 0x74, 0x3a,
-	0xb8, 0x0b, 0x59, 0x14, 0x6d, 0x78, 0xe8, 0x57, 0x60, 0x88, 0x43, 0x5f, 0xb1, 0xa6, 0x6e, 0x58,
-	0xdd, 0x4c, 0xf8, 0x39, 0xba, 0x99, 0x2d, 0x29, 0x18, 0x7a, 0x19, 0x0e, 0xb6, 0x4b, 0xab, 0xa3,
-	0x5e, 0x78, 0x14, 0xa3, 0x38, 0x10, 0xcc, 0xd4, 0x40, 0x50, 0x15, 0xaf, 0xc0, 0x26, 0x0c, 0x9c,
-	0x29, 0x5e, 0x12, 0xb9, 0x9c, 0xb5, 0x0a, 0x8c, 0x66, 0x81, 0xa4, 0x59, 0x90, 0xc6, 0xb6, 0xb6,
-	0xa1, 0xbf, 0x56, 0xc0, 0x18, 0x9d, 0x5e, 0x2e, 0x23, 0xbe, 0x81, 0x86, 0x4c, 0xba, 0xd5, 0x5c,
-	0xba, 0xfb, 0x60, 0xfa, 0x81, 0x83, 0x83, 0x46, 0x55, 0xbd, 0xe1, 0x07, 0x62, 0x26, 0x8a, 0xfd,
-	0xf1, 0x5a, 0x6a, 0xb6, 0x85, 0xc6, 0xf4, 0x83, 0xd7, 0x42, 0x55, 0xce, 0x43, 0x38, 0xd5, 0x3c,
-	0x84, 0xd3, 0x78, 0x08, 0x0a, 0x5c, 0xf9, 0x21, 0x18, 0x0b, 0xd5, 0x10, 0xbc, 0xc7, 0x5b, 0xc9,
-	0x10, 0x14, 0x66, 0xb6, 0x54, 0xd3, 0x5f, 0x44, 0x5b, 0xdb, 0xcb, 0x15, 0x67, 0xff, 0x61, 0x9a,
-	0x98, 0x54, 0x3d, 0x49, 0x2a, 0x2e, 0x64, 0x01, 0xa3, 0x50, 0xc8, 0xb1, 0x54, 0x15, 0x72, 0x28,
-	0xae, 0x65, 0x85, 0x2c, 0x0c, 0x6d, 0x65, 0x40, 0x2f, 0x01, 0x86, 0x67, 0x57, 0x6e, 0x20, 0x97,
-	0x25, 0x81, 0xed, 0x85, 0x3b, 0x67, 0xaa, 0xf3, 0xc5, 0x19, 0x81, 0x3c, 0xb0, 0x75, 0xdc, 0xfa,
-	0x0f, 0x6c, 0x8d, 0x0c, 0x3c, 0xba, 0xb3, 0x15, 0x53, 0xd5, 0x2b, 0x2f, 0x6a, 0xaf, 0xeb, 0x60,
-	0x85, 0xbd, 0x9e, 0xd5, 0xfc, 0xd3, 0x5e, 0x4f, 0x40, 0xe9, 0xbd, 0xde, 0xff, 0xcb, 0x00, 0xeb,
-	0x62, 0xf9, 0xe1, 0x66, 0xf4, 0x3e, 0xf0, 0xc9, 0x0f, 0xe2, 0x35, 0xd3, 0x1f, 0x0b, 0xa4, 0x97,
-	0xb8, 0x97, 0x7f, 0x61, 0x74, 0x8f, 0x9e, 0xb0, 0x08, 0x66, 0x6b, 0xba, 0x45, 0xbe, 0x05, 0x2b,
-	0x5e, 0xe9, 0xa4, 0x93, 0xb1, 0x4e, 0x6f, 0xfe, 0xee, 0x7e, 0x99, 0x4a, 0x46, 0x38, 0x07, 0x48,
-	0x76, 0x2d, 0x39, 0xc8, 0x18, 0x66, 0xd7, 0x72, 0xb7, 0x53, 0xae, 0x94, 0x71, 0xae, 0xc5, 0xc7,
-	0x45, 0xb2, 0x91, 0xc8, 0x51, 0xce, 0x3a, 0xb7, 0xc2, 0xba, 0x87, 0x1b, 0xf5, 0x32, 0xe0, 0x10,
-	0x9a, 0xa9, 0x89, 0x4d, 0x0e, 0xd3, 0x1f, 0x51, 0xf9, 0x15, 0xd0, 0xed, 0x6e, 0xd0, 0x66, 0x72,
-	0x54, 0x91, 0x72, 0x39, 0x66, 0x03, 0x75, 0xca, 0x95, 0x1a, 0x52, 0x6a, 0x0a, 0x93, 0xc3, 0x32,
-	0xdb, 0xa8, 0x04, 0x52, 0x7e, 0x74, 0x27, 0x74, 0xe9, 0x71, 0x96, 0xa7, 0x2b, 0x3f, 0xff, 0xf2,
-	0x74, 0x65, 0xe7, 0x60, 0x2a, 0x47, 0x31, 0x2e, 0x0a, 0x39, 0xa6, 0x27, 0x4b, 0x21, 0xc7, 0x64,
-	0xc2, 0xa4, 0x72, 0x94, 0x0d, 0x5a, 0xc8, 0x31, 0xd3, 0xcd, 0x85, 0x1c, 0x53, 0x5d, 0x4d, 0xb7,
-	0x54, 0xcd, 0xa7, 0x1b, 0x29, 0x57, 0xf3, 0x25, 0xdd, 0x97, 0xab, 0xf9, 0x42, 0x17, 0xd2, 0xad,
-	0x9f, 0x0c, 0xf1, 0x9d, 0x7e, 0xfa, 0x77, 0x00, 0x00, 0x00, 0xff, 0xff, 0x07, 0xc2, 0x78, 0x2d,
-	0xb1, 0x0d, 0x00, 0x00,
 }

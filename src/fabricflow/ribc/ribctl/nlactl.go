@@ -19,14 +19,15 @@ package ribctl
 
 import (
 	"fabricflow/fibc/api"
-	log "github.com/sirupsen/logrus"
-	"golang.org/x/net/context"
 	"gonla/nlaapi"
 	"gonla/nlalib"
 	"gonla/nlamsg"
 	"io"
 	"net"
 	"syscall"
+
+	log "github.com/sirupsen/logrus"
+	"golang.org/x/net/context"
 )
 
 type NLAController struct {
@@ -113,12 +114,12 @@ func (n *NLAController) GetLink(nid uint8, index int) (*nlamsg.Link, error) {
 }
 
 func (n *NLAController) GetLink_GroupMod(cmd fibcapi.GroupMod_Cmd, nid uint8, index int) (*nlamsg.Link, error) {
-	switch cmd {
-	case fibcapi.GroupMod_DELETE:
-		return nil, nil
-	default:
-		return n.GetLink(nid, index)
+	link, err := n.GetLink(nid, index)
+	if cmd == fibcapi.GroupMod_DELETE {
+		err = nil
 	}
+
+	return link, err
 }
 
 func (n *NLAController) GetLinks(nid uint8, f func(*nlamsg.Link) error) error {
@@ -139,6 +140,19 @@ func (n *NLAController) GetLinks(nid uint8, f func(*nlamsg.Link) error) error {
 			return err
 		}
 	}
+}
+
+func (n *NLAController) GetIptun(nid uint8, remote net.IP) (*nlamsg.Iptun, error) {
+	key := &nlaapi.IptunKey{
+		NId:    uint32(nid),
+		Remote: remote,
+	}
+	iptun, err := n.client.GetIptun(context.Background(), key)
+	if err != nil {
+		return nil, err
+	}
+
+	return iptun.ToNative(), nil
 }
 
 func (n *NLAController) GetAddrs(nid uint8, f func(*nlamsg.Addr) error) error {
@@ -174,21 +188,21 @@ func (n *NLAController) GetNeigh(nid uint8, addr net.IP) (*nlamsg.Neigh, error) 
 }
 
 func (n *NLAController) GetNeigh_FlowMod(cmd fibcapi.FlowMod_Cmd, nid uint8, addr net.IP) (*nlamsg.Neigh, error) {
-	switch cmd {
-	case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
-		return nil, nil
-	default:
-		return n.GetNeigh(nid, addr)
+	neigh, err := n.GetNeigh(nid, addr)
+	if cmd == fibcapi.FlowMod_DELETE || cmd == fibcapi.FlowMod_DELETE_STRICT {
+		err = nil
 	}
+
+	return neigh, err
 }
 
 func (n *NLAController) GetNeigh_GroupMod(cmd fibcapi.GroupMod_Cmd, nid uint8, addr net.IP) (*nlamsg.Neigh, error) {
-	switch cmd {
-	case fibcapi.GroupMod_DELETE:
-		return nil, nil
-	default:
-		return n.GetNeigh(nid, addr)
+	neigh, err := n.GetNeigh(nid, addr)
+	if cmd == fibcapi.GroupMod_DELETE {
+		err = nil
 	}
+
+	return neigh, err
 }
 
 func (n *NLAController) GetNeighs(nid uint8, f func(*nlamsg.Neigh) error) error {

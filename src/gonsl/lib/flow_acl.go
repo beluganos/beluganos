@@ -58,9 +58,9 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 			err := func() error {
 				switch flow.Match.EthType {
 				case unix.ETH_P_IP:
-					return s.Fields.DstIPv4.AddEntry(dstIP)
+					return s.Fields().DstIPv4.AddEntry(dstIP)
 				case unix.ETH_P_IPV6:
-					return s.Fields.DstIPv6.AddEntry(dstIP)
+					return s.Fields().DstIPv6.AddEntry(dstIP)
 				default:
 					return fmt.Errorf("Invalid ether type. %04x", flow.Match.EthType)
 				}
@@ -72,9 +72,9 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 		case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
 			switch flow.Match.EthType {
 			case unix.ETH_P_IP:
-				s.Fields.DstIPv4.DeleteEntry(dstIP)
+				s.Fields().DstIPv4.DeleteEntry(dstIP)
 			case unix.ETH_P_IPV6:
-				s.Fields.DstIPv6.DeleteEntry(dstIP)
+				s.Fields().DstIPv6.DeleteEntry(dstIP)
 			default:
 				log.Warnf("Server: FlowMod(ACL): DeleteEntry error. %s", dstIP)
 			}
@@ -88,12 +88,34 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 
 		switch mod.Cmd {
 		case fibcapi.FlowMod_ADD:
-			if err := s.Fields.EthType.AddEntry(uint16(flow.Match.EthType)); err != nil {
+			if err := s.Fields().EthType.AddEntry(uint16(flow.Match.EthType)); err != nil {
 				log.Errorf("Server: FlowMod(ACL): AddEntry error. %d %s", flow.Match.EthType, err)
 			}
 
 		case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
-			s.Fields.EthType.DeleteEntry(uint16(flow.Match.EthType))
+			s.Fields().EthType.DeleteEntry(uint16(flow.Match.EthType))
+
+		default:
+			log.Warnf("Server: FlowMod(ACL): Invalid cmd. %s", mod.Cmd)
+		}
+
+	case len(flow.Match.EthDst) > 0:
+		log.Debugf("Server:  FlowMod(ACL): eth_dst. %s", flow)
+
+		dstMAC, err := net.ParseMAC(flow.Match.EthDst)
+		if err != nil {
+			log.Errorf("Server: FlowMod(ACL): Invalid MAC. %s", flow.Match.EthDst)
+			return
+		}
+
+		switch mod.Cmd {
+		case fibcapi.FlowMod_ADD:
+			if err := s.Fields().EthDst.AddEntry(dstMAC, fibcapi.HardwareAddrExactMask); err != nil {
+				log.Errorf("Server:  FlowMod(ACL): AddEntry error. %s %s", dstMAC, err)
+			}
+
+		case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
+			s.Fields().EthDst.DeleteEntry(dstMAC, fibcapi.HardwareAddrExactMask)
 
 		default:
 			log.Warnf("Server: FlowMod(ACL): Invalid cmd. %s", mod.Cmd)

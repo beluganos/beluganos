@@ -110,7 +110,7 @@ func printL3Iface(iface *api.L3Iface) {
 func dumpL3Ifaces(client api.GoNSLApiClient) {
 	reply, err := client.GetL3Ifaces(context.Background(), api.NewGetL3IfacesRequest())
 	if err != nil {
-		log.Errorf("GetL3Routes error. %s", err)
+		log.Errorf("GetL3Iface error. %s", err)
 		return
 	}
 

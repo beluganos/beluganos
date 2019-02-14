@@ -183,14 +183,6 @@ func (r *RIBController) FIBCPortStatus(hdr *fibcnet.Header, msg *fibcapi.PortSta
 			}
 			return nil
 		})
-
-		if err := r.nla.ModLinkStatus(nid, ifname, "OperUp"); err != nil {
-			log.Errorf("RIBController: ModLinkStatus error. %d/%s UP", nid, ifname)
-		}
-	} else {
-		if err := r.nla.ModLinkStatus(nid, ifname, "OperDown"); err != nil {
-			log.Errorf("RIBController: ModLinkStatus error. %d/%s Down", nid, ifname)
-		}
 	}
 }
 

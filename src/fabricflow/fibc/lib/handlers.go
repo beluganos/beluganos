@@ -129,3 +129,10 @@ type FFPacketOutHandler interface {
 type FFPortStatusHandler interface {
 	FIBCFFPortStatus(*fibcnet.Header, *fibcapi.FFPortStatus)
 }
+
+//
+// PortMod
+//
+type FFPortModHandler interface {
+	FIBCFFPortMod(*fibcnet.Header, *fibcapi.FFPortMod)
+}

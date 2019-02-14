@@ -57,7 +57,6 @@ func (t *clientTable) Delete(c Client) {
 	t.Mutex.Lock()
 	defer t.Mutex.Unlock()
 	delete(t.clients, c)
-	close(c)
 }
 
 func (t *clientTable) Send(msg *nlamsg.NetlinkMessageUnion) {

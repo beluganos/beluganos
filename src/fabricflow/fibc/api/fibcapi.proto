@@ -19,6 +19,7 @@ enum FFM {
     FF_PACKET_IN  = 10;
     FF_PACKET_OUT = 11;
     FF_PORT_STATUS= 12;
+    FF_PORT_MOD   = 13;
 }
 
 message Hello {
@@ -34,6 +35,16 @@ message DpStatus {
 
     Status status = 1;
     string re_id  = 2;
+}
+
+message TunnelType {
+  enum Type {
+    NOP  = 0; // No-tunnel
+    IPIP = 1; // IP-in-IP
+    IPV6 = 2; // IPv6
+    GRE4 = 3; // GRE(IPv4)
+    GRE6 = 4; // GRE(IPv6)
+  }
 }
 
 message PortStatus {
@@ -64,6 +75,7 @@ message PortConfig {
     string link      = 5;
     repeated string   slaves = 6;
     PortStatus.Status status = 7;
+    uint32 dp_port   = 8; // 0:UNSPEC
 }
 
 message FlowMod {
@@ -296,6 +308,7 @@ message PolicyACLFlow {
         uint32 ip_proto = 4; // uint8 (0: unspec)
         uint32 tp_src   = 5; // uint16 (0: unspec)
         uint32 tp_dst   = 6; // uint16 (0: unspec)
+        string eth_dst  = 7; // <dst>
     }
 
     message Action {
@@ -328,6 +341,10 @@ message L3UnicastGroup {
     uint32 vlan_vid = 3; // uint16
     string eth_dst  = 4;
     string eth_src  = 5;
+    uint32 phy_port_id = 6; // VRF+LnId
+    TunnelType.Type tun_type = 7;
+    string tun_remote = 8;  // ipv4 or ipv6
+    string tun_local  = 9;  // ipv4 ot ipv6
 }
 
 // 0x90VVNNNN (VV:VRF, NNNN:NeId)
@@ -456,4 +473,12 @@ message FFPortStatus {
   uint64 dp_id   = 1;
   FFPort port    = 2;
   Reason reason  = 3;
+}
+
+// PortMod
+message FFPortMod {
+  uint64 dp_id     = 1;
+  uint32 port_no   = 2;
+  string hw_addr   = 3;
+  PortStatus.Status status = 4;
 }

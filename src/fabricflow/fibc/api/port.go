@@ -126,3 +126,32 @@ func NewPortConfigFromBytes(data []byte) (*PortConfig, error) {
 
 	return pc, nil
 }
+
+//
+// FFPortMod
+//
+func (*FFPortMod) Type() uint16 {
+	return uint16(FFM_FF_PORT_MOD)
+}
+
+func (p *FFPortMod) Bytes() ([]byte, error) {
+	return proto.Marshal(p)
+}
+
+func NewFFPortMod(dpId uint64, portNo uint32, status PortStatus_Status, hwaddr string) *FFPortMod {
+	return &FFPortMod{
+		DpId:   dpId,
+		PortNo: portNo,
+		HwAddr: hwaddr,
+		Status: status,
+	}
+}
+
+func NewFFPortModFromBytes(data []byte) (*FFPortMod, error) {
+	pm := &FFPortMod{}
+	if err := proto.Unmarshal(data, pm); err != nil {
+		return nil, err
+	}
+
+	return pm, nil
+}

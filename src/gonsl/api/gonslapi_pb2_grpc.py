@@ -5,8 +5,10 @@ import gonslapi_pb2 as gonslapi__pb2
 
 
 class GoNSLApiStub(object):
-  # missing associated documentation comment in .proto file
-  pass
+  """
+  Service
+
+  """
 
   def __init__(self, channel):
     """Constructor.
@@ -69,11 +71,23 @@ class GoNSLApiStub(object):
         request_serializer=gonslapi__pb2.GetIDMapEntriesRequest.SerializeToString,
         response_deserializer=gonslapi__pb2.GetIDMapEntriesReply.FromString,
         )
+    self.GetTunnelInitiators = channel.unary_unary(
+        '/gonslapi.GoNSLApi/GetTunnelInitiators',
+        request_serializer=gonslapi__pb2.GetTunnelInitiatorsRequest.SerializeToString,
+        response_deserializer=gonslapi__pb2.GetTunnelInitiatorsReply.FromString,
+        )
+    self.GetTunnelTerminators = channel.unary_unary(
+        '/gonslapi.GoNSLApi/GetTunnelTerminators',
+        request_serializer=gonslapi__pb2.GetTunnelTerminatorsRequest.SerializeToString,
+        response_deserializer=gonslapi__pb2.GetTunnelTerminatorsReply.FromString,
+        )
 
 
 class GoNSLApiServicer(object):
-  # missing associated documentation comment in .proto file
-  pass
+  """
+  Service
+
+  """
 
   def GetFieldEntries(self, request, context):
     # missing associated documentation comment in .proto file
@@ -152,6 +166,20 @@ class GoNSLApiServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def GetTunnelInitiators(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetTunnelTerminators(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_GoNSLApiServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -209,6 +237,16 @@ def add_GoNSLApiServicer_to_server(servicer, server):
           servicer.GetIDMapEntries,
           request_deserializer=gonslapi__pb2.GetIDMapEntriesRequest.FromString,
           response_serializer=gonslapi__pb2.GetIDMapEntriesReply.SerializeToString,
+      ),
+      'GetTunnelInitiators': grpc.unary_unary_rpc_method_handler(
+          servicer.GetTunnelInitiators,
+          request_deserializer=gonslapi__pb2.GetTunnelInitiatorsRequest.FromString,
+          response_serializer=gonslapi__pb2.GetTunnelInitiatorsReply.SerializeToString,
+      ),
+      'GetTunnelTerminators': grpc.unary_unary_rpc_method_handler(
+          servicer.GetTunnelTerminators,
+          request_deserializer=gonslapi__pb2.GetTunnelTerminatorsRequest.FromString,
+          response_serializer=gonslapi__pb2.GetTunnelTerminatorsReply.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

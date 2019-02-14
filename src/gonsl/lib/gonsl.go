@@ -56,8 +56,8 @@ func DriverInit(unit int, cfg *ONSLConfig) error {
 		return err
 	}
 
-	if err := PortInit(unit); err != nil {
-		log.Errorf("Port Init . %s", err)
+	if err := PortDefaultConfig(unit); err != nil {
+		log.Errorf("Port default config error. %s", err)
 		return err
 	}
 
@@ -78,6 +78,25 @@ func DriverInit(unit int, cfg *ONSLConfig) error {
 
 	log.Infof("DriverInit ok. unit=%d", unit)
 	return nil
+}
+
+func DriverInfo(unit int) {
+	ver := sal.VersionGet()
+	log.Infof("OpenNSL version %s", ver)
+
+	info, err := opennsl.InfoGet(unit)
+	if err != nil {
+		log.Warnf("Info get error. %s", err)
+	} else {
+		log.Infof("Info device=%d rev=%d", info.Device(), info.Revision())
+	}
+
+	l3info, err := opennsl.L3InfoGet(unit)
+	if err != nil {
+		log.Warnf("L3Info get error. %s", err)
+	} else {
+		log.Infof("L3Info iface=%d/%d host=%d route=%d", l3info.UsedIface(), l3info.MaxIface(), l3info.MaxHost(), l3info.MaxRoute())
+	}
 }
 
 //

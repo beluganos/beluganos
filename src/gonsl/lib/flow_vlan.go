@@ -32,31 +32,37 @@ import (
 func (s *Server) FIBCVLANFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow *fibcapi.VLANFlow) {
 	log.Debugf("Server: FlowMod(VLAN): %v %v %v", hdr, mod, flow)
 
-	vlan := opennsl.Vlan(flow.Match.Vid)
-	if vlan == opennsl.VLAN_ID_NONE || vlan == opennsl.VlanDefaultMustGet(s.Unit) {
-		log.Debugf("Server: FlowMod(VLAN): Skip. vid=%d", vlan)
-		return
-	}
-
-	if _, err := vlan.Create(s.Unit); err != nil {
-		log.Errorf("Server: FlowMod(VLAN): Create error. %d %s", vlan, err)
-		return
-	}
+	vid := func() opennsl.Vlan {
+		if vid := opennsl.Vlan(flow.Match.Vid); vid != opennsl.VLAN_ID_NONE {
+			return vid
+		}
+		return opennsl.VlanDefaultMustGet(s.Unit())
+	}()
 
 	port := opennsl.Port(flow.Match.InPort)
+	pvid := s.vlanPorts.ConvVID(port, vid)
 	pbmp := opennsl.NewPBmp()
 	pbmp.Add(port)
 
 	switch mod.Cmd {
 	case fibcapi.FlowMod_ADD:
+		if _, err := pvid.Create(s.Unit()); err != nil {
+			log.Errorf("Server: FlowMod(VLAN): vlan create error. vid:%d/%d", vid, pvid)
+			return
+		}
+
 		ubmp := opennsl.NewPBmp()
-		if err := vlan.PortAdd(s.Unit, pbmp, ubmp); err != nil {
-			log.Errorf("Server: FlowMod(VLAN): Port add error. %d %d %s", vlan, port, err)
+		if untag := (vid == opennsl.VlanDefaultMustGet(s.Unit())); untag {
+			ubmp.Add(port)
+		}
+
+		if err := pvid.PortAdd(s.Unit(), pbmp, ubmp); err != nil {
+			log.Errorf("Server: FlowMod(VLAN): Port add error. vid:%d/%d port:%d %s", vid, pvid, port, err)
 		}
 
 	case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
-		if err := vlan.PortRemove(s.Unit, pbmp); err != nil {
-			log.Errorf("Server: FlowMod(VLAN): Port remove error. %d %d %s", vlan, port, err)
+		if _, err := pvid.PortRemove(s.Unit(), pbmp); err != nil {
+			log.Errorf("Server: FlowMod(VLAN): Port remove error. vid:%d/%d port:%d %s", vid, pvid, port, err)
 		}
 
 	default:

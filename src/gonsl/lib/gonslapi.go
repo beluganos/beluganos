@@ -74,7 +74,7 @@ func (s *APIServer) GetFieldEntries(ctxt context.Context, req *api.GetFieldEntri
 	var entries []opennsl.FieldEntry
 	var err error
 
-	fields := s.server.Fields
+	fields := s.server.Fields()
 	result := []*api.FieldEntry{}
 
 	if entries, err = fields.EthType.GetEntries(); err != nil {
@@ -137,7 +137,7 @@ func (s *APIServer) GetFieldEntries(ctxt context.Context, req *api.GetFieldEntri
 //
 func (s *APIServer) GetVlans(ctxt context.Context, req *api.GetVlansRequest) (*api.GetVlansReply, error) {
 	entries := []*api.VlanEntry{}
-	err := opennsl.VlanTraverse(s.server.Unit, func(unit int, vlan opennsl.Vlan, pbmp *opennsl.PBmp, ubmp *opennsl.PBmp) opennsl.OpenNSLError {
+	err := opennsl.VlanTraverse(s.server.Unit(), func(unit int, vlan opennsl.Vlan, pbmp *opennsl.PBmp, ubmp *opennsl.PBmp) opennsl.OpenNSLError {
 		entries = append(entries, api.NewVlanEntryFromNative(vlan, pbmp, ubmp))
 		return opennsl.E_NONE
 	})
@@ -154,7 +154,7 @@ func (s *APIServer) GetVlans(ctxt context.Context, req *api.GetVlansRequest) (*a
 //
 func (s *APIServer) GetL2Addrs(ctxt context.Context, req *api.GetL2AddrsRequest) (*api.GetL2AddrsReply, error) {
 	l2addrs := []*api.L2Addr{}
-	err := opennsl.L2Traverse(s.server.Unit, func(unit int, l2addr *opennsl.L2Addr) opennsl.OpenNSLError {
+	err := opennsl.L2Traverse(s.server.Unit(), func(unit int, l2addr *opennsl.L2Addr) opennsl.OpenNSLError {
 		l2addrs = append(l2addrs, api.NewL2AddrFromNative(l2addr))
 		return opennsl.E_NONE
 	})
@@ -172,7 +172,7 @@ func (s *APIServer) GetL2Addrs(ctxt context.Context, req *api.GetL2AddrsRequest)
 func (s *APIServer) GetL2Stations(ctxt context.Context, req *api.GetL2StationsRequest) (*api.GetL2StationsReply, error) {
 	l2stations := []*api.L2Station{}
 	s.server.idmaps.L2Stations.Traverse(func(gid uint32, l2stationId opennsl.L2StationID) bool {
-		l2station, err := l2stationId.Get(s.server.Unit)
+		l2station, err := l2stationId.Get(s.server.Unit())
 		if err != nil {
 			log.Errorf("L2StationGet error. %d %s", l2stationId, err)
 		} else {
@@ -193,7 +193,7 @@ func (s *APIServer) FindL3Iface(ctxt context.Context, req *api.FindL3IfaceReques
 		return nil, err
 	}
 
-	l3iface, err := opennsl.L3IfaceFind(s.server.Unit, mac, opennsl.Vlan(req.Vid))
+	l3iface, err := opennsl.L3IfaceFind(s.server.Unit(), mac, opennsl.Vlan(req.Vid))
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +205,7 @@ func (s *APIServer) FindL3Iface(ctxt context.Context, req *api.FindL3IfaceReques
 // GetL3Iface process api.GetL3IfaceRequest.
 //
 func (s *APIServer) GetL3Iface(ctxt context.Context, req *api.GetL3IfaceRequest) (*api.GetL3IfaceReply, error) {
-	l3iface, err := opennsl.L3IfaceGet(s.server.Unit, opennsl.L3IfaceID(req.IfaceId))
+	l3iface, err := opennsl.L3IfaceGet(s.server.Unit(), opennsl.L3IfaceID(req.IfaceId))
 	if err != nil {
 		return nil, err
 	}
@@ -220,7 +220,7 @@ func (s *APIServer) GetL3Ifaces(ctxt context.Context, req *api.GetL3IfacesReques
 
 	l3Ifaces := []*api.L3Iface{}
 	s.server.idmaps.L3Ifaces.Traverse(func(key uint32, ifaceId opennsl.L3IfaceID) bool {
-		l3iface, err := opennsl.L3IfaceGet(s.server.Unit, ifaceId)
+		l3iface, err := opennsl.L3IfaceGet(s.server.Unit(), ifaceId)
 		if err != nil {
 			log.Errorf("Api.GetL3Ifaces: L3IfaceGet error. %d %s", ifaceId, err)
 		} else {
@@ -238,7 +238,7 @@ func (s *APIServer) GetL3Ifaces(ctxt context.Context, req *api.GetL3IfacesReques
 //
 func (s *APIServer) GetL3Egresses(ctxt context.Context, req *api.GetL3EgressesRequest) (*api.GetL3EgressesReply, error) {
 	l3egrs := []*api.L3Egress{}
-	err := opennsl.L3EgressTraverse(s.server.Unit, func(unit int, l3egrId opennsl.L3EgressID, l3egr *opennsl.L3Egress) opennsl.OpenNSLError {
+	err := opennsl.L3EgressTraverse(s.server.Unit(), func(unit int, l3egrId opennsl.L3EgressID, l3egr *opennsl.L3Egress) opennsl.OpenNSLError {
 		l3egrs = append(l3egrs, api.NewL3EgressFromNative(l3egrId, l3egr))
 		return opennsl.E_NONE
 	})
@@ -255,7 +255,7 @@ func (s *APIServer) GetL3Egresses(ctxt context.Context, req *api.GetL3EgressesRe
 //
 func (s *APIServer) GetL3Hosts(ctxt context.Context, req *api.GetL3HostsRequest) (*api.GetL3HostsReply, error) {
 	hosts := []*api.L3Host{}
-	err := opennsl.L3HostTraverse(s.server.Unit, 0, 0, l3HostTraverseMax, func(unit int, index int, host *opennsl.L3Host) opennsl.OpenNSLError {
+	err := opennsl.L3HostTraverse(s.server.Unit(), 0, 0, l3HostTraverseMax, func(unit int, index int, host *opennsl.L3Host) opennsl.OpenNSLError {
 		hosts = append(hosts, api.NewL3HostFromNative(host))
 		return opennsl.E_NONE
 	})
@@ -264,7 +264,7 @@ func (s *APIServer) GetL3Hosts(ctxt context.Context, req *api.GetL3HostsRequest)
 		return nil, err
 	}
 
-	err = opennsl.L3HostTraverse(s.server.Unit, uint32(opennsl.L3_IP6), 0, l3HostTraverseMax, func(unit int, index int, host *opennsl.L3Host) opennsl.OpenNSLError {
+	err = opennsl.L3HostTraverse(s.server.Unit(), uint32(opennsl.L3_IP6), 0, l3HostTraverseMax, func(unit int, index int, host *opennsl.L3Host) opennsl.OpenNSLError {
 		hosts = append(hosts, api.NewL3HostFromNative(host))
 		return opennsl.E_NONE
 	})
@@ -281,7 +281,7 @@ func (s *APIServer) GetL3Hosts(ctxt context.Context, req *api.GetL3HostsRequest)
 //
 func (s *APIServer) GetL3Routes(ctxt context.Context, req *api.GetL3RoutesRequest) (*api.GetL3RoutesReply, error) {
 	routes := []*api.L3Route{}
-	err := opennsl.L3RouteTraverse(s.server.Unit, 0, 0, l3RouteTraverseMax, func(unit int, index int, route *opennsl.L3Route) opennsl.OpenNSLError {
+	err := opennsl.L3RouteTraverse(s.server.Unit(), 0, 0, l3RouteTraverseMax, func(unit int, index int, route *opennsl.L3Route) opennsl.OpenNSLError {
 		routes = append(routes, api.NewL3RouteFromNative(route))
 		return opennsl.E_NONE
 	})
@@ -290,7 +290,7 @@ func (s *APIServer) GetL3Routes(ctxt context.Context, req *api.GetL3RoutesReques
 		return nil, err
 	}
 
-	err = opennsl.L3RouteTraverse(s.server.Unit, uint32(opennsl.L3_IP6), 0, l3RouteTraverseMax, func(unit int, index int, route *opennsl.L3Route) opennsl.OpenNSLError {
+	err = opennsl.L3RouteTraverse(s.server.Unit(), uint32(opennsl.L3_IP6), 0, l3RouteTraverseMax, func(unit int, index int, route *opennsl.L3Route) opennsl.OpenNSLError {
 		routes = append(routes, api.NewL3RouteFromNative(route))
 		return opennsl.E_NONE
 	})
@@ -319,4 +319,28 @@ func (s *APIServer) GetIDMapEntries(ctxt context.Context, req *api.GetIDMapEntri
 		return true
 	})
 	return api.NewGetIDMapEntriesReply(entries), nil
+}
+
+//
+// GetTunnelInitiators process api.GetTunnelInitiatorsRequest.
+//
+func (s *APIServer) GetTunnelInitiators(ctxt context.Context, req *api.GetTunnelInitiatorsRequest) (*api.GetTunnelInitiatorsReply, error) {
+	tunnels := []*api.TunnelInitiator{}
+	opennsl.TunnelInitiatorTraverse(s.server.Unit(), func(unit int, initiator *opennsl.TunnelInitiator) opennsl.OpenNSLError {
+		tunnels = append(tunnels, api.NewTunnelInitiatorFromNative(initiator))
+		return opennsl.E_NONE
+	})
+	return api.NewGetTunnelInitiatorsReply(tunnels), nil
+}
+
+//
+// GetTunnelTerminators process api.GetTunnelTerminatorsRequest.
+//
+func (s *APIServer) GetTunnelTerminators(ctxt context.Context, req *api.GetTunnelTerminatorsRequest) (*api.GetTunnelTerminatorsReply, error) {
+	tunnels := []*api.TunnelTerminator{}
+	opennsl.TunnelTerminatorTraverse(s.server.Unit(), func(unit int, terminator *opennsl.TunnelTerminator) opennsl.OpenNSLError {
+		tunnels = append(tunnels, api.NewTunnelTerminatorFromNative(terminator))
+		return opennsl.E_NONE
+	})
+	return api.NewGetTunnelTerminatorsReply(tunnels), nil
 }

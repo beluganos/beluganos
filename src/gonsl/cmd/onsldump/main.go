@@ -67,5 +67,7 @@ func main() {
 	dumpL3Egresses(client)
 	dumpL3Hosts(client)
 	dumpL3Routes(client)
+	dumpTunnelInitiators(client)
+	dumpTunnelTerminators(client)
 	dumpIDMapEntries(client)
 }

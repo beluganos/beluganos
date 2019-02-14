@@ -88,7 +88,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.Debugf("DpConfig: %v", dpcfg)
+	log.Debugf("DpConfig  : %s", dpcfg)
+	log.Debugf("BlockBcast: %s", &dpcfg.BlockBcast)
+	for _, bp := range dpcfg.BlockBcast.Ports {
+		log.Debugf("BlockBcast: %s", bp)
+	}
+	log.Debugf("LogConfig : %s", &cfg.Logging)
 
 	if args.UseSim {
 		gonslib.SimInit(dpcfg.Unit)
@@ -102,8 +107,10 @@ func main() {
 
 	log.Infof("OpenNSL Driver initialized. unit=%d config=%v", dpcfg.Unit, dpcfg.OpenNSL)
 
+	gonslib.DriverInfo(dpcfg.Unit)
+
 	done := make(chan struct{})
-	s := gonslib.NewServer(dpcfg)
+	s := gonslib.NewServer(dpcfg, &cfg.Logging)
 	if err := s.Start(done); err != nil {
 		log.Errorf("Server start error. %s", err)
 		os.Exit(1)

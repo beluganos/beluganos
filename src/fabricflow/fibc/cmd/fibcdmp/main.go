@@ -26,12 +26,13 @@ import (
 )
 
 type Port struct {
-	Id   string
-	Port uint32
+	Id     string
+	Port   uint32
+	HwAddr string
 }
 
 func (p *Port) String() string {
-	return fmt.Sprintf("{'%s', %d}", p.Id, p.Port)
+	return fmt.Sprintf("{'%s', %d, '%s'}", p.Id, p.Port, p.HwAddr)
 }
 
 type Link struct {
@@ -54,6 +55,7 @@ type PortMap struct {
 	Link    *Link
 	Slaves  []*Link
 	DpEnter bool
+	NoVS    bool
 }
 
 func (p *PortMap) String() string {
@@ -64,11 +66,18 @@ func (p *PortMap) String() string {
 			return "-"
 		}
 	}()
-	return fmt.Sprintf("IF=%s, VM=%s, DP=%s%s, VS=%s, Link=%s, Slaves=%s",
+	noVS := func() string {
+		if p.NoVS {
+			return "*"
+		}
+		return ""
+	}()
+	return fmt.Sprintf("IF=%s, VM=%s, DP=%s%s, VS=%s%s, Link=%s, Slaves=%s",
 		p.Name.String(),
 		p.Vm.String(),
 		dpEnter,
 		p.Dp.String(),
+		noVS,
 		p.Vs.String(),
 		p.Link.String(),
 		p.Slaves,
@@ -89,22 +98,25 @@ func DecodePortMap(datas map[string]interface{}) *PortMap {
 		case "vm":
 			field := val.([]interface{})
 			pm.Vm = Port{
-				Id:   field[0].(string),
-				Port: uint32(field[1].(float64)),
+				Id:     field[0].(string),
+				Port:   uint32(field[1].(float64)),
+				HwAddr: pm.Vm.HwAddr,
 			}
 
 		case "dp":
 			field := val.([]interface{})
 			pm.Dp = Port{
-				Id:   fmt.Sprintf("%d", uint32(field[0].(float64))),
-				Port: uint32(field[1].(float64)),
+				Id:     fmt.Sprintf("%d", uint32(field[0].(float64))),
+				Port:   uint32(field[1].(float64)),
+				HwAddr: pm.Dp.HwAddr,
 			}
 
 		case "vs":
 			field := val.([]interface{})
 			pm.Vs = Port{
-				Id:   fmt.Sprintf("%d", uint32(field[0].(float64))),
-				Port: uint32(field[1].(float64)),
+				Id:     fmt.Sprintf("%d", uint32(field[0].(float64))),
+				Port:   uint32(field[1].(float64)),
+				HwAddr: pm.Vs.HwAddr,
 			}
 
 		case "link":
@@ -131,6 +143,13 @@ func DecodePortMap(datas map[string]interface{}) *PortMap {
 		case "dpenter":
 			field := val.(bool)
 			pm.DpEnter = field
+
+		case "no_vs":
+			field := val.(bool)
+			pm.NoVS = field
+
+		case "vs_hw_addr":
+			pm.Vs.HwAddr = val.(string)
 
 		default:
 			fmt.Printf("unknown field. %s %v\n", key, val)

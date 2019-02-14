@@ -3,13 +3,12 @@
 
 package ribpapi
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
-
 import (
-	context "golang.org/x/net/context"
+	context "context"
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -21,7 +20,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type FFPacketRequest struct {
 	Ifname               string   `protobuf:"bytes,1,opt,name=ifname,proto3" json:"ifname,omitempty"`
@@ -34,16 +33,17 @@ func (m *FFPacketRequest) Reset()         { *m = FFPacketRequest{} }
 func (m *FFPacketRequest) String() string { return proto.CompactTextString(m) }
 func (*FFPacketRequest) ProtoMessage()    {}
 func (*FFPacketRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ribpapi_0e0bb1648b6b1468, []int{0}
+	return fileDescriptor_05ee4f5020f2b8e1, []int{0}
 }
+
 func (m *FFPacketRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FFPacketRequest.Unmarshal(m, b)
 }
 func (m *FFPacketRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_FFPacketRequest.Marshal(b, m, deterministic)
 }
-func (dst *FFPacketRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FFPacketRequest.Merge(dst, src)
+func (m *FFPacketRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FFPacketRequest.Merge(m, src)
 }
 func (m *FFPacketRequest) XXX_Size() int {
 	return xxx_messageInfo_FFPacketRequest.Size(m)
@@ -71,16 +71,17 @@ func (m *SendFFPacketReply) Reset()         { *m = SendFFPacketReply{} }
 func (m *SendFFPacketReply) String() string { return proto.CompactTextString(m) }
 func (*SendFFPacketReply) ProtoMessage()    {}
 func (*SendFFPacketReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ribpapi_0e0bb1648b6b1468, []int{1}
+	return fileDescriptor_05ee4f5020f2b8e1, []int{1}
 }
+
 func (m *SendFFPacketReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendFFPacketReply.Unmarshal(m, b)
 }
 func (m *SendFFPacketReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SendFFPacketReply.Marshal(b, m, deterministic)
 }
-func (dst *SendFFPacketReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SendFFPacketReply.Merge(dst, src)
+func (m *SendFFPacketReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendFFPacketReply.Merge(m, src)
 }
 func (m *SendFFPacketReply) XXX_Size() int {
 	return xxx_messageInfo_SendFFPacketReply.Size(m)
@@ -94,6 +95,21 @@ var xxx_messageInfo_SendFFPacketReply proto.InternalMessageInfo
 func init() {
 	proto.RegisterType((*FFPacketRequest)(nil), "ribpapi.FFPacketRequest")
 	proto.RegisterType((*SendFFPacketReply)(nil), "ribpapi.SendFFPacketReply")
+}
+
+func init() { proto.RegisterFile("ribpapi.proto", fileDescriptor_05ee4f5020f2b8e1) }
+
+var fileDescriptor_05ee4f5020f2b8e1 = []byte{
+	// 131 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2d, 0xca, 0x4c, 0x2a,
+	0x48, 0x2c, 0xc8, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x87, 0x72, 0x95, 0x34, 0xb9,
+	0xf8, 0xdd, 0xdc, 0x02, 0x12, 0x93, 0xb3, 0x53, 0x4b, 0x82, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b,
+	0x84, 0xc4, 0xb8, 0xd8, 0x32, 0xd3, 0xf2, 0x12, 0x73, 0x53, 0x25, 0x18, 0x15, 0x18, 0x35, 0x38,
+	0x83, 0xa0, 0x3c, 0x25, 0x61, 0x2e, 0xc1, 0xe0, 0xd4, 0xbc, 0x14, 0x84, 0xf2, 0x82, 0x9c, 0x4a,
+	0xa3, 0x40, 0x2e, 0xf6, 0x20, 0x4f, 0xa7, 0x00, 0xc7, 0x82, 0x4c, 0x21, 0x37, 0x2e, 0x1e, 0x64,
+	0x79, 0x21, 0x09, 0x3d, 0x98, 0x9d, 0x68, 0x36, 0x48, 0x49, 0xc1, 0x65, 0x30, 0x0c, 0x54, 0x62,
+	0x48, 0x62, 0x03, 0x3b, 0xd1, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0xc2, 0x54, 0x9e, 0x86, 0xb3,
+	0x00, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -166,19 +182,4 @@ var _RIBPApi_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "ribpapi.proto",
-}
-
-func init() { proto.RegisterFile("ribpapi.proto", fileDescriptor_ribpapi_0e0bb1648b6b1468) }
-
-var fileDescriptor_ribpapi_0e0bb1648b6b1468 = []byte{
-	// 131 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2d, 0xca, 0x4c, 0x2a,
-	0x48, 0x2c, 0xc8, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x87, 0x72, 0x95, 0x34, 0xb9,
-	0xf8, 0xdd, 0xdc, 0x02, 0x12, 0x93, 0xb3, 0x53, 0x4b, 0x82, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b,
-	0x84, 0xc4, 0xb8, 0xd8, 0x32, 0xd3, 0xf2, 0x12, 0x73, 0x53, 0x25, 0x18, 0x15, 0x18, 0x35, 0x38,
-	0x83, 0xa0, 0x3c, 0x25, 0x61, 0x2e, 0xc1, 0xe0, 0xd4, 0xbc, 0x14, 0x84, 0xf2, 0x82, 0x9c, 0x4a,
-	0xa3, 0x40, 0x2e, 0xf6, 0x20, 0x4f, 0xa7, 0x00, 0xc7, 0x82, 0x4c, 0x21, 0x37, 0x2e, 0x1e, 0x64,
-	0x79, 0x21, 0x09, 0x3d, 0x98, 0x9d, 0x68, 0x36, 0x48, 0x49, 0xc1, 0x65, 0x30, 0x0c, 0x54, 0x62,
-	0x48, 0x62, 0x03, 0x3b, 0xd1, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0xc2, 0x54, 0x9e, 0x86, 0xb3,
-	0x00, 0x00, 0x00,
 }

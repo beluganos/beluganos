@@ -15,16 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-. ~/mypython/bin/activate
-
-export GOPATH=$HOME/go:`pwd`
-export PATH=/usr/local/go/bin:$HOME/go/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/lib
-
-
 ARG=$1
 if [ "${ARG}"x == "local"x ]; then
     echo "Use local package."
     export PYTHONPATH=$PYTHONPATH:`pwd`/src
+    . ${HOME}/mypython/bin/activate
 fi
 
+export GOPATH=$HOME/go:`pwd`
+export PATH=/usr/local/go/bin:$HOME/go/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/lib:${HOME}/opennsl/bin/as7712

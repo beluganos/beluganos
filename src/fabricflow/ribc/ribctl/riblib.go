@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"gonla/nlamsg"
 	"gonla/nlamsg/nlalink"
+	"net"
 	"strconv"
 	"strings"
 	"syscall"
@@ -83,6 +84,9 @@ func NewPortStatus(link *nlamsg.Link) fibcapi.PortStatus_Status {
 	case "down":
 		return fibcapi.PortStatus_DOWN
 	default:
+		if flag := link.Attrs().Flags & net.FlagUp; flag != 0 {
+			return fibcapi.PortStatus_UP
+		}
 		return fibcapi.PortStatus_NOP
 	}
 }

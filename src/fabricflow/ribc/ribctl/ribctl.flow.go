@@ -34,6 +34,8 @@ func checkIP(ip net.IP) bool {
 	switch {
 	case ip == nil:
 		return false
+	case ip.IsLinkLocalUnicast():
+		return false
 	case ip.IsInterfaceLocalMulticast():
 		return false
 	case ip.IsLinkLocalMulticast():
@@ -139,6 +141,10 @@ func NewTermMACFlowMPLS(link *nlamsg.Link) *fibcapi.TerminationMacFlow {
 
 func (r *RIBController) SendTermMACFlow(cmd fibcapi.FlowMod_Cmd, link *nlamsg.Link) error {
 
+	if link.Iptun() != nil {
+		return nil
+	}
+
 	flows := []*fibcapi.TerminationMacFlow{
 		NewTermMACFlowIPv4(link),
 		NewTermMACFlowIPv6(link),
@@ -233,6 +239,11 @@ func (r *RIBController) SendUnicastRoutingFlowNeigh(cmd fibcapi.FlowMod_Cmd, nei
 		return nil
 	}
 
+	if neigh.IsTunnelRemote() {
+		// if neigh is tunnel remote peer, no flows set.
+		return nil
+	}
+
 	f := NewUnicastRoutingFlowNeigh(neigh)
 	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
 }
@@ -250,7 +261,12 @@ func (r *RIBController) SendUnicastRoutingFlow(cmd fibcapi.FlowMod_Cmd, route *n
 		return nil
 	}
 
-	neigh, err := r.nla.GetNeigh_FlowMod(cmd, route.NId, route.GetGw())
+	gw := route.GetGw()
+	if gw == nil {
+		return nil
+	}
+
+	neigh, err := r.nla.GetNeigh_FlowMod(cmd, route.NId, gw)
 	if err != nil {
 		return err
 	}

@@ -33,6 +33,7 @@ const (
 
 const (
 	fieldPriHigher = iota + 100
+	fieldPriEthDst
 	fieldPriEthType
 	fieldPriDstIPv4
 	fieldPriDstIPv6
@@ -44,6 +45,7 @@ const (
 // FieldGroups has opennsl field_groups.
 //
 type FieldGroups struct {
+	EthDst  *FieldGroupEthDst
 	EthType *FieldGroupEthType
 	DstIPv4 *FieldGroupDstIP
 	DstIPv6 *FieldGroupDstIP
@@ -55,6 +57,7 @@ type FieldGroups struct {
 //
 func NewFieldGroups(unit int) *FieldGroups {
 	return &FieldGroups{
+		EthDst:  NewFieldGroupEthDst(unit),
 		EthType: NewFieldGroupEthType(unit),
 		DstIPv4: NewFieldGroupDstIPv4(unit),
 		DstIPv6: NewFieldGroupDstIPv6(unit),
@@ -130,6 +133,54 @@ func (f *FieldGroup) UninstallEntry(key string) {
 //
 func (f *FieldGroup) GetEntries() ([]opennsl.FieldEntry, error) {
 	return f.group.EntryMultiGet(f.unit, -1)
+}
+
+//
+// FieldGroupEthDst is opennsl field group(ether-dest)
+//
+type FieldGroupEthDst struct {
+	*FieldGroup
+}
+
+func NewFieldGroupEthDst(unit int) *FieldGroupEthDst {
+	return &FieldGroupEthDst{
+		FieldGroup: NewFieldGroup(
+			unit, fieldCosDefault, fieldPriEthDst,
+			opennsl.FieldQualifyDstMac,
+		),
+	}
+}
+
+func (f *FieldGroupEthDst) Key(dest, mask net.HardwareAddr) string {
+	return fmt.Sprintf("%s/%s", dest, mask)
+}
+
+func (f *FieldGroupEthDst) AddEntry(dest, mask net.HardwareAddr) error {
+	entry, err := f.group.EntryCreate(f.unit)
+	if err != nil {
+		log.Errorf("EntryCreate error. %s", err)
+		return err
+	}
+
+	entry.Qualify().DstMAC(f.unit, dest, mask)
+	entry.Action().AddP(f.unit, opennsl.NewFieldActionCosQCpuNew(f.cos))
+	entry.Action().AddP(f.unit, opennsl.NewFieldActionCopyToCpu())
+
+	return f.InstallEntry(f.Key(dest, mask), entry)
+}
+
+//
+// DeleteEntry uninstall and remove field group entry.
+//
+func (f *FieldGroupEthDst) DeleteEntry(dest, mask net.HardwareAddr) {
+	f.UninstallEntry(f.Key(dest, mask))
+}
+
+//
+// GetEntry returns field group entry.
+//
+func (f *FieldGroupEthDst) GetEntry(entry opennsl.FieldEntry) (net.HardwareAddr, net.HardwareAddr, error) {
+	return entry.Qualify().DstMACGet(f.unit)
 }
 
 //

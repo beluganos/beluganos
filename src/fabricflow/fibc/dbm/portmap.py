@@ -42,6 +42,8 @@ class FIBCPortEntry(dict):
         self["link"] = kwargs.get("link", None)
         self["slaves"] = kwargs.get("slaves", None)
         self["dpenter"] = kwargs.get("dpenter", False)
+        self["no_vs"] = kwargs.get("no_vs", False)
+        self["vs_hw_addr"] = kwargs.get("vs_hw_addr", "")
 
 
     @classmethod
@@ -71,13 +73,17 @@ class FIBCPortEntry(dict):
             link=link,
             slaves=slaves,
             dpenter=kwargs.get("dpenter", False),
+            no_vs=kwargs.get("no_vs", False),
+            vs_hw_addr=kwargs.get("vs_hw_addr", "")
         )
 
 
-    def update_vs(self, vs_id, port_id):
+    def update_vs(self, vs_id, port_id, hw_addr):
         """
         Replace vs port.
         """
+        self["vs_hw_addr"] = hw_addr
+
         if self["vs"].id == vs_id and self["vs"].port == port_id:
             return False
 
@@ -97,7 +103,7 @@ class FIBCPortEntry(dict):
         """
         Check if vs,dp port associated.
         """
-        return self["dpenter"] and self["vs"].port != 0
+        return self["dpenter"] and (self["vs"].port != 0 or self["no_vs"])
 
 
     def is_vm_ready(self):
@@ -110,7 +116,7 @@ class FIBCPortEntry(dict):
         """
         Check if port entry from config file.
         """
-        return self["link"] is None and self["slaves"] is None
+        return self["link"] is None and self["slaves"] is None and not self["no_vs"]
 
 
 class FIBCDbPortMapTable(object):
@@ -223,6 +229,18 @@ class FIBCDbPortMapTable(object):
         Find port by dp_id and dp port_id
         """
         return self.find_by_key("dp", dp_id, port_id)
+
+
+    def list_by_dp(self, dp_id):
+        """
+        List ports by dp_id
+        """
+        ports = list()
+        for port in self.ports.values():
+            if port["dp"].id == dp_id:
+                ports.append(port)
+
+        return ports
 
 
     def slave_ports(self, port):

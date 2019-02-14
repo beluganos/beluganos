@@ -22,6 +22,8 @@ import (
 	"log/syslog"
 	"os"
 
+	lib "fabricflow/fibs/fibslib"
+
 	log "github.com/sirupsen/logrus"
 	lSyslog "github.com/sirupsen/logrus/hooks/syslog"
 	flag "github.com/spf13/pflag"
@@ -38,6 +40,11 @@ type Args struct {
 	Stdout     bool
 }
 
+const (
+	CONFIG_FILENAME_DEFAULT = "/etc/beluganos/fibssnmp.yaml"
+	CONFIG_FILETYPE_DEFAULT = "yaml"
+)
+
 //
 // NewArgs returns new instance.
 //
@@ -51,9 +58,9 @@ func NewArgs() *Args {
 // Init parse and get arguments.
 //
 func (a *Args) Init() {
-	flag.StringVarP(&a.DataPath, "data-path", "", "/tmp/fibc_stats.yaml", "stats filepath.")
-	flag.StringVarP(&a.DataFormat, "data-format", "", "yaml", "stats file format.")
-	flag.StringVarP(&a.HandlerCfg, "handlers", "", "/etc/beluganos/fibssnmp.yaml", "config file.")
+	flag.StringVarP(&a.DataPath, "data-path", "", lib.FIBS_STATS_FILEPATH, "stats filepath.")
+	flag.StringVarP(&a.DataFormat, "data-format", "", CONFIG_FILETYPE_DEFAULT, "stats file format.")
+	flag.StringVarP(&a.HandlerCfg, "handlers", "", CONFIG_FILENAME_DEFAULT, "config file.")
 	flag.BoolVarP(&a.Verbose, "verbose", "v", false, "show detail messages.")
 	flag.BoolVarP(&a.Stdout, "stdout", "", false, "show detail messages on stdout.")
 	flag.Parse()

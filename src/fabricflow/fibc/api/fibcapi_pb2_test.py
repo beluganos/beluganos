@@ -128,12 +128,32 @@ class TestMultipart(unittest.TestCase):
     def test_new_request_port(self):
         dp_id = 0x123456789a
         port_no = 1
-        m = api.new_ff_multipart_request_port(dp_id, port_no)
+        m = api.new_ff_multipart_request_port(dp_id, port_no, "")
         self.assertEqual(m.mp_type, pb.FFMultipart.PORT)
 
         b = m.SerializeToString()
         m = api.parse_ff_multipart_request(b)
         self.assertEqual(m.port, pb.FFMultipart.PortRequest(port_no=1))
+
+
+class TestFFPortMod(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_new_ff_port_mod(self):
+        pm = api.new_ff_port_mod(0x1234, 10, pb.PortStatus.UP)
+        self.assertEqual(pm.dp_id, 0x1234)
+        self.assertEqual(pm.port_no, 10)
+        self.assertEqual(pm.status, pb.PortStatus.UP)
+
+        pm = api.new_ff_port_mod(0x1234, 10, "UP")
+        self.assertEqual(pm.dp_id, 0x1234)
+        self.assertEqual(pm.port_no, 10)
+        self.assertEqual(pm.status, pb.PortStatus.UP)
+
 
 TESTS = [
     TestPortConfig,
@@ -143,6 +163,7 @@ TESTS = [
     TestL2InterfaceGroup,
     TestMplsLabelGroup,
     TestMultipart,
+    TestFFPortMod,
 ]
 
 if __name__ == "__main__":

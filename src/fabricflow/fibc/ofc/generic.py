@@ -568,3 +568,25 @@ def _fix_port_stats_names(stats):
         return [_new_port_stats(port_stats) for port_stats in port_stats_list]
 
     return {dpid:_new_port_stats_list(port_stats_list) for dpid, port_stats_list in stats.items()}
+
+
+def port_mod(dpath, mod, ofctl):
+    """
+    PotMod
+    mod: api.FFPortMod
+    """
+    _LOG.debug("port_mod: %s %s", dpath, mod)
+
+    parser = dpath.ofproto_parser
+    ofp = dpath.ofproto
+
+    config = 0 if port.state == pb.PortStatus.UP else ofp.OFPPC_PORT_DOWN
+    msg = parser.OFPPortMod(
+        port_no=mod.port_no,
+        hw_addr=mod.hw_addr,
+        config=config,
+        mask=ofp.OFPPC_PORT_DOWN,
+        advertise=0,
+    )
+
+    dpath.send_msg(msg)

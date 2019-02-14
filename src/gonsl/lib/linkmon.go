@@ -73,7 +73,7 @@ func (l *LinkInfo) PortState() uint32 {
 //
 func (s *Server) LinkmonStart(done <-chan struct{}) <-chan *LinkInfo {
 	ch := make(chan *LinkInfo)
-	go LinkmonServe(s.Unit, ch, done)
+	go LinkmonServe(s.Unit(), ch, done)
 
 	return ch
 }

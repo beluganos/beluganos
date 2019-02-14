@@ -24,8 +24,9 @@ import (
 )
 
 const (
-	configDefaultAddr        = "127.0.0.1"
-	configDefaultPort uint16 = 50051
+	configDefaultAddr           = "127.0.0.1"
+	configDefaultPort    uint16 = 50051
+	configDefaultBaseVid uint16 = 1
 )
 
 //
@@ -40,14 +41,68 @@ type ONSLConfig struct {
 }
 
 //
+// BlockBcastRangeConfig is port entry of BlockBcastConfig.
+//
+type BlockBcastRangeConfig struct {
+	Min     int    `mapstructure:"min"`
+	Max     int    `mapstructure:"max"`
+	BaseVID uint16 `mapstructure:"base_vid"`
+}
+
+func (c *BlockBcastRangeConfig) String() string {
+	return fmt.Sprintf("min:%d max:%d base_vid:%d", c.Min, c.Max, c.BaseVID)
+}
+
+func (c *BlockBcastRangeConfig) Block() bool {
+	return (c.Min > 0) && (c.Max >= c.Min)
+}
+
+func (c *BlockBcastRangeConfig) GetBaseVID() uint16 {
+	if c.BaseVID == 0 {
+		return configDefaultBaseVid
+	}
+	return c.BaseVID
+}
+
+//
+// BlockBcastPortConfig is port entry of BlockBcastConfig.
+//
+type BlockBcastPortConfig struct {
+	Port int    `mapstructure:"port"`
+	Vid  uint16 `mapstructure:"vid"`
+	PVid uint16 `mapstructure:"pvid"`
+}
+
+func (c *BlockBcastPortConfig) String() string {
+	return fmt.Sprintf("port:%d vid:%d to %d", c.Port, c.Vid, c.PVid)
+}
+
+//
+// VlanPortConfig is vlan config that port belongs to.
+//
+type BlockBcastConfig struct {
+	Range BlockBcastRangeConfig   `mapstructure:"range"`
+	Ports []*BlockBcastPortConfig `mapstructure:"ports"`
+}
+
+func (c *BlockBcastConfig) String() string {
+	return fmt.Sprintf("%s", &c.Range)
+}
+
+func (c *BlockBcastConfig) Block() bool {
+	return c.Range.Block() || (len(c.Ports) > 0)
+}
+
+//
 // DpConfig is part of gonsl config.
 //
 type DpConfig struct {
-	DpID    uint64      `mapstructure:"dpid"`
-	Addr    string      `mapstructure:"addr"`
-	Port    uint16      `mapstructure:"port"`
-	Unit    int         `mapstructure:"unit"`
-	OpenNSL *ONSLConfig `mapstructure:"opennsl"`
+	DpID       uint64           `mapstructure:"dpid"`
+	Addr       string           `mapstructure:"addr"`
+	Port       uint16           `mapstructure:"port"`
+	Unit       int              `mapstructure:"unit"`
+	BlockBcast BlockBcastConfig `mapstructure:"block_bcast"`
+	OpenNSL    *ONSLConfig      `mapstructure:"opennsl"`
 }
 
 //
@@ -85,10 +140,26 @@ func (c *DpConfig) GetHost() string {
 }
 
 //
+// LogConfig is logging config.
+//
+type LogConfig struct {
+	RxDetail bool `mapstructure:"rx_detail"`
+	RxDump   bool `mapstructure:"rx_dump"`
+}
+
+//
+// String retuns config information.
+//
+func (c *LogConfig) String() string {
+	return fmt.Sprintf("rx_dump=%t", c.RxDump)
+}
+
+//
 // Config is gonsl config file.
 //
 type Config struct {
-	Dpaths map[string]*DpConfig `mapstructure:"dpaths"`
+	Dpaths  map[string]*DpConfig `mapstructure:"dpaths"`
+	Logging LogConfig            `mapstructure:"logging"`
 }
 
 //

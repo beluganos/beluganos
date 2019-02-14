@@ -17,7 +17,7 @@
 # limitations under the License.
 
 # Release
-. /etc/opennsl/gonsld.conf
+. /etc/beluganos/gonsld.conf
 
 # Debug
 # . ./gonsld.conf
@@ -25,24 +25,9 @@
 # DO NOT EDIT
 DAEMON=/usr/bin/gonsld
 DESC="OpenNSL Agent"
+OPENNSL_CONFIG_FILE=/etc/opennsl/opennsl.conf
 
 . /lib/lsb/init-functions
-
-do_insmod() {
-    mknod  /dev/linux-kernel-bde c 127 0 || true
-    mknod  /dev/linux-user-bde   c 126 0 || true
-    mknod  /dev/linux-bcm-knet   c 122 0 || true
-
-    insmod $BELHOME/drivers/linux-kernel-bde.ko maxpayload=128
-    insmod $BELHOME/drivers/linux-user-bde.ko
-    insmod $BELHOME/drivers/linux-bcm-knet.ko
-}
-
-do_rmmod() {
-    rmmod linux-bcm-knet   || true
-    rmmod linux-user-bde   || true
-    rmmod linux-kernel-bde || true
-}
 
 do_start() {
     log_daemon_msg "Starting $DESC:"
@@ -55,12 +40,12 @@ do_start() {
         exit 1
     fi
 
-    do_insmod
+    opennsl_setup insmod
 
     local DAEMON_ARGS="-a $API_ADDR -c $BELHOME/gonsld.yaml --dp $DATAPATH --log-file $LOGFILE --pid $PIDFILE $DAEMON_MODE $USESIM"
     echo $DAEMON_ARGS
 
-    export OPENNSL_CONFIG_FILE=$BELHOME/opennsl.conf
+    export OPENNSL_CONFIG_FILE
 
     start-stop-daemon --start --quiet --exec $DAEMON --pidfile $PIDFILE -- $DAEMON_ARGS
     local result=$?
@@ -85,7 +70,7 @@ do_stop() {
 
     rm -f $PIDFILE
 
-    do_rmmod
+    opennsl_setup rmmod
 
     log_end_msg $result || true
 }

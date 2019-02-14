@@ -39,6 +39,10 @@ func printFieldEntry(entry *api.FieldEntry) {
 		e := entry.GetIpProto()
 		fmt.Printf("FieldEntry: eth_type:0x%04x ip_proto:%d\n", e.GetEthType(), e.GetIpProto())
 
+	case api.FieldEntry_ETH_DST:
+		e := entry.GetEthDst()
+		fmt.Printf("FieldEntry: eth_Dst: %s/%s", e.GetEthDst(), e.GetEthMask())
+
 	default:
 		log.Errorf("Invalid EntryType. %d", entry.GetEntryType())
 	}

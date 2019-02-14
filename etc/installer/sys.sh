@@ -44,7 +44,7 @@ apt_install() {
 init_module() {
     sudo cp -v etc/modules/modules.conf  /etc/modules-load.d/beluganos.conf
     sudo cp -v etc/modules/modprobe.conf /etc/modprobe.d/beluganos.conf
-    sudo modprobe -a belbonding mpls_router mpls_iptunnel
+    sudo modprobe -a belbonding mpls_router mpls_iptunnel ip_tunnel ip6_tunnel
     sudo netplan apply
 }
 

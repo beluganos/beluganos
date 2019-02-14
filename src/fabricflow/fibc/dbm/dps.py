@@ -124,3 +124,10 @@ class FIBCDbDpTable(object):
                 return entry
 
         raise KeyError("{0} is not found.".format(name))
+
+    def find_port(self, dp_id, port_id):
+        """
+        find port
+        """
+        dp_id = int(str(dp_id))
+        return self.dpset.get_port(dp_id, port_id)

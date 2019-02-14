@@ -1,0 +1,58 @@
+---
+
+snmpproxy:
+  default:
+    oidmap:
+      - name:  ifOperStatus
+        oid:   .1.3.6.1.2.1.2.2.1.8
+        local: .1.3.6.1.4.99999.2.2.1.8
+      - name:  ifInOctets
+        oid:   .1.3.6.1.2.1.2.2.1.10
+        local: .1.3.6.1.4.99999.2.2.1.10
+      - name:  ifInUcastPkts
+        oid:   .1.3.6.1.2.1.2.2.1.11
+        local: .1.3.6.1.4.99999.2.2.1.11
+      - name:  ifInNUcastPkts
+        oid:   .1.3.6.1.2.1.2.2.1.12
+        local: .1.3.6.1.4.99999.2.2.1.12
+      - name:  ifInDiscards
+        oid:   .1.3.6.1.2.1.2.2.1.13
+        local: .1.3.6.1.4.99999.2.2.1.13
+      - name:  ifInErrors
+        oid:   .1.3.6.1.2.1.2.2.1.14
+        local: .1.3.6.1.4.99999.2.2.1.14
+      - name:  ifOutOctets
+        oid:   .1.3.6.1.2.1.2.2.1.16
+        local: .1.3.6.1.4.99999.2.2.1.16
+      - name:  ifOutUcastPkts
+        oid:   .1.3.6.1.2.1.2.2.1.17
+        local: .1.3.6.1.4.99999.2.2.1.17
+      - name:  ifOutNUcastPkts
+        oid:   .1.3.6.1.2.1.2.2.1.18
+        local: .1.3.6.1.4.99999.2.2.1.18
+      - name:  ifOutDiscards
+        oid:   .1.3.6.1.2.1.2.2.1.19
+        local: .1.3.6.1.4.99999.2.2.1.19
+      - name:  ifOutErrors
+        oid:   .1.3.6.1.2.1.2.2.1.20
+        local: .1.3.6.1.4.99999.2.2.1.20
+      - name:  ifName
+        oid:   .1.3.6.1.2.1.31.1.1.1.1
+        local: .1.3.6.1.4.99999.31.1.1.1.1
+
+    ifmap:
+      oidmap:
+        min: 0
+        max: 1023
+      shift:
+        min: 1024
+        max: 2147483647
+
+    trap2map:
+      eth1: 10
+      eth2: 20
+      ens3: 30
+      lxdbr0: 40
+
+    trap2sink:
+      - addr: 192.168.122.1:161

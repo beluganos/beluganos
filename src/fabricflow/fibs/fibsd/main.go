@@ -20,6 +20,8 @@ package main
 import (
 	"time"
 
+	lib "fabricflow/fibs/fibslib"
+
 	log "github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 )
@@ -48,7 +50,7 @@ func NewArgs() *Args {
 //
 func (a *Args) Init() {
 	flag.StringVarP(&a.Addr, "fibc-addr", "a", "localhost:8080", "fibc address.")
-	flag.StringVarP(&a.Path, "stats-path", "p", "/tmp/fibc_stats.yaml", "fibc stats filename.")
+	flag.StringVarP(&a.Path, "stats-path", "p", lib.FIBS_STATS_FILEPATH, "fibc stats filename.")
 	flag.DurationVarP(&a.UpdTime, "update-time", "u", 15*time.Minute, "update stats interval time.")
 	flag.BoolVarP(&a.Verbose, "verbose", "v", false, "show detail messages.")
 	flag.Parse()

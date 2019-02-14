@@ -72,7 +72,7 @@ do_all() {
     # install packages
     pip_install
     gopkg_install
-    opennsl_pkg_install
+    snmplib_patch
     netlink_patch
     gobgp_upgrade
     ryu_patch
@@ -108,7 +108,6 @@ do_minimal() {
 do_opennsl() {
     opennsl_install
     . ./setenv.sh
-    opennsl_pkg_install
     beluganos_install
 }
 
@@ -138,7 +137,7 @@ case $1 in
         ;;
     gopkg)
         gopkg_install
-        opennsl_pkg_install
+        snmplib_patch
         netlink_patch
         gobgp_upgrade
         ;;

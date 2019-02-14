@@ -1,4 +1,4 @@
-SUBDIRS = net
+SUBDIRS = net container
 
 PACKAGES = fabricflow/util/...
 

@@ -52,7 +52,7 @@ func (s *Server) FIBCTerminationMacFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 		if vid := opennsl.Vlan(flow.Match.VlanVid); vid != opennsl.VLAN_ID_NONE {
 			return vid
 		}
-		return opennsl.VLAN_ID_DEFAULT
+		return opennsl.VlanDefaultMustGet(s.Unit())
 	}()
 
 	l2addr := opennsl.NewL2Addr(mac, vlan)
@@ -61,12 +61,14 @@ func (s *Server) FIBCTerminationMacFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 
 	switch mod.Cmd {
 	case fibcapi.FlowMod_ADD:
-		if err := l2addr.Add(s.Unit); err != nil {
+		log.Debugf("Server: FlowMod(TermMAC): L2Addr add. %s/%s port:%d vid:%d", mac, mask, flow.Match.InPort, vlan)
+		if err := l2addr.Add(s.Unit()); err != nil {
 			log.Errorf("L2 Addr Add error. %v %s", l2addr, err)
 		}
 
 	case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
-		if err := l2addr.Delete(s.Unit); err != nil {
+		log.Debugf("Server: FlowMod(TermMAC): L2Addr del. %s/%s port:%d vid:%d", mac, mask, flow.Match.InPort, vlan)
+		if err := l2addr.Delete(s.Unit()); err != nil {
 			log.Errorf("L2 Addr Delete error. %v %s", l2addr, err)
 		}
 

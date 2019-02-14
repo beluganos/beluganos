@@ -16,6 +16,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+lxd_init() {
+    if [ "$LXD_INIT" = "yes" ]; then
+        echo "lxd init..."
+        lxd init --preseed < ${INST_HOME}/lxd-init.yaml
+    fi
+}
+
 #
 # lxdbr0 setting
 #
@@ -76,6 +83,7 @@ lxd_base() {
 # setup lxd
 #
 init_lxd() {
+    lxd_init
     lxd_network
     lxd_image
     lxd_base

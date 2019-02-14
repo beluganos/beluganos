@@ -30,25 +30,46 @@ import (
 // Server is main service of gonsld.
 //
 type Server struct {
-	client     *fibcnet.Client
-	dpID       uint64
-	ONSLConfig string
-	Unit       int
-	Fields     *FieldGroups
-	idmaps     *IDMaps
+	client    *fibcnet.Client
+	dpCfg     *DpConfig
+	logCfg    *LogConfig
+	fields    *FieldGroups
+	idmaps    *IDMaps
+	vlanPorts *VlanPortTable
 }
 
 //
 // NewServer cerates new instance of Server.
 //
-func NewServer(cfg *DpConfig) *Server {
+func NewServer(dpCfg *DpConfig, logCfg *LogConfig) *Server {
 	return &Server{
-		client: fibcnet.NewClient(cfg.GetHost()),
-		dpID:   cfg.DpID,
-		Unit:   cfg.Unit,
-		Fields: NewFieldGroups(cfg.Unit),
-		idmaps: NewIDMaps(),
+		client:    fibcnet.NewClient(dpCfg.GetHost()),
+		dpCfg:     dpCfg,
+		logCfg:    logCfg,
+		fields:    NewFieldGroups(dpCfg.Unit),
+		idmaps:    NewIDMaps(),
+		vlanPorts: NewVlanPortTableFromConfig(&dpCfg.BlockBcast),
 	}
+}
+
+func (s *Server) Unit() int {
+	return s.dpCfg.Unit
+}
+
+func (s *Server) DpID() uint64 {
+	return s.dpCfg.DpID
+}
+
+func (s *Server) Fields() *FieldGroups {
+	return s.fields
+}
+
+func (s *Server) LogConfig() *LogConfig {
+	return s.logCfg
+}
+
+func (s *Server) VlanPorts() *VlanPortTable {
+	return s.vlanPorts
 }
 
 //
@@ -92,7 +113,7 @@ func (s *Server) Serve(done <-chan struct{}) {
 			if connected {
 				log.Infof("Server: connected.")
 
-				hello := fibcapi.NewFFHello(s.dpID)
+				hello := fibcapi.NewFFHello(s.DpID())
 				if err := s.client.Write(hello, 0); err != nil {
 					log.Errorf("Server: Write error. %s", err)
 				}
@@ -102,23 +123,13 @@ func (s *Server) Serve(done <-chan struct{}) {
 			}
 
 		case pkt := <-rxCh:
-			log.Debugf("pkt  : %p len:%d tot:%d", pkt, pkt.PktLen(), pkt.TotLen())
-			log.Debugf("unit : %d", pkt.Unit())
-			log.Debugf("flags: %d", pkt.Flags())
-			log.Debugf("cos  : %d", pkt.Cos())
-			log.Debugf("vid  : %d", pkt.VID())
-			log.Debugf("port : src:%d dst:%d", pkt.SrcPort(), pkt.DstPort())
-			log.Debugf("rx   : port    : %d", pkt.RxPort())
-			log.Debugf("rx   : untagged: %d", pkt.RxUntagged())
-			log.Debugf("rx   : matched : %d", pkt.RxMatched())
-			log.Debugf("rx   : reasons : %d", pkt.RxReasons())
-			log.Debugf("blk  : #%d", pkt.BlkCount())
+			s.dumpRxPkt(pkt)
 
 			rxBuf.Reset()
 			if _, err := pkt.WriteTo(&rxBuf); err != nil {
 				log.Errorf("Server: pkt.WriteTo error. %s", err)
 			} else {
-				pktIn := fibcapi.NewFFPacketIn(s.dpID, uint32(pkt.SrcPort()), rxBuf.Bytes())
+				pktIn := fibcapi.NewFFPacketIn(s.DpID(), uint32(pkt.SrcPort()), rxBuf.Bytes())
 				if err := s.client.Write(pktIn, 0); err != nil {
 					log.Errorf("Server: client.Write error. %s", err)
 				}
@@ -129,7 +140,7 @@ func (s *Server) Serve(done <-chan struct{}) {
 
 			port := fibcapi.NewFFPort(linkInfo.PortNo())
 			port.State = linkInfo.PortState()
-			portStatus := fibcapi.NewFFPortStatus(s.dpID, port, fibcapi.FFPortStatus_MODIFY)
+			portStatus := fibcapi.NewFFPortStatus(s.DpID(), port, fibcapi.FFPortStatus_MODIFY)
 			if err := s.client.Write(portStatus, 0); err != nil {
 				log.Errorf("Server: client.Write error. %s", err)
 			}
@@ -145,6 +156,15 @@ func (s *Server) Serve(done <-chan struct{}) {
 // Start starts submodules.
 //
 func (s *Server) Start(done <-chan struct{}) error {
+	if block := s.dpCfg.BlockBcast.Block(); !block {
+		if err := PortDefaultVlanConfig(s.Unit()); err != nil {
+			log.Errorf("Server: PortDefaultVlanConfig error. %s", err)
+			return err
+		}
+
+		log.Infof("Server: PortDefaultVlanConfig ok.")
+	}
+
 	go s.RecvMain()
 	go s.Serve(done)
 

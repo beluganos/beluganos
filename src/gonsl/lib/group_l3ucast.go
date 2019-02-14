@@ -20,7 +20,6 @@ package gonslib
 import (
 	"fabricflow/fibc/api"
 	"fabricflow/fibc/net"
-	"net"
 
 	"github.com/beluganos/go-opennsl/opennsl"
 
@@ -33,14 +32,6 @@ import (
 func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMod, group *fibcapi.L3UnicastGroup) {
 	log.Debugf("Server: GroupMod(L3-UC): %v %v %v", hdr, mod, group)
 
-	hwaddr, err := net.ParseMAC(group.EthDst)
-	if err != nil {
-		log.Errorf("Server: L3-UC group: Invalid MAC. '%s'", group.EthDst)
-		return
-	}
-
-	vid := fibcapi.AdjustVlanVID16(uint16(group.VlanVid))
-	port := group.PortId
 	neid := group.NeId
 
 	switch mod.Cmd {
@@ -50,9 +41,10 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 			return
 		}
 
-		ifaceID, ok := s.idmaps.L3Ifaces.Get(port, vid)
+		vid := group.GetAdjustedVlanVid()
+		ifaceID, ok := s.idmaps.L3Ifaces.Get(group.PortId, vid)
 		if !ok {
-			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", port, vid)
+			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", group.PortId, vid)
 			return
 		}
 
@@ -61,13 +53,18 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 			flags = opennsl.L3_REPLACE
 		}
 
+		pvid := s.vlanPorts.ConvVID(opennsl.Port(group.PhyPortId), opennsl.VlanDefaultMustGet(s.Unit()))
+
+		tunnelInitiatorAdd(s.Unit(), group, ifaceID, pvid)
+		tunnelTerminatorAdd(s.Unit(), group)
+
 		l3egr := opennsl.NewL3Egress()
 		l3egr.SetIfaceID(opennsl.L3IfaceID(ifaceID))
-		l3egr.SetPort(opennsl.Port(port))
-		l3egr.SetMAC(hwaddr)
-		l3egr.SetVID(opennsl.Vlan(vid))
+		l3egr.SetPort(opennsl.Port(group.PhyPortId))
+		l3egr.SetMAC(group.GetEthDstHwAddr())
+		l3egr.SetVID(opennsl.Vlan(pvid))
 
-		l3egrID, err := l3egr.Create(s.Unit, flags, 0)
+		l3egrID, err := l3egr.Create(s.Unit(), flags, 0)
 		if err != nil {
 			log.Errorf("Server: L3-UC group: L3 Egress create error. %s", err)
 			return
@@ -84,9 +81,20 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 
 		s.idmaps.L3Egress.Unregister(neid)
 
-		if err := l3egrID.Destroy(s.Unit); err != nil {
+		if err := l3egrID.Destroy(s.Unit()); err != nil {
 			log.Errorf("Server: L3-UC group: L3 Egress delete error. %s", err)
 		}
+
+		tunnelTerminatorDelete(s.Unit(), group)
+
+		vid := group.GetAdjustedVlanVid()
+		ifaceID, ok := s.idmaps.L3Ifaces.Get(group.PortId, vid)
+		if !ok {
+			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", group.PortId, vid)
+			return
+		}
+
+		tunnelInitiatorDelete(s.Unit(), group, ifaceID)
 
 	default:
 		log.Errorf("Server: L3-UC group: Invalid Cmd. %d", mod.Cmd)

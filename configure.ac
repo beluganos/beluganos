@@ -52,6 +52,8 @@ AC_CONFIG_FILES([Makefile
 		 src/fabricflow/Makefile
 		 src/fabricflow/util/Makefile
 		 src/fabricflow/util/net/Makefile
+		 src/fabricflow/util/container/Makefile
+		 src/fabricflow/util/container/mqueue/Makefile
 		 src/fabricflow/fibc/Makefile
 		 src/fabricflow/fibc/net/Makefile
 		 src/fabricflow/fibc/api/Makefile
@@ -69,6 +71,8 @@ AC_CONFIG_FILES([Makefile
 		 src/fabricflow/ribs/ribsapi/Makefile
 		 src/fabricflow/ribs/ribsmsg/Makefile
 		 src/fabricflow/ribs/ribsyn/Makefile
+		 src/fabricflow/ribt/Makefile
+		 src/fabricflow/ribn/Makefile
 		 src/gonla/Makefile
 		 src/gonla/nlactl/Makefile
 		 src/gonla/nlamsg/Makefile

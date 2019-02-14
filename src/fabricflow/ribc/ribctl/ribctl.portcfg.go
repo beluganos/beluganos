@@ -24,6 +24,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const (
+	RIBC_TUNNEL_DPPORT_OFFSET = 256
+)
+
 func (r *RIBController) NewPortConfig(cmd string, reId string, link *nlamsg.Link) *fibcapi.PortConfig {
 	pc := fibcapi.NewPortConfig(cmd, reId, NewLinkName(link, r.useNId), NewPortId(link), NewPortStatus(link))
 	pc.Link = func() string {
@@ -32,6 +36,14 @@ func (r *RIBController) NewPortConfig(cmd string, reId string, link *nlamsg.Link
 		}
 		return ""
 	}()
+
+	if iptun := link.Iptun(); iptun != nil {
+		if tun, err := r.nla.GetIptun(link.NId, iptun.Remote); err != nil {
+			log.Warnf("RIBController: NewPortConfig GetIptun error. %s", err)
+		} else {
+			pc.DpPort = uint32(tun.TnlId + RIBC_TUNNEL_DPPORT_OFFSET)
+		}
+	}
 
 	return pc
 }

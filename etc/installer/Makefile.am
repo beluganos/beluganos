@@ -27,9 +27,9 @@ uninstall-service: uninstall-fibc uninstall-fibs
 # fibs
 #
 .PHONY: install-fibs uninstall-fibs
-install-fibs: install-fibssnmp install-fibsd register-snmp-oid
+install-fibs: install-snmpproxyd install-fibssnmp install-fibsd register-snmp-oid
 
-uninstall-fibs: uninstall-fibssnmp uninstall-fibsd unregister-snmp-oid
+uninstall-fibs: uninstall-snmpproxyd uninstall-fibssnmp uninstall-fibsd unregister-snmp-oid
 
 
 #
@@ -77,6 +77,30 @@ uninstall-fibsd:
 	@$(UNINSTALL) ${CNFDIR}/fibsd.conf
 	@$(UNINSTALL) ${BINDIR}/fibsd
 	@sudo systemctl daemon-reload
+
+
+#
+# fibs/snmpproxyd
+#
+.PHONY: install-snmpproxyd uninstall-snmpproxyd
+install-snmpproxyd:
+	@echo "install snmpproxyd..."
+	@$(INSTALL) -pm 755 ${BEL_BINDIR}/snmpproxyd              ${BINDIR}/
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/snmpproxyd.conf         ${CNFDIR}/
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/snmpproxyd.yaml         ${CNFDIR}/
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/snmpproxyd-mib.service  /etc/systemd/system/
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/snmpproxyd-trap.service /etc/systemd/system/
+	@sudo systemctl daemon-reload
+
+uninstall-snmpproxyd:
+	@echo "uninstall snmpproxyd..."
+	@$(UNINSTALL) /etc/systemd/system/snmpproxyd-trap.service
+	@$(UNINSTALL) /etc/systemd/system/snmpproxyd-mib.service
+	@$(UNINSTALL) ${CNFDIR}/snmpproxyd.yaml
+	@$(UNINSTALL) ${CNFDIR}/snmpproxyd.conf
+	@$(UNINSTALL) ${BINDIR}/snmpproxyd
+	@sudo systemctl daemon-reload
+
 
 #
 # fibc

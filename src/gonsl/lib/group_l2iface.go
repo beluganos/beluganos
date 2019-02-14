@@ -39,7 +39,7 @@ func (s *Server) FIBCL2InterfaceGroupMod(hdr *fibcnet.Header, mod *fibcapi.Group
 		return
 	}
 
-	vid := fibcapi.AdjustVlanVID16(uint16(group.VlanVid))
+	vid := group.GetAdjustedVlanVid()
 	port := group.PortId
 
 	switch mod.Cmd {
@@ -49,14 +49,16 @@ func (s *Server) FIBCL2InterfaceGroupMod(hdr *fibcnet.Header, mod *fibcapi.Group
 			return
 		}
 
+		pvid := s.vlanPorts.ConvVID(opennsl.Port(port), opennsl.Vlan(vid))
+
 		l3iface := opennsl.NewL3Iface()
 		l3iface.SetMAC(hwaddr)
-		l3iface.SetVID(opennsl.Vlan(vid))
+		l3iface.SetVID(opennsl.Vlan(pvid))
 		if vrf := opennsl.Vrf(group.Vrf); vrf != 0 {
 			l3iface.SetVRF(vrf)
 		}
 
-		if err := l3iface.Create(s.Unit); err != nil {
+		if err := l3iface.Create(s.Unit()); err != nil {
 			log.Errorf("Server: L2-IF group: L3Iface create error. %s", err)
 			return
 		}
@@ -74,7 +76,7 @@ func (s *Server) FIBCL2InterfaceGroupMod(hdr *fibcnet.Header, mod *fibcapi.Group
 
 		l3iface := opennsl.NewL3Iface()
 		l3iface.SetIfaceID(ifaceID)
-		if err := l3iface.Delete(s.Unit); err != nil {
+		if err := l3iface.Delete(s.Unit()); err != nil {
 			log.Errorf("Server: L2-IF group: L3Iface delete error. %s", err)
 		}
 

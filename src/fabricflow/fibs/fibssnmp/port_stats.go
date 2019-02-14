@@ -29,15 +29,17 @@ type PortStats map[string]interface{}
 //
 // PortNo returns port_no.
 //
-func (p PortStats) PortNo() (int, bool) {
+func (p PortStats) PortNo() (uint, bool) {
 	portNo, ok := p["port_no"]
 	if !ok {
 		return 0, false
 	}
 
-	switch portNo.(type) {
+	switch n := portNo.(type) {
 	case int:
-		return portNo.(int), true
+		return uint(n), true
+	case uint:
+		return n, true
 	case string:
 		return 0, false
 	default:
@@ -54,7 +56,7 @@ type PortStatsList []PortStats
 //
 // GetNext returns next port stats.
 //
-func (p PortStatsList) GetNext(portNo int) (PortStats, bool) {
+func (p PortStatsList) GetNext(portNo uint) (PortStats, bool) {
 	for _, ps := range p {
 		if n, ok := ps.PortNo(); n >= portNo && ok {
 			return ps, true
@@ -66,7 +68,7 @@ func (p PortStatsList) GetNext(portNo int) (PortStats, bool) {
 //
 // Get returns port stats.
 //
-func (p PortStatsList) Get(portNo int) (PortStats, bool) {
+func (p PortStatsList) Get(portNo uint) (PortStats, bool) {
 	for _, ps := range p {
 		if n, ok := ps.PortNo(); n == portNo && ok {
 			return ps, true

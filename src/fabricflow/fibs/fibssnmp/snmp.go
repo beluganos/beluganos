@@ -20,18 +20,8 @@ package main
 import (
 	"fmt"
 	"io"
-	"strconv"
-	"strings"
-)
 
-// SnmpType is snmp value type.
-type SnmpType string
-
-const (
-	// SnmpTypeInteger is INTEGER type.
-	SnmpTypeInteger = "integer"
-	// SnmpTypeString is STRING type.
-	SnmpTypeString = "string"
+	lib "fabricflow/fibs/fibslib"
 )
 
 //
@@ -39,14 +29,14 @@ const (
 //
 type SnmpReply struct {
 	Oid   string
-	Type  SnmpType
+	Type  lib.SnmpType
 	Value interface{}
 }
 
 //
 // NewSnmpReply returns new instance.
 //
-func NewSnmpReply(oid string, t SnmpType, v interface{}) *SnmpReply {
+func NewSnmpReply(oid string, t lib.SnmpType, v interface{}) *SnmpReply {
 	return &SnmpReply{
 		Oid:   oid,
 		Type:  t,
@@ -85,24 +75,9 @@ EXIT:
 }
 
 //
-// ParseOID parses string and returns array of int.
-//
-func ParseOID(oid string) []int {
-	items := strings.Split(oid, ".")
-	oids := []int{}
-	for _, item := range items {
-		if len(item) > 0 {
-			v, _ := strconv.Atoi(item)
-			oids = append(oids, v)
-		}
-	}
-	return oids
-}
-
-//
 // GetIndexOfOID returns index of OID.
 //
-func GetIndexOfOID(oid []int) (int, bool) {
+func GetIndexOfOID(oid []uint) (uint, bool) {
 	if len(oid) == 1 {
 		return oid[0], true
 	}
@@ -112,7 +87,7 @@ func GetIndexOfOID(oid []int) (int, bool) {
 //
 // GetNextIndexOfOID returns next index of OID.
 //
-func GetNextIndexOfOID(oid []int, defaultIndex int) (int, bool) {
+func GetNextIndexOfOID(oid []uint, defaultIndex uint) (uint, bool) {
 	switch len(oid) {
 	case 0:
 		return defaultIndex, true
@@ -121,15 +96,4 @@ func GetNextIndexOfOID(oid []int, defaultIndex int) (int, bool) {
 	default:
 		return defaultIndex, false
 	}
-}
-
-//
-// NewOID creates oid string from int array.
-//
-func NewOID(vv []int) string {
-	oids := []string{""}
-	for _, v := range vv {
-		oids = append(oids, fmt.Sprintf("%d", v))
-	}
-	return strings.Join(oids, ".")
 }

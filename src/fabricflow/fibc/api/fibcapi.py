@@ -16,12 +16,17 @@ ETHTYPE_VLAN_Q = 0x8100
 ETHTYPE_VLAN_AD = 0x88a8
 
 # hardware addresses
+HWADDR_NONE = "00:00:00:00:00:00"
+HWADDR_DUMMY = "02:00:00:00:00:00"
+HWADDR_EXACT_MASK = "ff:ff:ff:ff:ff:ff"
 HWADDR_MULTICAST4 = '01:00:5e:00:00:00'
 HWADDR_MULTICAST4_MASK = 'ff:ff:ff:80:00:00'
 HWADDR_MULTICAST4_MATCH = HWADDR_MULTICAST4 + '/' + HWADDR_MULTICAST4_MASK
 HWADDR_MULTICAST6 = '33:33:00:00:00:00'
 HWADDR_MULTICAST6_MASK = 'ff:ff:00:00:00:00'
 HWADDR_MULTICAST6_MATCH = HWADDR_MULTICAST6 + '/' + HWADDR_MULTICAST6_MASK
+HWADDR_ISIS_LEVEL1 = "01:80:C2:00:00:14"
+HWADDR_ISIS_LEVEL2 = "01:80:C2:00:00:15"
 
 def parse_masked_mac(s): # pylint: disable=invalid-name
     """
@@ -384,7 +389,8 @@ def new_policy_acl_match(**kwargs):
         eth_type=kwargs.get("eth_type", 0),
         ip_proto=kwargs.get("ip_proto", 0),
         tp_src=kwargs.get("tp_src", 0),
-        tp_dst=kwargs.get("tp_dst", 0))
+        tp_dst=kwargs.get("tp_dst", 0),
+        eth_dst=kwargs.get("eth_dst", ""))
 
 def new_policy_acl_action(name, value=0):
     """
@@ -393,3 +399,12 @@ def new_policy_acl_action(name, value=0):
     return pb.PolicyACLFlow.Action(
         name=name,
         value=value)
+
+def new_ff_port_mod(dp_id, port_no, status):
+    """
+    Create FFPortMod message
+    """
+    return pb.FFPortMod(
+        dp_id=dp_id,
+        port_no=port_no,
+        status=status)

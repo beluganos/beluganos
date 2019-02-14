@@ -20,6 +20,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"time"
@@ -126,8 +127,40 @@ func (s *Server) Update() {
 
 	log.Debugf("temp:%s -> %s", tempPath, s.Path)
 
-	if err := os.Rename(tempPath, s.Path); err != nil {
+	if err := moveFile(tempPath, s.Path); err != nil {
 		log.Errorf("%s", err)
 		return
 	}
+}
+
+func copyFile(srcPath, dstPath string) error {
+	src, err := os.Open(srcPath)
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	dst, err := os.Create(dstPath)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	if _, err := io.Copy(dst, src); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func moveFile(srcPath, dstPath string) error {
+	if err := os.Rename(srcPath, dstPath); err == nil {
+		return nil
+	}
+
+	if err := copyFile(srcPath, dstPath); err != nil {
+		return err
+	}
+
+	return os.Remove(srcPath)
 }

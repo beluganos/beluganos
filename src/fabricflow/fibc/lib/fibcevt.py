@@ -116,6 +116,17 @@ class EventFIBCDpStatus(EventFIBCBase):
         super(EventFIBCDpStatus, self).__init__(msg, pb.DP_STATUS)
 
 
+class EventFIBCFFPortMod(EventFIBCBase):
+    """
+    FIBC FFPortMod event
+    msg; pb.FFPortMod
+    """
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, msg):
+        super(EventFIBCFFPortMod, self).__init__(msg, pb.FF_PORT_MOD)
+
+
 class EventFIBCFlowMod(EventFIBCBase):
     """
     FIBC FlowMod event

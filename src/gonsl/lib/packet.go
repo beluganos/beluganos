@@ -60,7 +60,7 @@ func RxInit(unit int) error {
 //
 func (s *Server) RxStart(done <-chan struct{}) <-chan *opennsl.Pkt {
 	rxCh := make(chan *opennsl.Pkt)
-	go RxServe(s.Unit, rxCh, done)
+	go RxServe(s.Unit(), rxCh, done)
 
 	return rxCh
 }
@@ -112,13 +112,13 @@ func RxServe(unit int, rxCh chan<- *opennsl.Pkt, done <-chan struct{}) {
 func (s *Server) FIBCFFPacketOut(hdr *fibcnet.Header, pktout *fibcapi.FFPacketOut) {
 	log.Debugf("Server: PacketOUT: %v %d %d", hdr, pktout.GetPortNo(), len(pktout.Data))
 
-	pkt, err := opennsl.PktAlloc(s.Unit, len(pktout.Data)+packetTxPadsize, opennsl.PKT_F_NONE)
+	pkt, err := opennsl.PktAlloc(s.Unit(), len(pktout.Data)+packetTxPadsize, opennsl.PKT_F_NONE)
 	if err != nil {
 		log.Errorf("Server: PacketOut: PktAlloc error. %s", err)
 		return
 	}
 
-	defer pkt.Free(s.Unit)
+	defer pkt.Free(s.Unit())
 
 	if err := pkt.Memcpy(0, pktout.GetData()); err != nil {
 		log.Errorf("Server: PacketOut: Memcpy error. %s", err)
@@ -128,7 +128,7 @@ func (s *Server) FIBCFFPacketOut(hdr *fibcnet.Header, pktout *fibcapi.FFPacketOu
 	pkt.TxPBmp().Clear()
 	pkt.TxPBmp().Add(opennsl.Port(pktout.GetPortNo()))
 
-	if err := pkt.Tx(s.Unit); err != nil {
+	if err := pkt.Tx(s.Unit()); err != nil {
 		log.Errorf("Server: PacketOut: Send error. %s", err)
 		return
 	}

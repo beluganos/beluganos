@@ -157,3 +157,10 @@ def get_port_stats(dpath, waiters, port_id, ofctl):
     get port stats
     """
     return generic.get_port_stats(dpath, waiters, port_id, ofctl)
+
+
+def port_mod(dpath, mod, ofctl):
+    """
+    PotMod
+    """
+    return generic.port_mod(dpath, mod, ofctl)

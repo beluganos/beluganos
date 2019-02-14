@@ -1,0 +1,14 @@
+[Unit]
+Description=iface monitor for snmp mib convertor service
+After=network.target
+ConditionPathExists=/etc/beluganos/snmpproxyd.conf
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/beluganos/snmpproxyd.conf
+ExecStart=/usr/bin/snmpifmond --snmpd-addr ${SNMPPROXYD_ADDR} --trap-resend ${TRAP_RESEND_TIME} ${DEBUG}
+Restart=on-abort
+# User=root
+
+[Install]
+WantedBy=network.target

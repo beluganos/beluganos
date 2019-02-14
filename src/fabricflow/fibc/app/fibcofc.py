@@ -58,6 +58,9 @@ class FIBCOfcApp(app_manager.RyuApp):
         for port in evt.ports:
             self.send_dp_port_config(evt.dp, port, evt.enter)
 
+        for port in fibcdbm.portmap().list_by_dp(dp_id):
+            self.send_dp_port_config_no_vs(evt.dp, port, evt.enter)
+
 
     # pylint: disable=no-member
     @handler.set_ev_cls([ofp_event.EventOFPPortStatus,
@@ -96,4 +99,18 @@ class FIBCOfcApp(app_manager.RyuApp):
                   dpath.id, port.port_no, enter)
 
         evt = fibcevt.EventFIBCDpPortConfig(port, dpath.id, port.port_no, enter)
+        self.send_event_to_observers(evt)
+
+
+    def send_dp_port_config_no_vs(self, dpath, port, enter):
+        """
+        Send DpPortConfig event for no_vs port(ex.iptun device)
+        """
+        if not port["no_vs"]:
+            return
+
+        _LOG.info("DpPortConfig: dp_id=%d, port_id=%d, enter=%s",
+                  dpath.id, port["dp"].port, enter)
+
+        evt = fibcevt.EventFIBCDpPortConfig(port, dpath.id, port["dp"].port, enter)
         self.send_event_to_observers(evt)

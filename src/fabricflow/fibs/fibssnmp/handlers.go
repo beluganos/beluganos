@@ -20,6 +20,8 @@ package main
 import (
 	"fmt"
 
+	lib "fabricflow/fibs/fibslib"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -29,14 +31,14 @@ import (
 type PortStatsHandler struct {
 	BaseOid string
 	Name    string
-	Type    SnmpType
+	Type    lib.SnmpType
 	Datas   StatsDatas
 }
 
 //
 // NewPortStatsHandler returns new instance.
 //
-func NewPortStatsHandler(baseOid, name string, t SnmpType, datas StatsDatas) *PortStatsHandler {
+func NewPortStatsHandler(baseOid, name string, t lib.SnmpType, datas StatsDatas) *PortStatsHandler {
 	return &PortStatsHandler{
 		BaseOid: baseOid,
 		Name:    name,
@@ -49,7 +51,7 @@ func NewPortStatsHandler(baseOid, name string, t SnmpType, datas StatsDatas) *Po
 // NewPortStatsHandlerFromConfig returns new instance from config.
 //
 func NewPortStatsHandlerFromConfig(cfg *HandlerConfig, datas StatsDatas) *PortStatsHandler {
-	return NewPortStatsHandler(cfg.Oid, cfg.Name, SnmpType(cfg.Type), datas)
+	return NewPortStatsHandler(cfg.Oid, cfg.Name, lib.SnmpType(cfg.Type), datas)
 }
 
 //
@@ -89,7 +91,7 @@ func (h *PortStatsHandler) Oid() string {
 // Get proces get request.
 //
 func (h *PortStatsHandler) Get(oid string) *SnmpReply {
-	subOid := ParseOID(oid[len(h.BaseOid):])
+	subOid := lib.ParseOID(oid[len(h.BaseOid):])
 	log.Debugf("PortStatsHandler.Get: name = '%s', suboid = '%v'", h.Name, subOid)
 
 	index, ok := GetIndexOfOID(subOid)
@@ -109,7 +111,7 @@ func (h *PortStatsHandler) Get(oid string) *SnmpReply {
 // GetNext process getnext request.
 //
 func (h *PortStatsHandler) GetNext(oid string) *SnmpReply {
-	subOid := ParseOID(oid[len(h.BaseOid):])
+	subOid := lib.ParseOID(oid[len(h.BaseOid):])
 	log.Debugf("IFNamesHandler.GetNext: name = '%s', suboid = '%v'", h.Name, subOid)
 
 	nextIndex, ok := GetNextIndexOfOID(subOid, 0)

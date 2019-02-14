@@ -18,8 +18,9 @@
 package fibcapi
 
 import (
-	"github.com/golang/protobuf/proto"
 	"net"
+
+	"github.com/golang/protobuf/proto"
 )
 
 func (g *GroupMod) Type() uint16 {
@@ -66,6 +67,10 @@ func (g *L2InterfaceGroup) ToMod(cmd GroupMod_Cmd, reId string) *GroupMod {
 	}
 }
 
+func (g *L2InterfaceGroup) GetAdjustedVlanVid() uint16 {
+	return AdjustVlanVID16(uint16(g.VlanVid))
+}
+
 //
 // L2 Rewrite Group
 //
@@ -80,14 +85,56 @@ func NewL3UnicastGroupID(neighId uint32) uint32 {
 	return 0x20000000 + (neighId & 0x0fffffff)
 }
 
-func NewL3UnicastGroup(neId, portId uint32, vlanVid uint16, ethDst, ethSrc net.HardwareAddr) *L3UnicastGroup {
+func NewL3UnicastGroup(neId, portId, phyPortId uint32, vlanVid uint16, ethDst, ethSrc net.HardwareAddr) *L3UnicastGroup {
 	return &L3UnicastGroup{
-		NeId:    neId,
-		PortId:  portId,
-		VlanVid: uint32(vlanVid),
-		EthDst:  ethDst.String(),
-		EthSrc:  ethSrc.String(),
+		NeId:      neId,
+		PortId:    portId,
+		VlanVid:   uint32(vlanVid),
+		EthDst:    ethDst.String(),
+		EthSrc:    ethSrc.String(),
+		PhyPortId: phyPortId,
+		TunType:   TunnelType_NOP,
+		TunLocal:  "",
+		TunRemote: "",
 	}
+}
+
+func (g *L3UnicastGroup) SetTunnel(tunType TunnelType_Type, remote, local net.IP) {
+	g.TunType = tunType
+	g.TunLocal = local.String()
+	g.TunRemote = remote.String()
+}
+
+func (g *L3UnicastGroup) GetAdjustedVlanVid() uint16 {
+	return AdjustVlanVID16(uint16(g.VlanVid))
+}
+
+func (g *L3UnicastGroup) GetEthDstHwAddr() net.HardwareAddr {
+	if hwaddr, err := net.ParseMAC(g.EthDst); err == nil {
+		return hwaddr
+	}
+	return net.HardwareAddr{}
+}
+
+func (g *L3UnicastGroup) GetEthSrcHwAddr() net.HardwareAddr {
+	if hwaddr, err := net.ParseMAC(g.EthSrc); err == nil {
+		return hwaddr
+	}
+	return net.HardwareAddr{}
+}
+
+func (g *L3UnicastGroup) GetTunLocalIP() net.IP {
+	if ip := net.ParseIP(g.TunLocal); ip != nil {
+		return ip
+	}
+	return net.IP{}
+}
+
+func (g *L3UnicastGroup) GetTunRemoteIP() net.IP {
+	if ip := net.ParseIP(g.TunRemote); ip != nil {
+		return ip
+	}
+	return net.IP{}
 }
 
 func (g *L3UnicastGroup) ToMod(cmd GroupMod_Cmd, reId string) *GroupMod {
