@@ -586,6 +586,8 @@ PACKAGE_URL=''
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+ENABLE_OPENNSL_FALSE
+ENABLE_OPENNSL_TRUE
 GOPREFIX
 FF_HOME
 AM_BACKSLASH
@@ -659,6 +661,7 @@ ac_user_opts='
 enable_option_checking
 enable_silent_rules
 with_go_prefix
+with_opennsl
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1295,6 +1298,7 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-go-prefix        GOPATH [default=~/go]
+  --with-opennsl          enable OpenNSL. [default=no]
 
 Report bugs to <admin@example.net>.
 _ACEOF
@@ -2359,10 +2363,28 @@ fi
 GOPREFIX="$with_go_prefix"
 
 
+
+# Check whether --with-opennsl was given.
+if test "${with_opennsl+set}" = set; then :
+  withval=$with_opennsl;
+else
+  with_opennsl=no
+fi
+
+
+ if test "$with_opennsl" = "yes"; then
+  ENABLE_OPENNSL_TRUE=
+  ENABLE_OPENNSL_FALSE='#'
+else
+  ENABLE_OPENNSL_TRUE='#'
+  ENABLE_OPENNSL_FALSE=
+fi
+
+
 #
 # Makefiles
 #
-ac_config_files="$ac_config_files Makefile src/Makefile src/goryu/Makefile src/goryu/ryulib/Makefile src/goryu/ofproto/Makefile src/goryu/encoding/Makefile src/fabricflow/Makefile src/fabricflow/util/Makefile src/fabricflow/util/net/Makefile src/fabricflow/ffsh/Makefile src/fabricflow/fibc/Makefile src/fabricflow/fibc/net/Makefile src/fabricflow/fibc/api/Makefile src/fabricflow/fibc/app/Makefile src/fabricflow/fibc/dbm/Makefile src/fabricflow/fibc/lib/Makefile src/fabricflow/fibc/ofc/Makefile src/fabricflow/ribc/Makefile src/fabricflow/ribc/ribctl/Makefile src/fabricflow/ribp/Makefile src/fabricflow/ribp/api/Makefile src/fabricflow/ribp/ribpkt/Makefile src/fabricflow/ribs/Makefile src/fabricflow/ribs/ribsapi/Makefile src/fabricflow/ribs/ribsmsg/Makefile src/fabricflow/ribs/ribsyn/Makefile src/gonla/Makefile src/gonla/nlactl/Makefile src/gonla/nlamsg/Makefile src/gonla/nlamsg/nlalink/Makefile src/gonla/nlalib/Makefile src/gonla/nlaapi/Makefile src/gonla/nladbm/Makefile src/gonla/nlasvc/Makefile"
+ac_config_files="$ac_config_files Makefile etc/Makefile etc/installer/Makefile src/Makefile src/goryu/Makefile src/goryu/ryulib/Makefile src/goryu/ofproto/Makefile src/goryu/encoding/Makefile src/gonsl/Makefile src/gonsl/lib/Makefile src/gonsl/api/Makefile src/fabricflow/Makefile src/fabricflow/util/Makefile src/fabricflow/util/net/Makefile src/fabricflow/util/container/Makefile src/fabricflow/util/container/mqueue/Makefile src/fabricflow/fibc/Makefile src/fabricflow/fibc/net/Makefile src/fabricflow/fibc/api/Makefile src/fabricflow/fibc/app/Makefile src/fabricflow/fibc/dbm/Makefile src/fabricflow/fibc/lib/Makefile src/fabricflow/fibc/ofc/Makefile src/fabricflow/fibs/Makefile src/fabricflow/ribc/Makefile src/fabricflow/ribc/ribctl/Makefile src/fabricflow/ribp/Makefile src/fabricflow/ribp/api/Makefile src/fabricflow/ribp/ribpkt/Makefile src/fabricflow/ribs/Makefile src/fabricflow/ribs/ribsapi/Makefile src/fabricflow/ribs/ribsmsg/Makefile src/fabricflow/ribs/ribsyn/Makefile src/fabricflow/ribt/Makefile src/fabricflow/ribn/Makefile src/gonla/Makefile src/gonla/nlactl/Makefile src/gonla/nlamsg/Makefile src/gonla/nlamsg/nlalink/Makefile src/gonla/nlalib/Makefile src/gonla/nlaapi/Makefile src/gonla/nladbm/Makefile src/gonla/nlasvc/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -2518,6 +2540,10 @@ $as_echo_n "checking that generated files are newer than configure... " >&6; }
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: done" >&5
 $as_echo "done" >&6; }
 
+if test -z "${ENABLE_OPENNSL_TRUE}" && test -z "${ENABLE_OPENNSL_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_OPENNSL\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 
 : "${CONFIG_STATUS=./config.status}"
 ac_write_fail=0
@@ -3082,15 +3108,21 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+    "etc/Makefile") CONFIG_FILES="$CONFIG_FILES etc/Makefile" ;;
+    "etc/installer/Makefile") CONFIG_FILES="$CONFIG_FILES etc/installer/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "src/goryu/Makefile") CONFIG_FILES="$CONFIG_FILES src/goryu/Makefile" ;;
     "src/goryu/ryulib/Makefile") CONFIG_FILES="$CONFIG_FILES src/goryu/ryulib/Makefile" ;;
     "src/goryu/ofproto/Makefile") CONFIG_FILES="$CONFIG_FILES src/goryu/ofproto/Makefile" ;;
     "src/goryu/encoding/Makefile") CONFIG_FILES="$CONFIG_FILES src/goryu/encoding/Makefile" ;;
+    "src/gonsl/Makefile") CONFIG_FILES="$CONFIG_FILES src/gonsl/Makefile" ;;
+    "src/gonsl/lib/Makefile") CONFIG_FILES="$CONFIG_FILES src/gonsl/lib/Makefile" ;;
+    "src/gonsl/api/Makefile") CONFIG_FILES="$CONFIG_FILES src/gonsl/api/Makefile" ;;
     "src/fabricflow/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/Makefile" ;;
     "src/fabricflow/util/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/util/Makefile" ;;
     "src/fabricflow/util/net/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/util/net/Makefile" ;;
-    "src/fabricflow/ffsh/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ffsh/Makefile" ;;
+    "src/fabricflow/util/container/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/util/container/Makefile" ;;
+    "src/fabricflow/util/container/mqueue/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/util/container/mqueue/Makefile" ;;
     "src/fabricflow/fibc/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/fibc/Makefile" ;;
     "src/fabricflow/fibc/net/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/fibc/net/Makefile" ;;
     "src/fabricflow/fibc/api/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/fibc/api/Makefile" ;;
@@ -3098,6 +3130,7 @@ do
     "src/fabricflow/fibc/dbm/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/fibc/dbm/Makefile" ;;
     "src/fabricflow/fibc/lib/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/fibc/lib/Makefile" ;;
     "src/fabricflow/fibc/ofc/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/fibc/ofc/Makefile" ;;
+    "src/fabricflow/fibs/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/fibs/Makefile" ;;
     "src/fabricflow/ribc/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ribc/Makefile" ;;
     "src/fabricflow/ribc/ribctl/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ribc/ribctl/Makefile" ;;
     "src/fabricflow/ribp/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ribp/Makefile" ;;
@@ -3107,6 +3140,8 @@ do
     "src/fabricflow/ribs/ribsapi/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ribs/ribsapi/Makefile" ;;
     "src/fabricflow/ribs/ribsmsg/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ribs/ribsmsg/Makefile" ;;
     "src/fabricflow/ribs/ribsyn/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ribs/ribsyn/Makefile" ;;
+    "src/fabricflow/ribt/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ribt/Makefile" ;;
+    "src/fabricflow/ribn/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ribn/Makefile" ;;
     "src/gonla/Makefile") CONFIG_FILES="$CONFIG_FILES src/gonla/Makefile" ;;
     "src/gonla/nlactl/Makefile") CONFIG_FILES="$CONFIG_FILES src/gonla/nlactl/Makefile" ;;
     "src/gonla/nlamsg/Makefile") CONFIG_FILES="$CONFIG_FILES src/gonla/nlamsg/Makefile" ;;

@@ -18,18 +18,112 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"golang.org/x/net/context"
 	"gonla/nlaapi"
 	"gonla/nlamsg"
 	"gonla/nlamsg/nlalink"
-	"google.golang.org/grpc"
 	"io"
 	"os"
 	"strings"
+	"time"
+
+	log "github.com/sirupsen/logrus"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+
+	"github.com/spf13/cobra"
 )
+
+type Command struct {
+	rootCmd *cobra.Command
+	addr    string
+	client  nlaapi.NLAApiClient
+}
+
+func NewCommand() *Command {
+	c := &Command{}
+	c.Init()
+	return c
+}
+
+func (c *Command) Init() {
+	rootCmd := &cobra.Command{
+		Use:   "nlac",
+		Short: "nlac is cli for nlad.",
+		Run: func(cmd *cobra.Command, args []string) {
+			printAll(c.client)
+		},
+	}
+	rootCmd.PersistentFlags().StringVarP(&c.addr, "addr", "", "127.0.0.1:50062", "NLA API address.")
+
+	monCmd := &cobra.Command{
+		Use:   "mon",
+		Short: "Monitor messages.",
+		Args:  cobra.NoArgs,
+		Run: func(cmd *cobra.Command, args []string) {
+			monNetlink(c.client)
+		},
+	}
+	rootCmd.AddCommand(monCmd)
+
+	targets := []string{
+		"link", "addr", "neigh", "route", "mpls", "node", "vpn", "encap", "stat", "iptun", "all",
+	}
+	showCmd := &cobra.Command{
+		Use:       "show [name...]",
+		Short:     fmt.Sprintf("show %s", targets),
+		Args:      cobra.OnlyValidArgs,
+		ValidArgs: targets,
+		Run: func(cmd *cobra.Command, args []string) {
+			for _, arg := range args {
+				switch arg {
+				case "link":
+					printLinks(c.client)
+				case "addr":
+					printAddrs(c.client)
+				case "neigh":
+					printNeighs(c.client)
+				case "route":
+					printRoutes(c.client)
+				case "mpls":
+					printMplss(c.client)
+				case "node":
+					printNodes(c.client)
+				case "vpn":
+					printVpns(c.client)
+				case "encao":
+					printEncapInfos(c.client)
+				case "stat":
+					printStats(c.client)
+				case "iptun":
+					printIptuns(c.client)
+				case "all":
+					printAll(c.client)
+				default:
+					fmt.Printf("Unknown data. %s\n", arg)
+				}
+			}
+		},
+	}
+	rootCmd.AddCommand(showCmd)
+
+	c.rootCmd = rootCmd
+}
+
+func (c *Command) Execute() error {
+	opts := []grpc.DialOption{
+		grpc.WithInsecure(),
+	}
+	conn, err := grpc.Dial(c.addr, opts...)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	c.client = nlaapi.NewNLAApiClient(conn)
+
+	return c.rootCmd.Execute()
+}
 
 func strNode(node *nlaapi.Node) string {
 	return fmt.Sprintf("NODE_:%03d %s", node.NId, node.GetIP())
@@ -153,13 +247,15 @@ func strNeighState(state int32) string {
 }
 
 func strNeigh(neigh *nlaapi.Neigh) string {
-	return fmt.Sprintf("NEIGH:%03d:%04d %-32s %-18s %s i=%d,v=%d,%d",
+	return fmt.Sprintf("NEIGH:%03d:%04d %-32s %-18s %s i=%d/%d,t=%s,v=%d,%d",
 		neigh.NId,
 		neigh.NeId,
 		neigh.GetIP(),
 		neigh.NetHardwareAddr(),
 		strNeighState(neigh.State),
 		neigh.LinkIndex,
+		neigh.PhyLink,
+		neigh.Tunnel,
 		neigh.VlanId,
 		neigh.Vni,
 	)
@@ -376,6 +472,44 @@ func printEncapInfos(c nlaapi.NLAApiClient) {
 	}
 }
 
+func strIptun(e *nlaapi.Iptun) string {
+	n := e.ToNative()
+	a := n.Attrs()
+	return fmt.Sprintf("IPTUN:%03d:%04d %-16s remote %-32s local %-32s mac %s mode %s ln=%d",
+		n.NId,
+		n.TnlId,
+		a.Name,
+		e.GetRemoteIP(),
+		e.GetLocalIP(),
+		e.GetLocalMACAddr(),
+		n.Type(),
+		n.LnId,
+	)
+}
+
+func printIptuns(c nlaapi.NLAApiClient) {
+	stream, err := c.GetIptuns(context.Background(), &nlaapi.GetIptunsRequest{})
+	if err != nil {
+		log.Errorf("GetTunnels error. %v", err)
+		return
+	}
+	for {
+		e, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Errorf("stream.Recv error. %v", err)
+			break
+		}
+		fmt.Println(strIptun(e))
+	}
+}
+
+func strStat(e *nlaapi.Stat) string {
+	return fmt.Sprintf("STAT_: %-24s = %d", e.Key, e.Val)
+}
+
 func printStats(c nlaapi.NLAApiClient) {
 	stream, err := c.GetStats(context.Background(), &nlaapi.GetStatsRequest{})
 	if err != nil {
@@ -391,7 +525,7 @@ func printStats(c nlaapi.NLAApiClient) {
 			log.Errorf("stream.Recv error. %v", err)
 			break
 		}
-		fmt.Println(stat)
+		fmt.Println(strStat(stat))
 	}
 }
 
@@ -405,6 +539,7 @@ func printAll(c nlaapi.NLAApiClient) {
 	printNodes(c)
 	printEncapInfos(c)
 	printStats(c)
+	printIptuns(c)
 }
 
 func strNlMsgUion(m *nlaapi.NetlinkMessageUnion) string {
@@ -439,106 +574,18 @@ func monNetlink(c nlaapi.NLAApiClient) {
 			log.Errorf("stream.Recv error. %v", err)
 			break
 		}
+		now := time.Now().Format("15:04:05")
 		t := nlamsg.NlMsgTypeStr(nlmsg.Type())
-		fmt.Printf("%-12s %s\n", t, strNlMsgUion(nlmsg))
+		fmt.Printf("%s %-12s %s\n", now, t, strNlMsgUion(nlmsg))
 	}
-}
-
-type Args struct {
-	Cmd  string
-	Name string
-	Addr string
-}
-
-func printUsage() {
-	fmt.Println("Usage:")
-	fmt.Println(" nlac [command] [name]")
-	fmt.Println(" - command:")
-	fmt.Println("   - dump : dump [name] data. (default)")
-	fmt.Println("   - mon  : monitor netlink messages.")
-	fmt.Println(" - name:")
-	fmt.Println("   - link : Dump all links.")
-	fmt.Println("   - addr : Dump all addresses.")
-	fmt.Println("   - neigh: Dump all neighbors.")
-	fmt.Println("   - route: Dump all routes (IPv4/6).")
-	fmt.Println("   - mpls : Dump add routes (MPL).")
-	fmt.Println("   - vpn  : Dump all VPNs.")
-	fmt.Println("   - node : Dump all nodes.")
-	fmt.Println("   - encap: Dump all encap infos.")
-	fmt.Println("   - all  : Dump all target datas.(default)")
-
-	os.Exit(1)
-}
-
-func getargs() (args *Args) {
-	addr := flag.String("addr", "127.0.0.1:50062", "NLA API address.")
-	flag.Parse()
-
-	args = &Args{
-		Cmd:  "dump",
-		Name: "all",
-		Addr: *addr,
-	}
-
-	a := flag.Args()
-	if len(a) >= 1 {
-		args.Cmd = a[0]
-	}
-
-	if len(a) >= 2 {
-		args.Name = a[1]
-	}
-
-	return
 }
 
 func main() {
 
-	args := getargs()
+	c := NewCommand()
 
-	opts := []grpc.DialOption{
-		grpc.WithInsecure(),
-	}
-
-	conn, err := grpc.Dial(args.Addr, opts...)
-	if err != nil {
-		log.Errorf("grpc.Dial error. %v", err)
-		return
-	}
-	defer conn.Close()
-
-	c := nlaapi.NewNLAApiClient(conn)
-
-	switch args.Cmd {
-	case "dump":
-		switch args.Name {
-		case "link":
-			printLinks(c)
-		case "addr":
-			printAddrs(c)
-		case "neigh":
-			printNeighs(c)
-		case "route":
-			printRoutes(c)
-		case "mpls":
-			printMplss(c)
-		case "node":
-			printNodes(c)
-		case "vpn":
-			printVpns(c)
-		case "encao":
-			printEncapInfos(c)
-		case "stat":
-			printStats(c)
-		case "all":
-			printAll(c)
-		default:
-			printUsage()
-		}
-	case "mon":
-		monNetlink(c)
-
-	default:
-		printUsage()
+	if err := c.Execute(); err != nil {
+		log.Errorf("%s", err)
+		os.Exit(1)
 	}
 }

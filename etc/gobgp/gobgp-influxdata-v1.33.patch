@@ -1,0 +1,13 @@
+diff --git a/server/collector.go b/server/collector.go
+index 50fb72e9..0c9122ea 100644
+--- a/server/collector.go
++++ b/server/collector.go
+@@ -17,7 +17,7 @@ package server
+ 
+ import (
+ 	"fmt"
+-	"github.com/influxdata/influxdb/client/v2"
++	"github.com/influxdata/influxdb1-client/v2"
+ 	"github.com/osrg/gobgp/packet/bgp"
+ 	"github.com/osrg/gobgp/table"
+ 	log "github.com/sirupsen/logrus"

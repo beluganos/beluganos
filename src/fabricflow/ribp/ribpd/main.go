@@ -41,7 +41,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.Infof("MAIN: config=:%s", cfg)
+	log.Infof("MAIN: config=%v", cfg)
 
 	if verbose {
 		log.SetLevel(log.DebugLevel)

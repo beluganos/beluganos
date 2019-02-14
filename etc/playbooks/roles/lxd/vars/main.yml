@@ -6,6 +6,8 @@ commondir: "roles/lxd/files/common"
 
 confdir: "/etc/beluganos"
 
+lxclogdir: "/var/log/beluganos/{{ lxcname }}"
+
 gopath: "~/go"
 
 users:
@@ -15,13 +17,16 @@ dirs:
   - { path: "/etc/beluganos/", owner: "beluganos"  }
 
 config_files:
-  - { src: "netplan.yaml",   dst: "/etc/netplan/20-beluganos.yaml",  owner: "root"}
-  - { src: "sysctl.conf",    dst: "/etc/sysctl.d/30-beluganos.conf", owner: "root" }
-  - { src: "ribxd.conf",     dst: "/etc/beluganos/ribxd.conf" , owner: "beluganos"  }
-  - { src: "daemons",        dst: "/etc/frr/daemons",            owner: "frr" }
-  - { src: "frr.conf",       dst: "/etc/frr/frr.conf",           owner: "frr" }
-  - { src: "gobgp.conf",     dst: "/etc/frr/gobgp.conf",         owner: "frr" }
-  - { src: "gobgpd.conf",    dst: "/etc/frr/gobgpd.conf",        owner: "frr" }
+  - { src: "netplan.yaml",    dst: "/etc/netplan/20-beluganos.yaml",  owner: "root"}
+  - { src: "sysctl.conf",     dst: "/etc/sysctl.d/30-beluganos.conf", owner: "root" }
+  - { src: "ribxd.conf",      dst: "/etc/beluganos/ribxd.conf",       owner: "beluganos"  }
+  - { src: "ribtd.conf",      dst: "/etc/beluganos/ribtd.conf",       owner: "beluganos"  }
+  - { src: "snmpproxyd.conf", dst: "/etc/beluganos/snmpproxyd.conf",  owner: "beluganos"  }
+  - { src: "snmpproxyd.yaml", dst: "/etc/beluganos/snmpproxyd.yaml",  owner: "beluganos"  }
+  - { src: "daemons",         dst: "/etc/frr/daemons",                owner: "frr" }
+  - { src: "frr.conf",        dst: "/etc/frr/frr.conf",               owner: "frr" }
+  - { src: "gobgp.conf",      dst: "/etc/frr/gobgp.conf",             owner: "frr" }
+  - { src: "gobgpd.conf",     dst: "/etc/frr/gobgpd.conf",            owner: "frr" }
 
 services:
   - beluganos.service
@@ -29,8 +34,10 @@ services:
   - ribcd.service
   - ribsd.service
   - ribpd.service
+  - ribtd.service
   - beluganos.target
   - gobgpd.service
+  - snmpproxyd-ifmon.service
 
 binfiles:
   - nlad
@@ -39,5 +46,7 @@ binfiles:
   - ribpd
   - ribsd
   - ribsdmp
+  - ribtd
   - gobgpd
   - gobgp
+  - snmpifmond

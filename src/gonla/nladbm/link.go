@@ -20,6 +20,7 @@ package nladbm
 import (
 	"gonla/nlalib"
 	"gonla/nlamsg"
+	"net"
 	"sync"
 )
 
@@ -52,12 +53,18 @@ type LinkTable interface {
 	Delete(*LinkKey) *nlamsg.Link
 	Walk(f func(*nlamsg.Link) error) error
 	WalkFree(f func(*nlamsg.Link) error) error
+	SelectTun(*IptunKey) *nlamsg.Iptun
+	UpdateTun(*IptunKey, func(*nlamsg.Iptun) error) error
+	WalkTun(func(*nlamsg.Iptun) error) error
+
+	WalkTunByRemote(uint8, *net.IPNet, func(*nlamsg.Iptun) error) error
 }
 
 func NewLinkTable() LinkTable {
 	return &linkTable{
 		Links:   make(map[LinkKey]*nlamsg.Link),
 		Counter: nlalib.NewCounters16(),
+		TunIdx:  NewIptunTable(),
 	}
 }
 
@@ -68,6 +75,7 @@ type linkTable struct {
 	Mutex   sync.RWMutex
 	Links   map[LinkKey]*nlamsg.Link
 	Counter *nlalib.Counters16
+	TunIdx  IptunTable
 }
 
 func (t *linkTable) find(key *LinkKey) *nlamsg.Link {
@@ -87,6 +95,12 @@ func (t *linkTable) Insert(ln *nlamsg.Link) (old *nlamsg.Link) {
 	}
 
 	t.Links[*key] = ln.Copy()
+
+	iptun := nlamsg.NewIptun(ln)
+	if old != nil {
+		t.TunIdx.Delete(IptunToKey(iptun))
+	}
+	t.TunIdx.Insert(iptun)
 
 	return
 }
@@ -120,7 +134,31 @@ func (t *linkTable) Delete(key *LinkKey) (old *nlamsg.Link) {
 
 	if old = t.find(key); old != nil {
 		delete(t.Links, *key)
+		t.TunIdx.Delete(IptunToKey(nlamsg.NewIptun(old)))
 	}
 
 	return
+}
+
+func (t *linkTable) SelectTun(key *IptunKey) (e *nlamsg.Iptun) {
+	return t.TunIdx.Select(key)
+}
+
+func (t *linkTable) UpdateTun(key *IptunKey, f func(*nlamsg.Iptun) error) error {
+	return t.TunIdx.Update(key, f)
+}
+
+func (t *linkTable) WalkTun(f func(*nlamsg.Iptun) error) error {
+	return t.TunIdx.Walk(f)
+}
+
+func (t *linkTable) WalkTunByRemote(nid uint8, route *net.IPNet, f func(*nlamsg.Iptun) error) error {
+	return t.TunIdx.Walk(func(iptun *nlamsg.Iptun) error {
+		if (iptun.NId == nid) && route.Contains(iptun.Remote()) {
+			if err := f(iptun); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 }

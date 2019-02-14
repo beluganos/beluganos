@@ -22,6 +22,7 @@ fabricflow.fibc.ofc init
 from fabricflow.fibc.ofc import generic
 from fabricflow.fibc.ofc import ovs
 from fabricflow.fibc.ofc import ofdpa2
+from fabricflow.fibc.ofc import onsl
 from fabricflow.fibc.ofc import default
 from fabricflow.fibc.api import fibcapi_pb2 as pb
 
@@ -52,14 +53,24 @@ def _group_dict(mod):
 
 
 def _mod_entry(mod):
-    return (_flow_dict(mod), _group_dict(mod))
+    return (_flow_dict(mod), _group_dict(mod), mod)
 
 
-def _get_mod(mode, index, table):
+def get_mod(mode, index, table, default_mode="default"):
+    """
+    Get mod entry.
+    """
+    if mode not in _MODS:
+        mode = default_mode
+
+    return _MODS[mode][index][table]
+
+
+def _get_func(mode, name):
     if mode not in _MODS:
         mode = "default"
 
-    return _MODS[mode][index][table]
+    return getattr(_MODS[mode][2], name)
 
 
 _MODS = {
@@ -67,6 +78,7 @@ _MODS = {
     "generic": _mod_entry(generic),
     "ofdpa2" : _mod_entry(ofdpa2),
     "ovs"    : _mod_entry(ovs),
+    "onsl"   : _mod_entry(onsl),
 }
 
 
@@ -74,11 +86,32 @@ def flow(mode, table):
     """
     Get Generator of flow table.
     """
-    return _get_mod(mode, 0, table)
+    return get_mod(mode, 0, table)
 
 
 def group(mode, g_type):
     """
     Get Generator of group talbe.
     """
-    return _get_mod(mode, 1, g_type)
+    return get_mod(mode, 1, g_type)
+
+def pkt_out(mode):
+    """
+    Get PacketOut functiom
+    """
+    return _get_func(mode, "pkt_out")
+
+
+def get_port_stats(mode):
+    """
+    Get PortStats function
+    get_port_stats(dp, waiters, port)
+    """
+    return _get_func(mode, "get_port_stats")
+
+def port_mod(mode):
+    """
+    Get PortMod function.
+    port_mod(dpath, port_mod)
+    """
+    return _get_func(mode, "port_mod")

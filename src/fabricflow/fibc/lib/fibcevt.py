@@ -20,22 +20,26 @@ FIBC Event
 """
 
 from ryu.controller import event
+from fabricflow.fibc.api import fibcapi_pb2 as pb
 
-# pylint: disable=too-few-public-methods
 class EventFIBCBase(event.EventBase):
     """
     FIBC Base event
     """
-    def __init__(self, msg):
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, msg, mtype=pb.UNSPEC):
         super(EventFIBCBase, self).__init__()
         self.msg = msg
+        self.mtype = mtype
 
 
-# pylint: disable=too-few-public-methods
 class EventFIBCPortConfig(EventFIBCBase):
     """
     FIBC PortConfig event
+    msg: ryu,ofproto.OFPPort
     """
+    # pylint: disable=too-few-public-methods
     pass
 
 
@@ -43,6 +47,7 @@ class EventFIBCPortConfig(EventFIBCBase):
 class EventFIBCDpPortConfig(EventFIBCBase):
     """
     FIBC DP PortConfig event.
+    msg: ryu,ofproto.OFPPort
     """
     def __init__(self, msg, dp_id, port_id, enter):
         super(EventFIBCDpPortConfig, self).__init__(msg)
@@ -51,68 +56,97 @@ class EventFIBCDpPortConfig(EventFIBCBase):
         self.enter = enter
 
 
-# pylint: disable=too-few-public-methods
 class EventFIBCVsPortConfig(EventFIBCBase):
     """
     FIBC VS PortConfig event
+    msg: ffpacket
     """
+    # pylint: disable=too-few-public-methods
+
     def __init__(self, msg, vs_id, port_id):
         super(EventFIBCVsPortConfig, self).__init__(msg)
         self.vs_id = vs_id
         self.port_id = port_id
 
 
-# pylint: disable=too-few-public-methods
 class EventFIBCPortStatus(EventFIBCBase):
     """
     FIBC VM PortConfig event
+    msg: pb.PortStatis
     """
-    pass
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, msg):
+        super(EventFIBCPortStatus, self).__init__(msg, pb.PORT_STATUS)
 
 
-# pylint: disable=too-few-public-methods
 class EventFIBCVmConfig(EventFIBCBase):
     """
     FIBC VM Config event
+    msg; pb.Hello
     """
+    # pylint: disable=too-few-public-methods
+
     def __init__(self, msg, enter):
-        super(EventFIBCVmConfig, self).__init__(msg)
+        super(EventFIBCVmConfig, self).__init__(msg, pb.HELLO)
         self.enter = enter
 
 
-# pylint: disable=too-few-public-methods
 class EventFIBCDpConfig(EventFIBCBase):
     """
     FIBC Dp config event
+    msg: None
     """
+    # pylint: disable=too-few-public-methods
+
     def __init__(self, msg, dp_id, enter):
         super(EventFIBCDpConfig, self).__init__(msg)
         self.dp_id = dp_id
         self.enter = enter
 
 
-# pylint: disable=too-few-public-methods
 class EventFIBCDpStatus(EventFIBCBase):
     """
     FIBC Dp status event
+    msg: pb.DpStatus
     """
-    pass
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, msg):
+        super(EventFIBCDpStatus, self).__init__(msg, pb.DP_STATUS)
 
 
-# pylint: disable=too-few-public-methods
+class EventFIBCFFPortMod(EventFIBCBase):
+    """
+    FIBC FFPortMod event
+    msg; pb.FFPortMod
+    """
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, msg):
+        super(EventFIBCFFPortMod, self).__init__(msg, pb.FF_PORT_MOD)
+
+
 class EventFIBCFlowMod(EventFIBCBase):
     """
     FIBC FlowMod event
+    msg: pb.FlowMod
     """
-    pass
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, msg):
+        super(EventFIBCFlowMod, self).__init__(msg, pb.FLOW_MOD)
 
 
-# pylint: disable=too-few-public-methods
 class EventFIBCGroupMod(EventFIBCBase):
     """
     FIBC GroupMod event
+    msg: pb.GroupMod
     """
-    pass
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, msg):
+        super(EventFIBCGroupMod, self).__init__(msg, pb.GROUP_MOD)
 
 
 class EventFIBCPortMap(EventFIBCBase):
@@ -129,7 +163,91 @@ class EventFIBCPortMap(EventFIBCBase):
     table: "port"
     msg: fibcdbm.create_ports()
     """
+    # pylint: disable=too-few-public-methods
+
     def __init__(self, msg, cmd, table):
         super(EventFIBCPortMap, self).__init__(msg)
         self.cmd = cmd
         self.table = table
+
+
+class EventFIBCEnterDP(EventFIBCBase):
+    """
+    FIBC EnterDP event
+
+    msg: None
+    dp : FFDatapath
+    enter: True or False
+    ports: list of fibcapi.FFPort
+    """
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, dpath, enter, ports):
+        super(EventFIBCEnterDP, self).__init__(None)
+        self.dp = dpath # pylint: disable=invalid-name
+        self.enter = enter
+        self.ports = ports
+
+
+class EventFIBCFFPortStatus(EventFIBCBase):
+    """
+    FIBC FFPortStatus event
+    msg: lib.fibcryu.FFPortStatus
+    """
+    # pylint: disable=too-few-public-methods
+    pass
+
+
+class EventFIBCMultipartRequest(EventFIBCBase):
+    """
+    FIBC FFMultipart Request event
+
+    msg: pb.FFMultipart.Request
+    dpath: FFDatapath
+    """
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, dpath, msg):
+        super(EventFIBCMultipartRequest, self).__init__(msg. pb.FF_MULTIPART_REQUEST)
+        self.dp = dpath # pylint: disable=invalid-name
+
+
+class EventFIBCMultipartReply(EventFIBCBase):
+    """
+    FIBC FFMultipart Reply event
+
+    msg: pb.FFMultipart.Reply
+    dpath: FFDatapath
+    """
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, dpath, msg, xid=0):
+        super(EventFIBCMultipartReply, self).__init__(msg, pb.FF_MULTIPART_REPLY)
+        self.dp = dpath # pylint: disable=invalid-name
+        self.xid = xid
+
+
+class EventFIBCPacketIn(EventFIBCBase):
+    """
+    FIBC FFPacketIn event
+
+    msg: pb.FFPacketIn
+    dpath: FFDatapath
+    """
+    def __init__(self, dpath, msg, xid=0):
+        super(EventFIBCPacketIn, self).__init__(msg, pb.FF_PACKET_IN)
+        self.dp = dpath # pylint: disable=invalid-name
+        self.xid = xid
+
+
+class EventFIBCPacketOut(EventFIBCBase):
+    """
+    FIBC FFPacketOut event
+
+    msg: pb.FFPacketOut
+    dpath: FFDatapath
+    """
+    def __init__(self, dpath, msg, xid=0):
+        super(EventFIBCPacketOut, self).__init__(msg, pb.FF_PACKET_OUT)
+        self.datapath = dpath
+        self.xid = xid

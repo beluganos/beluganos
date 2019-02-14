@@ -19,6 +19,7 @@ package fibcapi
 
 import (
 	"github.com/golang/protobuf/proto"
+	"golang.org/x/sys/unix"
 	"net"
 )
 
@@ -31,6 +32,15 @@ func (f *FlowMod) Type() uint16 {
 
 func (f *FlowMod) Bytes() ([]byte, error) {
 	return proto.Marshal(f)
+}
+
+func NewFlowModFromBytes(data []byte) (*FlowMod, error) {
+	flow_mod := &FlowMod{}
+	if err := proto.Unmarshal(data, flow_mod); err != nil {
+		return nil, err
+	}
+
+	return flow_mod, nil
 }
 
 //
@@ -75,12 +85,12 @@ func (f *VLANFlow) ToMod(cmd FlowMod_Cmd, reId string) *FlowMod {
 //
 // Termination MAC Flow Table
 //
-func NewTermMACMatch(ethType uint32, ethDst string) *TerminationMacFlow_Match {
+func NewTermMACMatch(inPort uint32, ethType uint32, ethDst string, vid uint16) *TerminationMacFlow_Match {
 	return &TerminationMacFlow_Match{
-		InPort:  0,
+		InPort:  inPort,
 		EthType: ethType,
 		EthDst:  ethDst,
-		VlanVid: 0,
+		VlanVid: uint32(vid),
 	}
 }
 
@@ -153,11 +163,21 @@ func (f *MPLSFlow) ToMod(cmd FlowMod_Cmd, reId string) *FlowMod {
 //
 // Unicast Routing Flow Table
 //
-func NewUnicastRoutingMatch(ipDst *net.IPNet, vrf uint8) *UnicastRoutingFlow_Match {
+func NewUnicastRoutingMatch(ipDst *net.IPNet, vrf uint8, origin UnicastRoutingFlow_Origin) *UnicastRoutingFlow_Match {
 	return &UnicastRoutingFlow_Match{
-		IpDst: ipDst.String(),
-		Vrf:   uint32(vrf),
+		IpDst:  ipDst.String(),
+		Vrf:    uint32(vrf),
+		Origin: origin,
 	}
+}
+
+func NewUnicastRoutingMatchNeigh(ip net.IP, vrf uint8) *UnicastRoutingFlow_Match {
+	ipDst := NewIPNetFromIP(ip)
+	return NewUnicastRoutingMatch(ipDst, vrf, UnicastRoutingFlow_NEIGH)
+}
+
+func NewUnicastRoutingMatchRoute(ipDst *net.IPNet, vrf uint8) *UnicastRoutingFlow_Match {
+	return NewUnicastRoutingMatch(ipDst, vrf, UnicastRoutingFlow_ROUTE)
 }
 
 func NewUnicastRoutingAction(key string, value uint32) *UnicastRoutingFlow_Action {
@@ -204,11 +224,21 @@ func (f *PolicyACLFlow) ToMod(cmd FlowMod_Cmd, reId string) *FlowMod {
 //
 // Policy ACL Flow (match ip_dst and send controller)
 //
-func NewPolicyACLFlowByAddr(ipDst net.IP, vrf uint8) *PolicyACLFlow {
+func NewPolicyACLFlowByAddr(family int32, ipDst net.IP, vrf uint8) *PolicyACLFlow {
 	return &PolicyACLFlow{
 		Match: &PolicyACLFlow_Match{
 			IpDst: ipDst.String(),
 			Vrf:   uint32(vrf),
+			EthType: func() uint32 {
+				switch family {
+				case unix.AF_INET:
+					return unix.ETH_P_IP
+				case unix.AF_INET6:
+					return unix.ETH_P_IPV6
+				default:
+					return 0
+				}
+			}(),
 		},
 		Action: &PolicyACLFlow_Action{
 			Name: PolicyACLFlow_Action_OUTPUT,

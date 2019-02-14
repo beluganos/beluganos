@@ -1,0 +1,7 @@
+*.ko
+*.so
+*.so.1
+*.deb
+gonsld
+opennsl.conf
+work/

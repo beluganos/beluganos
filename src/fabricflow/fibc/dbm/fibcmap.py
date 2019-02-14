@@ -132,6 +132,8 @@ class FIBMapTable(object):
         if key in self.entries:
             return self.entries.pop(key, None)
 
+        return None
+
 
     def find_by_key(self, key):
         """

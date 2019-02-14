@@ -18,11 +18,9 @@
 
 import unittest
 
-import fibcapi_test
 import fibcptm_test
 
 _PKGS = [
-    fibcapi_test,
     fibcptm_test,
 ]
 

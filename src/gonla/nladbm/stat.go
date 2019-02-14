@@ -45,12 +45,12 @@ func NewStat(name string) Stat {
 
 func NewStatTable() StatTable {
 	return &NLAStatTable{
-		Topics: []Stat{},
+		Stats: map[string]Stat{},
 	}
 }
 
 //
-// Topic
+// Stat
 //
 type NLAStat struct {
 	Counter uint64
@@ -70,29 +70,33 @@ func (n *NLAStat) Get() (string, uint64) {
 }
 
 //
-// Table
+// StatTable
 //
 type NLAStatTable struct {
-	Mutex  sync.RWMutex
-	Topics []Stat
+	Mutex sync.RWMutex
+	Stats map[string]Stat
 }
 
 func (n *NLAStatTable) New(name string) Stat {
 	n.Mutex.Lock()
 	defer n.Mutex.Unlock()
 
-	t := NewStat(name)
-	n.Topics = append(n.Topics, t)
+	if stat, ok := n.Stats[name]; ok {
+		return stat
+	}
 
-	return t
+	stat := NewStat(name)
+	n.Stats[name] = stat
+
+	return stat
 }
 
 func (n *NLAStatTable) Walk(f func(Stat) error) error {
 	n.Mutex.RLock()
 	defer n.Mutex.RUnlock()
 
-	for _, topic := range n.Topics {
-		if err := f(topic); err != nil {
+	for _, stat := range n.Stats {
+		if err := f(stat); err != nil {
 			return err
 		}
 	}

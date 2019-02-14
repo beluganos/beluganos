@@ -18,19 +18,24 @@
 package nlaapi
 
 import (
-	"github.com/vishvananda/netlink"
+	"net"
 	"testing"
+
+	"github.com/vishvananda/netlink"
 )
 
 func TestLinkType(t *testing.T) {
+	ip4 := net.ParseIP("1.1.1.1")
+	ip6 := net.ParseIP("::0")
 	datas := map[netlink.Link]string{
-		&netlink.Device{}: LINK_TYPE_DEVICE,
-		&netlink.Bridge{}: LINK_TYPE_BRIDGE,
-		&netlink.Vlan{}:   LINK_TYPE_VLAN,
-		&netlink.Vxlan{}:  LINK_TYPE_VXLAN,
-		&netlink.Vti{}:    LINK_TYPE_VTI,
-		&netlink.Veth{}:   LINK_TYPE_VETH,
-		&netlink.Bond{}:   LINK_TYPE_BOND,
+		&netlink.Device{}:        LINK_TYPE_DEVICE,
+		&netlink.Bridge{}:        LINK_TYPE_BRIDGE,
+		&netlink.Vlan{}:          LINK_TYPE_VLAN,
+		&netlink.Vxlan{}:         LINK_TYPE_VXLAN,
+		&netlink.Vti{Local: ip4}: LINK_TYPE_VTI,
+		&netlink.Vti{Local: ip6}: LINK_TYPE_VTI6,
+		&netlink.Veth{}:          LINK_TYPE_VETH,
+		&netlink.Bond{}:          LINK_TYPE_BOND,
 	}
 
 	for link, s := range datas {

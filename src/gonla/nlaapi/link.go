@@ -18,10 +18,11 @@
 package nlaapi
 
 import (
-	"github.com/vishvananda/netlink"
 	"gonla/nladbm"
 	"gonla/nlamsg"
 	"net"
+
+	"github.com/vishvananda/netlink"
 )
 
 const (
@@ -30,9 +31,12 @@ const (
 	LINK_TYPE_VLAN    = "vlan"
 	LINK_TYPE_VXLAN   = "vxlan"
 	LINK_TYPE_VTI     = "vti"
+	LINK_TYPE_VTI6    = "vti6"
 	LINK_TYPE_VETH    = "veth"
 	LINK_TYPE_BOND    = "bond"
 	LINK_TYPE_GENERIC = "generic"
+	LINK_TYPE_IP4TUN  = "ipip"
+	LINK_TYPE_IP6TUN  = "ip6tnl"
 )
 
 // LinkOperState
@@ -510,6 +514,65 @@ func BondLinkToNative(ln *Link) netlink.Link {
 	return n
 }
 
+// Link (Iptun)
+func NewIptunLink(nid uint8, lnId uint8, typ string) *Link {
+	return &Link{
+		Type:      typ,
+		LinkAttrs: NewIptunLinkAttrs(),
+		NId:       uint32(nid),
+		LnId:      uint32(lnId),
+	}
+}
+
+func NewIptunLinkAttrs() *Link_Iptun {
+	return &Link_Iptun{
+		Iptun: &IptunLinkAttrs{
+			LinkAttrs: NewLinkAttrs(),
+		},
+	}
+}
+
+func NewIptunLinkAttrsFromNative(ln netlink.Link) isLink_LinkAttrs {
+	attrs := NewIptunLinkAttrs()
+	a := attrs.Iptun
+	LinkAttrsFromNative(a.GetLinkAttrs(), ln.Attrs())
+
+	n := ln.(*netlink.Iptun)
+	a.Ttl = uint32(n.Ttl)
+	a.Tos = uint32(n.Tos)
+	a.PMtuDisc = uint32(n.PMtuDisc)
+	a.Link = uint32(n.Link)
+	a.Local = n.Local
+	a.Remote = n.Remote
+	a.EncapSport = uint32(n.EncapSport)
+	a.EncapDport = uint32(n.EncapDport)
+	a.EncapType = uint32(n.EncapType)
+	a.EncapFlags = uint32(n.EncapFlags)
+	a.FlowBased = n.FlowBased
+
+	return attrs
+}
+
+func IptunLinkToNative(ln *Link) netlink.Link {
+	n := &netlink.Iptun{}
+	d := ln.GetIptun()
+	LinkAttrsToNative(d.GetLinkAttrs(), n.Attrs())
+
+	n.Ttl = uint8(d.Ttl)
+	n.Tos = uint8(d.Tos)
+	n.PMtuDisc = uint8(d.PMtuDisc)
+	n.Link = uint32(d.Link)
+	n.Local = net.IP(d.Local)
+	n.Remote = net.IP(d.Remote)
+	n.EncapSport = uint16(d.EncapSport)
+	n.EncapDport = uint16(d.EncapDport)
+	n.EncapType = uint16(d.EncapType)
+	n.EncapFlags = uint16(d.EncapFlags)
+	n.FlowBased = d.FlowBased
+
+	return n
+}
+
 // Link
 var linkToNativeFuncs = map[string]func(*Link) netlink.Link{
 	LINK_TYPE_DEVICE:  DeviceLinkToNative,
@@ -520,6 +583,8 @@ var linkToNativeFuncs = map[string]func(*Link) netlink.Link{
 	LINK_TYPE_VETH:    VethLinkToNative,
 	LINK_TYPE_BOND:    BondLinkToNative,
 	LINK_TYPE_GENERIC: GenericLinkToNative,
+	LINK_TYPE_IP4TUN:  IptunLinkToNative,
+	LINK_TYPE_IP6TUN:  IptunLinkToNative,
 }
 
 var linkFromNativeFuncs = map[string]func(netlink.Link) isLink_LinkAttrs{
@@ -531,6 +596,8 @@ var linkFromNativeFuncs = map[string]func(netlink.Link) isLink_LinkAttrs{
 	LINK_TYPE_VETH:    NewVethLinkAttrsFromNative,
 	LINK_TYPE_BOND:    NewBondLinkAttrsFromNative,
 	LINK_TYPE_GENERIC: NewGenericLinkAttrsFromNative,
+	LINK_TYPE_IP4TUN:  NewIptunLinkAttrsFromNative,
+	LINK_TYPE_IP6TUN:  NewIptunLinkAttrsFromNative,
 }
 
 func (ln *Link) ToNetlink() netlink.Link {

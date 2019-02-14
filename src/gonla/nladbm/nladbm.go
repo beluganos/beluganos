@@ -17,8 +17,6 @@
 
 package nladbm
 
-import ()
-
 var (
 	clients ClientTable
 	nodes   NodeTable

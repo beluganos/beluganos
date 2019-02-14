@@ -13,29 +13,6 @@ index 0000000..f76e094
 +func AddrDeserialize(m []byte) (addr Addr, family, index int, err error) {
 +	return parseAddr(m)
 +}
-diff --git a/neigh_linux.go b/neigh_linux.go
-index f75c226..60855b6 100644
---- a/neigh_linux.go
-+++ b/neigh_linux.go
-@@ -253,11 +253,13 @@ func NeighDeserialize(m []byte) (*Neigh, error) {
- 
- 	// This should be cached for perfomance
- 	// once per table dump
--	link, err := LinkByIndex(neigh.LinkIndex)
--	if err != nil {
--		return nil, err
--	}
--	encapType := link.Attrs().EncapType
-+	encapType := func() string {
-+		link, err := LinkByIndex(neigh.LinkIndex)
-+		if err != nil {
-+			return ""
-+		}
-+		return link.Attrs().EncapType
-+	}()
- 
- 	for _, attr := range attrs {
- 		switch attr.Attr.Type {
 diff --git a/nl/mpls_gonla.go b/nl/mpls_gonla.go
 new file mode 100644
 index 0000000..bb11deb
@@ -47,6 +24,33 @@ index 0000000..bb11deb
 +package nl
 +
 +const RTNLGRP_MPLS_ROUTE = 27
+diff --git a/nl/nl_linux_gonla.go b/nl/nl_linux_gonla.go
+new file mode 100644
+index 0000000..a193981
+--- /dev/null
++++ b/nl/nl_linux_gonla.go
+@@ -0,0 +1,21 @@
++package nl
++
++import (
++	"golang.org/x/sys/unix"
++)
++
++func (s *NetlinkSocket) SetReceiveBuffer(bufsize int) error {
++	return unix.SetsockoptInt(int(s.fd), unix.SOL_SOCKET, unix.SO_RCVBUF, bufsize)
++}
++
++func (s *NetlinkSocket) GetReceiveBuffer() (int, error) {
++	return unix.GetsockoptInt(int(s.fd), unix.SOL_SOCKET, unix.SO_RCVBUF)
++}
++
++func (s *NetlinkSocket) SetSendBuffer(bufsize int) error {
++	return unix.SetsockoptInt(int(s.fd), unix.SOL_SOCKET, unix.SO_SNDBUF, bufsize)
++}
++
++func (s *NetlinkSocket) GetSendBuffer() (int, error) {
++	return unix.GetsockoptInt(int(s.fd), unix.SOL_SOCKET, unix.SO_SNDBUF)
++}
 diff --git a/nl/syscall.go b/nl/syscall.go
 index 0ff1bba..31382cb 100644
 --- a/nl/syscall.go
@@ -60,10 +64,10 @@ index 0ff1bba..31382cb 100644
  	RTA_ENCAP_TYPE = 0x15
  	RTA_ENCAP      = 0x16
 diff --git a/route.go b/route.go
-index 2cd58ee..1d741e4 100644
+index 58ff1af..5a24551 100644
 --- a/route.go
 +++ b/route.go
-@@ -55,7 +55,7 @@ func (r Route) String() string {
+@@ -56,7 +56,7 @@ func (r Route) String() string {
  		elems = append(elems, fmt.Sprintf("Ifindex: %d", r.LinkIndex))
  	}
  	if r.MPLSDst != nil {
@@ -89,10 +93,10 @@ index 0000000..08d5709
 +	return &route, err
 +}
 diff --git a/route_linux.go b/route_linux.go
-index 7233549..bdd543c 100644
+index 93fb87a..5773ff2 100644
 --- a/route_linux.go
 +++ b/route_linux.go
-@@ -786,6 +786,8 @@ func deserializeRoute(m []byte) (Route, error) {
+@@ -793,6 +793,8 @@ func deserializeRoute(m []byte) (Route, error) {
  		switch attr.Attr.Type {
  		case unix.RTA_GATEWAY:
  			route.Gw = net.IP(attr.Value)
@@ -101,7 +105,7 @@ index 7233549..bdd543c 100644
  		case unix.RTA_PREFSRC:
  			route.Src = net.IP(attr.Value)
  		case unix.RTA_DST:
-@@ -832,6 +834,8 @@ func deserializeRoute(m []byte) (Route, error) {
+@@ -839,6 +841,8 @@ func deserializeRoute(m []byte) (Route, error) {
  					switch attr.Attr.Type {
  					case unix.RTA_GATEWAY:
  						info.Gw = net.IP(attr.Value)

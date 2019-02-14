@@ -2,6 +2,13 @@
 
 - import_tasks: "roles/lxd/files/{{ lxcname }}/lxd_profile.yml"
 
+- name: create log mount point
+  become: yes
+  file:
+    path: "{{ lxclogdir }}"
+    state: directory
+    mode: 0755
+
 
 - name: create container
   lxd_container:

@@ -76,6 +76,7 @@ def conv_l3_unicast_group(mod, portmap):
     Conver Group mod for L3 Unicast Group.
     """
     mod.l3_unicast.port_id = get_dp_port(portmap, mod.re_id, mod.l3_unicast.port_id)
+    mod.l3_unicast.phy_port_id = get_dp_port(portmap, mod.re_id, mod.l3_unicast.phy_port_id)
 
 
 def conv_mpls_interface_group(mod, portmap):

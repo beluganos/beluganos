@@ -18,9 +18,12 @@
 package nladbm
 
 import (
-	"github.com/vishvananda/netlink"
+	"net"
+
 	"gonla/nlamsg"
 	"testing"
+
+	"github.com/vishvananda/netlink"
 )
 
 func TestLinkTable_Insert(t *testing.T) {
@@ -40,5 +43,54 @@ func TestLinkTable_Insert(t *testing.T) {
 
 	if l := len(tbl.Links); l != 2 {
 		t.Errorf("linkTable Insert size unmatch. %d", l)
+	}
+}
+
+func TestLinkIptun(t *testing.T) {
+	nid := uint8(0)
+	tbl := NewLinkTable().(*linkTable)
+
+	remotes := []string{
+		"2001:2001::1",
+		"2001:2001::2",
+		"2001:2001::3",
+		"2001:2002::1",
+	}
+
+	check := map[string]struct{}{}
+
+	for index, remote := range remotes {
+		check[remote] = struct{}{}
+		iptun := &netlink.Iptun{}
+		iptun.Attrs().Index = index + 1
+		iptun.Remote = net.ParseIP(remote)
+		link := nlamsg.NewLink(iptun, nid, uint16(index+11))
+		tbl.Insert(link)
+	}
+
+	_, route, _ := net.ParseCIDR("2001:2001::/32")
+	tbl.WalkTunByRemote(nid, route, func(iptun *nlamsg.Iptun) error {
+		remote := iptun.Remote().String()
+		if _, ok := check[remote]; !ok {
+			t.Errorf("WalkTunByRemote unmatch. iptun=%s", iptun)
+		}
+		delete(check, remote)
+		return nil
+	})
+	if v := len(check); v != 1 {
+		t.Errorf("WalkTunByRemote unmatch. check=%v", check)
+	}
+
+	_, route, _ = net.ParseCIDR("2001:2002::/32")
+	tbl.WalkTunByRemote(nid, route, func(iptun *nlamsg.Iptun) error {
+		remote := iptun.Remote().String()
+		if _, ok := check[remote]; !ok {
+			t.Errorf("WalkTunByRemote unmatch. iptun=%s", iptun)
+		}
+		delete(check, remote)
+		return nil
+	})
+	if v := len(check); v != 0 {
+		t.Errorf("WalkTunByRemote unmatch. check=%v", check)
 	}
 }

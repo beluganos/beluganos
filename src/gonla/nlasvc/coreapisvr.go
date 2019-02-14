@@ -79,28 +79,35 @@ func (n *NLACoreApiServer) MonNetlinkMessage(req *nlaapi.Node, stream nlaapi.NLA
 	if old := nladbm.Nodes().Insert(node); old != nil {
 		return fmt.Errorf("NLACoreApiServer: Node already exists. %v", old)
 	}
-	defer nladbm.Nodes().Delete(nladbm.NodeToKey(node))
+
+	node.Open()
+	defer node.Close()
 
 	sendNode(nlalink.RTM_NEWNODE)
-	defer sendNode(nlalink.RTM_DELNODE)
 
-	done := stream.Context().Done()
-	for {
-		select {
-		case <-done:
+	if done := stream.Context().Done(); done != nil {
+		go func() {
+			<-done
 			log.Infof("NLACoreApiServer: Monitor EXIT. nid:%d", nid)
-			return nil
 
-		case m := <-node.Recv():
-			log.Debugf("NLACoreApiServer: Send to slave. nid:%d %v", nid, m)
-			nlmsg := nlaapi.NewNetlinkMessageUnionFromNative(m)
-			if err := stream.Send(nlmsg); err != nil {
-				log.Errorf("NLACoreApiServer: Stream.Send error. nid:%d %s", nid, err)
-				return err
-			}
+			nladbm.Nodes().Delete(nladbm.NodeToKey(node))
+			sendNode(nlalink.RTM_DELNODE)
+
+			node.Send(nil)
+		}()
+	}
+
+	for m := range node.Recv() {
+		if m == nil {
+			break
+		}
+
+		log.Debugf("NLACoreApiServer: Send to slave. nid:%d %v", nid, m)
+		nlmsg := nlaapi.NewNetlinkMessageUnionFromNative(m)
+		if err := stream.Send(nlmsg); err != nil {
+			log.Errorf("NLACoreApiServer: Stream.Send error. nid:%d %s", nid, err)
 		}
 	}
 
-	// log.Infof("Api Server; Monitor EXIT %v", req)
-	// return nil
+	return nil
 }

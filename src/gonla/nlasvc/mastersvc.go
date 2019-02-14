@@ -18,26 +18,32 @@
 package nlasvc
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/vishvananda/netlink"
 	"gonla/nlactl"
 	"gonla/nladbm"
 	"gonla/nlalib"
 	"gonla/nlamsg"
 	"gonla/nlamsg/nlalink"
 	"syscall"
+	"time"
+
+	log "github.com/sirupsen/logrus"
 )
+
+const TunnelUpdateInterval = 1800 * time.Second
 
 type NLAMasterService struct {
 	Service nlactl.NLAService
+	iptun   *NLAMasterIptun
 	NId     uint8
 }
 
 func NewNLAMasterService(service nlactl.NLAService) *NLAMasterService {
-	return &NLAMasterService{
+	s := &NLAMasterService{
 		Service: service,
 		NId:     0,
 	}
+	s.iptun = NewNLAMasterIptun(s, TunnelUpdateInterval)
+	return s
 }
 
 func (n *NLAMasterService) Start(nid uint8, chans *nlactl.NLAChannels) error {
@@ -47,6 +53,7 @@ func (n *NLAMasterService) Start(nid uint8, chans *nlactl.NLAChannels) error {
 		return nil
 	}
 
+	go n.iptun.Serve()
 	go SubscribeNetlinkResources(chans.NlMsg, 0)
 
 	log.Infof("MasterService: START")
@@ -71,17 +78,30 @@ func (n *NLAMasterService) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlams
 			nlmsg.Header.Type = syscall.RTM_SETLINK
 		}
 
+		nlamsg.DispatchLink(nlmsg, link, n.Service)
+
+		if iptun := link.Iptun(); iptun != nil {
+			// remote is treated as neigh.
+			// if route to remote exists, generate NEWNEIGH.
+			n.iptun.RemoteUp(link.NId, iptun.Remote)
+		}
+
 	case syscall.RTM_DELLINK:
+		if iptun := link.Iptun(); iptun != nil {
+			// remote is treated as neigh.
+			// if route to remote exists, generate DELNEIGH.
+			n.iptun.RemoteDown(link.NId, iptun.Remote)
+		}
+
 		if old := nladbm.Links().Delete(nladbm.LinkToKey(link)); old != nil {
 			link.LnId = old.LnId
 		}
 
+		nlamsg.DispatchLink(nlmsg, link, n.Service)
+
 	default:
 		log.Errorf("MasterService: LINK Invalid message. %v", nlmsg)
-		return
 	}
-
-	nlamsg.DispatchLink(nlmsg, link, n.Service)
 }
 
 func (n *NLAMasterService) NetlinkAddr(nlmsg *nlamsg.NetlinkMessage, addr *nlamsg.Addr) {
@@ -121,104 +141,40 @@ func (n *NLAMasterService) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nla
 			return
 		}
 
+		nlamsg.DispatchNeigh(nlmsg, neigh, n.Service)
+
+		// if neigh is tunnel remote, generate NEWROUTE
+		iptunNlMsg := *nlmsg
+		iptunNlMsg.Header.Type = syscall.RTM_NEWROUTE
+		n.iptun.NewRoutes(neigh, func(iptunRoute *nlamsg.Route) {
+			nlamsg.DispatchRoute(&iptunNlMsg, iptunRoute, n.Service)
+		})
+
 	case syscall.RTM_DELNEIGH:
 		if old := nladbm.Neighs().Delete(nladbm.NeighToKey(neigh)); old != nil {
 			neigh.NeId = old.NeId
 
-			nlmsg.Header.Type = syscall.RTM_DELROUTE
+			delRtNlMsg := *nlmsg
+			delRtNlMsg.Header.Type = syscall.RTM_DELROUTE
 			nladbm.Mplss().WalkByGwFree(neigh.NId, neigh.IP, func(route *nlamsg.Route) error {
-				n.NetlinkRoute(nlmsg, route)
+				n.NetlinkRoute(&delRtNlMsg, route)
 				return nil
 
 			})
 			nladbm.Routes().WalkByGwFree(neigh.NId, neigh.IP, func(route *nlamsg.Route) error {
-				n.NetlinkRoute(nlmsg, route)
+				n.NetlinkRoute(&delRtNlMsg, route)
 				return nil
 			})
-
-			nlmsg.Header.Type = syscall.RTM_DELNEIGH
+			n.iptun.NewRoutes(neigh, func(iptunRoute *nlamsg.Route) {
+				nlamsg.DispatchRoute(&delRtNlMsg, iptunRoute, n.Service)
+			})
 		}
+
+		nlamsg.DispatchNeigh(nlmsg, neigh, n.Service)
 
 	default:
 		log.Errorf("MasterService: NEIGH Invalid message. %v", nlmsg)
 		return
-	}
-
-	nlamsg.DispatchNeigh(nlmsg, neigh, n.Service)
-}
-
-func (n *NLAMasterService) NewVpnRoute(ricRoute *nlamsg.Route) *nlamsg.Route {
-
-	vpn := nladbm.Vpns().Select(nladbm.NewVpnKey(ricRoute.NId, ricRoute.GetDst(), ricRoute.GetGw()))
-	if vpn == nil {
-		log.Debugf("MasterService: NewVpnRoute VPN not found. nid:%d dst:%s gw:%s", ricRoute.NId, ricRoute.GetDst(), ricRoute.GetGw())
-		return nil
-	}
-
-	gwDst := nlalib.NewIPNetFromIP(vpn.NetVpnGw())
-	gwRoute := nladbm.Routes().Select(nladbm.NewRouteKey(n.NId, gwDst))
-	if gwRoute == nil {
-		log.Debugf("MasterService: NewVpnRoute Route for VPN not found. %d, %s", n.NId, gwDst)
-		return nil
-	}
-
-	// Create MplsInfo := [Mpls(GW)..., Mpls(VPN)]
-	labels := []int{}
-	enIds := []uint32{}
-	if encap := gwRoute.GetMPLSEncap(); encap != nil {
-		labels = encap.Labels
-		enIds = gwRoute.EnIds
-	}
-	labels = append(labels, int(vpn.Label))
-	enIds = append(enIds, nladbm.Encaps().EncapId(gwDst, vpn.Label))
-
-	// Create new VPN Route instance.
-	// *** Do not change original Route ***
-	vpnRoute := gwRoute.Copy()
-	vpnRoute.Dst = vpn.GetIPNet()
-	vpnRoute.NId = vpn.NId
-	vpnRoute.VpnGw = vpn.NetVpnGw()
-	vpnRoute.LinkIndex = 0
-	vpnRoute.Encap = &netlink.MPLSEncap{Labels: labels}
-	vpnRoute.EnIds = enIds
-	vpnRoute.MultiPath = []*netlink.NexthopInfo{}
-
-	log.Debugf("MasterService: NewVpnRoute %v", vpnRoute)
-	return vpnRoute
-}
-
-func (n *NLAMasterService) NewVpnRoutes(gwRoute *nlamsg.Route, f func(*nlamsg.Route) error) {
-
-	labels := []int{}
-	enIds := []uint32{}
-	if gwRoute.GetEncap() != nil {
-		if mpls, ok := gwRoute.GetEncap().(*netlink.MPLSEncap); ok {
-			labels = mpls.Labels
-			enIds = []uint32{nladbm.Encaps().EncapId(gwRoute.GetDst(), 0)}
-		}
-	}
-
-	err := nladbm.Vpns().WalkByVpnGw(gwRoute.Dst.IP, func(vpn *nlamsg.Vpn) error {
-		// Create new VPN Route instance.
-		// *** Do not change original Route ***
-		vpnLabels := append(labels, int(vpn.Label))
-		vpnEnIds := append(enIds, nladbm.Encaps().EncapId(gwRoute.GetDst(), vpn.Label))
-
-		vpnRoute := gwRoute.Copy()
-		vpnRoute.Dst = vpn.GetIPNet()
-		vpnRoute.NId = vpn.NId
-		vpnRoute.VpnGw = vpn.NetVpnGw()
-		vpnRoute.LinkIndex = 0
-		vpnRoute.Encap = &netlink.MPLSEncap{Labels: vpnLabels}
-		vpnRoute.EnIds = vpnEnIds
-		vpnRoute.MultiPath = []*netlink.NexthopInfo{}
-
-		log.Debugf("MasterService: NewVpnRoutes %v", vpnRoute)
-		return f(vpnRoute)
-	})
-
-	if err != nil {
-		log.Errorf("MasterService: NewVpnRoutes Walk error. %s", err)
 	}
 }
 
@@ -245,6 +201,15 @@ func (n *NLAMasterService) NetlinkIPRouteOnMIC(nlmsg *nlamsg.NetlinkMessage, rou
 
 			log.Debugf("MasterService: RTM_DELROUTE(IP/MIC/OLD) %v", old)
 			nlamsg.DispatchRoute(&delNlMsg, old, n.Service)
+
+			// if dst is tunnel-remote, generate DELNEIGH
+			n.iptun.RemoteRouteDown(old)
+
+			// if route is <dst> dev <tunnel>, generate NEWROUTE(<dst> via <remote>)
+			if iptunRoute := n.iptun.NewIptunRoute(old); iptunRoute != nil {
+				log.Debugf("MasterService: RTM_DELROUTE(IPTUN/MIC/OLD) %v", iptunRoute)
+				nlamsg.DispatchRoute(&delNlMsg, iptunRoute, n.Service)
+			}
 		}
 
 		log.Debugf("MasterService: RTM_NEWROUTE(IP/MIC) %v", route)
@@ -256,6 +221,15 @@ func (n *NLAMasterService) NetlinkIPRouteOnMIC(nlmsg *nlamsg.NetlinkMessage, rou
 			nlamsg.DispatchRoute(nlmsg, vpnRoute, n.Service)
 			return nil
 		})
+
+		// if dst is tunnel-remote, generate NEWNEIGH
+		n.iptun.RemoteRouteUp(route)
+
+		// if route is <dst> dev <tunnel>, generate NEWROUTE(<dst> via <remote>)
+		if iptunRoute := n.iptun.NewIptunRoute(route); iptunRoute != nil {
+			log.Debugf("MasterService: RTM_NEWROUTE(IPTUN) %v", iptunRoute)
+			nlamsg.DispatchRoute(nlmsg, iptunRoute, n.Service)
+		}
 
 	case syscall.RTM_DELROUTE:
 		// if nexthop is used by vpns, create the vpns DELROUTE messages.
@@ -269,6 +243,15 @@ func (n *NLAMasterService) NetlinkIPRouteOnMIC(nlmsg *nlamsg.NetlinkMessage, rou
 		nlamsg.DispatchRoute(nlmsg, route, n.Service)
 
 		nladbm.Routes().Delete(nladbm.RouteToKey(route))
+
+		// if dst is tunnel-remote, generate DELNEIGH
+		n.iptun.RemoteRouteDown(route)
+
+		// if route is <dst> dev <tunnel>, generate NEWROUTE(<dst> via <remote>)
+		if iptunRoute := n.iptun.NewIptunRoute(route); iptunRoute != nil {
+			log.Debugf("MasterService: RTM_DELROUTE(IPTUN) %v", iptunRoute)
+			nlamsg.DispatchRoute(nlmsg, iptunRoute, n.Service)
+		}
 
 	default:
 		log.Errorf("MasterService: ROUTE(IP/MIC) Invalid message. %v %s", nlmsg, route)

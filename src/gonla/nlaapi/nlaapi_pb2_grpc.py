@@ -134,6 +134,11 @@ class NLAApiStub(object):
         request_serializer=nlaapi__pb2.EncapInfoKey.SerializeToString,
         response_deserializer=nlaapi__pb2.EncapInfo.FromString,
         )
+    self.GetIptun = channel.unary_unary(
+        '/nlaapi.NLAApi/GetIptun',
+        request_serializer=nlaapi__pb2.IptunKey.SerializeToString,
+        response_deserializer=nlaapi__pb2.Iptun.FromString,
+        )
     self.GetLinks = channel.unary_stream(
         '/nlaapi.NLAApi/GetLinks',
         request_serializer=nlaapi__pb2.GetLinksRequest.SerializeToString,
@@ -173,6 +178,11 @@ class NLAApiStub(object):
         '/nlaapi.NLAApi/GetEncapInfos',
         request_serializer=nlaapi__pb2.GetEncapInfosRequest.SerializeToString,
         response_deserializer=nlaapi__pb2.EncapInfo.FromString,
+        )
+    self.GetIptuns = channel.unary_stream(
+        '/nlaapi.NLAApi/GetIptuns',
+        request_serializer=nlaapi__pb2.GetIptunsRequest.SerializeToString,
+        response_deserializer=nlaapi__pb2.Iptun.FromString,
         )
     self.GetStats = channel.unary_stream(
         '/nlaapi.NLAApi/GetStats',
@@ -264,6 +274,13 @@ class NLAApiServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def GetIptun(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
   def GetLinks(self, request, context):
     # missing associated documentation comment in .proto file
     pass
@@ -314,6 +331,13 @@ class NLAApiServicer(object):
     raise NotImplementedError('Method not implemented!')
 
   def GetEncapInfos(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetIptuns(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -385,6 +409,11 @@ def add_NLAApiServicer_to_server(servicer, server):
           request_deserializer=nlaapi__pb2.EncapInfoKey.FromString,
           response_serializer=nlaapi__pb2.EncapInfo.SerializeToString,
       ),
+      'GetIptun': grpc.unary_unary_rpc_method_handler(
+          servicer.GetIptun,
+          request_deserializer=nlaapi__pb2.IptunKey.FromString,
+          response_serializer=nlaapi__pb2.Iptun.SerializeToString,
+      ),
       'GetLinks': grpc.unary_stream_rpc_method_handler(
           servicer.GetLinks,
           request_deserializer=nlaapi__pb2.GetLinksRequest.FromString,
@@ -424,6 +453,11 @@ def add_NLAApiServicer_to_server(servicer, server):
           servicer.GetEncapInfos,
           request_deserializer=nlaapi__pb2.GetEncapInfosRequest.FromString,
           response_serializer=nlaapi__pb2.EncapInfo.SerializeToString,
+      ),
+      'GetIptuns': grpc.unary_stream_rpc_method_handler(
+          servicer.GetIptuns,
+          request_deserializer=nlaapi__pb2.GetIptunsRequest.FromString,
+          response_serializer=nlaapi__pb2.Iptun.SerializeToString,
       ),
       'GetStats': grpc.unary_stream_rpc_method_handler(
           servicer.GetStats,

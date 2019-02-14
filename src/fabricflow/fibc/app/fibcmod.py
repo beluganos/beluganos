@@ -25,6 +25,7 @@ from ryu.base import app_manager
 from ryu.lib import ofctl_v1_3 as ofctl
 from ryu.controller import dpset
 from ryu.controller import handler
+from fabricflow.fibc.api import fibcapi_pb2 as pb
 from fabricflow.fibc.dbm import fibcdbm
 from fabricflow.fibc.lib import fibccnv
 from fabricflow.fibc.lib import fibclog
@@ -36,7 +37,7 @@ _SEND_MOD_WAIT_SEC = 0.025
 
 def _find_dp_by_re_id(re_id):
     dp_id = fibcdbm.idmap().find_by_re_id(re_id)["dp_id"]
-    return fibcdbm.dps().find_by_id(dp_id), fibcdbm.dps().get_mode(dp_id, "default")
+    return fibcdbm.dps().find_by_id(dp_id)
 
 
 # pylint: disable=no-self-use
@@ -46,7 +47,8 @@ class FIBCModApp(app_manager.RyuApp):
     """
     # pylint: disable=no-self-use
     # pylint: disable=broad-except
-    @handler.set_ev_cls(dpset.EventDP, dpset.DPSET_EV_DISPATCHER)
+    @handler.set_ev_cls([dpset.EventDP,
+                         fibcevt.EventFIBCEnterDP], dpset.DPSET_EV_DISPATCHER)
     def on_dp(self, evt):
         """
         Process Dp Entre event
@@ -106,6 +108,63 @@ class FIBCModApp(app_manager.RyuApp):
                 func = ofc.group(mode, mod.g_type)
                 func(dpath, mod, ofctl)
                 sleep(_SEND_MOD_WAIT_SEC)
+
+        except Exception as expt:
+            _LOG.exception(expt)
+
+
+    # pylint: disable=broad-except
+    @handler.set_ev_cls(fibcevt.EventFIBCFFPortMod, handler.MAIN_DISPATCHER)
+    def on_ff_port_mod(self, evt):
+        """
+        Process PortMod event
+        """
+        mod = evt.msg
+        if fibclog.dump_msg():
+            _LOG.debug(mod)
+
+        try:
+            dpath, mode = fibcdbm.dps().find_by_id(mod.dp_id)
+            func = ofc.port_mod(mode)
+            func(dpath, mod, ofctl)
+
+        except Exception as expt:
+            _LOG.exception(expt)
+
+
+    # pylint: disable=broad-except
+    @handler.set_ev_cls(fibcevt.EventFIBCDpPortConfig, handler.MAIN_DISPATCHER)
+    def on_dpport_config(self, evt):
+        """
+        Process DP Port Config event
+        evt.msg: ryu.controller.Port
+        """
+        if fibclog.dump_msg():
+            _LOG.debug("%s", evt.msg)
+
+        dp_id = evt.dp_id
+        port_id = evt.port_id
+
+        try:
+            port = fibcdbm.portmap().find_by_dp(dp_id, port_id)
+            vs_port = port["vs"]
+            vs_dp, mode = fibcdbm.dps().find_by_id(vs_port.id)
+            func = ofc.port_mod(mode)
+
+            status = pb.PortStatus.UP if evt.enter else pb.PortStatus.DOWN
+            mod = pb.FFPortMod(
+                dp_id=vs_port.id,
+                port_no=vs_port.port,
+                hw_addr=port["vs_hw_addr"],
+                status=status,
+            )
+
+            func(vs_dp, mod, ofctl)
+
+            return
+
+        except KeyError as expt:
+            _LOG.warn("dp port not registered. dpid:%d, port:%d", dp_id, port_id)
 
         except Exception as expt:
             _LOG.exception(expt)

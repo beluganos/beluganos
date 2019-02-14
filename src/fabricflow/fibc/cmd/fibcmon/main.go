@@ -19,12 +19,13 @@ package main
 
 import (
 	"fabricflow/fibc/api"
+	"fabricflow/fibc/net"
 	"flag"
 	"fmt"
 	"time"
 )
 
-func monitor(con *fibcapi.FIBCon) {
+func monitor(con *fibcnet.Connection) {
 
 	defer con.Close()
 
@@ -62,7 +63,7 @@ func main() {
 	flag.StringVar(&addr, "addr", "127.0.0.1:50070", "fibc addr.")
 	flag.Parse()
 
-	con := fibcapi.NewFIBCon(addr)
+	con := fibcnet.NewConnection(addr)
 	for {
 		if err := con.Connect(); err == nil {
 			monitor(con)

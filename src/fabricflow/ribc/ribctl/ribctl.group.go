@@ -20,16 +20,26 @@ package ribctl
 import (
 	"fabricflow/fibc/api"
 	"gonla/nlamsg"
+	"net"
 )
 
 //
 // L2 Interface Group
 //
 func NewL2InterfaceGroup(link *nlamsg.Link) *fibcapi.L2InterfaceGroup {
+	hwaddr := func() net.HardwareAddr {
+		if link.Iptun() != nil {
+			return fibcapi.HardwareAddrDummy
+		}
+		return link.Attrs().HardwareAddr
+	}()
 	return fibcapi.NewL2InterfaceGroup(
 		NewPortId(link),
 		link.VlanId(),
 		false, // vlanTranslation
+		hwaddr,
+		link.Attrs().MTU,
+		link.NId,
 	)
 }
 
@@ -41,33 +51,66 @@ func (r *RIBController) SendL2InterfaceGroup(cmd fibcapi.GroupMod_Cmd, link *nla
 //
 // L3 Unicast Group
 //
-func NewL3UnicastGroup(link *nlamsg.Link, neigh *nlamsg.Neigh) *fibcapi.L3UnicastGroup {
-	if link == nil {
-		return fibcapi.NewL3UnicastGroup(
-			NewNeighId(neigh),
-			NewPortId(nil),
-			0,
-			neigh.HardwareAddr,
-			neigh.HardwareAddr, // dummy
-		)
-	} else {
-		return fibcapi.NewL3UnicastGroup(
-			NewNeighId(neigh),
-			NewPortId(link),
-			link.VlanId(),
-			neigh.HardwareAddr,
-			link.Attrs().HardwareAddr,
-		)
+func NewL3UnicastGroup(link, phyLink *nlamsg.Link, neigh *nlamsg.Neigh) *fibcapi.L3UnicastGroup {
+	vid := func() uint16 {
+		if link == nil {
+			return 0
+		}
+		return link.VlanId()
+	}()
+	srcMAC := func() net.HardwareAddr {
+		if phyLink == nil {
+			return fibcapi.HardwareAddrNone
+		}
+		return phyLink.Attrs().HardwareAddr
+	}()
+
+	g := fibcapi.NewL3UnicastGroup(
+		NewNeighId(neigh),
+		NewPortId(link),
+		NewPortId(phyLink),
+		vid,
+		neigh.HardwareAddr,
+		srcMAC,
+	)
+
+	if iptun := neigh.GetIptun(); iptun != nil {
+		tunType, _ := fibcapi.ParseTunnelTypeFromNative(iptun.TunType)
+		g.SetTunnel(tunType, neigh.IP, iptun.SrcIP)
 	}
+
+	return g
 }
 
 func (r *RIBController) SendL3UnicastGroup(cmd fibcapi.GroupMod_Cmd, neigh *nlamsg.Neigh) error {
+	hwtype, _ := fibcapi.ParseHardwareAddrType(neigh.HardwareAddr)
+
+	if hwtype == fibcapi.HWADDR_TYPE_NONE {
+		if cmd != fibcapi.GroupMod_DELETE {
+			return nil
+		}
+	}
+
+	if ok := hwtype.Has(fibcapi.HWADDR_TYPE_MULTICAST); ok {
+		return nil
+	}
+
 	link, err := r.nla.GetLink_GroupMod(cmd, neigh.NId, neigh.LinkIndex)
 	if err != nil {
 		return err
 	}
 
-	g := NewL3UnicastGroup(link, neigh)
+	phyLink, err := func() (*nlamsg.Link, error) {
+		if neigh.IsTunnelRemote() {
+			return r.nla.GetLink_GroupMod(cmd, neigh.NId, neigh.PhyLink)
+		}
+		return link, nil
+	}()
+	if err != nil {
+		return err
+	}
+
+	g := NewL3UnicastGroup(link, phyLink, neigh)
 	return r.fib.Send(g.ToMod(cmd, r.reId), 0)
 }
 
@@ -76,6 +119,7 @@ func (r *RIBController) SendL3UnicastGroup(cmd fibcapi.GroupMod_Cmd, neigh *nlam
 //
 func NewMPLSInterfaceGroup(link *nlamsg.Link, neigh *nlamsg.Neigh) *fibcapi.MPLSInterfaceGroup {
 	if link == nil {
+		// when DELNEIGH, only neigh-id needed,
 		return fibcapi.NewMPLSInterfaceGroup(
 			NewNeighId(neigh),
 			NewPortId(nil),
@@ -95,6 +139,23 @@ func NewMPLSInterfaceGroup(link *nlamsg.Link, neigh *nlamsg.Neigh) *fibcapi.MPLS
 }
 
 func (r *RIBController) SendMPLSInterfaceGroup(cmd fibcapi.GroupMod_Cmd, neigh *nlamsg.Neigh) error {
+	hwtype, _ := fibcapi.ParseHardwareAddrType(neigh.HardwareAddr)
+
+	if hwtype == fibcapi.HWADDR_TYPE_NONE {
+		if cmd != fibcapi.GroupMod_DELETE {
+			return nil
+		}
+	}
+
+	if ok := hwtype.Has(fibcapi.HWADDR_TYPE_MULTICAST); ok {
+		return nil
+	}
+
+	if neigh.IsTunnelRemote() {
+		// if neigh is tunnel remote peer, no group set.
+		return nil
+	}
+
 	link, err := r.nla.GetLink_GroupMod(cmd, neigh.NId, neigh.LinkIndex)
 	if err != nil {
 		return err

@@ -24,30 +24,23 @@ class FIBCDbDpTable(object):
     Table of DP ports,
     """
     def __init__(self, dpset):
+        self.dpext = dict() # datapaths not in ryu-dpset.
         self.dpset = dpset
-        self.dpmap = dict()
+        self.dpcfg = dict()
 
 
-    def _create(self, dpmap, dpset):
-        """
-        Create table.
-        """
-        self.dpset = dpset
-        self.dpmap = dpmap
-
-
-    def add(self, dpath):
+    def add_entry(self, dpcfg):
         """
         Add Entry
         """
-        self.dpmap[dpath["dp_id"]] = dpath
+        self.dpcfg[dpcfg["dp_id"]] = dpcfg
 
 
-    def delete_by_dp_id(self, dp_id):
+    def del_entry(self, dp_id):
         """
         Delete Entry
         """
-        return self.dpmap.pop(dp_id, None)
+        return self.dpcfg.pop(dp_id, None)
 
 
     def show(self):
@@ -62,47 +55,79 @@ class FIBCDbDpTable(object):
         Dump datas.
         """
         import json
-        json.dump(self.dpmap, writer)
-
-
-    def find_port(self, dp_id, port_id):
-        """
-        Find Port by dpid/port
-        """
-        try:
-            return self.dpset.get_port(dp_id, port_id)
-
-        except Exception as expt:
-            raise KeyError(str(expt))
+        json.dump(self.dpcfg, writer)
 
 
     def get_mode(self, dp_id, default=None):
         """
         Get Dp Mode
         """
-        dpcfg = self.dpmap.get(dp_id, None)
+        dpcfg = self.dpcfg.get(dp_id, None)
         if dpcfg is not None:
             return dpcfg["mode"]
 
         return default
 
 
+    def add_dp(self, dpath):
+        """
+        Add extended datapath
+        """
+        dp_id = dpath.id
+        if dp_id not in self.dpext:
+            self.dpext[dp_id] = dpath
+
+
+    def del_dp(self, dp_id):
+        """
+        Delete extended datapath
+        """
+        return self.dpext.pop(dp_id, None)
+
+
+    def keys(self):
+        """
+        Get DpId list.
+        """
+        def _check_mode(dpid):
+            mode = self.get_mode(dpid)
+            return mode is not None and mode != "default"
+
+        dpids = self.dpset.dps.keys()
+        dpids.extend(self.dpext.keys())
+        return [dpid for dpid in dpids if _check_mode(dpid)]
+
+
     def find_by_id(self, dp_id):
         """
         find (datapath, mode) by dp_id.
         """
-        dpath = self.dpset.get(dp_id)
+        dp_id = int(str(dp_id))
+        dpath = self.dpext.get(dp_id, None)
+        if dpath is None:
+            dpath = self.dpset.get(dp_id)
+
         if dpath is None:
             raise KeyError("{0} is not found in dpset.".format(dp_id))
-        return dpath
+
+        mode = self.get_mode(dp_id, "default")
+
+        return dpath, mode
 
 
     def find_by_name(self, name):
         """
         find by name
         """
-        for _, entry in self.dpmap.items():
+        for _, entry in self.dpcfg.items():
             if entry["name"] == name:
                 return entry
 
         raise KeyError("{0} is not found.".format(name))
+
+    def find_port(self, dp_id, port_id):
+        """
+        find port
+        """
+        dp_id = int(str(dp_id))
+        return self.dpset.get_port(dp_id, port_id)

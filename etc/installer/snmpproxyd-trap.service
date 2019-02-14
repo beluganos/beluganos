@@ -1,0 +1,14 @@
+[Unit]
+Description=snmp trap convertor service
+After=network.target
+ConditionPathExists=/etc/beluganos/snmpproxyd.yaml
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/beluganos/snmpproxyd.conf
+ExecStart=/usr/bin/snmpproxyd -c ${CONF} --listen-addr=${LISTEN_TRAP} --snmpd-addr=${SNMPD_ADDR}  --dump-table-time=${DUMP_TABLE_TIME} --dump-table-file=${DUMP_TABLE_TRAP} ${DEBUG}
+Restart=on-abort
+# User=root
+
+[Install]
+WantedBy=network.target

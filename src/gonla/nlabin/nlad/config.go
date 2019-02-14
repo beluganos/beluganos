@@ -18,6 +18,9 @@
 package main
 
 import (
+	"fmt"
+	"net"
+
 	"github.com/BurntSushi/toml"
 )
 
@@ -29,15 +32,70 @@ type NodeConfig struct {
 	MngIF string `toml:"mng-if"`
 }
 
+func (c *NodeConfig) Adjust() {
+	if len(c.MngIF) == 0 {
+		c.MngIF = DEFAULT_MNG_IF
+	}
+}
+
+func (c *NodeConfig) String() string {
+	return fmt.Sprintf("NId:%d, MngIF:'%s'", c.NId, c.MngIF)
+}
+
+type IptunRemote struct {
+	*net.IPNet
+}
+
+func (c *IptunRemote) UnmarshalText(text []byte) error {
+	_, ipnet, err := net.ParseCIDR(string(text))
+	if err != nil {
+		return err
+	}
+
+	c.IPNet = ipnet
+	return nil
+}
+
+type IptunConfig struct {
+	NId     uint8         `toml:"nid"`
+	Remotes []IptunRemote `toml:"remotes"`
+}
+
+func (c *IptunConfig) String() string {
+	return fmt.Sprintf("nid:%d %v", c.NId, c.Remotes)
+}
+
 type NLAConfig struct {
-	Core string `toml:"core"`
-	Api  string `toml:"api"`
+	Core            string `toml:"core"`
+	Api             string `toml:"api"`
+	RecvChanSize    int    `toml:"recv_chan_size"`
+	RecvSockBufSize int    `toml:"recv_sock_buf"`
+
+	Iptun []IptunConfig `toml:"iptun"`
+}
+
+func (c *NLAConfig) Adjust() {
+	if c.RecvChanSize <= 0 {
+		c.RecvChanSize = 65536
+	}
+
+	if c.RecvSockBufSize <= 0 {
+		c.RecvSockBufSize = 1024 * 1024
+	}
+}
+
+func (c *NLAConfig) String() string {
+	return fmt.Sprintf("Core:'%s', Api:'%s', RecvChan:%d, RecvSock:%d, iptun:{%v}", c.Core, c.Api, c.RecvChanSize, c.RecvSockBufSize, &c.Iptun)
 }
 
 type LogConfig struct {
 	Level  uint8  `toml:"level"`
 	Dump   uint32 `toml:"dump"`
 	Output string `toml:"output"`
+}
+
+func (c *LogConfig) String() string {
+	return fmt.Sprintf("Level:%d, Dump:%d, Output:'%s'", c.Level, c.Dump, c.Output)
 }
 
 type Config struct {
@@ -55,9 +113,8 @@ func ReadConfig(path string, config *Config) error {
 		return err
 	}
 
-	if len(config.Node.MngIF) == 0 {
-		config.Node.MngIF = DEFAULT_MNG_IF
-	}
+	config.Node.Adjust()
+	config.NLA.Adjust()
 
 	return nil
 }

@@ -1,0 +1,44 @@
+---
+
+port_stats:
+  - ifName: eth1
+    ifInDiscards: 2000
+    ifInErrors: 2100
+    ifInNUcastPkts: 21000
+    ifInOctets: 22000
+    ifInUcastPkts: 20000
+    ifOperStatus: 1
+    ifOutDiscards: 1000
+    ifOutErrors: 1100
+    ifOutNUcastPkts: 11000
+    ifOutOctets: 12000
+    ifOutUcastPkts: 10000
+    port_no: 0
+
+  - ifName: eth2
+    ifInDiscards: 2001
+    ifInErrors: 2101
+    ifInNUcastPkts: 21001
+    ifInOctets: 22001
+    ifInUcastPkts: 20001
+    ifOperStatus: 1
+    ifOutDiscards: 1001
+    ifOutErrors: 1101
+    ifOutNUcastPkts: 11001
+    ifOutOctets: 12001
+    ifOutUcastPkts: 10001
+    port_no: 1
+
+  - ifName: eth4
+    ifInDiscards: 2004
+    ifInErrors: 2104
+    ifInNUcastPkts: 21004
+    ifInOctets: 22004
+    ifInUcastPkts: 20004
+    ifOperStatus: 1
+    ifOutDiscards: 1004
+    ifOutErrors: 1104
+    ifOutNUcastPkts: 11004
+    ifOutOctets: 12004
+    ifOutUcastPkts: 10004
+    port_no: 4

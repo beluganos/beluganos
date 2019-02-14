@@ -84,6 +84,9 @@ func NewPortStatus(link *nlamsg.Link) fibcapi.PortStatus_Status {
 	case "down":
 		return fibcapi.PortStatus_DOWN
 	default:
+		if flag := link.Attrs().Flags & net.FlagUp; flag != 0 {
+			return fibcapi.PortStatus_UP
+		}
 		return fibcapi.PortStatus_NOP
 	}
 }
@@ -151,16 +154,5 @@ func FlowCmdToGroupCmd(cmd fibcapi.FlowMod_Cmd) fibcapi.GroupMod_Cmd {
 		return fibcapi.GroupMod_DELETE
 	default:
 		return fibcapi.GroupMod_NOP
-	}
-}
-
-func NewIPNetFromIP(ip net.IP) *net.IPNet {
-	bitlen := 128
-	if ip.To4() != nil {
-		bitlen = 32
-	}
-	return &net.IPNet{
-		IP:   ip,
-		Mask: net.CIDRMask(bitlen, bitlen),
 	}
 }

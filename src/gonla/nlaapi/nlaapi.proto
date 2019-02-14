@@ -1,3 +1,4 @@
+
 // -*- coding: utf-8 -*-
 
 syntax = "proto3";
@@ -59,6 +60,7 @@ service NLAApi {
   rpc GetNode   (NodeKey)  returns (Node) {}
   rpc GetVpn    (VpnKey)   returns (Vpn)  {}
   rpc GetEncapInfo (EncapInfoKey) returns (EncapInfo) {}
+  rpc GetIptun  (IptunKey) returns (Iptun) {}
 
   rpc GetLinks  (GetLinksRequest)   returns (stream Link) {}
   rpc GetAddrs  (GetAddrsRequest)   returns (stream Addr) {}
@@ -68,6 +70,7 @@ service NLAApi {
   rpc GetNodes  (GetNodesRequest)   returns (stream Node) {}
   rpc GetVpns   (GetVpnsRequest)    returns (stream Vpn)  {}
   rpc GetEncapInfos (GetEncapInfosRequest) returns (stream EncapInfo) {}
+  rpc GetIptuns (GetIptunsRequest) returns  (stream Iptun) {}
 
   rpc GetStats  (GetStatsRequest)   returns (stream Stat) {}
 }
@@ -123,6 +126,7 @@ message GetMplssRequest {
 message GetNodesRequest {}
 message GetVpnsRequest  {}
 message GetEncapInfosRequest {}
+message GetIptunsRequest {}
 message GetStatsRequest  {}
 
 message LinkKey {
@@ -162,6 +166,11 @@ message VpnKey {
     string gw   = 3;
 }
 
+message IptunKey {
+  uint32 n_id   = 1;
+  bytes  remote = 2; // net.IP
+}
+
 //
 // Messages
 //
@@ -184,6 +193,14 @@ message Vpn {
 
     uint32 n_id  = 6;
     uint32 vpn_id= 7;
+}
+
+message Iptun {
+  Link  link      = 1;
+  bytes local_mac = 2; // net.HardwareAddr
+
+  uint32 n_id     = 3;
+  uint32 tnl_id   = 4;
 }
 
 enum LinkOperState {
@@ -358,21 +375,37 @@ message BondLinkAttrs {
     BondAdInfo          ad_info           = 24;
 }
 
+message IptunLinkAttrs {
+  LinkAttrs link_attrs  = 1;
+  uint32    ttl         = 2;
+  uint32    tos         = 3;
+  uint32    p_mtu_disc  = 4;
+  uint32    link        = 5;
+  bytes     local       = 6; // net.IP
+  bytes     remote      = 7; // net.IP
+  uint32    encap_sport = 8;
+  uint32    encap_dport = 9;
+  uint32    encap_type  = 10;
+  uint32    encap_flags = 11;
+  bool      flow_based  = 12;
+}
+
 message Link {
-    string   type = 1;
-    oneof link_attrs {
-        DeviceLinkAttrs  device  = 2;
-        BridgeLinkAttrs  bridge  = 3;
-        VlanLinkAttrs    vlan    = 4;
-        VxlanLinkAttrs   vxlan   = 5;
-        VtiLinkAttrs     vti     = 6;
-        VethLinkAttrs    veth    = 7;
-        BondLinkAttrs    bond    = 8;
-        GenericLinkAttrs generic = 9;
+  string type  = 1;
+  oneof link_attrs {
+        DeviceLinkAttrs  device  = 4;
+        BridgeLinkAttrs  bridge  = 5;
+        VlanLinkAttrs    vlan    = 6;
+        VxlanLinkAttrs   vxlan   = 7;
+        VtiLinkAttrs     vti     = 8;
+        VethLinkAttrs    veth    = 9;
+        BondLinkAttrs    bond    = 10;
+        GenericLinkAttrs generic = 11;
+        IptunLinkAttrs   iptun   = 12;
     }
 
-    uint32 n_id   = 10;
-    uint32 ln_id  = 11;
+  uint32 n_id  = 2;
+  uint32 ln_id = 3;
 }
 
 message Addr {
@@ -391,6 +424,15 @@ message Addr {
     uint32 ad_id       = 12;
 }
 
+message NeighNotun {
+
+}
+
+message NeighIptun {
+    string tun_type = 1;
+    bytes  src_ip   = 2;  // net.IP
+}
+
 message Neigh {
     int32  link_index    = 1;
     int32  family        = 2;
@@ -405,6 +447,12 @@ message Neigh {
 
     uint32 n_id  = 11;
     uint32 ne_id = 12;
+
+    int32 phy_link = 13;
+    oneof tunnel {
+        NeighNotun notun = 14;
+        NeighIptun iptun = 15;
+    }
 }
 
 message NexthopInfo {

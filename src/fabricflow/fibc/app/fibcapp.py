@@ -22,7 +22,6 @@ FIB Controller
 import logging
 from ryu.base import app_manager
 from ryu.ofproto import ofproto_v1_3 as ofproto
-from ryu.lib import hub
 from ryu.controller import dpset
 from ryu.app.wsgi import WSGIApplication
 from fabricflow.fibc.dbm import fibcdbm
@@ -34,16 +33,9 @@ from fabricflow.fibc.app import fibcptm
 from fabricflow.fibc.app import fibcpkt
 from fabricflow.fibc.app import fibcwap
 from fabricflow.fibc.app import fibcncm
+from fabricflow.fibc.app import fibccap
 
 _LOG = logging.getLogger(__name__)
-
-def stream_server(host, func):
-    """
-    spawn service on StreamServer.
-    """
-    sserver = hub.StreamServer(host, func)
-    sserver.serve_forever()
-
 
 def get_config():
     """
@@ -58,6 +50,7 @@ def get_config():
         cfg.StrOpt("ncm_path", default="/tmp/ncmi.yaml"),
         cfg.StrOpt("api_addr", default="127.0.0.1"),
         cfg.IntOpt("api_port", default=50051),
+        cfg.StrOpt("cap_path", default=None),
     ])
     conf(sys.argv[1:])
     return conf
@@ -79,6 +72,7 @@ class FIBCApp(app_manager.RyuApp):
         "pktapp" : fibcpkt.FIBCPktApp,
         "webapp" : fibcwap.FIBCRestApp,
         "ncmapp" : fibcncm.FIBCNcmApp,
+        "capapp" : fibccap.FIBCPcapApp
     }
 
     def __init__(self, *args, **kwargs):
@@ -87,10 +81,7 @@ class FIBCApp(app_manager.RyuApp):
         config = get_config()
 
         dps = kwargs["dpset"]
-        fibcdbm.create(dps)
-
-        ptm = kwargs["ptmapp"]
-        ptm.create(fibccfg.load_dir(config.cfg_path))
+        fibcdbm.create(dps, fibccfg.load_dir(config.cfg_path))
 
         ncm = kwargs["ncmapp"]
         ncm.init(config.ncm_path)
@@ -100,4 +91,7 @@ class FIBCApp(app_manager.RyuApp):
         webapp.create(wsgi)
 
         apiapp = kwargs["apiapp"]
-        hub.spawn(stream_server, (config.api_addr, config.api_port), apiapp.on_connect)
+        apiapp.start_server((config.api_addr, config.api_port))
+
+        capapp = kwargs["capapp"]
+        capapp.create(config.cap_path)
