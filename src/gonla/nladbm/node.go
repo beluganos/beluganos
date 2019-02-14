@@ -18,6 +18,7 @@
 package nladbm
 
 import (
+	"fmt"
 	"gonla/nlamsg"
 	"sync"
 )
@@ -46,6 +47,7 @@ type NodeTable interface {
 	Insert(*nlamsg.Node) *nlamsg.Node
 	Select(*NodeKey) *nlamsg.Node
 	Delete(*NodeKey) *nlamsg.Node
+	Send(*NodeKey, *nlamsg.NetlinkMessageUnion) error
 	Walk(f func(*nlamsg.Node) error) error
 	WalkUnsafe(f func(*nlamsg.Node) error) error
 }
@@ -75,7 +77,6 @@ func (t *nodeTable) Insert(n *nlamsg.Node) (old *nlamsg.Node) {
 
 	key := NodeToKey(n)
 	if old = t.find(key); old == nil {
-		n.Open()
 		t.Nodes[*key] = n.Copy()
 	}
 
@@ -111,8 +112,19 @@ func (t *nodeTable) Delete(key *NodeKey) (old *nlamsg.Node) {
 
 	if old = t.find(key); old != nil {
 		delete(t.Nodes, *key)
-		old.Close()
 	}
 
 	return
+}
+
+func (t *nodeTable) Send(key *NodeKey, msg *nlamsg.NetlinkMessageUnion) error {
+	t.Mutex.RLock()
+	defer t.Mutex.RUnlock()
+
+	node := t.find(key)
+	if node == nil {
+		return fmt.Errorf("Node not found. nid=%d", key.NId)
+	}
+
+	return node.Send(msg)
 }

@@ -1,0 +1,14 @@
+[Unit]
+Description=fib statistic service
+After=network.target
+ConditionPathExists=/etc/beluganos/fibsd.conf
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/beluganos/fibsd.conf
+ExecStart=/usr/bin/fibsd --fibc-addr ${FIBC_ADDR} --stats-path ${STATS_PATH} --update-time ${UPDATE_TIME}
+Restart=on-abort
+User=beluganos
+
+[Install]
+WantedBy=network.target

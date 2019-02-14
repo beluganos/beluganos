@@ -49,8 +49,18 @@ class TestApi(unittest.TestCase):
         for ip, pri, base in datas:
             self.assertEqual(offlow.priority_for_ipaddr(ip, base), pri)
 
+class TestDpMultipartPort(unittest.TestCase):
+    def setUp(self):
+        pass
 
-TESTS = [TestApi]
+    def tearDown(self):
+        pass
+
+    def test_new(self):
+        pass
+
+
+TESTS = [TestApi, TestVLANFlow, TestDpMultipartPort]
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,40 @@
+diff --git a/decode.go b/decode.go
+index 0506723..01dd268 100644
+--- a/decode.go
++++ b/decode.go
+@@ -375,6 +375,9 @@ func (ctx *Context) getExpectedFieldElements(value reflect.Value) ([]expectedFie
+ func (ctx *Context) getRawValuesFromBytes(data []byte, max int) ([]*rawValue, error) {
+ 	// Raw values
+ 	rawValues := []*rawValue{}
++	if max == 0 {
++		return rawValues, nil
++	}
+ 	reader := bytes.NewBuffer(data)
+ 	for i := 0; i < max; i++ {
+ 		// Parse an Asn.1 element
+diff --git a/encode.go b/encode.go
+index 964441d..9779dec 100644
+--- a/encode.go
++++ b/encode.go
+@@ -35,7 +35,6 @@ func (ctx *Context) EncodeWithOptions(obj interface{}, options string) (data []b
+ 
+ // Main encode function
+ func (ctx *Context) encode(value reflect.Value, opts *fieldOptions) (*rawValue, error) {
+-
+ 	// Skip the interface type
+ 	switch value.Kind() {
+ 	case reflect.Interface:
+@@ -94,6 +93,13 @@ func (ctx *Context) encodeValue(value reflect.Value, opts *fieldOptions) (raw *r
+ 		encoder = ctx.encodeNull
+ 	}
+ 
++	nullVal := reflect.ValueOf(Null{})
++	if  objType.ConvertibleTo(nullVal.Type()) {
++		value = nullVal
++		raw.Tag = tagNull
++		encoder = ctx.encodeNull
++	}
++
+ 	if encoder == nil {
+ 		// Generic types:
+ 		switch value.Kind() {

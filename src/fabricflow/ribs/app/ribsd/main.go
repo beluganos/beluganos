@@ -57,7 +57,7 @@ func main() {
 		cfg.Node.NId = nid
 	}
 
-	log.Infof("MAIN: config=:%s", cfg)
+	log.Infof("MAIN: config=:%v", cfg)
 
 	if cfg.Ribs.Disable {
 		log.Infof("MAIN: Disabled.")

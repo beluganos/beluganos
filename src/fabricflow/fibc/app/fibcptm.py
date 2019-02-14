@@ -63,19 +63,8 @@ class FIBCPtmApp(app_manager.RyuApp):
     _EVENTS = [
         fibcevt.EventFIBCDpStatus,
         fibcevt.EventFIBCPortStatus,
+        fibcevt.EventFIBCFFPortMod,
     ]
-
-    def create(self, cfg):
-        """
-        Create Tables from config.
-        """
-        for dpmap in cfg.dpaths:
-            self._set_dpmap("add", dpmap)
-
-        for router in cfg.routers:
-            self._set_idmap("add", fibcdbm.create_idmap(router))
-            for port in fibcdbm.create_ports(router):
-                self._set_portmap("add", port)
 
 
     def send_port_status_event(self, port, status):
@@ -102,7 +91,19 @@ class FIBCPtmApp(app_manager.RyuApp):
             self.send_port_status_event(ready_port, status)
 
 
-    def _send_dp_status(self, re_id, enter):
+    def _send_port_mod_event(self, entry, status):
+        dp_port = entry["dp"]
+        port_mod = pb.FFPortMod(
+            dp_id=dp_port.id,
+            port_no=dp_port.port,
+            hw_addr="", # TODO: hw_addr is not used by opennsl agent.
+            status=status,
+        )
+        evt = fibcevt.EventFIBCFFPortMod(port_mod)
+        self.send_event_to_observers(evt)
+
+
+    def _send_dp_status_event(self, re_id, enter):
         status = pb.DpStatus.ENTER if enter else pb.DpStatus.LEAVE
         msg = pb.DpStatus(
             status=status,
@@ -126,7 +127,7 @@ class FIBCPtmApp(app_manager.RyuApp):
         entry = fibcdbm.idmap().find_by_re_id(msg.re_id)
         if entry.update_vm_status(evt.enter):
             _LOG.debug("send DpStatus on VmConfig. %s %s", msg.re_id, evt.enter)
-            self._send_dp_status(msg.re_id, evt.enter)
+            self._send_dp_status_event(msg.re_id, evt.enter)
 
 
     # pylint: disable=broad-except
@@ -141,7 +142,7 @@ class FIBCPtmApp(app_manager.RyuApp):
         entry = fibcdbm.idmap().find_by_dp_id(evt.dp_id)
         if entry.update_dp_status(evt.enter):
             _LOG.debug("send DpStatus on DpConfig. %s %s", entry["re_id"], evt.enter)
-            self._send_dp_status(entry["re_id"], evt.enter)
+            self._send_dp_status_event(entry["re_id"], evt.enter)
 
 
     def _on_port_config_add(self, msg):
@@ -150,13 +151,26 @@ class FIBCPtmApp(app_manager.RyuApp):
                 return fibcdbm.portmap().find_by_name(re_id=msg.re_id, name=msg.ifname)
 
             except KeyError as expt:
-                entry = fibcdbm.FIBCPortEntry.new(
-                    dp_id=0,
-                    port=0,
-                    re_id=msg.re_id,
-                    link=msg.link,
-                    name=msg.ifname,
-                )
+                if msg.dp_port != 0:
+                    idmap = fibcdbm.idmap().find_by_re_id(msg.re_id)
+                    entry = fibcdbm.FIBCPortEntry.new(
+                        dp_id=idmap["dp_id"],
+                        port=msg.dp_port,
+                        re_id=msg.re_id,
+                        link=msg.link,
+                        name=msg.ifname,
+                        no_vs=True,
+                        dpenter=idmap["dp_status"],
+                    )
+                else:
+                    entry = fibcdbm.FIBCPortEntry.new(
+                        dp_id=0,
+                        port=0,
+                        re_id=msg.re_id,
+                        link=msg.link,
+                        name=msg.ifname,
+                        no_vs=False,
+                    )
 
                 if not entry.is_config():
                     fibcdbm.portmap().add(entry)
@@ -169,6 +183,8 @@ class FIBCPtmApp(app_manager.RyuApp):
         if msg.status == pb.PortStatus.UP:
             self.send_port_status_if_ready(entry, msg.status)
 
+        self._send_port_mod_event(entry, msg.status)
+
 
     def _on_port_config_del(self, msg):
         entry = fibcdbm.portmap().find_by_name(re_id=msg.re_id, name=msg.ifname)
@@ -176,6 +192,8 @@ class FIBCPtmApp(app_manager.RyuApp):
         entry.update_vm(0)
         if not entry.is_config():
             fibcdbm.portmap().delete_by_name(msg.re_id, msg.ifname)
+
+        self._send_port_mod_event(entry, msg.status)
 
 
     # pylint: disable=broad-except
@@ -223,8 +241,9 @@ class FIBCPtmApp(app_manager.RyuApp):
             _LOG.debug("%s", pkt)
 
         try:
+            dp_port = fibcdbm.dps().find_port(evt.vs_id, evt.port_id)
             port = fibcdbm.portmap().find_by_name(re_id=pkt.re_id, name=pkt.ifname)
-            if port.update_vs(evt.vs_id, evt.port_id):
+            if port.update_vs(evt.vs_id, evt.port_id, dp_port.hw_addr):
                 self.send_port_status_if_ready(port, "UP")
 
         except KeyError:
@@ -289,16 +308,27 @@ class FIBCPtmApp(app_manager.RyuApp):
 
     @staticmethod
     def _set_dpmap(cmd, msg):
+        """
+        cmd: "add" or "delete"
+        msg:
+          name  : <string>
+          dp_id : <int>
+          mode  : <"geneic" or "ofdpa2" or "ovs"
+        """
         if cmd == "add":
-            fibcdbm.dps().add(msg)
+            fibcdbm.dps().add_entry(msg)
         elif cmd == "delete":
-            fibcdbm.dps().delete_by_dp_id(msg["dp_id"])
+            fibcdbm.dps().del_entry(msg["dp_id"])
         else:
             _LOG.error("invalid portmap command. %s", cmd)
 
 
     @staticmethod
     def _set_portmap(cmd, msg):
+        """
+        cmd: "add" or "delete"
+        msg: FIBCPortEntry
+        """
         if cmd == "add":
             fibcdbm.portmap().add(msg)
         elif cmd == "delete":
@@ -309,6 +339,12 @@ class FIBCPtmApp(app_manager.RyuApp):
 
     @staticmethod
     def _set_idmap(cmd, msg):
+        """
+        cmd: "add" or "delete"
+        msg:
+          re_id: <string>
+          dp_id: <int>
+        """
         if cmd == "add":
             fibcdbm.idmap().add(**msg)
         elif cmd == "delete":

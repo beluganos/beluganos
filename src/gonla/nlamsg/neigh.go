@@ -19,6 +19,7 @@ package nlamsg
 
 import (
 	"fmt"
+
 	"github.com/vishvananda/netlink"
 )
 
@@ -30,32 +31,69 @@ func CopyNeigh(src *netlink.Neigh) *netlink.Neigh {
 	return &dst
 }
 
+type NeighTunnel interface {
+	Copy() NeighTunnel
+	String() string
+}
+
+func CopyNeighTunnel(src NeighTunnel) NeighTunnel {
+	if src == nil {
+		return nil
+	}
+	return src.Copy()
+}
+
 //
 // Neigh
 //
 type Neigh struct {
 	*netlink.Neigh
-	NeId uint16
-	NId  uint8
+	PhyLink int
+	Tunnel  NeighTunnel
+	NeId    uint16
+	NId     uint8
 }
 
 func (n *Neigh) Copy() *Neigh {
 	return &Neigh{
-		Neigh: CopyNeigh(n.Neigh),
-		NeId:  n.NeId,
-		NId:   n.NId,
+		Neigh:   CopyNeigh(n.Neigh),
+		PhyLink: n.PhyLink,
+		Tunnel:  CopyNeighTunnel(n.Tunnel),
+		NeId:    n.NeId,
+		NId:     n.NId,
 	}
 }
 
+func (n *Neigh) IsTunnelRemote() bool {
+	return (n.Tunnel != nil)
+}
+
+func (n *Neigh) SetTunnel(phyLink int, tunnel NeighTunnel) {
+	n.PhyLink = phyLink
+	n.Tunnel = tunnel
+}
+
+func (n *Neigh) GetIptun() *NeighIptun {
+	if iptun, ok := n.Tunnel.(*NeighIptun); ok {
+		return iptun
+	}
+	return nil
+}
+
 func (n *Neigh) String() string {
-	return fmt.Sprintf("{Ifindex: %d %s} NeId: %d, NId: %d", n.LinkIndex, n.Neigh, n.NeId, n.NId)
+	return fmt.Sprintf("{Ifindex: %d/%d} Tun:{%s} NeId: %d, NId: %d", n.LinkIndex, n.PhyLink, n.Tunnel, n.NeId, n.NId)
 }
 
 func NewNeigh(neigh *netlink.Neigh, nid uint8, id uint16) *Neigh {
+	if neigh == nil {
+		neigh = &netlink.Neigh{}
+	}
+
 	return &Neigh{
-		NeId:  id,
-		Neigh: neigh,
-		NId:   nid,
+		NeId:    id,
+		PhyLink: neigh.LinkIndex,
+		Neigh:   neigh,
+		NId:     nid,
 	}
 }
 

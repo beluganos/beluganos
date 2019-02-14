@@ -16,12 +16,35 @@ ETHTYPE_VLAN_Q = 0x8100
 ETHTYPE_VLAN_AD = 0x88a8
 
 # hardware addresses
+HWADDR_NONE = "00:00:00:00:00:00"
+HWADDR_DUMMY = "02:00:00:00:00:00"
+HWADDR_EXACT_MASK = "ff:ff:ff:ff:ff:ff"
 HWADDR_MULTICAST4 = '01:00:5e:00:00:00'
 HWADDR_MULTICAST4_MASK = 'ff:ff:ff:80:00:00'
 HWADDR_MULTICAST4_MATCH = HWADDR_MULTICAST4 + '/' + HWADDR_MULTICAST4_MASK
 HWADDR_MULTICAST6 = '33:33:00:00:00:00'
 HWADDR_MULTICAST6_MASK = 'ff:ff:00:00:00:00'
 HWADDR_MULTICAST6_MATCH = HWADDR_MULTICAST6 + '/' + HWADDR_MULTICAST6_MASK
+HWADDR_ISIS_LEVEL1 = "01:80:C2:00:00:14"
+HWADDR_ISIS_LEVEL2 = "01:80:C2:00:00:15"
+
+def parse_masked_mac(s): # pylint: disable=invalid-name
+    """
+    parse mac and mask string. (xx:xx:..:xx/yy:yy:...:yy)
+    """
+    items = s.split("/", 1)
+    if len(items) == 1:
+        return items[0], "ff:ff:ff:ff:ff:ff"
+    elif len(items) == 2:
+        return items[0], items[1]
+    else:
+        raise SyntaxError(s)
+
+def new_masked_mac(mac, mask):
+    """
+    make masked mac string.
+    """
+    return "{0}/{1}".format(mac, mask)
 
 # vlan
 OFPVID_UNTAGGED = 0x0001
@@ -53,6 +76,25 @@ MCADDR_ALLROUTERS = "224.0.0.2"
 MCADDR_OSPF_HELLO = "224.0.0.5"
 MCADDR_OSPF_ALLDR = "224.0.0.6"
 
+# multicast addresses(IPv6)
+MCADDR6_I_LOCAL = "ff01::/64"    # Interface Local
+MCADDR6_L_LOCAL = "ff02::/64"    # Link Local
+MCADDR6_S_LOCAL = "ff05::/64"    # Site Local
+MCADDR6_L_ALLNODES = "ff02::1"   # All Nodes / Link Local
+MCADDR6_S_ALLNODES = "ff05::1"   # All Nodes / Site Local
+MCADDR6_L_ALLROUTERS = "ff02::2" # All Routers / Link Local
+MCADDR6_L_ALLOSPF = "ff02::5"    # All OSPF Routers / Link Local
+MCADDR6_L_ALLOSPF_DR = "ff02::6" # All OSPF Routers / Link Local
+MCADDR6_L_ALLRIP = "ff02::9"     # All RIP Routers / Link Local
+MCADDR6_L_ALLEIGRP = "ff02::A"   # All EIGRP Routers / Link Local
+MCADDR6_L_ALLPIM = "ff02::D"     # All PIM Routers / Link Local
+MCADDR6_L_ALLDHCP = "ff02::1:2"  # All DHCP Agents / Link Local
+MCADDR6_S_ALLDHCP = "ff05::1:3"  # All DHCP Servers / Site Local
+MCADDR6_L_ALLNTP = "ff02::101"   # All NTP Servers / Link Local
+MCADDR6_S_ALLNTP = "ff05::101"   # All NTP Servers / Site Local
+# unicast addresses (IPv6)
+UCADDR6_L_LOCAL = "fe80::/64"
+
 # Flow priority
 PRIORITY_DEFAULT = 0
 PRIORITY_LOW = 16400
@@ -73,6 +115,7 @@ def flow_mod_cmd(cmd, ofproto):
     """
     Convert FlowMod command (API to Ryu)
     """
+    # pylint: disable=no-member
     cmd_map = {
         pb.FlowMod.ADD          : ofproto.OFPFC_ADD,
         pb.FlowMod.MODIFY       : ofproto.OFPFC_MODIFY,
@@ -87,6 +130,7 @@ def group_mod_cmd(cmd, ofproto):
     """
     Convert GroupMod command (API to Ryu)
     """
+    # pylint: disable=no-member
     cmd_map = {
         pb.GroupMod.ADD          : ofproto.OFPGC_ADD,
         pb.GroupMod.MODIFY       : ofproto.OFPGC_MODIFY,
@@ -238,3 +282,129 @@ def l2_unfiltered_iface_group_id(port_id):
     L2 Unfiltered Interface Group
     """
     return 0xb0000000 + (port_id & 0xffff)
+
+
+def parse_ff_hello(data):
+    """
+    Parse binary data (pb.FFHello)
+    """
+    msg = pb.FFHello()
+    msg.ParseFromString(data)
+    return msg
+
+
+def parse_ff_port_status(data):
+    """
+    Parse binary data (pb.FFPortStatus)
+    """
+    msg = pb.FFPortStatus()
+    msg.ParseFromString(data)
+    return msg
+
+
+def parse_ff_multipart_request(data):
+    """
+    Parse binary data (pb.FFMultipart_Request)
+    """
+    msg = pb.FFMultipart.Request()
+    msg.ParseFromString(data)
+    return msg
+
+
+def parse_ff_multipart_reply(data):
+    """
+    Parse binary data (pb.FFMultipart_Reply)
+    """
+    msg = pb.FFMultipart.Reply()
+    msg.ParseFromString(data)
+    return msg
+
+
+def parse_ff_packet_in(data):
+    """
+    Parse binary data (pb.FFPacketn)
+    """
+    msg = pb.FFPacketIn()
+    msg.ParseFromString(data)
+    return msg
+
+
+def new_ff_packet_out(dp_id, port_no, data):
+    """
+    Create FFPacketOut messasge
+    """
+    return pb.FFPacketOut(
+        dp_id=dp_id,
+        port_no=port_no,
+        data=data,
+    )
+
+def new_ff_multipart_request_port(dp_id, port_no, names):
+    """
+    Create Multipart Request (Port)
+    """
+    return pb.FFMultipart.Request(
+        mp_type=pb.FFMultipart.PORT, # pylint: disable=no-member
+        dp_id=dp_id,
+        port=pb.FFMultipart.PortRequest(port_no=port_no, names=names),
+    )
+
+def new_ff_multipart_reply_port(dp_id, stats):
+    """
+    Create Multopart Reply (Port)
+    """
+    return pb.FFMultipart.Reply(
+        mp_type=pb.FFMultipart.PORT, # pylint: disable=no-member
+        dp_id=dp_id,
+        port=pb.FFMultipart.PortReply(stats=stats)
+    )
+
+def new_ff_multipart_request_portdesc(dp_id, internal=False): # pylint: disable=invalid-name
+    """
+    Create Multipart Request (PortDesc)
+    """
+    return pb.FFMultipart.Request(
+        mp_type=pb.FFMultipart.PORT_DESC, # pylint: disable=no-member
+        dp_id=dp_id,
+        port_desc=pb.FFMultipart.PortDescRequest(internal=internal)
+    )
+
+def new_ff_multipart_reply_portdesc(dp_id, ports, internal=False):
+    """
+    Create Multipart Reply (PortDesc)
+    """
+    return pb.FFMultipart.Reply(
+        mp_type=pb.FFMultipart.PORT_DESC, # pylint: disable=no-member
+        dp_id=dp_id,
+        port_desc=pb.FFMultipart.PortDescReply(port=ports, internal=internal)
+    )
+
+def new_policy_acl_match(**kwargs):
+    """
+    Create PolicyACLFlow.Match
+    """
+    return pb.PolicyACLFlow.Match(
+        ip_dst=kwargs.get("ip_dst", ""),
+        vrf=kwargs.get("vrf", 0),
+        eth_type=kwargs.get("eth_type", 0),
+        ip_proto=kwargs.get("ip_proto", 0),
+        tp_src=kwargs.get("tp_src", 0),
+        tp_dst=kwargs.get("tp_dst", 0),
+        eth_dst=kwargs.get("eth_dst", ""))
+
+def new_policy_acl_action(name, value=0):
+    """
+    Create PolicyACLFlow.Action
+    """
+    return pb.PolicyACLFlow.Action(
+        name=name,
+        value=value)
+
+def new_ff_port_mod(dp_id, port_no, status):
+    """
+    Create FFPortMod message
+    """
+    return pb.FFPortMod(
+        dp_id=dp_id,
+        port_no=port_no,
+        status=status)

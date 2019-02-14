@@ -1,0 +1,293 @@
+// -*- coding: utf-8 -*-
+
+syntax = "proto3";
+
+package gonslapi;
+
+//
+// FieldEntry
+//
+message FieldEntry {
+  enum EntryType {
+    NOP      = 0; // unused
+    ETH_TYPE = 1;
+    DST_IP   = 2;
+    IP_PROTO = 3;
+    ETH_DST  = 4;
+  }
+
+  EntryType entry_type = 1;
+  oneof entry {
+    EthTypeFieldEntry  eth_type = 2;
+    DstIpFieldEntry    dst_ip   = 3;
+    IpProtoFieldEntry  ip_proto = 4;
+    EthDstFieldEntry   eth_dst  = 5;
+  }
+}
+
+message EthDstFieldEntry {
+  string eth_dst  = 1;
+  string eth_mask = 2;
+}
+
+message EthTypeFieldEntry {
+  uint32 eth_type = 1;
+}
+
+message DstIpFieldEntry {
+  uint32 eth_type = 1;
+  string ip_dst   = 2;
+}
+
+message IpProtoFieldEntry {
+  uint32 eth_type = 1;
+  uint32 ip_proto = 2;
+}
+
+message GetFieldEntriesRequest {
+
+}
+
+message GetFieldEntriesReply {
+  repeated FieldEntry entries = 1;
+}
+
+//
+// Vlan
+//
+message VlanEntry {
+  uint32 vid = 1;
+  repeated uint32 ports = 2;
+  repeated uint32 untag_ports = 3;
+}
+
+message GetVlansRequest {
+
+}
+
+message GetVlansReply {
+  repeated VlanEntry vlans = 1;
+}
+
+//
+// L2 Addr
+//
+message L2Addr {
+  uint32 flags = 1;
+  string mac   = 2;
+  uint32 vid   = 3;
+  uint32 port  = 4;
+}
+
+message GetL2AddrsRequest {
+
+}
+
+message GetL2AddrsReply {
+  repeated L2Addr addrs = 1;
+}
+
+//
+// L2 Station
+//
+message L2Station {
+  uint32 flags         = 1;
+  string dst_mac       = 2;
+  string dst_mac_mask  = 3;
+  uint32 vlan          = 4;
+  uint32 vlan_mask     = 5;
+  uint32 src_port      = 6;
+  uint32 src_port_mask = 7;
+}
+
+message GetL2StationsRequest {
+
+}
+
+message GetL2StationsReply {
+  repeated L2Station stations = 1;
+}
+
+//
+// L3 Interface
+//
+message L3Iface {
+  uint32 flags    = 1;
+  uint32 iface_id = 2;
+  string mac      = 3;
+  uint32 mtu      = 4;
+  uint32 mtu_fwd  = 5;
+  uint32 ttl      = 6;
+  uint32 vid      = 7;
+  uint32 vrf      = 8;
+}
+
+message FindL3IfaceRequest {
+  string mac = 1;
+  uint32 vid = 2;
+}
+
+message FindL3IfaceReply {
+  L3Iface iface	= 1;
+}
+
+message GetL3IfaceRequest {
+  uint32 iface_id = 1;
+}
+
+message GetL3IfaceReply {
+  L3Iface iface = 1;
+}
+
+message GetL3IfacesRequest {
+
+}
+
+message GetL3IfacesReply {
+  repeated L3Iface ifaces = 1;
+}
+
+//
+// L3 Egress
+//
+message L3Egress {
+  uint32 flags     = 1;
+  uint32 flags2    = 2;
+  uint32 egress_id = 3;
+  uint32 iface_id  = 4;
+  string mac       = 5;
+  uint32 vid       = 6;
+  uint32 port      = 7;
+}
+
+message GetL3EgressesRequest {
+
+}
+
+message GetL3EgressesReply {
+  repeated L3Egress egresses = 1;
+}
+
+//
+// L3 Host
+//
+message L3Host {
+  uint32 flags     = 1;
+  uint32 egress_id = 2;
+  string ip_addr   = 3;
+  string ip6_addr  = 4;
+  string mac       = 5;
+  uint32 vrf       = 6;
+}
+
+message GetL3HostsRequest {
+
+}
+
+message GetL3HostsReply {
+  repeated L3Host hosts = 1;
+}
+
+//
+// L3 Route
+//
+message L3Route {
+  uint32 flags     = 1;
+  uint32 egress_id = 2;
+  string ip_addr   = 3; // ip/mask
+  string ip6_addr  = 4; // ip/mask
+  uint32 vrf       = 5;
+}
+
+message GetL3RoutesRequest {
+
+}
+
+message GetL3RoutesReply {
+  repeated L3Route routes = 1;
+}
+
+//
+// Tunnel
+//
+message TunnelInitiator {
+  uint32 flags       = 1;
+  uint32 tunnel_id   = 2;
+  string tunnel_type = 3;
+  uint32 l3_iface_id = 4;
+  string dst_mac     = 5;
+  string src_mac     = 6;
+  string dst_ip      = 7;   // ip
+  string src_ip      = 8;   // ip
+  uint32 dst_port    = 9;
+  uint32 src_port    = 10;
+  uint32 ttl         = 11;
+  uint32 mtu         = 12;
+  uint32 vlan        = 13;
+}
+
+message TunnelTerminator {
+  uint32 flags       = 1;
+  uint32 tunnel_id   = 2;
+  string tunnel_type = 3;
+  uint32 remote_port = 4;
+  string dst_ip      = 5;   // ip/mask
+  string src_ip      = 6;   // ip/mask
+  uint32 dst_port    = 7;
+  uint32 src_port    = 8;
+  uint32 vlan        = 9;   // uint16
+  uint32 vrf         = 10;  // uint16
+  repeated uint32 pbmp = 11;
+}
+
+message GetTunnelInitiatorsRequest {
+
+}
+
+message GetTunnelInitiatorsReply {
+  repeated TunnelInitiator tunnels = 1;
+}
+
+message GetTunnelTerminatorsRequest {
+
+}
+
+message GetTunnelTerminatorsReply {
+  repeated TunnelTerminator tunnels = 1;
+}
+
+//
+// ID map
+//
+message IDMapEntry {
+  string name  = 1;
+  uint32 key   = 2;
+  uint32 value = 3;
+}
+
+message GetIDMapEntriesRequest {
+
+}
+
+message GetIDMapEntriesReply {
+  repeated IDMapEntry entries = 1;
+}
+
+//
+// Service
+//
+service GoNSLApi {
+  rpc GetFieldEntries (GetFieldEntriesRequest)   returns (GetFieldEntriesReply) {}
+  rpc GetVlans        (GetVlansRequest)          returns (GetVlansReply)        {}
+  rpc GetL2Addrs      (GetL2AddrsRequest)        returns (GetL2AddrsReply)      {}
+  rpc GetL2Stations   (GetL2StationsRequest)     returns (GetL2StationsReply)   {}
+  rpc FindL3Iface     (FindL3IfaceRequest)       returns (FindL3IfaceReply)     {}
+  rpc GetL3Iface      (GetL3IfaceRequest)        returns (GetL3IfaceReply)      {}
+  rpc GetL3Ifaces     (GetL3IfacesRequest)       returns (GetL3IfacesReply)     {}
+  rpc GetL3Egresses   (GetL3EgressesRequest)     returns (GetL3EgressesReply)   {}
+  rpc GetL3Hosts      (GetL3HostsRequest)        returns (GetL3HostsReply)      {}
+  rpc GetL3Routes     (GetL3RoutesRequest)       returns (GetL3RoutesReply)     {}
+  rpc GetIDMapEntries (GetIDMapEntriesRequest)   returns (GetIDMapEntriesReply) {}
+  rpc GetTunnelInitiators  (GetTunnelInitiatorsRequest)  returns (GetTunnelInitiatorsReply)  {}
+  rpc GetTunnelTerminators (GetTunnelTerminatorsRequest) returns (GetTunnelTerminatorsReply) {}
+}

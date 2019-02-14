@@ -19,15 +19,16 @@ package nlasvc
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"golang.org/x/net/context"
 	"gonla/nlaapi"
 	"gonla/nladbm"
 	"gonla/nlalib"
 	"gonla/nlamsg"
 	"gonla/nlamsg/nlalink"
-	"google.golang.org/grpc"
 	"net"
+
+	log "github.com/sirupsen/logrus"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
 //
@@ -67,24 +68,30 @@ func (n *NLAApiServer) MonNetlink(req *nlaapi.MonNetlinkRequest, stream nlaapi.N
 	log.Infof("NLAApiServer: Monitor START. %v", req)
 
 	client := nladbm.Clients().New()
-	defer nladbm.Clients().Delete(client)
+	defer close(client)
 
-	for {
-		select {
-		case <-stream.Context().Done():
-			log.Infof("NLAApiServer: Monitor EXIT. Closed")
-			return nil
+	if done := stream.Context().Done(); done != nil {
+		go func() {
+			<-done
+			log.Infof("### NLAApiServer: Monitor EXIT. Closed.")
 
-		case m := <-client:
-			res := nlaapi.NewNetlinkMessageUnionFromNative(m)
-			if err := stream.Send(res); err != nil {
-				log.Infof("NLAApiServer: Monitor EXIT. Stream error. %s", err)
-				return err
-			}
+			nladbm.Clients().Delete(client)
+			client <- nil
+		}()
+	}
+
+	for m := range client {
+		if m == nil {
+			break
+		}
+
+		res := nlaapi.NewNetlinkMessageUnionFromNative(m)
+		if err := stream.Send(res); err != nil {
+			log.Infof("NLAApiServer: Monitor EXIT. Stream error. %s", err)
 		}
 	}
 
-	// return nil
+	return nil
 }
 
 func (n *NLAApiServer) ModVpn(ctxt context.Context, req *nlaapi.ModVpnRequest) (*nlaapi.ModVpnReply, error) {
@@ -105,16 +112,10 @@ func (n *NLAApiServer) ModNetlink(ctxt context.Context, req *nlaapi.NetlinkMessa
 
 	} else {
 		// Send to slave
-		node := nladbm.Nodes().Select(nladbm.NewNodeKey(nlmsg.NId))
-		if node == nil {
-			log.Warnf("NLAApiServer: ModNetlink Node not found. nid=%d", nlmsg.NId)
-			return nil, fmt.Errorf("Node not found. nid=%d", nlmsg.NId)
-		}
-
 		log.Debugf("NLAApiServer: Send to slave. %s", nlmsg)
-		if err := node.Send(nlmsg); err != nil {
-			log.Errorf("NLAApiServer: ModNetlink send error. nid=%d %s", node.NId, err)
-			return nil, fmt.Errorf("Failed to send request. nid=%d", node.NId)
+		if err := nladbm.Nodes().Send(nladbm.NewNodeKey(nlmsg.NId), nlmsg); err != nil {
+			log.Errorf("NLAApiServer: ModNetlink send error. nid=%d %s", nlmsg.NId, err)
+			return nil, err
 		}
 	}
 
@@ -131,7 +132,14 @@ func (n *NLAApiServer) GetLink(ctxt context.Context, req *nlaapi.LinkKey) (*nlaa
 
 func (n *NLAApiServer) GetAddr(ctxt context.Context, req *nlaapi.AddrKey) (*nlaapi.Addr, error) {
 	if addr := nladbm.Addrs().Select(req.ToNative()); addr != nil {
-		return nlaapi.NewAddrFromNative(addr), nil
+		m := nlaapi.NewAddrFromNative(addr)
+		if len(m.Label) == 0 {
+			key := nladbm.NewLinkKey(addr.NId, int(addr.Index))
+			if link := nladbm.Links().Select(key); link != nil {
+				m.Label = link.Attrs().Name
+			}
+		}
+		return m, nil
 	}
 
 	return nil, fmt.Errorf("Addr not found. %v", req)
@@ -185,6 +193,14 @@ func (n *NLAApiServer) GetEncapInfo(ctxt context.Context, req *nlaapi.EncapInfoK
 	return nil, fmt.Errorf("EncapInfo not found. %v", req)
 }
 
+func (n *NLAApiServer) GetIptun(ctxt context.Context, req *nlaapi.IptunKey) (*nlaapi.Iptun, error) {
+	if e := nladbm.Links().SelectTun(req.ToNative()); e != nil {
+		return nlaapi.NewIptunFromNative(e), nil
+	}
+
+	return nil, fmt.Errorf("Iptun not found. nid:%d remote:%s", req.NId, req.GetRemoteIP())
+}
+
 func (n *NLAApiServer) GetLinks(req *nlaapi.GetLinksRequest, stream nlaapi.NLAApi_GetLinksServer) error {
 	nid := uint8(req.NId)
 	nladbm.Links().Walk(func(link *nlamsg.Link) error {
@@ -202,6 +218,12 @@ func (n *NLAApiServer) GetAddrs(req *nlaapi.GetAddrsRequest, stream nlaapi.NLAAp
 	nladbm.Addrs().Walk(func(addr *nlamsg.Addr) error {
 		if nid == addr.NId || nid == nlamsg.NODE_ID_ALL {
 			m := nlaapi.NewAddrFromNative(addr)
+			if len(m.Label) == 0 {
+				key := nladbm.NewLinkKey(addr.NId, int(addr.Index))
+				if link := nladbm.Links().Select(key); link != nil {
+					m.Label = link.Attrs().Name
+				}
+			}
 			return stream.Send(m)
 		}
 		return nil
@@ -272,6 +294,14 @@ func (n *NLAApiServer) GetStats(req *nlaapi.GetStatsRequest, stream nlaapi.NLAAp
 func (n *NLAApiServer) GetEncapInfos(req *nlaapi.GetEncapInfosRequest, stream nlaapi.NLAApi_GetEncapInfosServer) error {
 	nladbm.Encaps().Walk(func(e *nlamsg.EncapInfo) error {
 		m := nlaapi.NewEncapInfoFromNative(e)
+		return stream.Send(m)
+	})
+	return nil
+}
+
+func (n *NLAApiServer) GetIptuns(req *nlaapi.GetIptunsRequest, stream nlaapi.NLAApi_GetIptunsServer) error {
+	nladbm.Links().WalkTun(func(e *nlamsg.Iptun) error {
+		m := nlaapi.NewIptunFromNative(e)
 		return stream.Send(m)
 	})
 	return nil

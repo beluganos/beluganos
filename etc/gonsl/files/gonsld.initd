@@ -1,0 +1,112 @@
+#! /bin/sh
+# -*- coding: utf-8; mode: shell-script -*-
+
+# Copyright (C) 2018 Nippon Telegraph and Telephone Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+# implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Release
+. /etc/beluganos/gonsld.conf
+
+# Debug
+# . ./gonsld.conf
+
+# DO NOT EDIT
+DAEMON=/usr/bin/gonsld
+DESC="OpenNSL Agent"
+OPENNSL_CONFIG_FILE=/etc/opennsl/opennsl.conf
+
+. /lib/lsb/init-functions
+
+do_start() {
+    log_daemon_msg "Starting $DESC:"
+
+    # check if daemon running.
+    if start-stop-daemon --stop --quiet --signal 0 --pidfile $PIDFILE; then
+        local pid=`cat ${PIDFILE}`
+        log_warning_msg "daemon is already running? (pid=${pid})"
+        log_end_msg 1 || true
+        exit 1
+    fi
+
+    opennsl_setup insmod
+
+    local DAEMON_ARGS="-a $API_ADDR -c $BELHOME/gonsld.yaml --dp $DATAPATH --log-file $LOGFILE --pid $PIDFILE $DAEMON_MODE $USESIM"
+    echo $DAEMON_ARGS
+
+    export OPENNSL_CONFIG_FILE
+
+    start-stop-daemon --start --quiet --exec $DAEMON --pidfile $PIDFILE -- $DAEMON_ARGS
+    local result=$?
+    if [ $result != "0" ]; then
+        local pid=`cat $PIDFILE`
+        log_warning_msg "daemon is already running. (pid=${pid})"
+        log_end_msg $result || true
+        exit 1
+    fi
+
+    log_end_msg 0 || true
+}
+
+do_stop() {
+    log_daemon_msg "Stopping $DESC: "
+
+    start-stop-daemon --stop --quiet --pidfile $PIDFILE
+    local result=$?
+    if [ $result != "0" ]; then
+        log_warning_msg "daemon is not running. (check $PIDFILE)."
+    fi
+
+    rm -f $PIDFILE
+
+    opennsl_setup rmmod
+
+    log_end_msg $result || true
+}
+
+do_status() {
+    if [ ! -f $PIDFILE ]; then
+        echo "$DESC is not running"
+    else
+        local pid=$(cat $PIDFILE)
+        if [ ! -x /proc/${pid} ]; then
+            echo "$DESC is not running"
+        else
+            echo "$DESC is running ($pid)"
+        fi
+    fi
+}
+
+do_usage() {
+    log_action_msg "Usage: /etc/init.d/gonsld {start|stop|restart|status}" || true
+    exit 1
+}
+
+case "$1" in
+    start)
+        do_start
+        ;;
+    stop)
+        do_stop
+        ;;
+    restart)
+        do_stop
+        do_start
+        ;;
+    status)
+        do_status
+        ;;
+    *)  do_usage
+        ;;
+esac

@@ -67,7 +67,7 @@ func (n *Node) Recv() <-chan *NetlinkMessageUnion {
 }
 
 func (n *Node) Send(msg *NetlinkMessageUnion) error {
-	if msg.NId == n.NId || msg.NId == NODE_ID_ALL {
+	if msg == nil || msg.NId == n.NId || msg.NId == NODE_ID_ALL {
 		n.Ch <- msg
 	}
 	return nil

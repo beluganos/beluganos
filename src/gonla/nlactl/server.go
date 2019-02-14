@@ -18,10 +18,14 @@
 package nlactl
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/vishvananda/netlink/nl"
+	"fmt"
+	"gonla/nladbm"
 	"gonla/nlamsg"
 	"syscall"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/vishvananda/netlink/nl"
+	"golang.org/x/sys/unix"
 )
 
 var RTNLGRPLIST = []uint{
@@ -34,31 +38,115 @@ var RTNLGRPLIST = []uint{
 	nl.RTNLGRP_MPLS_ROUTE,
 }
 
+const (
+	RECEIVE_BUFFER_SIZE = 0x1000
+)
+
+type NLARecvBuffer struct {
+	Buffer []byte
+	Len    int
+}
+
+func NewNLARecvBuffer() *NLARecvBuffer {
+	return &NLARecvBuffer{
+		Buffer: make([]byte, RECEIVE_BUFFER_SIZE),
+	}
+}
+
+func (b *NLARecvBuffer) Recvfrom(fd int) (err error) {
+	if b.Len, _, err = unix.Recvfrom(fd, b.Buffer, 0); err != nil {
+		return
+	}
+
+	if b.Len < unix.NLMSG_HDRLEN {
+		err = fmt.Errorf("too short msg. %d", b.Len)
+	}
+
+	return
+}
+
+func (b *NLARecvBuffer) Bytes() []byte {
+	return b.Buffer[:b.Len]
+}
+
 type NLAServer struct {
-	Nid    uint8
-	nlmsgs chan<- *nlamsg.NetlinkMessage
-	done   chan struct{}
+	Nid             uint8
+	nlmsgs          chan<- *nlamsg.NetlinkMessage
+	done            chan struct{}
+	recvChanSize    int
+	recvSockBufSize int
 }
 
 func NewNLAServer(nid uint8, nlmsgs chan<- *nlamsg.NetlinkMessage, done chan struct{}) *NLAServer {
 	return &NLAServer{
-		Nid:    nid,
-		nlmsgs: nlmsgs,
-		done:   done,
+		Nid:             nid,
+		nlmsgs:          nlmsgs,
+		done:            done,
+		recvChanSize:    16,
+		recvSockBufSize: 1024 * 1024,
 	}
 }
 
-func (s *NLAServer) Serve(sock *nl.NetlinkSocket) {
-	for {
-		nlmsgs, err := sock.Receive()
+func (s *NLAServer) SetRecvChanSize(chanSize int) {
+	s.recvChanSize = chanSize
+}
+
+func (s *NLAServer) SetRecvSockBufferSize(sockBufSize int) {
+	s.recvSockBufSize = sockBufSize
+}
+
+func (s *NLAServer) parseNlMsgs(recvCh <-chan *NLARecvBuffer) {
+
+	statCount := nladbm.Stats().New("NLAServer.nlmsg.count")
+
+	for rb := range recvCh {
+		nlmsgs, err := syscall.ParseNetlinkMessage(rb.Bytes())
 		if err != nil {
-			log.Errorf("NLAServer EXIT. %s", err)
+			log.Errorf("NLAServer EXIT. parse error. %s", err)
 			return
 		}
 
 		for _, nlmsg := range nlmsgs {
 			s.nlmsgs <- nlamsg.NewNetlinkMessage(&nlmsg, s.Nid, nlamsg.SRC_KNL)
+			statCount.Inc()
 		}
+	}
+}
+
+func (s *NLAServer) Serve(sock *nl.NetlinkSocket) {
+
+	statRecv := nladbm.Stats().New("NLAServer.nlmsg.recv")
+	statRetry := nladbm.Stats().New("NLAServer.nlmsg.e_retry")
+	statNoBufs := nladbm.Stats().New("NLAServer.nlmsg.e_nobufs")
+
+	recvCh := make(chan *NLARecvBuffer, s.recvChanSize)
+
+	go s.parseNlMsgs(recvCh)
+
+	fd := sock.GetFd()
+	for {
+		rb := NewNLARecvBuffer()
+		if err := rb.Recvfrom(fd); err != nil {
+			switch err {
+			case unix.EINTR, unix.EAGAIN:
+				statRetry.Inc()
+				log.Debugf("NLAServer Recvfrom retry. %s", err)
+				continue
+
+			case unix.ENOBUFS:
+				statNoBufs.Inc()
+				log.Warnf("NLAServer Recvfrom error. %s", err)
+				continue
+
+			default:
+				log.Errorf("NLAServer EXIT. Recvfrom error. %s", err)
+				return
+			}
+		}
+
+		statRecv.Inc()
+
+		recvCh <- rb
 	}
 }
 
@@ -66,9 +154,23 @@ func (s *NLAServer) Start() error {
 	sock, err := nl.Subscribe(syscall.NETLINK_ROUTE, RTNLGRPLIST...)
 	if err != nil {
 		log.Errorf("NLAServer: nl.SubscribeAt error. %s", err)
-		close(s.done)
+		if s.done != nil {
+			close(s.done)
+		}
 		return err
 	}
+
+	if err := sock.SetReceiveBuffer(s.recvSockBufSize); err != nil {
+		log.Errorf("NLAServer: sock.SetReceiveBuffer error. %s", err)
+		sock.Close()
+		if s.done != nil {
+			close(s.done)
+		}
+		return err
+	}
+
+	n, _ := sock.GetReceiveBuffer()
+	log.Infof("NLAServer: socketopt(RCVBUF) = %d", n)
 
 	if s.done != nil {
 		go func() {

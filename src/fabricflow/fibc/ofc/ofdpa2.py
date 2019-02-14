@@ -143,3 +143,24 @@ def l2_unfiltered_interface_group(dpath, mod, ofctl):
     L2 Unfiltered Interface Group.
     """
     return generic.l2_unfiltered_interface_group(dpath, mod, ofctl)
+
+
+def pkt_out(dpath, port_id, strip_vlan, data):
+    """
+    PacketOut
+    """
+    return generic.pkt_out(dpath, port_id, strip_vlan, data)
+
+
+def get_port_stats(dpath, waiters, port_id, ofctl):
+    """
+    get port stats
+    """
+    return generic.get_port_stats(dpath, waiters, port_id, ofctl)
+
+
+def port_mod(dpath, mod, ofctl):
+    """
+    PotMod
+    """
+    return generic.port_mod(dpath, mod, ofctl)

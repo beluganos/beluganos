@@ -19,12 +19,13 @@ package main
 
 import (
 	"flag"
-	log "github.com/sirupsen/logrus"
 	"gonla/nlactl"
 	"gonla/nladbm"
 	"gonla/nlalib"
 	"gonla/nlasvc"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func readConfig(config *Config) error {
@@ -36,7 +37,10 @@ func readConfig(config *Config) error {
 		return err
 	}
 
-	log.Infof("config: %v", config)
+	log.Infof("config.Master: %t", config.IsMaster())
+	log.Infof("config.Node  : %s", &config.Node)
+	log.Infof("config.NLA   : %s", &config.NLA)
+	log.Infof("config.Log   : %s", &config.Log)
 	return nil
 }
 
@@ -104,7 +108,14 @@ func main() {
 	svcs := services(&cfg)
 	m := nlactl.NewNLAManager(nid, done, svcs...)
 	s := nlactl.NewNLAServer(nid, m.Chans.NlMsg, done)
+	s.SetRecvChanSize(cfg.NLA.RecvChanSize)
+	s.SetRecvSockBufferSize(cfg.NLA.RecvSockBufSize)
 	nladbm.Create()
+	for _, iptun := range cfg.NLA.Iptun {
+		for _, remote := range iptun.Remotes {
+			nladbm.Routes().RegisterTunRemote(iptun.NId, remote.IPNet)
+		}
+	}
 	m.Start()
 	s.Start()
 

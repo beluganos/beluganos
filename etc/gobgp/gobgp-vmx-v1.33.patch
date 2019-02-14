@@ -1,0 +1,30 @@
+diff --git a/server/fsm.go b/server/fsm.go
+index d65107df..82f6e85b 100644
+--- a/server/fsm.go
++++ b/server/fsm.go
+@@ -21,6 +21,7 @@ import (
+ 	"math/rand"
+ 	"net"
+ 	"strconv"
++	"strings"
+ 	"time"
+ 
+ 	"github.com/osrg/gobgp/config"
+@@ -30,7 +31,7 @@ import (
+ 
+ 	"github.com/eapache/channels"
+ 	log "github.com/sirupsen/logrus"
+-	"gopkg.in/tomb.v2"
++	tomb "gopkg.in/tomb.v2"
+ )
+ 
+ type PeerDownReason int
+@@ -703,7 +704,7 @@ func capabilitiesFromConfig(pConf *config.Neighbor) []bgp.ParameterCapabilityInt
+ 	}
+ 
+ 	// unnumbered BGP
+-	if pConf.Config.NeighborInterface != "" {
++	if strings.Contains(pConf.Config.NeighborInterface, "ip46") {
+ 		tuples := []*bgp.CapExtendedNexthopTuple{}
+ 		families, _ := config.AfiSafis(pConf.AfiSafis).ToRfList()
+ 		for _, family := range families {

@@ -37,3 +37,38 @@ func NewHello(reId string) *Hello {
 		ReId: reId,
 	}
 }
+
+func NewHelloFromBytes(data []byte) (*Hello, error) {
+	hello := &Hello{}
+	if err := proto.Unmarshal(data, hello); err != nil {
+		return nil, err
+	}
+
+	return hello, nil
+}
+
+//
+// FFHello
+//
+func (h *FFHello) Type() uint16 {
+	return uint16(FFM_FF_HELLO)
+}
+
+func (h *FFHello) Bytes() ([]byte, error) {
+	return proto.Marshal(h)
+}
+
+func NewFFHello(dpId uint64) *FFHello {
+	return &FFHello{
+		DpId: dpId,
+	}
+}
+
+func NewFFHelloFromBytes(data []byte) (*FFHello, error) {
+	hello := &FFHello{}
+	if err := proto.Unmarshal(data, hello); err != nil {
+		return nil, err
+	}
+
+	return hello, nil
+}

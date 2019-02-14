@@ -53,6 +53,13 @@ func (ln *Link) Bond() *netlink.Bond {
 	return nil
 }
 
+func (ln *Link) Iptun() *netlink.Iptun {
+	if iptun, ok := ln.Link.(*netlink.Iptun); ok {
+		return iptun
+	}
+	return nil
+}
+
 func (ln *Link) Copy() *Link {
 	return &Link{
 		Link: ln.Link,

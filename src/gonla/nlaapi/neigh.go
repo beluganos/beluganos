@@ -18,10 +18,11 @@
 package nlaapi
 
 import (
-	"github.com/vishvananda/netlink"
 	"gonla/nladbm"
 	"gonla/nlamsg"
 	"net"
+
+	"github.com/vishvananda/netlink"
 )
 
 func (n *Neigh) GetIP() net.IP {
@@ -34,6 +35,18 @@ func (n *Neigh) GetLLIPAddr() net.IP {
 
 func (n *Neigh) NetHardwareAddr() net.HardwareAddr {
 	return net.HardwareAddr(n.HardwareAddr)
+}
+
+func (n *Neigh) SetNotun(notun *NeighNotun) {
+	n.Tunnel = &Neigh_Notun{
+		Notun: notun,
+	}
+}
+
+func (n *Neigh) SetIptun(iptun *NeighIptun) {
+	n.Tunnel = &Neigh_Iptun{
+		Iptun: iptun,
+	}
 }
 
 func (n *Neigh) ToNetlink() *netlink.Neigh {
@@ -53,9 +66,11 @@ func (n *Neigh) ToNetlink() *netlink.Neigh {
 
 func (n *Neigh) ToNative() *nlamsg.Neigh {
 	return &nlamsg.Neigh{
-		Neigh: n.ToNetlink(),
-		NeId:  uint16(n.NeId),
-		NId:   uint8(n.NId),
+		Neigh:   n.ToNetlink(),
+		PhyLink: int(n.PhyLink),
+		Tunnel:  Neigh_TunnelToNative(n.Tunnel),
+		NeId:    uint16(n.NeId),
+		NId:     uint8(n.NId),
 	}
 }
 
@@ -71,8 +86,47 @@ func NewNeighFromNative(n *nlamsg.Neigh) *Neigh {
 		LlIpAddr:     n.LLIPAddr,
 		VlanId:       int32(n.Vlan),
 		Vni:          int32(n.VNI),
+		PhyLink:      int32(n.PhyLink),
+		Tunnel:       NewNeigh_TunnelFromNative(n.Tunnel),
 		NId:          uint32(n.NId),
 		NeId:         uint32(n.NeId),
+	}
+}
+
+func Neigh_TunnelToNative(src isNeigh_Tunnel) nlamsg.NeighTunnel {
+	if src == nil {
+		return nil
+	}
+
+	switch n := src.(type) {
+	case *Neigh_Notun:
+		return n.Notun.ToNative()
+
+	case *Neigh_Iptun:
+		return n.Iptun.ToNative()
+
+	default:
+		return nil
+	}
+}
+
+func NewNeigh_TunnelFromNative(src nlamsg.NeighTunnel) isNeigh_Tunnel {
+	if src == nil {
+		return &Neigh_Notun{
+			Notun: &NeighNotun{},
+		}
+	}
+
+	switch n := src.(type) {
+	case *nlamsg.NeighIptun:
+		return &Neigh_Iptun{
+			Iptun: NewNeighIptunFromNative(n),
+		}
+
+	default:
+		return &Neigh_Notun{
+			Notun: &NeighNotun{},
+		}
 	}
 }
 

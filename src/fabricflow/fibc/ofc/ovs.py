@@ -46,3 +46,6 @@ mpls_tun1_group = generic.mpls_tun1_group
 mpls_swap_group = generic.mpls_swap_group
 mpls_ecmp_group = generic.mpls_ecmp_group
 l2_unfiltered_interface_group = generic.l2_unfiltered_interface_group
+pkt_out = generic.pkt_out
+get_port_stats = generic.get_port_stats
+port_mod = generic.port_mod

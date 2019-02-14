@@ -7,7 +7,6 @@ from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
-from google.protobuf import descriptor_pb2
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
@@ -19,6 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='ribsapi.proto',
   package='ribsapi',
   syntax='proto3',
+  serialized_options=None,
   serialized_pb=_b('\n\rribsapi.proto\x12\x07ribsapi\"\x10\n\x0eGetRicsRequest\"\x14\n\x12GetNexthopsRequest\"\x16\n\x14GetNexthopMapRequest\"\r\n\x0bModRibReply\"\x0e\n\x0cSyncRibReply\"\x1c\n\x0eSyncRibRequest\x12\n\n\x02rt\x18\x01 \x01(\t\"-\n\x11MonitorRibRequest\x12\n\n\x02rt\x18\x01 \x01(\t\x12\x0c\n\x04n_id\x18\x02 \x01(\r\"6\n\tRibUpdate\x12\n\n\x02rt\x18\x01 \x01(\t\x12\x0e\n\x06prefix\x18\x02 \x01(\t\x12\r\n\x05paths\x18\x03 \x03(\x0c\"h\n\x08RicEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04n_id\x18\x02 \x01(\r\x12\x0c\n\x04\x61\x64\x64r\x18\x03 \x01(\t\x12\x0c\n\x04port\x18\x04 \x01(\r\x12\n\n\x02rt\x18\x05 \x01(\t\x12\n\n\x02rd\x18\x06 \x01(\t\x12\r\n\x05label\x18\x07 \x01(\r\"\'\n\x04Path\x12\x0e\n\x06prefix\x18\x01 \x01(\t\x12\x0f\n\x07nexthop\x18\x02 \x01(\t\"3\n\x07Nexthop\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\t\x12\n\n\x02rt\x18\x02 \x01(\t\x12\x0e\n\x06src_id\x18\x03 \x01(\t\"&\n\nNexthopMap\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0b\n\x03val\x18\x02 \x01(\t2\xcf\x01\n\x07RIBSApi\x12\x39\n\x07GetRics\x12\x17.ribsapi.GetRicsRequest\x1a\x11.ribsapi.RicEntry\"\x00\x30\x01\x12@\n\x0bGetNexthops\x12\x1b.ribsapi.GetNexthopsRequest\x1a\x10.ribsapi.Nexthop\"\x00\x30\x01\x12G\n\rGetNexthopMap\x12\x1d.ribsapi.GetNexthopMapRequest\x1a\x13.ribsapi.NexthopMap\"\x00\x30\x01\x32\xc2\x01\n\x0bRIBSCoreApi\x12\x34\n\x06ModRib\x12\x12.ribsapi.RibUpdate\x1a\x14.ribsapi.ModRibReply\"\x00\x12@\n\nMonitorRib\x12\x1a.ribsapi.MonitorRibRequest\x1a\x12.ribsapi.RibUpdate\"\x00\x30\x01\x12;\n\x07SyncRib\x12\x17.ribsapi.SyncRibRequest\x1a\x15.ribsapi.SyncRibReply\"\x00\x62\x06proto3')
 )
 
@@ -38,7 +38,7 @@ _GETRICSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -62,7 +62,7 @@ _GETNEXTHOPSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -86,7 +86,7 @@ _GETNEXTHOPMAPREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -110,7 +110,7 @@ _MODRIBREPLY = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -134,7 +134,7 @@ _SYNCRIBREPLY = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -158,14 +158,14 @@ _SYNCRIBREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -189,21 +189,21 @@ _MONITORRIBREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='ribsapi.MonitorRibRequest.n_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -227,28 +227,28 @@ _RIBUPDATE = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='prefix', full_name='ribsapi.RibUpdate.prefix', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='paths', full_name='ribsapi.RibUpdate.paths', index=2,
       number=3, type=12, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -272,56 +272,56 @@ _RICENTRY = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='ribsapi.RicEntry.n_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='addr', full_name='ribsapi.RicEntry.addr', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='port', full_name='ribsapi.RicEntry.port', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='rt', full_name='ribsapi.RicEntry.rt', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='rd', full_name='ribsapi.RicEntry.rd', index=5,
       number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='label', full_name='ribsapi.RicEntry.label', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -345,21 +345,21 @@ _PATH = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='nexthop', full_name='ribsapi.Path.nexthop', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -383,28 +383,28 @@ _NEXTHOP = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='rt', full_name='ribsapi.Nexthop.rt', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_id', full_name='ribsapi.Nexthop.src_id', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -428,21 +428,21 @@ _NEXTHOPMAP = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='val', full_name='ribsapi.NexthopMap.val', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  options=None,
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -551,364 +551,88 @@ NexthopMap = _reflection.GeneratedProtocolMessageType('NexthopMap', (_message.Me
 _sym_db.RegisterMessage(NexthopMap)
 
 
-try:
-  # THESE ELEMENTS WILL BE DEPRECATED.
-  # Please use the generated *_pb2_grpc.py files instead.
-  import grpc
-  from grpc.beta import implementations as beta_implementations
-  from grpc.beta import interfaces as beta_interfaces
-  from grpc.framework.common import cardinality
-  from grpc.framework.interfaces.face import utilities as face_utilities
+
+_RIBSAPI = _descriptor.ServiceDescriptor(
+  name='RIBSApi',
+  full_name='ribsapi.RIBSApi',
+  file=DESCRIPTOR,
+  index=0,
+  serialized_options=None,
+  serialized_start=495,
+  serialized_end=702,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='GetRics',
+    full_name='ribsapi.RIBSApi.GetRics',
+    index=0,
+    containing_service=None,
+    input_type=_GETRICSREQUEST,
+    output_type=_RICENTRY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetNexthops',
+    full_name='ribsapi.RIBSApi.GetNexthops',
+    index=1,
+    containing_service=None,
+    input_type=_GETNEXTHOPSREQUEST,
+    output_type=_NEXTHOP,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetNexthopMap',
+    full_name='ribsapi.RIBSApi.GetNexthopMap',
+    index=2,
+    containing_service=None,
+    input_type=_GETNEXTHOPMAPREQUEST,
+    output_type=_NEXTHOPMAP,
+    serialized_options=None,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_RIBSAPI)
+
+DESCRIPTOR.services_by_name['RIBSApi'] = _RIBSAPI
 
 
-  class RIBSApiStub(object):
-    """
-    RIBS API
+_RIBSCOREAPI = _descriptor.ServiceDescriptor(
+  name='RIBSCoreApi',
+  full_name='ribsapi.RIBSCoreApi',
+  file=DESCRIPTOR,
+  index=1,
+  serialized_options=None,
+  serialized_start=705,
+  serialized_end=899,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='ModRib',
+    full_name='ribsapi.RIBSCoreApi.ModRib',
+    index=0,
+    containing_service=None,
+    input_type=_RIBUPDATE,
+    output_type=_MODRIBREPLY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='MonitorRib',
+    full_name='ribsapi.RIBSCoreApi.MonitorRib',
+    index=1,
+    containing_service=None,
+    input_type=_MONITORRIBREQUEST,
+    output_type=_RIBUPDATE,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SyncRib',
+    full_name='ribsapi.RIBSCoreApi.SyncRib',
+    index=2,
+    containing_service=None,
+    input_type=_SYNCRIBREQUEST,
+    output_type=_SYNCRIBREPLY,
+    serialized_options=None,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_RIBSCOREAPI)
 
-    """
+DESCRIPTOR.services_by_name['RIBSCoreApi'] = _RIBSCOREAPI
 
-    def __init__(self, channel):
-      """Constructor.
-
-      Args:
-        channel: A grpc.Channel.
-      """
-      self.GetRics = channel.unary_stream(
-          '/ribsapi.RIBSApi/GetRics',
-          request_serializer=GetRicsRequest.SerializeToString,
-          response_deserializer=RicEntry.FromString,
-          )
-      self.GetNexthops = channel.unary_stream(
-          '/ribsapi.RIBSApi/GetNexthops',
-          request_serializer=GetNexthopsRequest.SerializeToString,
-          response_deserializer=Nexthop.FromString,
-          )
-      self.GetNexthopMap = channel.unary_stream(
-          '/ribsapi.RIBSApi/GetNexthopMap',
-          request_serializer=GetNexthopMapRequest.SerializeToString,
-          response_deserializer=NexthopMap.FromString,
-          )
-
-
-  class RIBSApiServicer(object):
-    """
-    RIBS API
-
-    """
-
-    def GetRics(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetNexthops(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def GetNexthopMap(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-
-  def add_RIBSApiServicer_to_server(servicer, server):
-    rpc_method_handlers = {
-        'GetRics': grpc.unary_stream_rpc_method_handler(
-            servicer.GetRics,
-            request_deserializer=GetRicsRequest.FromString,
-            response_serializer=RicEntry.SerializeToString,
-        ),
-        'GetNexthops': grpc.unary_stream_rpc_method_handler(
-            servicer.GetNexthops,
-            request_deserializer=GetNexthopsRequest.FromString,
-            response_serializer=Nexthop.SerializeToString,
-        ),
-        'GetNexthopMap': grpc.unary_stream_rpc_method_handler(
-            servicer.GetNexthopMap,
-            request_deserializer=GetNexthopMapRequest.FromString,
-            response_serializer=NexthopMap.SerializeToString,
-        ),
-    }
-    generic_handler = grpc.method_handlers_generic_handler(
-        'ribsapi.RIBSApi', rpc_method_handlers)
-    server.add_generic_rpc_handlers((generic_handler,))
-
-
-  class RIBSCoreApiStub(object):
-    # missing associated documentation comment in .proto file
-    pass
-
-    def __init__(self, channel):
-      """Constructor.
-
-      Args:
-        channel: A grpc.Channel.
-      """
-      self.ModRib = channel.unary_unary(
-          '/ribsapi.RIBSCoreApi/ModRib',
-          request_serializer=RibUpdate.SerializeToString,
-          response_deserializer=ModRibReply.FromString,
-          )
-      self.MonitorRib = channel.unary_stream(
-          '/ribsapi.RIBSCoreApi/MonitorRib',
-          request_serializer=MonitorRibRequest.SerializeToString,
-          response_deserializer=RibUpdate.FromString,
-          )
-      self.SyncRib = channel.unary_unary(
-          '/ribsapi.RIBSCoreApi/SyncRib',
-          request_serializer=SyncRibRequest.SerializeToString,
-          response_deserializer=SyncRibReply.FromString,
-          )
-
-
-  class RIBSCoreApiServicer(object):
-    # missing associated documentation comment in .proto file
-    pass
-
-    def ModRib(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def MonitorRib(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-    def SyncRib(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-      context.set_details('Method not implemented!')
-      raise NotImplementedError('Method not implemented!')
-
-
-  def add_RIBSCoreApiServicer_to_server(servicer, server):
-    rpc_method_handlers = {
-        'ModRib': grpc.unary_unary_rpc_method_handler(
-            servicer.ModRib,
-            request_deserializer=RibUpdate.FromString,
-            response_serializer=ModRibReply.SerializeToString,
-        ),
-        'MonitorRib': grpc.unary_stream_rpc_method_handler(
-            servicer.MonitorRib,
-            request_deserializer=MonitorRibRequest.FromString,
-            response_serializer=RibUpdate.SerializeToString,
-        ),
-        'SyncRib': grpc.unary_unary_rpc_method_handler(
-            servicer.SyncRib,
-            request_deserializer=SyncRibRequest.FromString,
-            response_serializer=SyncRibReply.SerializeToString,
-        ),
-    }
-    generic_handler = grpc.method_handlers_generic_handler(
-        'ribsapi.RIBSCoreApi', rpc_method_handlers)
-    server.add_generic_rpc_handlers((generic_handler,))
-
-
-  class BetaRIBSApiServicer(object):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This class was generated
-    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
-    """
-    RIBS API
-
-    """
-    def GetRics(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetNexthops(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetNexthopMap(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-
-
-  class BetaRIBSApiStub(object):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This class was generated
-    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
-    """
-    RIBS API
-
-    """
-    def GetRics(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def GetNexthops(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def GetNexthopMap(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-
-
-  def beta_create_RIBSApi_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This function was
-    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
-    request_deserializers = {
-      ('ribsapi.RIBSApi', 'GetNexthopMap'): GetNexthopMapRequest.FromString,
-      ('ribsapi.RIBSApi', 'GetNexthops'): GetNexthopsRequest.FromString,
-      ('ribsapi.RIBSApi', 'GetRics'): GetRicsRequest.FromString,
-    }
-    response_serializers = {
-      ('ribsapi.RIBSApi', 'GetNexthopMap'): NexthopMap.SerializeToString,
-      ('ribsapi.RIBSApi', 'GetNexthops'): Nexthop.SerializeToString,
-      ('ribsapi.RIBSApi', 'GetRics'): RicEntry.SerializeToString,
-    }
-    method_implementations = {
-      ('ribsapi.RIBSApi', 'GetNexthopMap'): face_utilities.unary_stream_inline(servicer.GetNexthopMap),
-      ('ribsapi.RIBSApi', 'GetNexthops'): face_utilities.unary_stream_inline(servicer.GetNexthops),
-      ('ribsapi.RIBSApi', 'GetRics'): face_utilities.unary_stream_inline(servicer.GetRics),
-    }
-    server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
-    return beta_implementations.server(method_implementations, options=server_options)
-
-
-  def beta_create_RIBSApi_stub(channel, host=None, metadata_transformer=None, pool=None, pool_size=None):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This function was
-    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
-    request_serializers = {
-      ('ribsapi.RIBSApi', 'GetNexthopMap'): GetNexthopMapRequest.SerializeToString,
-      ('ribsapi.RIBSApi', 'GetNexthops'): GetNexthopsRequest.SerializeToString,
-      ('ribsapi.RIBSApi', 'GetRics'): GetRicsRequest.SerializeToString,
-    }
-    response_deserializers = {
-      ('ribsapi.RIBSApi', 'GetNexthopMap'): NexthopMap.FromString,
-      ('ribsapi.RIBSApi', 'GetNexthops'): Nexthop.FromString,
-      ('ribsapi.RIBSApi', 'GetRics'): RicEntry.FromString,
-    }
-    cardinalities = {
-      'GetNexthopMap': cardinality.Cardinality.UNARY_STREAM,
-      'GetNexthops': cardinality.Cardinality.UNARY_STREAM,
-      'GetRics': cardinality.Cardinality.UNARY_STREAM,
-    }
-    stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
-    return beta_implementations.dynamic_stub(channel, 'ribsapi.RIBSApi', cardinalities, options=stub_options)
-
-
-  class BetaRIBSCoreApiServicer(object):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This class was generated
-    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
-    # missing associated documentation comment in .proto file
-    pass
-    def ModRib(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def MonitorRib(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def SyncRib(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
-      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-
-
-  class BetaRIBSCoreApiStub(object):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This class was generated
-    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
-    # missing associated documentation comment in .proto file
-    pass
-    def ModRib(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    ModRib.future = None
-    def MonitorRib(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    def SyncRib(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    SyncRib.future = None
-
-
-  def beta_create_RIBSCoreApi_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This function was
-    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
-    request_deserializers = {
-      ('ribsapi.RIBSCoreApi', 'ModRib'): RibUpdate.FromString,
-      ('ribsapi.RIBSCoreApi', 'MonitorRib'): MonitorRibRequest.FromString,
-      ('ribsapi.RIBSCoreApi', 'SyncRib'): SyncRibRequest.FromString,
-    }
-    response_serializers = {
-      ('ribsapi.RIBSCoreApi', 'ModRib'): ModRibReply.SerializeToString,
-      ('ribsapi.RIBSCoreApi', 'MonitorRib'): RibUpdate.SerializeToString,
-      ('ribsapi.RIBSCoreApi', 'SyncRib'): SyncRibReply.SerializeToString,
-    }
-    method_implementations = {
-      ('ribsapi.RIBSCoreApi', 'ModRib'): face_utilities.unary_unary_inline(servicer.ModRib),
-      ('ribsapi.RIBSCoreApi', 'MonitorRib'): face_utilities.unary_stream_inline(servicer.MonitorRib),
-      ('ribsapi.RIBSCoreApi', 'SyncRib'): face_utilities.unary_unary_inline(servicer.SyncRib),
-    }
-    server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
-    return beta_implementations.server(method_implementations, options=server_options)
-
-
-  def beta_create_RIBSCoreApi_stub(channel, host=None, metadata_transformer=None, pool=None, pool_size=None):
-    """The Beta API is deprecated for 0.15.0 and later.
-
-    It is recommended to use the GA API (classes and functions in this
-    file not marked beta) for all further purposes. This function was
-    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
-    request_serializers = {
-      ('ribsapi.RIBSCoreApi', 'ModRib'): RibUpdate.SerializeToString,
-      ('ribsapi.RIBSCoreApi', 'MonitorRib'): MonitorRibRequest.SerializeToString,
-      ('ribsapi.RIBSCoreApi', 'SyncRib'): SyncRibRequest.SerializeToString,
-    }
-    response_deserializers = {
-      ('ribsapi.RIBSCoreApi', 'ModRib'): ModRibReply.FromString,
-      ('ribsapi.RIBSCoreApi', 'MonitorRib'): RibUpdate.FromString,
-      ('ribsapi.RIBSCoreApi', 'SyncRib'): SyncRibReply.FromString,
-    }
-    cardinalities = {
-      'ModRib': cardinality.Cardinality.UNARY_UNARY,
-      'MonitorRib': cardinality.Cardinality.UNARY_STREAM,
-      'SyncRib': cardinality.Cardinality.UNARY_UNARY,
-    }
-    stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
-    return beta_implementations.dynamic_stub(channel, 'ribsapi.RIBSCoreApi', cardinalities, options=stub_options)
-except ImportError:
-  pass
 # @@protoc_insertion_point(module_scope)

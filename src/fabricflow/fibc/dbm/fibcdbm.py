@@ -37,13 +37,23 @@ class FIBCDbm(object):
         self.idmap = None
         self.dps = None
 
-    def create(self, dpset):
+    def create(self, dpset, cfg):
         """
         Create Table instances
+        cfg: fibccfg.Config
         """
         self.dps = FIBCDbDpTable(dpset)
         self.idmap = FIBCDbIdMapTable()
         self.portmap = FIBCDbPortMapTable()
+
+        for dpath in cfg.dpaths:
+            self.dps.add_entry(dpath)
+
+        for router in cfg.get_ext_routers():
+            self.idmap.add(re_id=router["re_id"], dp_id=router["dp_id"])
+            for port in router["ports"]:
+                self.portmap.add(FIBCPortEntry.new(**port))
+
 
 _INSTANCE = FIBCDbm()
 
@@ -79,34 +89,10 @@ def dump(writer):
     portmap().dump(writer)
     idmap().dump(writer)
 
-def create(dpset):
+def create(dpset, cfg):
     """
     Create and initialize FIBC DBM instance.
     """
     _LOG.info("creating FIBCDbm")
 
-    _INSTANCE.create(dpset)
-
-
-def create_ports(router):
-    """
-    Create Port Entries from config
-    """
-    ports = list()
-    re_id = router["re_id"]
-    dp_id = idmap().find_by_re_id(re_id)["dp_id"]
-    for port in router["ports"]:
-        ports.append(FIBCPortEntry.new(re_id=re_id, dp_id=dp_id, **port))
-
-    return ports
-
-
-def create_idmap(router):
-    """
-    Create Map of re_id and dp_id.
-    """
-    dpath = dps().find_by_name(router["datapath"])
-    return dict(
-        re_id=router["re_id"],
-        dp_id=dpath["dp_id"],
-    )
+    _INSTANCE.create(dpset, cfg)
