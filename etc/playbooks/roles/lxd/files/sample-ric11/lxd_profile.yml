@@ -16,11 +16,13 @@
         name: eth4
         host_name: "{{ lxcname }}.1"
         nictype: p2p
+        mtu: "9000"
       eth5:
         type: nic
         name: eth5
         host_name: "{{ lxcname }}.2"
         nictype: p2p
+        mtu: "9000"
       logdir:
         path: /var/log
         source: /var/log/beluganos/{{ lxcname }}
