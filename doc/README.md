@@ -17,12 +17,21 @@ After installing ([install-guide.md](install-guide.md)), you can check our use c
 	- MPLS-VPN PE router with 2 VRF
 	- Real white-box swithes and environment routers are required to try
 
-## Setup & configure
+## Setup hardware
 
-After installing ([install-guide.md](install-guide.md)), you can configure Beluganos as you like.
+After installing ([install-guide.md](install-guide.md)), you may set up about hardware.
 
 - [setup-guide.md](setup-guide.md)
 	- Hardware settings of Beluganos
+- [setup-guide-ofdpa.md](setup-guide-ofdpa.md)
+	- Hardware set up for OF-DPA
+- [setup-guide-onsl.md](setup-guide-onsl.md)
+	- Hardware set up for OpenNSL
+
+## Configure and operation
+
+After installing ([install-guide.md](install-guide.md)), you can configure Beluganos as you like.
+
 - [configure-ansible.md](configure-ansible.md)
 	- Configuration guide of IP/MPLS router by ansible.
 - [configure-ansible-l3vpn.md](configure-ansible-l3vpn.md)
@@ -33,7 +42,7 @@ After installing ([install-guide.md](install-guide.md)), you can configure Belug
 	- How to start/stop Beluganos
 	- How to login routing engine's console
 
-## NETCONF configure
+## NETCONF components
 
 - [netconf/etc/openconfig](https://github.com/beluganos/netconf/tree/master/etc/openconfig)
 	- Yang files of Beluganos
@@ -42,9 +51,16 @@ After installing ([install-guide.md](install-guide.md)), you can configure Belug
 - [netconf/doc/setup-guide](https://github.com/beluganos/netconf/blob/master/doc/setup-guide.md)
 	- Initial settings about network-instance modules
 
+## Feature guide
+
+- [feature-snmp.md](feature-snmp.md) 
+	- SNMP feature
+
 ## General
 
 - [README.md](../README.md)
+- [Beluganos-introduction.pdf](Beluganos-introduction.pdf)
+	- Presentation to introduce Beluganos
 - [CONTRIBUTING.md](../CONTRIBUTING.md)
 - [architecture.md](architecture.md)
 	- Abstraction of Beluganos's architecture

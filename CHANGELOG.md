@@ -1,5 +1,12 @@
 # Change logs
 
+## v0.3.0
+- Support new hardware API (OpenNSL)
+- Support SNMP features, IPv6 routing
+- Bump FRRrouitng to 5.0.1
+- Improve document of hardware settings
+- Fix minor bugs
+
 ## v0.2.1
 - Upgrade host OS to Ubuntu 18.04
 - Improve document

@@ -16,6 +16,7 @@
         name: eth3
         host_name: "{{ lxcname }}.1"
         nictype: p2p
+        mtu: "9000"
       logdir:
         path: /var/log
         source: /var/log/beluganos/{{ lxcname }}
