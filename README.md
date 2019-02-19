@@ -29,10 +29,14 @@ In order to try Beluganos quickly, **some example cases are prepared**. This exa
 - Step 2: Setup
 	- Register your white-box switches to Beluganos.
 	- See [doc/setup-guide.md](doc/setup-guide.md).
+ 	- In addition, if you will use OF-DPA swtiches, see [doc/setup-guide-ofdpa.md](doc/setup-guide-ofdpa.md)
+	- In addition, if you will use OpenNSL swtiches, see [doc/setup-guide-onsl.md](doc/setup-guide-onsl.md)
 - Step 3: Configure
 	- Change router settings like IP address, VLAN, and routing protocols as you like.
 	- To configure by ansible, please see [doc/configure-ansible.md](doc/configure-ansible.md).
 	- To configure by NETCONF, please see [doc/configure-netconf.md](doc/configure-netconf.md).
+- Step 4: Operation
+	- See [doc/operation-guide.md](doc/operation-guide.md)
 
 ## Support
 Github issue page and e-mail are available. If you prefer to use e-mail, please contact `msf-contact-ml [at] hco.ntt.co.jp`.

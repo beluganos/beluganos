@@ -9,7 +9,13 @@ In this page, operation about NETCONF module is also described. If you will not 
 - If you use **ansible** to configure router settings, you have to execute playbook before starting to run Beluganos. Please refer [configure-ansible.md](configure-ansible.md) before proceeding.
 - If you use **NETCONF** to configure router settings, you have to execute minimum playbook before starting to run Beluganos. Please refer [configure-netconf.md](configure-netconf.md) before proceeding.
 
-## Step 1. Run main module
+## Step 1. Run ASIC driver agent
+
+- OF-DPA: Please refer [setup-guide-ofdpa.md](setup-guide-ofdpa.md).
+- OpenFlow switch: Please refer OpenFlow switch's documents.
+- OpenNSL: Please refer [setup-guide-onsl.md](setup-guide-onsl.md)
+
+## Step 2. Run main module
 
 You have two options to start/stop Beluganos. Generally, because you have already registered Beluganos as a Linux service at [install-guide.md](install-guide.md), **daemon mode** is recommended in production.
 
@@ -38,12 +44,12 @@ $ sudo systemctl stop ncms               #Only using NETCONF
 $ sudo beluganos run
 ```
 
-In this method, Beluganos can be worked in your terminal for debug. This command will snatch your standard output. `Ctrl-c` to stop.
+In this method, Beluganos can be worked in your terminal for debug. This command will snatch your standard output. <kbd><kbd>Ctrl</kbd>+<kbd>C</kbd></kbd> to stop.
 
 ### Remarks
 `fibcd` service and `beluganos run` command will make start to connect with OpenFlow agent. Before executing this commands, starting OF-DPA apps is recommended.
 
-## Step 2. Add Linux containers
+## Step 3. Add Linux containers
 
 After starting main module of Beluganos, you should add Linux containers. In general, one container should be added. Only in VRF environments like MPLS-VPN, you should add all routing instance's containers.
 
@@ -147,7 +153,7 @@ sample# show ip ?
 sample#
 ```
 
-## Remarks
+## Appendix
 
 ### Automatic start-up
 

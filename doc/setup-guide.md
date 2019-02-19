@@ -86,7 +86,7 @@ The syntax of `etc/playbooks/roles/dpath/files/<switch-name>/fibc.yml` is follow
 datapaths:
   - name: <switch-name>     # dpname (A-Z,a-z,0-9,_-)
     dp_id: <switch-dp-id>   # datapath id of your switches (integer)
-    mode: <switch-type>     # "ofdpa2" or "generic" or "ovs"
+    mode: <switch-type>     # "ofdpa2" or "generic" or "onsl" or "ovs"
 ~~~~
 
 
@@ -96,7 +96,8 @@ The value of `dp-id` means OpenFlow datapath ID of your switch. The value of `mo
 	- name (`<switch-name>`): Your switch name which is already declared in `etc/playbooks/dp-switchA.yml`.
 	- dp_id (`<switch-dp-id>`): OpenFlow datapath ID of your switch. Integer.
 	- mode (`<switch-type>`): Your switch types. Currently Beluganos has three options.
- 		1. `ofdpa2`: OF-DPA 2.0 switch. [https://github.com/Broadcom-Switch/of-dpa](https://github.com/Broadcom-Switch/of-dpa)
+ 		1. `ofdpa2`: OF-DPA 2.0 switch.
+ 		1. `onsl` : OpenNSL 3.5 switch.
 		1. `generic`: OpenFlow 1.3 compatible switches. (e.g. Lagopus)
 		1. `ovs`: Open vSwitch (Limited support).
 
@@ -110,7 +111,10 @@ $ ansible-playbook -i hosts -K dp-switchA.yml
 ~~~~
 
 ## Next steps
-After reflecting your changes, please refer configure guide. You can choose two methods.
 
-- ansible: [configure-ansible.md](configure-ansible.md)
-- NETCONF over SSH: [configure-netconf.md](configure-netconf.md)
+After reflecting your changes, please refer hardware setup guide.
+
+- OpenNSL
+	- [setup-guide-onsl.md](setup-guide-onsl.md)
+- OF-DPA
+	- [setup-guide-ofdpa.md](setup-guide-ofdpa.md)
