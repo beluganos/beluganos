@@ -28,9 +28,15 @@ fibc-egg:
 	python ./setup.py bdist_egg --bdist-dir=dist --dist-dir=bin
 
 install-service:
-	sudo make -C ./etc/installer install-fibc
+	sudo make -C ./etc/installer install-service
 
 uninstall-service:
+	sudo make -C ./etc/installer uninstall-service
+
+install-fibc:
+	sudo make -C ./etc/installer install-fibc
+
+uninstall-fibc:
 	sudo make -C ./etc/installer uninstall-fibc
 
 install-stats:
