@@ -13,24 +13,41 @@ CNFDIR=/etc/beluganos
 SNMPD_CONF=/etc/snmp/snmpd.conf
 SNMPD_PASS="/usr/bin/fibssnmp -v"
 SNMPD_OID_LIST=`./snmpd_install.sh oid-list ./fibssnmp.yaml`
+SNMPD_AGENT_PORT=8161
 
 #
 # services
 #
 .PHONY: install-service uninstall-service
-install-service: install-fibc install-fibs
+install-service: install-beluganos install-fibc install-fibs
 
-uninstall-service: uninstall-fibc uninstall-fibs
+uninstall-service: uninstall-beluganos uninstall-fibc uninstall-fibs
 
+
+#
+# beluganos
+#
+.PHONY: install-beluganos uninstall-beluganos
+install-beluganos:
+	@echo "install beluganos common service..."
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/beluganos.service /etc/systemd/system/
+	@sudo systemctl daemon-reload
+	@sudo systemctl enable beluganos.service
+	@sudo systemctl start beluganos.service
+
+uninstall-beluganos:
+	@echo "uninstall beluganos common service..."
+	@sudo systemctl disable beluganos.service || true
+	@$(UNINSTALL) /etc/systemd/system/beluganos.service
+	@sudo systemctl daemon-reload
 
 #
 # fibs
 #
 .PHONY: install-fibs uninstall-fibs
-install-fibs: install-snmpproxyd install-fibssnmp install-fibsd register-snmp-oid
+install-fibs: install-snmpproxyd install-fibssnmp install-fibsd register-snmp-oid set-snmpd-port
 
-uninstall-fibs: uninstall-snmpproxyd uninstall-fibssnmp uninstall-fibsd unregister-snmp-oid
-
+uninstall-fibs: uninstall-snmpproxyd uninstall-fibssnmp uninstall-fibsd unregister-snmp-oid unset-snmpd-port
 
 #
 # fibssnmp
@@ -40,13 +57,11 @@ install-fibssnmp:
 	@echo "install fibssnmp..."
 	@$(INSTALL) -pm 755 ${BEL_BINDIR}/fibssnmp      ${BINDIR}/
 	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/fibssnmp.yaml ${CNFDIR}/
-	@echo "*** edit snmpd.conf and add 'pass_psesist <oid> ${BINDIR}/fibssnmp' ***"
 
 uninstall-fibssnmp:
 	@echo "uninstall fibssnmp..."
 	@$(UNINSTALL) ${CNFDIR}/fibssnmp.yaml
 	@$(UNINSTALL) ${BINDIR}/fibssnmp
-	@echo "*** edit snmpd.conf and remove 'pass_psesist ...' ***"
 
 register-snmp-oid:
 	@echo "register oid to snmpd.conf"
@@ -100,6 +115,19 @@ uninstall-snmpproxyd:
 	@$(UNINSTALL) ${CNFDIR}/snmpproxyd.conf
 	@$(UNINSTALL) ${BINDIR}/snmpproxyd
 	@sudo systemctl daemon-reload
+
+
+#
+# snmpd.conf
+#
+.PHONY: set-snmpd-port unset-snmpd-port
+set-snmpd-port:
+	@echo "set snmpd listen port..."
+	./snmpd_install.sh set-agent-port ${SNMPD_CONF} ${SNMPD_AGENT_PORT}
+
+unset-snmpd-port:
+	@echo "unset snmpd listen port..."
+	./snmpd_install.sh unset-agent-port ${SNMPD_CONF} ${SNMPD_AGENT_PORT}
 
 
 #

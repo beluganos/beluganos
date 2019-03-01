@@ -1,4 +1,4 @@
-# Configure guide for L3VPN
+# [Feature guide] L3VPN by ansible
 
 Beluganos support PE router of BGP/MPLS based IP-VPN environments. To setup PE router, additional settings are needed.
 
