@@ -34,8 +34,6 @@ After installing ([install-guide.md](install-guide.md)), you can configure Belug
 
 - [configure-ansible.md](configure-ansible.md)
 	- Configuration guide of IP/MPLS router by ansible.
-- [configure-ansible-l3vpn.md](configure-ansible-l3vpn.md)
-	- Configuration guide of MPLS-VPN PE router by ansible.
 - [configure-netconf.md](configure-netconf.md)
 	- Configuration guide of router by NETCONF.
 - [operation-guide.md](operation-guide.md)
@@ -53,8 +51,10 @@ After installing ([install-guide.md](install-guide.md)), you can configure Belug
 
 ## Feature guide
 
+- [feature-l3vpn.md](feature-l3vpn.md)
+	- Configuration guide of MPLS-VPN PE router by ansible.
 - [feature-snmp.md](feature-snmp.md) 
-	- SNMP feature
+	- SNMP feature guide (MIB, trap)
 
 ## General
 

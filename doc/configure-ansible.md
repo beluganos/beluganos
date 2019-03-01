@@ -4,7 +4,7 @@ You can configure router options like IP addresses or settings of routing protoc
 ## Pre-requirements
 - Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
 - In ansible, only startup-config can be edited. If you already start Beluganos by `beluganos run` or `beluganos start` or `systemctl start fibcd`command, please stop before starting ansible playbooks.
-- If you will configure L3VPN routers, please refer not only this documents but also [configure-ansible-l3vpn.md](configure-ansible-l3vpn.md).
+- If you will configure L3VPN routers, please refer not only this documents but also [feature-l3vpn.md](feature-l3vpn.md).
 
 ## Config files at a glance
 The files under `etc/playbooks` are configuration files. In this page, `lxd-*.yml` and the files under `roles/lxd` are described.
@@ -460,5 +460,5 @@ $ beluganos add master
 
 ## Note
 
-- MPLS-VPN configurations require more steps. Please refer [configure-ansible-l3vpn.md](configure-ansible-l3vpn.md).
+- MPLS-VPN configurations require more steps. Please refer [feature-l3vpn.md](feature-l3vpn.md).
 - Using both ansible and NETCONF are not permitted currently to configure router settings.
