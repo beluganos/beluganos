@@ -26,6 +26,22 @@ do_uninstall() {
     sed -e /"^pass_persist ${OID}\ .*"/d $CONFPATH > $TEMPFILE
 }
 
+do_set_agent_port() {
+    local CONFPATH=$1
+    local PORT=$2
+
+    echo "set snmpd listen port ${PORT}"
+    sed -r -e "s/^agentAddress\s+udp:(.+):161$/agentAddress udp:\1:${PORT}/" $CONFPATH > $TEMPFILE
+}
+
+do_unset_agent_port() {
+    local CONFPATH=$1
+    local PORT=$2
+
+    echo "unset snmpd listen port ${PORT}"
+    sed -r -e "s/^agentAddress\s+udp:(.+):${PORT}$/agentAddress udp:\1:161/" $CONFPATH > $TEMPFILE
+}
+
 do_commit() {
     local CONFPATH=$1
 
@@ -42,6 +58,7 @@ do_show() {
 
 do_usage() {
     echo "$0 <install|uninstall> <conf file> <oid> \"<command>\""
+    echo "$0 <set-agent-port|unset-agent-port> <conf file> <port>"
 }
 
 case $1 in
@@ -55,6 +72,14 @@ case $1 in
         ;;
     uninstall)
         do_uninstall $2 $3
+        do_commit $2
+        ;;
+    set-agent-port)
+        do_set_agent_port $2 $3
+        do_commit $2
+        ;;
+    unset-agent-port)
+        do_unset_agent_port $2 $3
         do_commit $2
         ;;
     *)
