@@ -9,7 +9,7 @@ This document describes about hardware setup to use Beluganos.
 
 ### Get binary
 
-Please get binary from [OpenNetworkLinux's website](https://opennetlinux.org/binaries/). Following version is recomended:
+Please get binary from [OpenNetworkLinux's website](https://opennetlinux.org/binaries/). Following version is recommended:
 
 ```
 ONL-2.0.0-ONL-OS-DEB8-2016-12-22.1828-604af0c-AMD64-INSTALLED-INSTALLER
@@ -28,11 +28,11 @@ Plug in power cable to boot switch.
 
 #### (Step 3) Select "ONIE install"
 
-In booting process, GRUB menu is apperrd. Select `ONIE` -> `ONIE install` by <kbd>↑</kbd> (Up) or <kbd>↓</kbd> (Down) keys to start install.
+In booting process, GRUB menu is appeared. Select `ONIE` -> `ONIE install` by <kbd>↑</kbd> (Up) or <kbd>↓</kbd> (Down) keys to start install.
 
 #### (Step 4) Stop DHCP discovery
 
-In default settings of ONIE, DHCP discovery will be started. Stop DHCP discovery by folowing command:
+In default settings of ONIE, DHCP discovery will be started. Stop DHCP discovery by following command:
 
 ```
 > onie-discovery-stop
@@ -56,7 +56,7 @@ Start to install. For example, if your tftp server is `172.16.0.59` and ONL vers
 
 #### (Step 7) Login
 
-Once finished a install, it will be rebooted automatically. Please log in. The default username to is `root` and password is `onl`.
+Once finished a install, it will be rebooted automatically. Please log in. The default user-name to is `root` and password is `onl`.
 
 ## 2. Setup for OF-DPA
 
@@ -112,7 +112,7 @@ In default settings, almost all physical port is set to down. For example, you w
 > echo 0 > /sys/bus/i2c/devices/30-0050/sfp_tx_disable
 ```
 
-If you prefer to up all ports, following example of scripts is recomended.
+If you prefer to up all ports, following example of scripts is recommended.
 
 ```
 #! /bin/bash

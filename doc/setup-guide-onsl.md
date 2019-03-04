@@ -9,7 +9,7 @@ This document describes about hardware setup to use Beluganos.
 
 ### Get binary
 
-Please get binary from [OpenNetworkLinux's website](https://opennetlinux.org/binaries/). Following version is recomended:
+Please get binary from [OpenNetworkLinux's website](https://opennetlinux.org/binaries/). Following version is recommended:
 
 ```
 ONL-2.0.0-ONL-OS-2018-01-09.1646-04257be-AMD64-INSTALLED-INSTALLER
@@ -32,7 +32,7 @@ In booting process, GRUB menu is apperrd. Select `ONIE` -> `ONIE install` by <kb
 
 #### (Step 4) Stop DHCP discovery
 
-In default settings of ONIE, DHCP discovery will be started. Stop DHCP discovery by folowing command:
+In default settings of ONIE, DHCP discovery will be started. Stop DHCP discovery by following command:
 
 ```
 > onie-discovery-stop
@@ -56,7 +56,7 @@ Start to install. For example, if your tftp server is `172.16.0.59` and ONL vers
 
 #### (Step 7) Login
 
-Once finished a install, it will be rebooted automatically. Please log in. The default username to is `root` and password is `onl`.
+Once finished a install, it will be rebooted automatically. Please log in. The default user-name to is `root` and password is `onl`.
 
 ## 2. Setup for OpenNSL
 
@@ -97,8 +97,8 @@ beluganos/
         gonsld.yaml
 ```
 
-- (*1): By `create.sh`, the binary which is `~/go/bin/gonsld` is created.
-- (*2): In AS7712-32X, there is at `bin/as7712/` of [Broadcom's repository](https://github.com/Broadcom-Switch/OpenNSL).
+- (\*1): By `create.sh`, the binary which is `~/go/bin/gonsld` is created.
+- (\*2): In AS7712-32X, there is at `bin/as7712/` of [Broadcom's repository](https://github.com/Broadcom-Switch/OpenNSL).
 
 To compile agent, `make.sh` is prepared.
 
@@ -130,7 +130,7 @@ This settings are not permanent. To set this settings permanently, following ste
 
 #### (Step 2) Transfer OpenNSL binary and agent
 
-Transfer the binary to OpenNetwork Linux.For example, SCP or SFTP are assumed. Assumed file name is here:
+Transfer the binary to OpenNetwork Linux. For example, SCP or SFTP are assumed. Assumed file name is here:
 
 - `opennsl-accton_3.5.0.3+accton4.0-2_amd64.deb`
 - `gonsl_1.0.0-1_amd64.deb`
@@ -200,16 +200,16 @@ $ ./create.sh opennsl
 
 ### Check interface speed
 
-You can check interface speed (1G or 10G or 40G) by following steps. Please note that following commands is avilable when gonsl (OpenNSL agent) is stopped.
+You can check interface speed (1G or 10G or 40G) by following steps. Please note that following commands is available when gonsl (OpenNSL agent) is stopped.
 
 ```
 > lsmod
 > opennsl_setup insmod
 > cd /usr/bin/opennsl-accton/examples
 > ./example_drivshell
- 
+
    ~~~~ (snipped) ~~~
-   
+
 drivshell> ps
                  ena/    speed/ link auto    STP                  lrn  inter   max  loop
           port  link    duplex scan neg?   state   pause  discrd ops   face frame  back
