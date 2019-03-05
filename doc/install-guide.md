@@ -14,7 +14,7 @@ Generally, network OS is installed into the white-box switches. In Beluganos, yo
 - White-box switches
 	- To use OF-DPA mode, **[OF-DPA 2.0](https://github.com/Broadcom-Switch/of-dpa/) switch** and OpenFlow agent are required. OF-DPA application in Edge-core switches is also available at [Edge-core's repository](https://github.com/edge-core/beluganos-forwarding-app).
 		- If you don't have OF-DPA switches, any OpenFlow 1.3 switches are acceptable to try Beluganos. In this case, [Lagopus switch](http://www.lagopus.org/) is recommended.
-	- To use OpenNSL mode, **[OpenNSL 3.5](https://github.com/Broadcom-Switch/OpenNSL)** switch is required. OpenNSL agent is included in this repository. OpenNSL application in Edge-core switches is also availale at [Edge-core's blog](https://support.edge-core.com/hc/en-us/sections/360002115754-OpenNSL).
+	- To use OpenNSL mode, **[OpenNSL 3.5](https://github.com/Broadcom-Switch/OpenNSL)** switch is required. OpenNSL agent is included in this repository. OpenNSL application in Edge-core switches is also available at [Edge-core's blog](https://support.edge-core.com/hc/en-us/sections/360002115754-OpenNSL).
 
 ### LXC settings
 
@@ -128,7 +128,7 @@ network:
 
 ```
 
-After editting, to reflect settings, please reboot OS or issue apply command.
+After editing, to reflect settings, please reboot OS or issue apply command.
 
 ```
 $ sudo netplan apply

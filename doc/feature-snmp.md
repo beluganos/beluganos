@@ -1,6 +1,6 @@
 # [Feature guide] SNMP
 
-SNMP (Simple Network Management Protocol) is a management protorol of network elements. Beluganos supports SNMP MIB to check interface status or traffic counter.
+SNMP (Simple Network Management Protocol) is a management protocol of network elements. Beluganos supports SNMP MIB to check interface status or traffic counter.
 
 ## Pre-requirements
 
@@ -10,7 +10,7 @@ SNMP (Simple Network Management Protocol) is a management protorol of network el
 
 ### Install SNMP feature
 
-You don't required additional operation to install SNMP feature, because SNMP features are already installed in [install-guide.md](install-guide.md). 
+You don't required additional operation to install SNMP feature, because SNMP features are already installed in [install-guide.md](install-guide.md).
 
 ### Start SNMP process
 
@@ -35,14 +35,14 @@ $ sudo systemctl stop snmpd
 
 ### SNMP MIB
 
-You can get some stats from Beluganos by SNMP request. 
+You can get some stats from Beluganos by SNMP request.
 
 ```
 $ snmpget -v <version> -c <community-name> <server-address> <oid>
 $ snmpwalk -v <version> -c <community-name> <server-address> <oid>
 ```
 
-The supported version is `2c`, and default settings of community is `public`. 
+The supported version is `2c`, and default settings of community is `public`.
 
 For example, by issuing following commands from Beluganos itself, ifOperStatus will be returned.
 
@@ -53,14 +53,14 @@ $ snmpwalk -v 2c -c public localhost .1.3.6.1.2.1.2.2.1.8
 
 ### SNMP trap
 
-When `ifOperStatus` changed, you can get trap notification by Beluganos. You can configure reciever IP address by editing files.
+When `ifOperStatus` changed, you can get trap notification by Beluganos. You may configure IP address of trap receiver by editing the files.
 
 ```
 $ vi /etc/beluganos/snmpproxyd.yaml
 
 snmpproxy:
   default:
-  ~~ (snipped) ~~ 
+  ~~ (snipped) ~~
     trap2map:
       eth1: 1
       eth2: 2
@@ -70,6 +70,7 @@ snmpproxy:
       - addr: 192.168.122.1:161
       - addr: 192.168.122.2:161
 ```
+
 - `trap2map`: The mapping list between interface name of Linux container (eth1, eth2, ...) and logical interface number recognized by ASIC driver (1, 2, ...).
 	- Format: `<LXC-interface-name>: <ASIC-logical-interface-number>`
 	- This settings are depend on your hardware. The physical interface number should be changed.
@@ -108,7 +109,7 @@ Internal OID is used only Beluganos. In general, only standard OID should be use
 
 ### Architecture of SNMP features
 
-In terms of architecture of SNMP features, there is some difference point compared with regacy routers. The main point of difference is that Beluganos has "proxy" process.
+In terms of architecture of SNMP features, there is some difference point compared with legacy routers. The main point of difference is that Beluganos has "proxy" process.
 
 #### SNMP MIB
 
@@ -119,7 +120,7 @@ Beluganos uses NET-SNMP("[snmpd]") to support SNMP MIB feature, but NET-SNMP is 
 
                          port:161          port:8161
  [snmp client] <-+-> [snmpproxyd-mib]  <-> [snmpd(+fibssnmp)]
-                                               |               
+                                               |
                            /var/lib/beluganos/fibc_stats.yaml
                                                |
                                             [fibsd] <-> [fibcd] <-+-> [OpenNSL]
@@ -127,7 +128,7 @@ Beluganos uses NET-SNMP("[snmpd]") to support SNMP MIB feature, but NET-SNMP is 
 
 #### SNMP trap
 
-SNMP trap feature is also realized by "NET-SNMP". In [snmpproxyd-trap] component, the convertion of ifindex.
+SNMP trap feature is also realized by "NET-SNMP". In [snmpproxyd-trap] component, the conversion of ifindex.
 
 ```
                  | <---              Beluganos's host               ---> |
