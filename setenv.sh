@@ -16,7 +16,7 @@
 # limitations under the License.
 
 ARG=$1
-if [ "${ARG}"x == "local"x ]; then
+if [ "${ARG}"x == "local"x ] || [ "${ARG}"x == "yes"x ]; then
     echo "Use local package."
     export PYTHONPATH=$PYTHONPATH:`pwd`/src
     . ${HOME}/mypython/bin/activate
