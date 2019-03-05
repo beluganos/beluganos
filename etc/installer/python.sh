@@ -45,7 +45,7 @@ make_virtenv() {
 #
 pip_install() {
     get_pip
-    $PIP install -U ${PIP_PKGS} || { echo "pip_install/pip error."; exit 1; }
+    $PIP install -U -r ${INST_HOME}/${PIP_PKG_LIST} || { echo "pip_install/pip error."; exit 1; }
 }
 
 #

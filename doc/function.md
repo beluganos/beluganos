@@ -6,25 +6,25 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 
 ### Summary
 
-| Function            | OF-DPA    | OFSwitch  | OpenNSL |
-|:--------------------|:----------|:----------|:--------|
-|L2 switching         |TBD        |TBD        |Planned  |
-|IPv4 routing         |Yes        |Yes        |Yes      |
-|IPv6 routing         |Planned    |Planned    |Yes      |
-|IP Multicast (v4/v6) |TBD        |TBD        |TBD      |
-|IP/MPLS              |Yes        |Yes        |Planned  |
+| Function            | OF-DPA   | OFSwitch  | OpenNSL |
+|:--------------------|:---------|:----------|:--------|
+|L2 switching         |TBD       |TBD        |Planned  |
+|IPv4 unicast routing |Yes       |Yes        |Yes      |
+|IPv6 unicast routing |Planned   |Planned    |Yes      |
+|IP multicast (v4/v6) |TBD       |TBD        |TBD      |
+|IP/MPLS              |Yes       |Yes        |Planned  |
 
 ### Basic - L1 / Ethernet
 
 | Function          | OF-DPA | OFSwitch | OpenNSL |
 |:------------------|:-------|:---------|:--------|
-|Breakout cable     | TBD    | TBD      | Yes     |
-|Auto negotiations  | Yes    | Yes      | Yes     |
-|Protocol MTU       | Yes    | Yes      | Yes     |
-|TTL check          | Yes    | Yes      | Yes     |
-|Carrier delay      | TBD    | TBD      | Planned |
+|Breakout cable     |TBD     |TBD       | Yes     |
+|Auto negotiations  |Yes     |Yes       | Yes     |
+|Protocol MTU       |Yes     |Yes       | Yes     |
+|TTL check          |Yes     |Yes       | Yes     |
+|Carrier delay      |TBD     |TBD       | Planned |
 
-### Basic - L2 swiching
+### Basic - L2 / switching
 
 | Function                      | OF-DPA  | OFSwitch | OpenNSL  |
 |:------------------------------|:--------|:---------|:---------|
@@ -48,7 +48,7 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 - \*1: Because of OF-DPA restrictions, non-tagged packet is not worked properly.
 - \*2: Because of OF-DPA restrictions, packet load-balancing is not worked properly in MPLS environments.
 
-### Basic - L3 Routing
+### Basic - L3 / Routing
 
 | Function                            | OF-DPA   | OFSwitch | OpenNSL  |
 |:------------------------------------|:---------|:---------|:---------|
@@ -62,11 +62,12 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 |BGP - route filter                   |Yes       |Yes       |Yes       |
 |BGP - BGP-flowspec                   |Yes       |Yes       |Yes       |
 |BGP - BGP-LS                         |Yes       |Yes       |Yes       |
-|BGP - multipath                      |TBD       |TBD       |Planned   |
+|BGP - multi-path                     |TBD       |TBD       |Planned   |
 |BGP - graceful restart               |TBD       |TBD       |Planned   |
 |Static routing for IPv4              |Yes       |Yes       |Yes       |
 |Static routing for IPv6              |Planned   |Planned   |Yes       |
 |OSPFv2                               |Yes       |Yes       |Yes       |
+|OSPFv2 - multi area                  |Yes       |Yes       |Yes       |
 |OSPFv2 - virtual links               |Yes       |Yes       |Yes       |
 |OSPFv3                               |Planned   |Planned   |Yes       |
 |ISIS for IPv4                        |Yes       |Yes       |Yes       |
@@ -83,19 +84,20 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 
 ### Basic - MPLS
 
-| Function                 | OF-DPA   | OFSwitch | OpenNSL |
-|:-------------------------|:---------|:---------|:--------|
-|IP/MPLS - MPLS SWAP       |Yes       |Yes       |Planned  |
-|IP/MPLS - MPLS POP        |Yes       |Yes       |Planned  |
-|IP/MPLS - MPLS PUSH       |Yes       |Yes       |Planned  |
-|LDP (explicit-null)       |Yes       |Yes       |Planned  |
-|LDP (implicit-null)       |Yes       |Yes       |Planned  |
-|RSVP-TE                   |Planned   |Planned   |Planned  |
-|Fast Reroute              |Planned   |Planned   |Planned  |
-|Segment Routing with OSPF |Planned   |Planned   |Planned  |
-|Segment Routing with ISIS |Planned   |Planned   |Planned  |
-|SR-TE                     |TBD       |TBD       |Planned  |
-|MPLS TTL                  |Yes       |Yes       |Planned  |
+| Function                  | OF-DPA   | OFSwitch | OpenNSL |
+|:--------------------------|:---------|:---------|:--------|
+|IP/MPLS - MPLS SWAP        |Yes       |Yes       |Planned  |
+|IP/MPLS - MPLS POP         |Yes       |Yes       |Planned  |
+|IP/MPLS - MPLS PUSH        |Yes       |Yes       |Planned  |
+|LDP                        |Yes       |Yes       |Planned  |
+|LDP - explicit-null        |Yes       |Yes       |Planned  |
+|LDP - implicit-null        |Yes       |Yes       |Planned  |
+|RSVP-TE                    |Planned   |Planned   |Planned  |
+|Fast reroute with RSVP     |Planned   |Planned   |Planned  |
+|Segment Routing with OSPF  |Planned   |Planned   |Planned  |
+|Segment Routing with ISIS  |Planned   |Planned   |Planned  |
+|SR-TE                      |TBD       |TBD       |Planned  |
+|MPLS TTL                   |Yes       |Yes       |Planned  |
 
 ### Bacis - L4
 
@@ -147,7 +149,7 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 |VPN label mapping per VRF             |Yes      |Yes       |TBD      |
 |VPN label mapping per route           |TBD      |TBD       |TBD      |
 
-- \*1: OpenFlow metadata fields is utilized for VRF. OFSwitch needs to support metadata fields.
+- \*1: OpenFlow meta-data fields is utilized for VRF. OFSwitch needs to support meta-data fields.
 - \*2: No DN bits support.
 
 ### Overlay - VXLAN
@@ -194,12 +196,12 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 
 ### Management - SNMP MIB
 
-| Function | OF-DPA | OFSwitch | OpenNSL |
-|:---------|:-------|:---------|:--------|
-| Traffic counter per physical interfafce | Yes | Yes | Yes |
-| Traffic counter per VLAN | TBD | TBD | Planned |
-| Interface status | Yes | Yes | Yes |
-| System status (CPU, etc.) | Planned | Planned | Planned |
+| Function                               | OF-DPA    | OFSwitch  | OpenNSL  |
+|:---------------------------------------|:----------|:----------|:---------|
+| Traffic counter per physical interface | Yes       | Yes       | Yes      |
+| Traffic counter per VLAN               | TBD       | TBD       | Planned  |
+| Interface status                       | Yes       | Yes       | Yes      |
+| System status (CPU, etc.)              | Planned   | Planned   | Planned  |
 
 - Supported OID is published at [beluganos/doc/feature-snmp.md](https://github.com/beluganos/beluganos/tree/master/doc/feature-snmp.md).
 
@@ -236,29 +238,8 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 |Diffserv - scheduling    |No       |No        |TBD      |
 |Diffserv - marking       |No       |No        |Planned  |
 
-### Hardware
-
-| Type          | OF-DPA   | OFSwitch | OpenNSL  |
-|:--------------|:---------|:---------|:---------|
-|Trident+       |Verified  |-         |No        |
-|Trident II     |Verified  |-         |Verified  |
-|Trident II+    |Verified  |-         |Verified  |
-|Tridnet III    |No        |-         |Planned   |
-|Tomahawk       |No        |-         |Verified  |
-|Tomahawk II    |No        |-         |TBD       |
-|DNX series     |No        |-         |Planned   |
-|x86            |-         |Verified  |-         |
-
-- OF-DPA or OpenNSL support is required to use above ASICs.
-- In x86 case, verification is executed by Lagopus.
 
 ## Appendix
-
-#### The difference of hardware
-
-In Beluganos, some features are supported only specific hardware because of some limitations. For example, there is some specification difference between **OF-DPA** and **OpenNSL** which is a open ASIC API provided by Broadcom. In this document, supported feature is described for each API. 
-
-Moreover, x86 **OFSwitch** (OpenFlow switch) is also supported by Beluganos. From this perspective, Lagopus is used for verification. In OFSwitch, almost all supported feature is same as OF-DPA, but there is some difference.
 
 #### Legend of this function table
 
@@ -266,8 +247,27 @@ Moreover, x86 **OFSwitch** (OpenFlow switch) is also supported by Beluganos. Fro
 |:------------:|:------------|
 |Yes           | Supported.|
 |Partially Yes | Supported, but some restriction is remained.|
-|Planned       | NOT supported yet, but there is a plan for implimentation.  (SUBJECT TO CHANGE)|
+|Planned       | NOT supported yet, but there is a plan for implementation.  (SUBJECT TO CHANGE)|
 |TBD           | NOT supported yet.|
 |No            | NOT supported, and will not supported because of technical limitation.|
+
+#### The difference of hardware
+
+In Beluganos, some features are supported only specific hardware because of some limitations. For example, there is some specification difference between **OF-DPA** and **OpenNSL** which is a open ASIC API provided by Broadcom. In this document, supported feature is described for each API.
+
+Moreover, x86 **OFSwitch** (OpenFlow switch) is also supported by Beluganos. From this perspective, Lagopus is used for verification. In OFSwitch, almost all supported feature is same as OF-DPA, but there is some difference.
+
+Following table shows that our verification environments.
+
+| Type          | OF-DPA   | OFSwitch | OpenNSL  |
+|:--------------|:---------|:---------|:---------|
+|Trident+       |Verified  |-         |No        |
+|Trident II     |Verified  |-         |Verified  |
+|Trident II+    |Verified  |-         |Verified  |
+|Trident III    |No        |-         |Planned   |
+|Tomahawk       |No        |-         |Verified  |
+|Tomahawk II    |No        |-         |TBD       |
+|DNX series     |No        |-         |Planned   |
+|x86            |-         |Verified  |-         |
 
 

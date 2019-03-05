@@ -67,7 +67,7 @@ do_all() {
     make_virtenv
 
     # enable virtual-env and go-env
-    . ./setenv.sh
+    . ./setenv.sh ${ENABLE_VIRTUALENV}
 
     # install packages
     pip_install
@@ -97,7 +97,7 @@ do_minimal() {
 
     sudo ${HTTP_PROXY} ${APT_OPTION} apt -y install ${APT_MINS}
     make_virtenv
-    . ./setenv.sh
+    . ./setenv.sh ${ENABLE_VIRTUALENV}
     get_pip
     $PIP install -U ${PIP_PROXY} ansible
     init_lxd
@@ -107,7 +107,7 @@ do_minimal() {
 
 do_opennsl() {
     opennsl_install
-    . ./setenv.sh
+    . ./setenv.sh ${ENABLE_VIRTUALENV}
     beluganos_install
 }
 
@@ -131,7 +131,7 @@ case $1 in
         protoc_install
         ;;
     pip)
-        . ./setenv.sh
+        . ./setenv.sh ${ENABLE_VIRTUALENV}
         pip_install
         ryu_patch
         ;;

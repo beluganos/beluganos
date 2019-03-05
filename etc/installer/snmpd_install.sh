@@ -42,6 +42,20 @@ do_unset_agent_port() {
     sed -r -e "s/^agentAddress\s+udp:(.+):${PORT}$/agentAddress udp:\1:161/" $CONFPATH > $TEMPFILE
 }
 
+do_enable_rocommunity() {
+    local CONFPATH=$1
+
+    echo "enable rocommunity public localhost"
+    sed -r -e "s/^#\s*rocommunity\s+public\s+localhost/rocommunity public  localhost/" $CONFPATH > $TEMPFILE
+}
+
+do_disable_rocommunity() {
+    local CONFPATH=$1
+
+    echo "disable rocommunity public localhost"
+    sed -r -e "s/^\s*rocommunity\s+public\s+localhost/\#rocommunity public  localhost/" $CONFPATH > $TEMPFILE
+}
+
 do_commit() {
     local CONFPATH=$1
 
@@ -80,6 +94,14 @@ case $1 in
         ;;
     unset-agent-port)
         do_unset_agent_port $2 $3
+        do_commit $2
+        ;;
+    enable-rocommunity)
+        do_enable_rocommunity $2
+        do_commit $2
+        ;;
+    disable-rocommunity)
+        do_disable_rocommunity $2
         do_commit $2
         ;;
     *)
