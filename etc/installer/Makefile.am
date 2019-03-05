@@ -124,10 +124,14 @@ uninstall-snmpproxyd:
 set-snmpd-port:
 	@echo "set snmpd listen port..."
 	./snmpd_install.sh set-agent-port ${SNMPD_CONF} ${SNMPD_AGENT_PORT}
+	@echo "enable snmpd rocommunity..."
+	./snmpd_install.sh enable-rocommunity ${SNMPD_CONF}
 
 unset-snmpd-port:
 	@echo "unset snmpd listen port..."
 	./snmpd_install.sh unset-agent-port ${SNMPD_CONF} ${SNMPD_AGENT_PORT}
+	@echo "disable snmpd rocommunity..."
+	./snmpd_install.sh disable-rocommunity ${SNMPD_CONF}
 
 
 #
