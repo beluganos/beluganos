@@ -86,12 +86,13 @@ label = 100000
 allow_duplicate_ifname = false
 # nid_from_ifaddr = "eth0"
 
+
 [log]
 level = 5
 dump  = 0
 
 [nla]
-core  = "127.0.0.1:50061"
+core  = "%MIC_NAME%:50061"
 api   = "127.0.0.1:50062"
 
 [ribc]
@@ -102,6 +103,8 @@ disable = true
 
 [ribp]
 api = "127.0.0.1:50091"
+interval = 5000
+
 ```
 - [node]
 	- reid (`<router-entity-id>`)
@@ -141,7 +144,7 @@ Moreover, you can also use NETOPEER2's CLI like following:
 $ netopeer2-cli
 ```
 
-### Yang moudles and configuration XML
+### Yang modules and configuration XML
 
 The yang modules of Beluganos are published under [netconf/etc/openconfig](https://github.com/beluganos/netconf/tree/master/etc/openconfig). Currently, Beluganos support three modules ([network-instances](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-network-instance.yang), [interfaces](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-interfaces.yang), [routing-policy](https://github.com/beluganos/netconf/blob/master/etc/openconfig/beluganos-routing-policy.yang)). Note that the sample NETCONF XML are available at [netconf/doc/examples](https://github.com/beluganos/netconf/tree/master/doc/examples).
 
@@ -213,7 +216,7 @@ The naming rules of interface are `eth<n>` (`<n>` is a interface index). The max
 - Others
 	- The settings of white-box switches (like `dp_id`) cannot changed by NETCONF. You should use ansible.
 	- The settings of sub-IF (VLAN at routed port) should be operated at the same time of physical IF.
-	- The interface settings under beluganos-interfaced module should be added **before** adding interface under beluganos-network-instances.
+	- The interface settings under `beluganos-interfaced` module should be added **before** adding interface under `beluganos-network-instances`.
 	- The settings of network instance's name should be matched at `ribxd.conf` which is located at `/etc/lxcinit/<container-type>`. This restrictions will be removed at next release.
 
 ### Sample operations
