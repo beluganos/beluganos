@@ -83,7 +83,7 @@ Next, transfer required files to OpenNetworkLinux via SCP or SFTP. The required 
 beluganos/
   etc/
     gonsl/
-      gonsld                # Copy from ~/go/bin/gonnsl from Beluganos (*1)
+      gonsld                # Copy from ~/go/bin/gonsld from Beluganos (*1)
       opennsl.conf          # Get and copy OpenNSL files (*2)
                             #   Ex) config.as7712
       libopennsl.so.1       # Get and copy OpenNSL files (*2)

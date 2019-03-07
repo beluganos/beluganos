@@ -16,32 +16,6 @@ Generally, network OS is installed into the white-box switches. In Beluganos, yo
 		- If you don't have OF-DPA switches, any OpenFlow 1.3 switches are acceptable to try Beluganos. In this case, [Lagopus switch](http://www.lagopus.org/) is recommended.
 	- To use OpenNSL mode, **[OpenNSL 3.5](https://github.com/Broadcom-Switch/OpenNSL)** switch is required. OpenNSL agent is included in this repository. OpenNSL application in Edge-core switches is also available at [Edge-core's blog](https://support.edge-core.com/hc/en-us/sections/360002115754-OpenNSL).
 
-### LXC settings
-
-If LXC have not configured yet, please set up LXC before starting to build Beluganos. Most of the settings may be default or may be changed if needed. However, please note that following points:
-
-- The new bridge name should be default ( `lxdbr0` ).
-- The size of new loop device is depend on number of VRF which you will configure at most. ( Num-of-VRF + 2 ) GB or more is required.
-
-```
-$ sudo lxd init
-Would you like to use LXD clustering? (yes/no) [default=no]:
-Do you want to configure a new storage pool? (yes/no) [default=yes]:
-Name of the new storage pool [default=default]:
-Name of the storage backend to use (btrfs, dir, lvm) [default=btrfs]:
-Create a new BTRFS pool? (yes/no) [default=yes]:
-Would you like to use an existing block device? (yes/no) [default=no]:
-Size in GB of the new loop device (1GB minimum) [default=15GB]: 8
-Would you like to connect to a MAAS server? (yes/no) [default=no]:
-Would you like to create a new network bridge? (yes/no) [default=yes]:
-What should the new bridge be called? [default=lxdbr0]:
-What IPv4 address should be used? (CIDR subnet notation, “auto” or “none”) [default=auto]:
-What IPv6 address should be used? (CIDR subnet notation, “auto” or “none”) [default=auto]:
-Would you like LXD to be available over the network? (yes/no) [default=no]:
-Would you like stale cached images to be updated automatically? (yes/no) [default=yes]
-Would you like a YAML "lxd init" preseed to be printed? (yes/no) [default=no]:
-```
-
 ## 1. Build
 Using shell scripts (`create.sh`) is recommended for building Beluganos. Before starting scripts, setting file (`create.ini`) should be edited for your environments. This script will get the required resources including repository of [beluganos/netconf](https://github.com/beluganos/netconf) and [beluganos/go-opennsl](https://github.com/beluganos/go-opennsl) automatically.
 
