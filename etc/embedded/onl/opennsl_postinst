@@ -1,0 +1,3 @@
+#! /bin/sh -e
+
+cd /usr/lib; ln -sf libopennsl.so.1 libopennsl.so
