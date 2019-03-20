@@ -27,6 +27,8 @@ After installing ([install-guide.md](install-guide.md)), you may set up about ha
 	- Hardware set up for OF-DPA
 - [setup-guide-onsl.md](setup-guide-onsl.md)
 	- Hardware set up for OpenNSL
+- [setup-guide-embedded.md](setup-guide-embedded.md)
+	- [Embedded-style only] How to build OpenNetworkLinux
 
 ## Configure and operation
 
