@@ -2384,7 +2384,7 @@ fi
 #
 # Makefiles
 #
-ac_config_files="$ac_config_files Makefile etc/Makefile etc/installer/Makefile src/Makefile src/goryu/Makefile src/goryu/ryulib/Makefile src/goryu/ofproto/Makefile src/goryu/encoding/Makefile src/gonsl/Makefile src/gonsl/lib/Makefile src/gonsl/api/Makefile src/fabricflow/Makefile src/fabricflow/util/Makefile src/fabricflow/util/net/Makefile src/fabricflow/util/container/Makefile src/fabricflow/util/container/mqueue/Makefile src/fabricflow/fibc/Makefile src/fabricflow/fibc/net/Makefile src/fabricflow/fibc/api/Makefile src/fabricflow/fibc/app/Makefile src/fabricflow/fibc/dbm/Makefile src/fabricflow/fibc/lib/Makefile src/fabricflow/fibc/ofc/Makefile src/fabricflow/fibs/Makefile src/fabricflow/ribc/Makefile src/fabricflow/ribc/ribctl/Makefile src/fabricflow/ribp/Makefile src/fabricflow/ribp/api/Makefile src/fabricflow/ribp/ribpkt/Makefile src/fabricflow/ribs/Makefile src/fabricflow/ribs/ribsapi/Makefile src/fabricflow/ribs/ribsmsg/Makefile src/fabricflow/ribs/ribsyn/Makefile src/fabricflow/ribt/Makefile src/fabricflow/ribn/Makefile src/gonla/Makefile src/gonla/nlactl/Makefile src/gonla/nlamsg/Makefile src/gonla/nlamsg/nlalink/Makefile src/gonla/nlalib/Makefile src/gonla/nlaapi/Makefile src/gonla/nladbm/Makefile src/gonla/nlasvc/Makefile"
+ac_config_files="$ac_config_files Makefile etc/Makefile etc/installer/Makefile src/Makefile src/goryu/Makefile src/goryu/ryulib/Makefile src/goryu/ofproto/Makefile src/goryu/encoding/Makefile src/gonsl/Makefile src/gonsl/lib/Makefile src/gonsl/api/Makefile src/fabricflow/Makefile src/fabricflow/util/Makefile src/fabricflow/util/net/Makefile src/fabricflow/util/container/Makefile src/fabricflow/util/container/mqueue/Makefile src/fabricflow/fibc/Makefile src/fabricflow/fibc/net/Makefile src/fabricflow/fibc/api/Makefile src/fabricflow/fibc/app/Makefile src/fabricflow/fibc/dbm/Makefile src/fabricflow/fibc/lib/Makefile src/fabricflow/fibc/ofc/Makefile src/fabricflow/fibs/Makefile src/fabricflow/ribc/Makefile src/fabricflow/ribc/ribctl/Makefile src/fabricflow/ribp/Makefile src/fabricflow/ribp/api/Makefile src/fabricflow/ribp/ribpkt/Makefile src/fabricflow/ribs/Makefile src/fabricflow/ribs/ribsapi/Makefile src/fabricflow/ribs/ribsmsg/Makefile src/fabricflow/ribs/ribsyn/Makefile src/fabricflow/ribt/Makefile src/fabricflow/ribn/Makefile src/fabricflow/ffctl/Makefile src/gonla/Makefile src/gonla/nlactl/Makefile src/gonla/nlamsg/Makefile src/gonla/nlamsg/nlalink/Makefile src/gonla/nlalib/Makefile src/gonla/nlaapi/Makefile src/gonla/nladbm/Makefile src/gonla/nlasvc/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -3142,6 +3142,7 @@ do
     "src/fabricflow/ribs/ribsyn/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ribs/ribsyn/Makefile" ;;
     "src/fabricflow/ribt/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ribt/Makefile" ;;
     "src/fabricflow/ribn/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ribn/Makefile" ;;
+    "src/fabricflow/ffctl/Makefile") CONFIG_FILES="$CONFIG_FILES src/fabricflow/ffctl/Makefile" ;;
     "src/gonla/Makefile") CONFIG_FILES="$CONFIG_FILES src/gonla/Makefile" ;;
     "src/gonla/nlactl/Makefile") CONFIG_FILES="$CONFIG_FILES src/gonla/nlactl/Makefile" ;;
     "src/gonla/nlamsg/Makefile") CONFIG_FILES="$CONFIG_FILES src/gonla/nlamsg/Makefile" ;;

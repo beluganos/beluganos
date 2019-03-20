@@ -1,23 +1,37 @@
 # Install guide
-This document shows how to install Beluganos in your systems. Automation scripts are prepared.
+This document shows how to install Beluganos in your systems. If you want to try Beluganos, you should read this page at first. Automation scripts are prepared to start easy.
 
 ## Pre-requirements
 
-### Resources
-Generally, network OS is installed into the white-box switches. In Beluganos, you can also build Beluganos into the white-box switches. However, at first, preparing extra server (or VM) and installing here are recommended at first.
+### Deploy style
 
-- Ubuntu server
-	- **Ubuntu 18.04** (18.04-live-server-amd64) is strongly recommended.
+Generally, network OS is installed into the white-box switches. Beluganos can deploy **into the white-box switches (embedded-style)**, but Beluganos can also deploy at **separated server (separated-style)**. If it is a first time for you to try Beluganos, we recommend **separated-style** because it is easier to deploy. 
+
+1. embedded-style
+	- Please prepare x86 physical server and virtual machine (VM) for installation, even if you prefer to select embedded-style. In this case, after installation to VM, you can move VM image (qcow2) from physical server to white-box switches.
+2. separated-style
+	- Please connect with separated server and the outbound port directly.
+
+### Resources
+
+
+1. Server
+	- Software requirements:
+		- **Ubuntu 18.04** (18.04-live-server-amd64) is strongly recommended.
 	    - If you use Ubuntu 18.04.1 or later, additional settings are required before proceed. Please check **Appendix A** of this document.
-	- **Two or more network interfaces** are required.
-	- Some LXC instance will be created. More than **12GB HDD** is recommended.
-- White-box switches
-	- To use OF-DPA mode, **[OF-DPA 2.0](https://github.com/Broadcom-Switch/of-dpa/) switch** and OpenFlow agent are required. OF-DPA application in Edge-core switches is also available at [Edge-core's repository](https://github.com/edge-core/beluganos-forwarding-app).
-		- If you don't have OF-DPA switches, any OpenFlow 1.3 switches are acceptable to try Beluganos. In this case, [Lagopus switch](http://www.lagopus.org/) is recommended.
-	- To use OpenNSL mode, **[OpenNSL 3.5](https://github.com/Broadcom-Switch/OpenNSL)** switch is required. OpenNSL agent is included in this repository. OpenNSL application in Edge-core switches is also available at [Edge-core's blog](https://support.edge-core.com/hc/en-us/sections/360002115754-OpenNSL).
+	- Network requirements:
+		- separated-style: **Two or more network interfaces** are required.
+		- embedded-style: **One or more network interfaces** are required.
+	- Storage requirements:
+		- Some LXC instance will be created. More than **12GB HDD** is recommended.
+		- If you have a plan to use multiple VRF, more HDD is required.
+1. White-box switches
+	- To use OpenNSL mode, **[OpenNSL 3.5](https://github.com/Broadcom-Switch/OpenNSL) supported switch** is required. OpenNSL agent is included in this repository. OpenNSL application in Edge-core switches is also available at [Edge-core's blog](https://support.edge-core.com/hc/en-us/sections/360002115754-OpenNSL).
+	- To use OF-DPA mode, **[OF-DPA 2.0](https://github.com/Broadcom-Switch/of-dpa/) supported switch** and OpenFlow agent are required. OF-DPA application in Edge-core switches is also available at [Edge-core's repository](https://github.com/edge-core/beluganos-forwarding-app).
+	- If you don't have real switches, any OpenFlow 1.3 switches are acceptable to try Beluganos. In this case, [Lagopus switch](http://www.lagopus.org/) is recommended.
 
 ## 1. Build
-Using shell scripts (`create.sh`) is recommended for building Beluganos. Before starting scripts, setting file (`create.ini`) should be edited for your environments. This script will get the required resources including repository of [beluganos/netconf](https://github.com/beluganos/netconf) and [beluganos/go-opennsl](https://github.com/beluganos/go-opennsl) automatically.
+Using shell scripts (`create.sh`) is recommended for building Beluganos. Before starting scripts, setting file (`create.ini`) should be edited for your environments. This script will get the required resources including repository of [beluganos/netconf](https://github.com/beluganos/netconf) and [beluganos/go-opennsl](https://github.com/beluganos/go-opennsl) automatically. The internet access is required.
 
 ```
 $ cd ~
@@ -65,6 +79,8 @@ If you want to try our example cases like [case 1 (IP/MPLS router)](example/case
 ### Step-by-step procedure
 You should register your white-box switches (or OpenFlow switches) to Beluganos's main module. Please refer [setup-guide.md](setup-guide.md) for more details.
 
+
+---
 
 ## Appendix
 ### Appendix A. Additional settings at Ubuntu18.04.1 or later

@@ -41,7 +41,7 @@ repoze.lru     == 0.7
 requests       == 2.21.0
 rfc3986        == 1.2.0
 Routes         == 2.4.1
-ryu            == 4.3
+ryu            == 4.30
 setuptools     == 39.0.1
 six            == 1.11.0
 stevedore      == 1.30.1

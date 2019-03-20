@@ -9,14 +9,23 @@ This document describes about hardware setup to use Beluganos.
 
 ### Get binary
 
+It depends on "Deploy style". The detail of deploy style is described at "Pre-requirements" in [install-guide.md](install-guide.md).
+
+#### separated-style
+
 Please get binary from [OpenNetworkLinux's website](https://opennetlinux.org/binaries/). Following version is recommended:
 
 ```
 ONL-2.0.0-ONL-OS-DEB8-2016-12-22.1828-604af0c-AMD64-INSTALLED-INSTALLER
 ```
-After getting binary, you can install OpenNetworkLinux via DHCP or TFTP. In this documents, only TFTP methods are described.
+
+#### embedded-style
+
+Building installer of OpenNetworkLinux is required. Please refer "1. Building OpenNetworkLinux" at [setup-guide-embedded.md](setup-guide-embedded.md) for details.
 
 ### Install via TFTP
+
+After getting binary, you can install OpenNetworkLinux via DHCP or TFTP. In this documents, only TFTP methods are described.
 
 #### (Step 1) Connect console cable
 

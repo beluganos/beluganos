@@ -9,14 +9,23 @@ This document describes about hardware setup to use Beluganos.
 
 ### Get binary
 
-Please get binary from [OpenNetworkLinux's website](https://opennetlinux.org/binaries/). Following version is recommended:
+It depends on "Deploy style". The detail of deploy style is described at "Pre-requirements" in [install-guide.md](install-guide.md).
+
+#### separated-style
+
+Please get installer from [OpenNetworkLinux's website](https://opennetlinux.org/binaries/). Following version is recommended:
 
 ```
 ONL-2.0.0-ONL-OS-2018-01-09.1646-04257be-AMD64-INSTALLED-INSTALLER
 ```
-After getting binary, you can install OpenNetworkLinux via DHCP or TFTP. In this documents, only TFTP methods are described.
 
-### Install via TFTP
+#### embedded-style
+
+Building installer of OpenNetworkLinux is required. Please refer "1. Building OpenNetworkLinux" at [setup-guide-embedded.md](setup-guide-embedded.md) for details.
+
+### Install (via TFTP)
+
+After getting binary, you can install OpenNetworkLinux via DHCP or TFTP. In this documents, only TFTP methods are described.
 
 #### (Step 1) Connect console cable
 
@@ -68,6 +77,8 @@ Please get the binary of OpenNSL. The required version of OpenNSL 3.5, and follo
 
 - [Edge-core's blog](https://support.edge-core.com/hc/en-us/sections/360002115754-OpenNSL)
 - [Broadcom's repository](https://github.com/Broadcom-Switch/OpenNSL)
+
+If you cannot find OpenNSL binary, you should create this personally. Please refer appendix of this documents.
 
 In this documents, `opennsl-accton_3.5.0.3+accton4.0-2_amd64.deb` from Edge-core's blog is used to describe following steps.
 
@@ -178,7 +189,7 @@ After reflecting your changes, please refer configure guide. You can choose two 
 
 ## Appendix
 
-### `create.sh` settings
+### (Appendix A) `create.sh` settings
 
 In default settings of `create.ini`, OpenNSL agent is compiled automatically.
 
@@ -198,7 +209,7 @@ $ cd ~
 $ ./create.sh opennsl
 ```
 
-### Check interface speed
+### (Appendix B) Check interface speed
 
 You can check interface speed (1G or 10G or 40G) by following steps. Please note that following commands is available when gonsl (OpenNSL agent) is stopped.
 
@@ -219,10 +230,50 @@ drivshell> ps
        ~~~ (snipped) ~~~
 ```
 
-### Change interface speed
+### (Appendix C) Change interface speed
 
 To change interface speed (1G or 10G or 40G), `opennsl.conf` should be changed. For detail, please refer [Edge-core's blog](https://support.edge-core.com/hc/en-us/articles/360010154034-OpenNSL-3-5-0-3).
 
-### Log files of gonlsd
+### (Appendix D) Log files of gonlsd
 
 At `/var/log/gonsld.log`.
+
+### (Appendix E) Building OpenNSL .deb file
+
+If you cannot find OpenNSL binary at [OpenNSL's repository](https://github.com/Broadcom-Switch/OpenNSL), you should build it personally.
+
+#### Environments
+
+Same as "1. Building OpenNetworkLinux" at [setup-guide-embedded.md](setup-guide-embedded.md). Please refer this documents.
+
+#### Specify your hardware
+
+Please change `ONSL_BIN`.
+
+```
+$ cd ~/beluganos/etc/embedded/onl/
+$ vi onl.sh
+
+# In case of AS7712
+ONSL_BIN=as7712
+
+# In case ofAS5712
+ONSL_BIN=as5712
+```
+
+#### Build
+
+The deb file will be created at `OpenNetworkLinux/RELEASE/opennsl` by following commands.
+
+```
+$ cd OpenNetworkLinux
+$ ./onl.sh clone-opennsl
+$ sudo ./onl.sh docker
+docker> ./onl.sh build-opennsl
+
+... (building messages) ...
+
+> ls RELEASE/opennsl/
+inux-bcm-knet.ko  linux-kernel-bde.ko  linux-user-bde.ko  opennsl_3.5.0.1-1_amd64.deb
+
+```

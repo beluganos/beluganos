@@ -2,7 +2,7 @@
 
 dpaths:
   default:
-    dpid: 1234
+    dpid: 14
     addr: 172.16.0.1
     port: 50070
 

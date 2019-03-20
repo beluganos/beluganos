@@ -73,6 +73,7 @@ AC_CONFIG_FILES([Makefile
 		 src/fabricflow/ribs/ribsyn/Makefile
 		 src/fabricflow/ribt/Makefile
 		 src/fabricflow/ribn/Makefile
+		 src/fabricflow/ffctl/Makefile
 		 src/gonla/Makefile
 		 src/gonla/nlactl/Makefile
 		 src/gonla/nlamsg/Makefile

@@ -1,0 +1,6 @@
+Package: opennsl
+Maintainer: beluganos admin <admin@example.net>
+Architecture: amd64
+Version: 3.5.0.1-1
+Description: OpenNSL library
+

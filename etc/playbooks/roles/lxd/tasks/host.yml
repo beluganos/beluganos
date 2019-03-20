@@ -8,3 +8,5 @@
   with_items:
     - fibc.conf
     - fibc.log.conf
+    - snmpproxyd.conf
+    - snmpproxyd.yaml
