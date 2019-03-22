@@ -15,6 +15,9 @@ sample-mic
 sample-ric10
 sample-ric11
 
+[MIC-hosts]
+MIC
+
 [lxd-vpn]
 vpn-mic
 vpn-ric10
