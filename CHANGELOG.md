@@ -1,9 +1,14 @@
 # Change logs
 
+## v0.3.1
+- Fix issues which OF-DPA mode is not worked
+- Fix document issues
+- Fix some minor issues
+
 ## v0.3.0
 - Support new hardware API (OpenNSL)
 - Support SNMP features, IPv6 routing
-- Bump FRRrouitng to 5.0.1
+- Bump FRRouitng to 5.0.1
 - Improve document of hardware settings
 - Fix minor bugs
 
