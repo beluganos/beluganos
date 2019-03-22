@@ -57,6 +57,8 @@ After installing ([install-guide.md](install-guide.md)), you can configure Belug
 	- Configuration guide of MPLS-VPN PE router by ansible.
 - [feature-snmp.md](feature-snmp.md) 
 	- SNMP feature guide (MIB, trap)
+- [feature-syslog.md](feature-syslog.md) 
+	- Syslog feature guide
 
 ## General
 
