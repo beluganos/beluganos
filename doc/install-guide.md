@@ -53,6 +53,8 @@ $ vi create.ini
 $ ./create.sh
 ```
 
+The message `Finished processing dependencies for fibc==...` indicates that installation is finished.
+
 ## 2. Register as a service
 
 Generally, registering Beluganos's main module as a Linux service is recommended.
@@ -123,3 +125,61 @@ After editing, to reflect settings, please reboot OS or issue apply command.
 ```
 $ sudo netplan apply
 ```
+
+### Appendix C. Change the building settings (`create.ini`)
+
+The settings of `create.sh` describes at `create.ini`.
+
+#### virtualenv
+
+If you want to use "virtualenv" because of the restriction of your host, you may comment out `ENABLE_VIRTUALENV`.
+
+```
+#
+# Host
+#
+BELUG_OFC_IFACE=ens4
+BELUG_OFC_ADDR=172.16.0.55/24
+# ENABLE_VIRTUALENV=yes
+```
+
+#### NETCONF
+
+`create.sh` will deploy also beluganos/netconf modules automatically. This may take some minutes to deploy. If you don't have a plan about using NETCONF, you can disable this.
+
+```
+#
+# Netconf
+#
+BEL_NC_ENABLE=yes
+BEL_NC_URL=https://github.com/beluganos/netconf
+```
+
+- `BEL_NC_ENABLE`: Whether to enable NETCONF support. "yes" or "no".
+- `BEL_NC_URL`: DO NOT EDIT.
+
+#### OpenNSL
+
+```
+#
+# OpenNSL
+#
+BEL_ONSL_ENABLE=yes
+BEL_ONSL_PLATFORM=as7712
+BEL_ONSL_PKG="github.com/beluganos/go-opennsl"
+```
+
+- `BEL_ONSL_ENABLE`: Whether to enable OpenNSL support. "yes" or "no".
+- `BEL_ONSL_PLATFORM`: OpenNSL supported platform name (as5712, as7712, ...).
+- `BEL_ONSL_PKG`: DO NOT EDIT.
+
+If you want to change this configuration after installation, please issue following:
+
+```
+$ cd ~/beluganos
+$ ./create.sh opennsl
+```
+
+#### other
+
+We don't recommend to change.
