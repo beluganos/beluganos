@@ -8,16 +8,20 @@ In this page, operation about NETCONF module is also described. If you will not 
 - Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
 - If you use **ansible** to configure router settings, you have to execute playbook before starting to run Beluganos. Please refer [configure-ansible.md](configure-ansible.md) before proceeding.
 - If you use **NETCONF** to configure router settings, you have to execute minimum playbook before starting to run Beluganos. Please refer [configure-netconf.md](configure-netconf.md) before proceeding.
+- If you use **SNMP**, please refer [feature-snmp.md](feature-snmp.md) before proceeding.
 
 ## Step 1. Run ASIC driver agent
 
-- OF-DPA: Please refer [setup-guide-ofdpa.md](setup-guide-ofdpa.md).
+- OpenNSL: Login to OpenNetworkLinux. Please refer [setup-guide-onsl.md](setup-guide-onsl.md)
+	- `/etc/init.d/gonsl start`
+- OF-DPA: Login to OpenNetworkLinux. Please refer [setup-guide-ofdpa.md](setup-guide-ofdpa.md).
+	- `service ofdpa start`
+	- `brcm-indigo-ofdpa-ofagent --controller=<BeluganosVM-IP> --dpid=<Agent-dpid>`
 - OpenFlow switch: Please refer OpenFlow switch's documents.
-- OpenNSL: Please refer [setup-guide-onsl.md](setup-guide-onsl.md)
 
-## Step 2. Run main module
+## Step 2. Run Beluganos's main module
 
-You have two options to start/stop Beluganos. Generally, because you have already registered Beluganos as a Linux service at [install-guide.md](install-guide.md), **daemon mode** is recommended in production.
+You have two options to start/stop Beluganos. Generally, in production, because you have already registered Beluganos as a Linux service at [install-guide.md](install-guide.md), **daemon mode** is recommended.
 
 ### Daemon mode [Recommended]
 
@@ -25,17 +29,25 @@ To start,
 
 ```
 $ sudo systemctl start fibcd
-$ sudo systemctl start netopeer2-server  #Only using NETCONF
-$ sudo systemctl start ncm.target        #Only using NETCONF
+$ sudo systemctl start netopeer2-server  # If NETCONF will be used
+$ sudo systemctl start ncm.target        # If NETCONF will be used
+$ sudo systemctl start snmpd             # If SNMP will be used
+$ sudo systemctl start fibsd             # If SNMP will be used
+$ sudo systemctl start snmpproxyd-trap   # If SNMP will be used
+$ sudo systemctl start snmpproxyd-mib    # IF SNMP will be used
 ```
 
 To stop,
 
 ```
 $ sudo systemctl stop fibcd
-$ sudo systemctl stop ncmd               #Only using NETCONF
-$ sudo systemctl stop ncmi               #Only using NETCONF
-$ sudo systemctl stop ncms               #Only using NETCONF
+$ sudo systemctl stop ncmd               # If NETCONF was started
+$ sudo systemctl stop ncmi               # If NETCONF was started
+$ sudo systemctl stop ncms               # If NETCONF was started
+$ sudo systemctl stop snmpproxyd-mib     # If SNMP was started
+$ sudo systemctl stop snmpproxyd-trap    # If SNMP was started
+$ sudo systemctl stop fibsd              # If SNMP was started
+$ sudo systemctl stop snmpd              # If SNMP was started
 ```
 
 ### CLI mode
@@ -44,10 +56,10 @@ $ sudo systemctl stop ncms               #Only using NETCONF
 $ sudo beluganos run
 ```
 
-In this method, Beluganos can be worked in your terminal for debug. This command will snatch your standard output. <kbd><kbd>Ctrl</kbd>+<kbd>C</kbd></kbd> to stop.
+In this method, Beluganos can be worked in your terminal for debug. This command will snatch your standard output. <kbd><kbd>Ctrl</kbd>+<kbd>C</kbd></kbd> to stop. Note that this mode is not supported in case you will use NETCONF or SNMP feature.
 
 ### Remarks
-`fibcd` service and `beluganos run` command will make start to connect with OpenFlow agent. Before executing this commands, starting OF-DPA apps is recommended.
+The `fibcd` service and `beluganos run` command will make start to connect with OpenFlow agent. Before executing this commands, starting OF-DPA apps is recommended.
 
 ## Step 3. Add Linux containers
 
@@ -90,7 +102,7 @@ $ beluganos status <container-name>
 
 ### Confirm routing status
 
-In Linux container, you can confirm about routing status. Thanks to Beluganos's architecture, the route table of containers will be synchronized to White-box switches (For more detail, please check `doc/architecture.md`). At first, you may login to Linux container by following command:
+In Linux container, you can confirm about routing status. Thanks to Beluganos's architecture, the route table of containers will be synchronized to White-box switches (For more detail, please check [architecture.md](architecture.md)). At first, you may login to Linux container by following command:
 
 ```
 $ beluganos con <container-name>

@@ -10,7 +10,7 @@ Beluganos is a **new network OS** designed for **white-box switches**, which can
 The feature matrix of Beluganos is available at [doc/function.md](doc/function.md). Beluganos was named after [beluga whale](https://en.wikipedia.org/wiki/Beluga_whale).
 
 ## Architecture
-Beluganos has one or more [Linux containers](https://linuxcontainers.org/). The main effort of Beluganos is that the route table which is installed to Linux containers is copied to white-box switches. To configure router settings like IP addresses or parameter of routing protocols, you may configure the settings of Linux containers by ansible or [NETCONF](https://github.com/beluganos/netconf/).
+Beluganos has one or more **[Linux containers](https://linuxcontainers.org/)**. The main effort of Beluganos is that the route table which is installed to Linux containers is copied to white-box switches. If you will configure router settings like IP addresses or parameter of routing protocols, you may configure the settings of Linux containers by ansible or [NETCONF](https://github.com/beluganos/netconf/). Moreover, in order to control white-box switches, **OpenNSL** or **OF-DPA** is used.
 
 For more details, please check [doc/architecture.md](doc/architecture.md).
 
@@ -42,7 +42,7 @@ In order to try Beluganos quickly, **some example cases are prepared**. This exa
 Github issue page and e-mail are available. If you prefer to use e-mail, please contact `msf-contact-ml [at] hco.ntt.co.jp`.
 
 ## Development & Contribution
-Any contribution is encouraged. The main component is written in Go and Python. If you wish to create pull-request on github.com, please kindly create your request for **develop branch**, not master branch. If you find any issue, please kindly notify us by github issue pages.
+Any contribution is encouraged. The main component is written in Go and Python. If you wish to create pull-request on github.com, please kindly create your request for **develop branch**, not master branch. If you find any issue, please kindly notify us by GitHub issue pages.
 
 For more details, please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
