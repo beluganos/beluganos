@@ -37,7 +37,7 @@ Plug in power cable to boot switch.
 
 #### (Step 3) Select "ONIE install"
 
-In booting process, GRUB menu is apperrd. Select `ONIE` -> `ONIE install` by <kbd>↑</kbd> (Up) or <kbd>↓</kbd> (Down) keys to start install.
+In booting process, GRUB menu will be appeared. Select `ONIE` -> `ONIE install` by <kbd>↑</kbd> (Up) or <kbd>↓</kbd> (Down) keys to start install.
 
 #### (Step 4) Stop DHCP discovery
 
@@ -84,7 +84,7 @@ In this documents, `opennsl-accton_3.5.0.3+accton4.0-2_amd64.deb` from Edge-core
 
 ### Compile OpenNSL's agent
 
-OpenNSL is just driver library. This is not contain agent in spite of OF-DPA case. In `create.sh`, beluganos already created the OpenNSL agent in your server. In this step, in order to set up OpenNSL agent, required files are described.
+OpenNSL is just driver library. This is not contain agent in spite of OF-DPA case. In `create.sh`, Beluganos already created the OpenNSL agent in your server. In this step, in order to set up OpenNSL agent, required files are described.
 
 The required files should be located at `~/beluganos/etc/gonsl` of **not "OpenNetworkLinux" but "Beluganos server"**.
 
@@ -162,6 +162,13 @@ dpaths:
 - `<BeluganosVM-IP>`: Specify Beluganos's IP address. Please note that you already specify this IP address in `create.ini` at [install-guide.md](install-guide.md).
 - `<Agent-dpid>`: Specify OpenFlow DPID. Please note that you already specify this ID in `fibc.yml` at [setup-guide.md](setup-guide.md).
 
+```
+> vi /etc/beluganos/gonsld.conf
+
+# DEBUG="-v"
+```
+
+- `DEBUG`: Set debug flag. If you want to use, please comment out.
 
 #### (Step 4) Install OpenNSL and agent
 
@@ -170,11 +177,9 @@ dpaths:
 > dpkg -i gonsld_1.0.0-1_amd64.deb
 ```
 
-### General settings
+### Operation
 
-Once you finished to do "Initial settings", other general settings are required.
-
-#### (Step 1) Start OpenNSL agent
+Once you finished to do "Initial settings", please start OpenNSL agent. The binary name is `gonsl`.
 
 ```
 > /etc/init.d/gonsl start
