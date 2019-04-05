@@ -41,12 +41,12 @@ type ProxyServer struct {
 	snmpComm   string
 }
 
-func NewProxyServer(listenAddr, snmpdAddr *net.UDPAddr, ifNotifyOid string) (*ProxyServer, error) {
+func NewProxyServer(listenAddr, snmpdAddr *net.UDPAddr, ifNotifyCom string) (*ProxyServer, error) {
 	return &ProxyServer{
 		Tables:     NewTables(),
 		listenAddr: listenAddr,
 		snmpdAddr:  snmpdAddr,
-		snmpComm:   ifNotifyOid,
+		snmpComm:   ifNotifyCom,
 	}, nil
 }
 

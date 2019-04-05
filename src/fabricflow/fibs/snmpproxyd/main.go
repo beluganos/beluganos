@@ -29,7 +29,7 @@ import (
 )
 
 const (
-	CONFIG_FILE_DEFAULT = "/etc/beluganos/snmpconvd.conf"
+	CONFIG_FILE_DEFAULT = "/etc/beluganos/snmpproxyd.yaml"
 	DUMP_FILE_DEFAULT   = "/tmp/snmpproxy_tables"
 	DUMP_TIME_DEFAULT   = 15 * time.Second
 	DUMP_TIME_MIN       = 3 * time.Second
@@ -38,7 +38,7 @@ const (
 type Args struct {
 	Config        string
 	Table         string
-	IfOID         string
+	IfCommunity   string
 	ListenAddr    *net.UDPAddr
 	SnmpdAddr     *net.UDPAddr
 	DumpTableTime time.Duration
@@ -55,7 +55,7 @@ func (a *Args) Parse() error {
 
 	flag.StringVarP(&a.Config, "config-file", "c", CONFIG_FILE_DEFAULT, "config file.")
 	flag.StringVarP(&a.Table, "table", "t", "default", "table name.")
-	flag.StringVarP(&a.IfOID, "if-notify-oid", "", lib.SNMP_OID_IFACES, "iface notify OID.")
+	flag.StringVarP(&a.IfCommunity, "if-notify-community", "", lib.SNMP_COMMUNITY, "iface notify community.")
 	flag.StringVarP(&listenAddr, "listen-addr", "", lib.SNMP_LISTEN_ADDR, "Listen address:port.")
 	flag.StringVarP(&snmpdAddr, "snmpd-addr", "", lib.SNMP_DAEMON_ADDR, "snmpd address:port.")
 	flag.DurationVarP(&a.DumpTableTime, "dump-table-time", "", DUMP_TIME_DEFAULT, "dump-table interval")
@@ -108,12 +108,12 @@ func dumpTables(t *Tables, path string, interval time.Duration) {
 }
 
 func printArgs(a *Args) {
-	log.Debugf("config: '%s'", a.Config)
-	log.Debugf("Table : '%s'", a.Table)
-	log.Debugf("IfOID : '%s'", a.IfOID)
-	log.Debugf("Listen: '%s'", a.ListenAddr)
-	log.Debugf("Snmpd : '%s'", a.SnmpdAddr)
-	log.Debugf("Dump  : %s '%s", a.DumpTableTime, a.DumpTableFile)
+	log.Infof("config: '%s'", a.Config)
+	log.Infof("Table : '%s'", a.Table)
+	log.Infof("IfCom : '%s'", a.IfCommunity)
+	log.Infof("Listen: '%s'", a.ListenAddr)
+	log.Infof("Snmpd : '%s'", a.SnmpdAddr)
+	log.Infof("Dump  : %s '%s", a.DumpTableTime, a.DumpTableFile)
 }
 
 func main() {
@@ -145,7 +145,7 @@ func main() {
 
 	log.Debugf("%v", config)
 
-	s, err := NewProxyServer(args.ListenAddr, args.SnmpdAddr, args.IfOID)
+	s, err := NewProxyServer(args.ListenAddr, args.SnmpdAddr, args.IfCommunity)
 	if err != nil {
 		log.Errorf("NewUDPServer error. %s", err)
 		os.Exit(1)

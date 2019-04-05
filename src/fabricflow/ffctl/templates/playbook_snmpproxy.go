@@ -34,9 +34,33 @@ const playbookSnmpProxydYaml = `---
 snmpproxy:
   default:
     oidmap:
+      - name:  ifIndex
+        oid:   .1.3.6.1.2.1.2.2.1.1
+        local: .1.3.6.1.4.99999.2.2.1.1
+      - name:  ifDescr
+        oid:   .1.3.6.1.2.1.2.2.1.2
+        local: .1.3.6.1.4.99999.2.2.1.2
+      - name:  ifType
+        oid:   .1.3.6.1.2.1.2.2.1.3
+        local: .1.3.6.1.4.99999.2.2.1.3
+      - name:  ifMtu
+        oid:   .1.3.6.1.2.1.2.2.1.4
+        local: .1.3.6.1.4.99999.2.2.1.4
+      - name:  ifSpeed
+        oid:   .1.3.6.1.2.1.2.2.1.5
+        local: .1.3.6.1.4.99999.2.2.1.5
+      - name:  ifPhysAddress
+        oid:   .1.3.6.1.2.1.2.2.1.6
+        local: .1.3.6.1.4.99999.2.2.1.6
+      - name:  ifAdminStatus
+        oid:   .1.3.6.1.2.1.2.2.1.7
+        local: .1.3.6.1.4.99999.2.2.1.7
       - name:  ifOperStatus
         oid:   .1.3.6.1.2.1.2.2.1.8
         local: .1.3.6.1.4.99999.2.2.1.8
+      - name:  ifLastChange
+        oid:   .1.3.6.1.2.1.2.2.1.9
+        local: .1.3.6.1.4.99999.2.2.1.9
       - name:  ifInOctets
         oid:   .1.3.6.1.2.1.2.2.1.10
         local: .1.3.6.1.4.99999.2.2.1.10
@@ -52,6 +76,9 @@ snmpproxy:
       - name:  ifInErrors
         oid:   .1.3.6.1.2.1.2.2.1.14
         local: .1.3.6.1.4.99999.2.2.1.14
+      - name:  ifInUnknownProtos
+        oid:   .1.3.6.1.2.1.2.2.1.15
+        local: .1.3.6.1.4.99999.2.2.1.15
       - name:  ifOutOctets
         oid:   .1.3.6.1.2.1.2.2.1.16
         local: .1.3.6.1.4.99999.2.2.1.16
@@ -67,6 +94,12 @@ snmpproxy:
       - name:  ifOutErrors
         oid:   .1.3.6.1.2.1.2.2.1.20
         local: .1.3.6.1.4.99999.2.2.1.20
+      - name:  ifOutQLen
+        oid:   .1.3.6.1.2.1.2.2.1.21
+        local: .1.3.6.1.4.99999.2.2.1.21
+      - name:  ifSpecific
+        oid:   .1.3.6.1.2.1.2.2.1.22
+        local: .1.3.6.1.4.99999.2.2.1.22
       - name:  ifName
         oid:   .1.3.6.1.2.1.31.1.1.1.1
         local: .1.3.6.1.4.99999.31.1.1.1.1
@@ -87,7 +120,7 @@ snmpproxy:
 {{- end }}
 
     trap2sink:
-      - addr: 192.169.122.1:161
+      - addr: 192.169.1.1:161
 `
 
 func NewPlaybookSnmpProxydConfTemplate() *template.Template {

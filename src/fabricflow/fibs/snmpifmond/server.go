@@ -42,9 +42,9 @@ const (
 	TRAP_IFNUM_MAX       = 16
 )
 
-func NewServer(serverAddr *net.UDPAddr, ifoid []uint) *Server {
+func NewServer(serverAddr *net.UDPAddr, ifcommunity string, ifoid []uint) *Server {
 	server := &Server{
-		builder:     NewSnmpMessageBuilder(lib.SNMP_VERSION, lib.SNMP_COMMUNITY),
+		builder:     NewSnmpMessageBuilder(lib.SNMP_VERSION, ifcommunity),
 		serverAddr:  serverAddr,
 		resendTime:  TRAP_RESEND_INTERVAL,
 		skipIfnames: map[string]struct{}{},

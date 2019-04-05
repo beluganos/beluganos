@@ -1,9 +1,33 @@
 ---
 
 handlers:
+  #- oid : .1.3.6.1.4.99999.2.2.1.1
+  #  name: ifIndex
+  #  type: integer
+  #- oid : .1.3.6.1.4.99999.2.2.1.2
+  #  name: ifDescr
+  #  type: string
+  #- oid : .1.3.6.1.4.99999.2.2.1.3
+  #  name: ifType
+  #  type: string
+  #- oid : .1.3.6.1.4.99999.2.2.1.4
+  #  name: ifMtu
+  #  type: integer
+  #- oid : .1.3.6.1.4.99999.2.2.1.5
+  #  name: ifSpeed
+  #  type: integer
+  #- oid : .1.3.6.1.4.99999.2.2.1.6
+  #  name: ifPhysAddress
+  #  type: string
+  #- oid : .1.3.6.1.4.99999.2.2.1.7
+  #  name: ifAdminStatus
+  #  type: integer
   - oid : .1.3.6.1.4.99999.2.2.1.8
     name: ifOperStatus
     type: integer
+  #- oid : .1.3.6.1.4.99999.2.2.1.9
+  #  name: ifLastChange
+  #  type: string
   - oid : .1.3.6.1.4.99999.2.2.1.10
     name: ifInOctets
     type: integer
@@ -19,6 +43,9 @@ handlers:
   - oid : .1.3.6.1.4.99999.2.2.1.14
     name: ifInErrors
     type: integer
+  #- oid : .1.3.6.1.4.99999.2.2.1.15
+  #  name: ifInUnknownProtos
+  #  type: integer
   - oid : .1.3.6.1.4.99999.2.2.1.16
     name: ifOutOctets
     type: integer
@@ -34,6 +61,12 @@ handlers:
   - oid : .1.3.6.1.4.99999.2.2.1.20
     name: ifOutErrors
     type: integer
+  #- oid: .1.3.6.1.4.99999.2.2.1.21
+  #  name: ifOutQLen
+  #  type: integer
+  #- oid : .1.3.6.1.4.99999.2.2.1.22
+  #  name: ifSpecific
+  #  type: string
   - oid : .1.3.6.1.4.99999.31.1.1.1.1
     name: ifName
     type: string

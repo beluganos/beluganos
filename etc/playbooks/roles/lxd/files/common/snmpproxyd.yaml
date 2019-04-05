@@ -81,6 +81,61 @@ snmpproxy:
         min: 1024
         max: 2147483647
 
-    trap2map: {}
+    trap2map:
+      eth1: 1
+      eth2: 2
+      eth3: 3
+      eth4: 4
+      eth5: 5
+      eth6: 6
+      eth7: 7
+      eth8: 8
+      eth9: 9
+      eth10: 10
+      eth11: 11
+      eth12: 12
+      eth13: 13
+      eth14: 14
+      eth15: 15
+      eth16: 16
+      eth17: 17
+      eth18: 18
+      eth19: 19
+      eth20: 20
+      eth21: 21
+      eth22: 22
+      eth23: 23
+      eth24: 24
+      eth25: 25
+      eth26: 26
+      eth27: 27
+      eth28: 28
+      eth29: 29
+      eth30: 30
+      eth31: 31
+      eth32: 32
+      eth33: 33
+      eth34: 34
+      eth35: 35
+      eth36: 36
+      eth37: 37
+      eth38: 38
+      eth39: 39
+      eth40: 40
+      eth41: 41
+      eth42: 42
+      eth43: 43
+      eth44: 44
+      eth45: 45
+      eth46: 46
+      eth47: 47
+      eth48: 48
+      eth49: 49
+      eth50: 53
+      eth51: 57
+      eth52: 61
+      eth53: 65
+      eth54: 69
 
-    trap2sink: {}
+    trap2sink:
+      - addr: 192.169.122.1:161
