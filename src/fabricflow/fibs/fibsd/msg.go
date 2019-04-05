@@ -65,6 +65,24 @@ type PortStats []map[string]interface{}
 //
 type PortStatsMsg map[string]PortStats
 
+func (p PortStats) normalize() {
+	for _, ps := range p {
+		for key, val := range ps {
+			switch v := val.(type) {
+			case float64:
+				ps[key] = int64(v)
+			default:
+			}
+		}
+	}
+}
+
+func (m PortStatsMsg) normalize() {
+	for _, ps := range m {
+		ps.normalize()
+	}
+}
+
 //
 // HTTPGet gets port stats by http from fibcd.
 //
@@ -82,6 +100,8 @@ func (m PortStatsMsg) HTTPGet(baseURL string, dpid uint64) error {
 		log.Errorf("json.Decode error. %s", err)
 		return err
 	}
+
+	m.normalize()
 
 	return nil
 }

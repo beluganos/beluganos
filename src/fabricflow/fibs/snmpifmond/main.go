@@ -29,6 +29,7 @@ import (
 )
 
 type Args struct {
+	IfCommunity string
 	IfOID       string
 	SnmpdAddr   *net.UDPAddr
 	ResendTime  time.Duration
@@ -43,6 +44,7 @@ func (a *Args) Parse() error {
 	)
 	skipIfnames := []string{"lo", "eth0"}
 
+	flag.StringVarP(&a.IfCommunity, "if-notify-community", "", lib.SNMP_COMMUNITY, "iface notify community.")
 	flag.StringVarP(&a.IfOID, "if-noify-oid", "", lib.SNMP_OID_IFACES, "iface noify OID.")
 	flag.StringVarP(&snmpdAddr, "snmpd-addr", "", lib.SNMP_LISTEN_ADDR, "snmpd address:port.")
 	flag.DurationVarP(&a.ResendTime, "trap-resend", "", TRAP_RESEND_INTERVAL, "Trap resend interval time.")
@@ -58,6 +60,7 @@ func (a *Args) Parse() error {
 }
 
 func printArgs(a *Args) {
+	log.Infof("IfCom     : '%s'", a.IfCommunity)
 	log.Infof("IfOID     : '%s'", a.IfOID)
 	log.Infof("Snmpd     : '%s'", a.SnmpdAddr)
 	log.Infof("TrapResend: %s", a.ResendTime)
@@ -87,7 +90,7 @@ func main() {
 
 	ifoid := lib.ParseOID(args.IfOID)
 
-	s := NewServer(args.SnmpdAddr, ifoid)
+	s := NewServer(args.SnmpdAddr, args.IfCommunity, ifoid)
 	s.RegisterSkipIfname(args.SkipIfnames...)
 	s.SetResendInterval(args.ResendTime)
 	if err := s.Start(); err != nil {
