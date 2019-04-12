@@ -42,9 +42,7 @@ In order to try Beluganos quickly, **some example cases are prepared**. This exa
 Github issue page and e-mail are available. If you prefer to use e-mail, please contact `msf-contact-ml [at] hco.ntt.co.jp`.
 
 ## Development & Contribution
-Any contribution is encouraged. The main component is written in Go and Python. If you wish to create pull-request on github.com, please kindly create your request for **develop branch**, not master branch. If you find any issue, please kindly notify us by GitHub issue pages.
-
-For more details, please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
+Any contribution is encouraged. The main component is written in Go and Python. For more details, please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 Beluganos is licensed under the **Apache 2.0** license. See [LICENSE](LICENSE).
