@@ -53,7 +53,11 @@ $ snmpwalk -v 2c -c public localhost .1.3.6.1.2.1.2.2.1.8
 
 ### SNMP trap
 
-When `ifOperStatus` changed, you can get trap notification by Beluganos. You may configure IP address of trap receiver by editing the files.
+When `ifOperStatus` changed, you can get trap notification by Beluganos. 
+
+#### Beluganos's settings
+
+You may configure IP address of trap receiver by editing the files.
 
 ```
 $ vi /etc/beluganos/snmpproxyd.yaml
@@ -73,9 +77,7 @@ snmpproxy:
 
 - `trap2map`: The mapping list between interface name of Linux container (eth1, eth2, ...) and logical interface number recognized by ASIC driver (1, 2, ...).
 	- Format: `<LXC-interface-name>: <ASIC-logical-interface-number>`
-	- This settings are depend on your hardware. The physical interface number should be changed.
-	- The default settings are set up for Edge-core AS5812-54X (10G x48, 40G x6 switch).
-	- Other sample configuration is described at the bottom of this document.
+	- This settings are depend on your hardware. The physical interface number should be changed. Sample configuration is described at the bottom of this document.
 - `trap2sink`: The lists of IP address of trap servers.
 	- Format: `addr: <Trap-server-address>:<Trap-port>`
 	- You can set one or more SNMP trap servers.
@@ -84,6 +86,55 @@ After changing, please restart trap process to reflect changes.
 
 ```
 $ sudo systemctl restart snmpproxyd-trap
+```
+
+#### LXC's settings
+
+In default, LXC settings is not enough to support SNMP trap features. In current version of Beluganos, you should change this manually. `-` means deletion is required, and `+` means addition is required.
+
+- `/lib/systemd/system/snmpd.service`
+
+```
+- Environment="MIBS="
++ #Environment="MIBS="
+
+- ExecStart=/usr/sbin/snmpd -Lsd -Lf /dev/null -u Debian-snmp -g Debian-snmp -I -smux,mteTrigger,mteTriggerConf -f
++ ExecStart=/usr/sbin/snmpd -Lsd -Lf /dev/null -u Debian-snmp -g Debian-snmp -I -smux -f
+```
+
+- `/etc/snmp/snmp.conf`
+
+```
+- mibs :
++ mibs +ALL
+```
+
+- `/etc/snmp/snmpd.conf`
+
+```
+- # createUser internalUser  MD5 "this is only ever used internally, but still change the password"
++ createUser internalUser  MD5 "this is only ever used internally, but still change the password"
+
+- #trap2sink    localhost public
++ trap2sink    192.169.1.1 public
+
+- defaultMonitors
++ #defaultMonitors
+
+- linkUpDownNotifications
++ #linkUpDownNotifications
+
++ notificationEvent linkUpTrap linkUp ifIndex ifAdminStatus ifOperStatus
++ monitor -r 1 -o ifName -e linkUpTrap "Generate linkUp" ifOperStatus != 2
++ notificationEvent linkDownTrap linkDown ifindex ifAdminStatus ifOperStatus
++ monitor -r 1 -o ifName -e linkDownTrap "Generate linkDown" ifOperStatus == 2
+```
+
+After editing, please restart snmpd process.
+
+```
+$ sudo systemctl daemon-reload
+$ sudo systemctl restart snmpd
 ```
 
 ## Feature Details
@@ -173,7 +224,7 @@ UPDATE_TIME=5s
 The statistics is saved as text file at `STATS_PATH`. The example of text file is here:
 
 ```
-cat /var/lib/beluganos/fibc_stats.yaml
+$ cat /var/lib/beluganos/fibc_stats.yaml
 
 ---
 
@@ -287,11 +338,26 @@ handlers:
 - `type`: type of value
 
 
-### (Example) trap2map configuration
+### Example: `trap2map` configuration
 
-#### AS5812-54X
+To use SNMP trap feature, you should change `trap2map` configuration at `/etc/beluganos/snmpproxyd.yaml` depend on your hardware. In this chapter, the examples of `trap2map` is described.
 
-Note: without breakout cable
+#### Any device / OF-DPA
+
+In OF-DPA, port mapping is not depend on hardware.
+
+```
+    trap2map:
+      eth1: 1
+      eth2: 2
+      eth3: 3
+     ~~~(snipped)~~~
+      eth<n>: <n>
+```
+
+#### AS5710-54X, AS5712-54X, AS5812-54X, AS5812-54T / OpenNSL
+
+Note: This configuration is for without breakout cable case. If you configure breakout cable, you should change this configuration.
 
 ```
     trap2map:
@@ -352,9 +418,9 @@ Note: without breakout cable
       lxdbr0: 500
 ```
 
-#### AS7712-32X
+#### AS7712-32X, AS7716-32X / OpenNSL
 
-Note: without breakout cable
+Note: This configuration is for without breakout cable case. If you configure breakout cable, you should change this configuration.
 
 ```
     trap2map:
