@@ -53,11 +53,7 @@ $ snmpwalk -v 2c -c public localhost .1.3.6.1.2.1.2.2.1.8
 
 ### SNMP trap
 
-When `ifOperStatus` changed, you can get trap notification by Beluganos. 
-
-#### Beluganos's settings
-
-You may configure IP address of trap receiver by editing the files.
+When `ifOperStatus` changed, you can get trap notification by Beluganos.  You may configure IP address of trap receiver by editing the files.
 
 ```
 $ vi /etc/beluganos/snmpproxyd.yaml
@@ -86,55 +82,6 @@ After changing, please restart trap process to reflect changes.
 
 ```
 $ sudo systemctl restart snmpproxyd-trap
-```
-
-#### LXC's settings
-
-In default, LXC settings is not enough to support SNMP trap features. In current version of Beluganos, you should change this manually. `-` means deletion is required, and `+` means addition is required.
-
-- `/lib/systemd/system/snmpd.service`
-
-```
-- Environment="MIBS="
-+ #Environment="MIBS="
-
-- ExecStart=/usr/sbin/snmpd -Lsd -Lf /dev/null -u Debian-snmp -g Debian-snmp -I -smux,mteTrigger,mteTriggerConf -f
-+ ExecStart=/usr/sbin/snmpd -Lsd -Lf /dev/null -u Debian-snmp -g Debian-snmp -I -smux -f
-```
-
-- `/etc/snmp/snmp.conf`
-
-```
-- mibs :
-+ mibs +ALL
-```
-
-- `/etc/snmp/snmpd.conf`
-
-```
-- # createUser internalUser  MD5 "this is only ever used internally, but still change the password"
-+ createUser internalUser  MD5 "this is only ever used internally, but still change the password"
-
-- #trap2sink    localhost public
-+ trap2sink    192.169.1.1 public
-
-- defaultMonitors
-+ #defaultMonitors
-
-- linkUpDownNotifications
-+ #linkUpDownNotifications
-
-+ notificationEvent linkUpTrap linkUp ifIndex ifAdminStatus ifOperStatus
-+ monitor -r 1 -o ifName -e linkUpTrap "Generate linkUp" ifOperStatus != 2
-+ notificationEvent linkDownTrap linkDown ifindex ifAdminStatus ifOperStatus
-+ monitor -r 1 -o ifName -e linkDownTrap "Generate linkDown" ifOperStatus == 2
-```
-
-After editing, please restart snmpd process.
-
-```
-$ sudo systemctl daemon-reload
-$ sudo systemctl restart snmpd
 ```
 
 ## Feature Details
@@ -297,22 +244,68 @@ snmpproxy:
 ```
 
 - `oidmap`
-	- The list of convertion internal MIB and standard MIB.
+	- The list of conversion internal MIB and standard MIB.
 	- Generally, DO NOT EDIT.
 - `ifmap`
 	- DO NOT EDIT.
 - `trap2map`
-	- The list of convertion ifindex.
+	- The list of conversion ifindex.
 - `trap2sink`
 	- The lists of IP address of trap servers.
 	- You can set one or more SNMP trap servers.
 
 #### snmpd (NET-SNMP)
 
-The required settings will be edited automatically. In `/etc/snmp/snmpd.conf`, following line is added.
+The required settings will be edited automatically. The settings which is setup automatically is described here. Note that `-` means deletion is required, and `+` means addition is required.
+
+##### `/etc/snmp/snmpd.conf`
 
 ```
-pass_persist <OID> /usr/bin/fibssnmp
++ pass_persist <OID> /usr/bin/fibssnmp
+
+- # createUser internalUser  MD5 "this is only ever used internally, but still change the password"
++ createUser internalUser  MD5 "this is only ever used internally, but still change the password"
+
+- #trap2sink    localhost public
++ trap2sink    192.169.1.1 public
+
+- defaultMonitors
++ #defaultMonitors
+
+- linkUpDownNotifications
++ #linkUpDownNotifications
+
++ notificationEvent linkUpTrap linkUp ifIndex ifAdminStatus ifOperStatus
++ monitor -r 10 -o ifName -e linkUpTrap "Generate linkUp" ifOperStatus != 2
++ notificationEvent linkDownTrap linkDown ifindex ifAdminStatus ifOperStatus
++ monitor -r 10 -o ifName -e linkDownTrap "Generate linkDown" ifOperStatus == 2
+```
+
+Note: The `monitor -r <interval-in-sec>` is the settings about the interval time of monitoring interface. You may change it.
+
+##### `/etc/snmp/snmp.conf`
+
+```
+- mibs :
++ mibs +ALL
+```
+
+##### `/lib/systemd/system/snmpd.service`
+
+```
+- Environment="MIBS="
++ #Environment="MIBS="
+
+- ExecStart=/usr/sbin/snmpd -Lsd -Lf /dev/null -u Debian-snmp -g Debian-snmp -I -smux,mteTrigger,mteTriggerConf -f
++ ExecStart=/usr/sbin/snmpd -Lsd -Lf /dev/null -u Debian-snmp -g Debian-snmp -I -smux -f
+```
+##### Reflect changes
+
+At LXC, please enter following:
+
+```
+$ sudo systemctl daemon-reload
+$ sudo systemctl restart snmpd
 ```
 
 #### fibssnmp (Beluganos)
