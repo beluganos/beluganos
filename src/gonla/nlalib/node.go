@@ -19,9 +19,10 @@ package nlalib
 
 import (
 	"fmt"
+	"net"
+
 	"github.com/vishvananda/netlink"
 	"github.com/vishvananda/netlink/nl"
-	"net"
 )
 
 func NewNodeIdFromIP(ip net.IP) uint8 {
@@ -43,9 +44,9 @@ func NewNodeIdFromIF(ifname string) (uint8, error) {
 	}
 
 	for _, addr := range addrs {
-		if peer := addr.Peer; peer != nil {
-			if ones, bits := peer.Mask.Size(); ones != bits && ones != 0 {
-				return NewNodeIdFromIP(peer.IP), nil
+		if ipnet := addr.IPNet; ipnet != nil {
+			if ones, bits := ipnet.Mask.Size(); ones != bits && ones != 0 {
+				return NewNodeIdFromIP(ipnet.IP), nil
 			}
 		}
 	}
