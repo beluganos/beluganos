@@ -33,7 +33,7 @@ LISTEN_TRAP=:162
 SNMPD_ADDR=localhost:8161
 {{- else -}}
 # snmproxyd-ifmond
-SNMPPROXYD_ADDR=192.169.1.1:161
+SNMPPROXYD_ADDR={{ .SnmpProxydAddr }}:161
 TRAP_RESEND_TIME=10s
 {{- end }}
 
@@ -135,7 +135,7 @@ snmpproxy:
 {{- end }}
 
     trap2sink:
-      - addr: 192.169.1.1:161
+      - addr: 192.168.122.1:161
 `
 
 func NewPlaybookSnmpProxydConfTemplate() *template.Template {
@@ -143,7 +143,8 @@ func NewPlaybookSnmpProxydConfTemplate() *template.Template {
 }
 
 type PlaybookSnmpProxydConf struct {
-	Host bool
+	Host           bool
+	SnmpProxydAddr string
 }
 
 func NewPlaybookSnmpProxydConf(host bool) *PlaybookSnmpProxydConf {

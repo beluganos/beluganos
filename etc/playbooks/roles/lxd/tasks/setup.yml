@@ -33,8 +33,10 @@
   notify:
     - restart services
 
+
 - name: netplan apply
   shell: netplan apply
+
 
 - name: copy service files
   copy:
@@ -44,6 +46,17 @@
     - "{{ services }}"
   notify:
     - reload services
+
+
+- name: copy system service files
+  copy:
+    src: "{{ commondir }}/{{ item.src }}"
+    dest: "{{ item.dst }}"
+  with_flattened:
+    - "{{ system_services }}"
+  notify:
+    - reload services
+    - restart system_services
 
 
 - name: enable services

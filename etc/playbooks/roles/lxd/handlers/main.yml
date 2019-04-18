@@ -12,5 +12,10 @@
     - "{{ services }}"
 
 
+- name: restart system_services
+  systemd: name={{ item.src }} state=restarted
+  with_items:
+    - "{{ system_services }}"
+
 - name: reload services
   command: systemctl daemon-reload

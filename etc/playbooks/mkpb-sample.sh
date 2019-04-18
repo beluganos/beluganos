@@ -13,6 +13,7 @@ DPTYPE=as5812
 # DAEMONS="zebra bgpd ospfd ospf6d ripd ripngd isisd pimd ldpd nhrpd"
 DAEMONS="zebra ospfd ospf6d ldpd"
 # VPN="--vpn"
+# SNMPOPT="--linkmonitor-interval 10s"
 
 PORTS=`tempfile`
 FFCTL="../../bin/ffctl playbook"
@@ -63,6 +64,7 @@ create_playbook() {
     ${FFCTL} netplan     create ${NAME} --ports ${PORTS} --dp-type ${DPTYPE} ${FFOPT}
     ${FFCTL} ribtd       create ${NAME} ${FFOPT}
     ${FFCTL} ribxd       create ${NAME} --re-id ${REID} --node-id ${NID} ${VPN} ${RIBXD_OPTS} ${FFOPT}
+    ${FFCTL} snmpd-conf create ${NAME} ${SNMPOPT} ${FFOPT}
     ${FFCTL} snmpproxyd-conf create ${NAME} ${FFOPT}
     ${FFCTL} sysctl      create ${NAME} --ports ${PORTS} --dp-type ${DPTYPE} ${FFOPT}
 }

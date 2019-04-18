@@ -17,8 +17,10 @@ dirs:
   - { path: "/etc/beluganos/", owner: "beluganos"  }
 
 config_files:
-  - { src: "netplan.yaml",    dst: "/etc/netplan/20-beluganos.yaml",  owner: "root"}
+  - { src: "netplan.yaml",    dst: "/etc/netplan/20-beluganos.yaml",  owner: "root" }
   - { src: "sysctl.conf",     dst: "/etc/sysctl.d/30-beluganos.conf", owner: "root" }
+  - { src: "snmp.conf",       dst: "/etc/snmp/snmp.conf",             owner: "root" }
+  - { src: "snmpd.conf",      dst: "/etc/snmp/snmpd.conf",            owner: "root" }
   - { src: "ribxd.conf",      dst: "/etc/beluganos/ribxd.conf",       owner: "beluganos"  }
   - { src: "ribtd.conf",      dst: "/etc/beluganos/ribtd.conf",       owner: "beluganos"  }
   - { src: "snmpproxyd.conf", dst: "/etc/beluganos/snmpproxyd.conf",  owner: "beluganos"  }
@@ -26,6 +28,9 @@ config_files:
   - { src: "frr.conf",        dst: "/etc/frr/frr.conf",               owner: "frr" }
   - { src: "gobgp.conf",      dst: "/etc/frr/gobgp.conf",             owner: "frr" }
   - { src: "gobgpd.conf",     dst: "/etc/frr/gobgpd.conf",            owner: "frr" }
+
+system_services:
+  - { src: "snmpd.service",  dst: "/lib/systemd/system/snmpd.service" }
 
 services:
   - beluganos.service

@@ -197,7 +197,32 @@ func (c *PlaybookCmd) createRibtdConf(playbookName string) error {
 	return t.Execute(f)
 }
 
-func (c *PlaybookCmd) createSnmpProxydConf(playbookName string) error {
+type PlaybookSnmpConfCmd struct {
+	*PlaybookCmd
+	snmpProxydAddr      string
+	linkMonitorInterval time.Duration
+}
+
+func NewPlaybookSnmpConfCmd() *PlaybookSnmpConfCmd {
+	return &PlaybookSnmpConfCmd{
+		PlaybookCmd: NewPlaybookCmd(),
+	}
+}
+
+func (c *PlaybookSnmpConfCmd) setSnmpdFlags(cmd *cobra.Command) *cobra.Command {
+	c.PlaybookCmd.setFlags(cmd)
+	cmd.PersistentFlags().StringVarP(&c.snmpProxydAddr, "snmpproxy-addr", "", "192.169.1.1", "snmpproxy address.")
+	cmd.PersistentFlags().DurationVarP(&c.linkMonitorInterval, "linkmonitor-interval", "", time.Minute, "Interval of link monitoring.")
+	return cmd
+}
+
+func (c *PlaybookSnmpConfCmd) setProxydFlags(cmd *cobra.Command) *cobra.Command {
+	c.PlaybookCmd.setFlags(cmd)
+	cmd.PersistentFlags().StringVarP(&c.snmpProxydAddr, "snmpproxy-addr", "", "192.169.1.1", "snmpproxy address.")
+	return cmd
+}
+
+func (c *PlaybookSnmpConfCmd) createSnmpProxydConf(playbookName string) error {
 	path := c.filesPath(playbookName, "snmpproxyd.conf")
 	f, err := createFile(path, c.overwrite, func(backup string) {
 		log.Debugf("%s backup", backup)
@@ -210,11 +235,12 @@ func (c *PlaybookCmd) createSnmpProxydConf(playbookName string) error {
 	log.Debugf("%s created.", path)
 
 	t := templates.NewPlaybookSnmpProxydConf(false)
+	t.SnmpProxydAddr = c.snmpProxydAddr
 	return t.Execute(f)
 }
 
-func (c *PlaybookCmd) createSnmpProxydYaml(playbookName string) error {
-	path := c.filesPath(playbookName, "snmpproxyd.yaml")
+func (c *PlaybookSnmpConfCmd) createSnmpConf(playbookName string) error {
+	path := c.filesPath(playbookName, "snmp.conf")
 	f, err := createFile(path, c.overwrite, func(backup string) {
 		log.Debugf("%s backup", backup)
 	})
@@ -225,7 +251,27 @@ func (c *PlaybookCmd) createSnmpProxydYaml(playbookName string) error {
 
 	log.Debugf("%s created.", path)
 
-	t := templates.NewPlaybookSnmpProxydYaml()
+	t := templates.NewPlaybookSnmpConf()
+
+	return t.Execute(f)
+}
+
+func (c *PlaybookSnmpConfCmd) createSnmpdConf(playbookName string) error {
+	path := c.filesPath(playbookName, "snmpd.conf")
+	f, err := createFile(path, c.overwrite, func(backup string) {
+		log.Debugf("%s backup", backup)
+	})
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	log.Debugf("%s created.", path)
+
+	t := templates.NewPlaybookSnmpdConf()
+	t.SnmpProxydAddr = c.snmpProxydAddr
+	t.LinkMonitorInterval = uint(c.linkMonitorInterval.Seconds())
+
 	return t.Execute(f)
 }
 

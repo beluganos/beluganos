@@ -1,0 +1,15 @@
+[Unit]
+Description=Simple Network Management Protocol (SNMP) Daemon.
+After=network.target
+ConditionPathExists=/etc/snmp/snmpd.conf
+
+[Service]
+Environment="MIBSDIR=/usr/share/snmp/mibs:/usr/share/snmp/mibs/iana:/usr/share/snmp/mibs/ietf:/usr/share/mibs/site:/usr/share/snmp/mibs:/usr/share/mibs/iana:/usr/share/mibs/ietf:/usr/share/mibs/netsnmp"
+# Environment="MIBS="
+Type=simple
+ExecStartPre=/bin/mkdir -p /var/run/agentx
+ExecStart=/usr/sbin/snmpd -Lsd -Lf /dev/null -u Debian-snmp -g Debian-snmp -I -smux -f
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

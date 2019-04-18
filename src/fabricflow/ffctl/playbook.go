@@ -212,14 +212,38 @@ func playbookSnmpProxydConfCmd() *cobra.Command {
 		Short: "snmpproxyd-conf command.",
 	}
 
-	create := NewPlaybookCmd()
-	rootCmd.AddCommand(create.setFlags(
+	create := NewPlaybookSnmpConfCmd()
+	rootCmd.AddCommand(create.setProxydFlags(
 		&cobra.Command{
 			Use:   "create [playbook name]",
 			Short: "Crate new snmpproxyd.conf on container file.",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				return create.createSnmpProxydConf(args[0])
+			},
+		},
+	))
+
+	return rootCmd
+}
+
+func playbookSnmpdConfCmd() *cobra.Command {
+	rootCmd := &cobra.Command{
+		Use:   "snmpd-conf",
+		Short: "snmpd-conf command.",
+	}
+
+	create := NewPlaybookSnmpConfCmd()
+	rootCmd.AddCommand(create.setSnmpdFlags(
+		&cobra.Command{
+			Use:   "create [playbook name]",
+			Short: "Crate new snmp(d).conf on container file.",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				if err := create.createSnmpConf(args[0]); err != nil {
+					return err
+				}
+				return create.createSnmpdConf(args[0])
 			},
 		},
 	))
@@ -339,6 +363,7 @@ func playbookCmd() *cobra.Command {
 		playbookNetplanYamlCmd(),
 		playbookRibtdConfCmd(),
 		playbookSnmpProxydConfCmd(),
+		playbookSnmpdConfCmd(),
 		playbookSysctlConfCmd(),
 		playbookRibxdConfCmd(),
 		playbookInventoryCmd(),
