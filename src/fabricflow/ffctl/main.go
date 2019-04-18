@@ -59,6 +59,7 @@ func rootCmd(name string) *cobra.Command {
 		fibcCmd(),
 		ovsCmd(),
 		playbookCmd(),
+		vlanCmd(),
 	)
 
 	return rootCmd
