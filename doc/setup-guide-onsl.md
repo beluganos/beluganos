@@ -78,51 +78,28 @@ Please get the binary of OpenNSL. The required version of OpenNSL 3.5, and follo
 - [Edge-core's blog](https://support.edge-core.com/hc/en-us/sections/360002115754-OpenNSL)
 - [Broadcom's repository](https://github.com/Broadcom-Switch/OpenNSL)
 
-If you cannot find OpenNSL binary, you should create this personally. Please refer appendix of this documents.
+If you cannot find OpenNSL binary (.deb), you should create this personally. Please refer appendix (E) of this documents.
 
 In this documents, `opennsl-accton_3.5.0.3+accton4.0-2_amd64.deb` from Edge-core's blog is used to describe following steps.
 
-### Compile OpenNSL's agent
+### Compile and get OpenNSL's agent
 
-OpenNSL is just driver library. This is not contain agent in spite of OF-DPA case. In `create.sh`, Beluganos already created the OpenNSL agent in your server. In this step, in order to set up OpenNSL agent, required files are described.
-
-The required files should be located at `~/beluganos/etc/gonsl` of **not "OpenNetworkLinux" but "Beluganos server"**.
-
-Next, transfer required files to OpenNetworkLinux via SCP or SFTP. The required files are described here:
-
-```
-beluganos/
-  etc/
-    gonsl/
-      gonsld                # Copy from ~/go/bin/gonsld from Beluganos (*1)
-      opennsl.conf          # Get and copy OpenNSL files (*2)
-                            #   Ex) config.as7712
-      libopennsl.so.1       # Get and copy OpenNSL files (*2)
-      linux-kernel-bde.ko   # Get and copy OpenNSL files (*2)
-      linux-user-bde.ko     # Get and copy OpenNSL files (*2)
-      linux-bcm-knet.ko     # Get and copy OpenNSL files (*2)
-      make.sh
-      files/
-        gonsld.initd
-        gonsld.conf
-        gonsld.yaml
-```
-
-- (\*1): By `create.sh`, the binary which is `~/go/bin/gonsld` is created.
-- (\*2): In AS7712-32X, there is at `bin/as7712/` of [Broadcom's repository](https://github.com/Broadcom-Switch/OpenNSL).
-
-To compile agent, `make.sh` is prepared.
+OpenNSL is just driver library. This is not contain agent in spite of OF-DPA case. In `create.sh`, Beluganos already created the OpenNSL agent in your server. In this step, you can set up OpenNSL agent.
 
 ```
 Beluganos-server$ cd etc/gonsl
-Beluganos-server$ ./make.sh deb
+Beluganos-server$ ./make.sh gonsld prepare
+Beluganos-server$ ./make.sh gonsld check
+Beluganos-server$ ./make.sh gonsld deb
 Beluganos-server$ ls gonsld_1.0.0-1_amd64.deb
 gonsld_1.0.0-1_amd64.deb
 ```
 
+Now, you can obtain `gonsld_1.0.0-1_amd64.deb`.
+
 ### Initial settings
 
-The following steps are required in case of the first time to use OF-DPA.
+The following steps are required in case of the first time to use OpenNSL.
 
 #### (Step 1) Configure management address
 
@@ -253,32 +230,26 @@ Same as "1. Building OpenNetworkLinux" at [setup-guide-embedded.md](setup-guide-
 
 #### Specify your hardware
 
-Please change `ONSL_BIN`.
+Please change `OPENNSL_HWTYPE`.
 
 ```
-$ cd ~/beluganos/etc/embedded/onl/
-$ vi onl.sh
+Beluganos-server$ cd ~/etc/gonsl
+Beluganos-server$ vi onl.sh
 
 # In case of AS7712
-ONSL_BIN=as7712
+OPENNSL_HWTYPE=as7712
 
-# In case ofAS5712
-ONSL_BIN=as5712
+# In case of AS5812
+OPENNSL_HWTYPE=as5812
 ```
 
 #### Build
 
-The deb file will be created at `OpenNetworkLinux/RELEASE/opennsl` by following commands.
-
 ```
-$ cd OpenNetworkLinux
-$ ./onl.sh clone-opennsl
-$ sudo ./onl.sh docker
-docker> ./onl.sh build-opennsl
-
-... (building messages) ...
-
-> ls RELEASE/opennsl/
-inux-bcm-knet.ko  linux-kernel-bde.ko  linux-user-bde.ko  opennsl_3.5.0.1-1_amd64.deb
-
+Beluganos-server$ cd ~/etc/gonsl
+Beluganos-server$ ./make.sh opennsl prepare
+Beluganos-server$ ./make.sh opennsl check
+Beluganos-server$ ./make.sh opennsl deb
 ```
+
+Now, you can obtain `opennsl_*_amd64.deb`.

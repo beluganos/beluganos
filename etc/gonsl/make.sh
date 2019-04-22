@@ -3,6 +3,9 @@
 
 PREFIX=`pwd`
 SRCDIR=`pwd`
+BINDIR=`pwd`/../../bin
+OPENNSL_HWTYPE=as7712
+OPENNSL_BINDIR=`pwd`/../../../opennsl/bin/${OPENNSL_HWTYPE}
 
 WORKDIR=${PREFIX}/work
 GONSLD_DIR=${WORKDIR}/gonsl
@@ -22,6 +25,10 @@ gonsld_make_dirs() {
     install -pd ${GONSLD_DIR}/etc/beluganos
     install -pd ${GONSLD_DIR}/etc/init.d
     install -pd	${GONSLD_DIR}/DEBIAN
+}
+
+gonsld_prepare_files() {
+    install -pm 755 ${BINDIR}/gonsld  ${SRCDIR}/
 }
 
 gonsld_copy_files() {
@@ -65,6 +72,18 @@ opennsl_make_dirs() {
     install -pd ${OPENNSL_DIR}/usr/lib/
     install -pd ${OPENNSL_DIR}/etc/opennsl/drivers/
     install -pd ${OPENNSL_DIR}/DEBIAN
+}
+
+opennsl_prepare_files() {
+    install -pm 644 ${OPENNSL_BINDIR}/libopennsl.so.1     ${SRCDIR}/
+    install -pm 644 ${OPENNSL_BINDIR}/linux-kernel-bde.ko ${SRCDIR}/
+    install -pm 644 ${OPENNSL_BINDIR}/linux-user-bde.ko   ${SRCDIR}/
+    install -pm 644 ${OPENNSL_BINDIR}/linux-bcm-knet.ko   ${SRCDIR}/
+    if [ -e ${SRCDIR}/files/config.${OPENNSL_HWTYPE} ]; then
+	install -pm 644  ${SRCDIR}/files/config.${OPENNSL_HWTYPE}  ${SRCDIR}/opennsl.conf
+    else
+	install -pm 644 ${OPENNSL_BINDIR}/config.${OPENNSL_HWTYPE} ${SRCDIR}/opennsl.conf
+    fi
 }
 
 opennsl_copy_files() {
@@ -116,6 +135,7 @@ do_distclean() {
 do_usage() {
     echo "$0 <gonsld | opennsl> ><command>"
     echo "command:"
+    echo "  prepare : prepare files."
     echo "  check   : check files."
     echo "  deb     : create deb."
     echo "  clean   : clean files."
@@ -128,6 +148,7 @@ case $1 in
     gonsld)
 	case $2 in
 	    make-dirs)  gonsld_make_dirs;;
+	    prepare)    gonsld_prepare_files;;
 	    copy-files) gonsld_copy_files;;
 	    check)      gonsld_check;;
 	    clean)      gonsld_clean;;
@@ -139,6 +160,7 @@ case $1 in
     opennsl)
 	case $2 in
 	    make-dirs)  opennsl_make_dirs;;
+	    prepare)    opennsl_prepare_files;;
 	    copy-files) opennsl_copy_files;;
 	    check)      opennsl_check;;
 	    clean)      opennsl_clean;;
