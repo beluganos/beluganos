@@ -8,6 +8,7 @@ REID="10.0.0.5"
 DPID=14
 # DPTYPE=openflow
 DPTYPE=as5812
+# DPTYPE=as7712
 # DPTYPE=as7712x4
 # DPTYPE=./mkpb-sample.yaml
 # DAEMONS="zebra bgpd ospfd ospf6d ripd ripngd isisd pimd ldpd nhrpd"
