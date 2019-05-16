@@ -1,5 +1,5 @@
-# Config guide (ansible)
-You can configure router options like IP addresses or settings of routing protocol by **ansible** as you like.
+# Config guide (Linux commands and ansible)
+You can configure router options like IP addresses or settings of routing protocol by **ansible** as you like. Note that ansible generally uses for initial configurations.  Once you configure by ansible and start Beluganos, you can change the configuration by not only ansible but also Linux shell.
 
 ## Pre-requirements
 - Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
@@ -215,6 +215,8 @@ The syntax is following:
 In `fibc.yml`, you may set general settings. FIBC is one of the main components of Beluganos.
 
 Especially, you can determine about **interface mapping between your white-box switches and Linux containers**. In Beluganos's architecture, the path information which was installed to Linux containers will be copied to white-box switches. This is because you have to configure interface mapping between switches and containers.
+
+Note that mapping between physical interface and logical interface is sometimes different at OpenNSL case. For more detail, please check [setup-guide-onsl-portmapping.md](setup-guide-onsl-portmapping.md).
 
 Please note that only physical interface should be described at `fibc.yml`. Logical (VLAN) settings should be described another files (`netplan.yml`).
 
@@ -446,7 +448,6 @@ $ cd ~/beluganos/etc/playbooks
 $ ansible-playbook -i hosts -K lxd-group.yml
 $ lxc stop master
 ```
-
 ## Start Beluganos
 
 Once you finished the Beluganos's settings, let's start Beluganos! You can start main module of Beluganos by following commands:
@@ -457,6 +458,18 @@ $ beluganos add master
 ```
 
 "*master*" means your container name. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md). Please note that above two operations describe at step 1 and step 2 at [operation-guide.md](operation-guide.md), 
+
+## Linux shells
+
+Once you finished to configure the initial configuration by ansible, you can change some settings by Linux commands.
+
+For example, in case of FRRouting:
+
+```
+$ beluganos con master
+> vtysh
+```
+The main efforts of Beluganos's software is that the synchronization between LXC and ASIC of white-box switch. When you change the configuration of LXC, Beluganos will change the configuration of ASIC.
 
 ## Note
 

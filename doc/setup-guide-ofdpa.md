@@ -9,7 +9,7 @@ This document describes about hardware setup to use Beluganos.
 
 ### Get binary
 
-It depends on "Deploy style". The detail of deploy style is described at "Pre-requirements" in [install-guide.md](install-guide.md).
+It depends on "Deploy style". The detail of deploy style is described at "Pre-requirements" in [install-guide.md](install-guide.md#deploy-style).
 
 #### separated-style
 
@@ -21,7 +21,7 @@ ONL-2.0.0-ONL-OS-DEB8-2016-12-22.1828-604af0c-AMD64-INSTALLED-INSTALLER
 
 #### embedded-style
 
-Building installer of OpenNetworkLinux is required. Please refer "1. Building OpenNetworkLinux" at [setup-guide-embedded.md](setup-guide-embedded.md) for details.
+Building installer of OpenNetworkLinux is required. Please refer "1. Building OpenNetworkLinux" at [setup-guide-embedded.md](setup-guide-embedded.md#1-building-opennetworklinux) for details.
 
 ### Install via TFTP
 
@@ -143,8 +143,18 @@ To start, following commands are required:
 - `<BeluganosVM-IP>`: Specify Beluganos's IP address. Please note that you already specify this IP address in `create.ini` at [install-guide.md](install-guide.md).
 - `<Agent-dpid>`: Specify OpenFlow DPID. Please note that you already specify this ID in `fibc.yml` at [setup-guide.md](setup-guide.md).
 
+## 3. Connect with Beluganos
+
+#### separated-style
+
+Ensure that Beluganos server (VM) and your white-box switch is connected. IP reachability is required.
+
+#### embedded-style
+
+You should move Beluganos VM image to white-box switches. Please refer "3. Deploying KVM images at ONL" at [setup-guide-embedded.md](setup-guide-embedded.md#3-deploying-kvm-images-at-onl) for details.
+
 ## Next steps
 Please refer configure guide. You can choose two methods.
 
-- ansible: [configure-ansible.md](configure-ansible.md)
+- Linux style and ansible: [configure-ansible.md](configure-ansible.md)
 - NETCONF over SSH: [configure-netconf.md](configure-netconf.md)

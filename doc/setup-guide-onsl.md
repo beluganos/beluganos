@@ -9,7 +9,7 @@ This document describes about hardware setup to use Beluganos.
 
 ### Get binary
 
-It depends on "Deploy style". The detail of deploy style is described at "Pre-requirements" in [install-guide.md](install-guide.md).
+It depends on "Deploy style". The detail of deploy style is described at "Pre-requirements" in [install-guide.md](install-guide.md#deploy-style).
 
 #### separated-style
 
@@ -21,7 +21,7 @@ ONL-2.0.0-ONL-OS-2018-01-09.1646-04257be-AMD64-INSTALLED-INSTALLER
 
 #### embedded-style
 
-Building installer of OpenNetworkLinux is required. Please refer "1. Building OpenNetworkLinux" at [setup-guide-embedded.md](setup-guide-embedded.md) for details.
+Building installer of OpenNetworkLinux is required. Please refer "1. Building OpenNetworkLinux" at [setup-guide-embedded.md](setup-guide-embedded.md#1-building-opennetworklinux) for details.
 
 ### Install (via TFTP)
 
@@ -163,10 +163,20 @@ Once you finished to do "Initial settings", please start OpenNSL agent. The bina
 > /etc/init.d/gonsl status
 ```
 
+## 4. Connect with Beluganos
+
+#### separated-style
+
+Ensure that Beluganos server (VM) and your white-box switch is connected. IP reachability is required.
+
+#### embedded-style
+
+You should move Beluganos VM image to white-box switches. Please refer "3. Deploying KVM images at ONL" at [setup-guide-embedded.md](setup-guide-embedded.md#3-deploying-kvm-images-at-onl) for details.
+
 ## Next steps
 After reflecting your changes, please refer configure guide. You can choose two methods.
 
-- ansible: [configure-ansible.md](configure-ansible.md)
+- Linux style and ansible: [configure-ansible.md](configure-ansible.md)
 - NETCONF over SSH: [configure-netconf.md](configure-netconf.md)
 
 ## Appendix

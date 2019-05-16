@@ -1,10 +1,10 @@
 # Setup guide for embedded-style
 
-This document should be refereed at embedded-style which Beluganos works into white-box switches, not separated servers.
+This document should be refereed at embedded-style which Beluganos works into white-box switches, not separated servers. Please note that embedded-style requires many disk space than separated-style.
 
 ## 1. Building OpenNetworkLinux
 
-In this section, OpenNetworkLinux (ONL) installer which KVM option is enabled will be created.
+In this section, OpenNetworkLinux (ONL) installer which KVM option is enabled will be created. If you already had the proper installer, this step can be skipped.
 
 ### Required files at a glance
 
@@ -23,7 +23,7 @@ beluganos/
 
 ### Environments
 
-Please refer "Build Hosts and Environments" at [OpenNetworkLinux website](https://opennetlinux.org/docs/build). If you need the proxy to connect internet, please comment out proxy settings at "onl.sh".
+Please refer "Build Hosts and Environments" at [OpenNetworkLinux website](https://opennetlinux.org/docs/build). If you need the proxy to connect internet, please comment out proxy settings at `onl.sh`.
 
 ```
 $ cd ~/beluganos/etc/embedded/onl/
@@ -52,13 +52,22 @@ ONL-2.0.0_ONL-OS_YYYY-MM-DD.XXXX-04257be_AMD64_SWI_INSTALLER
 ONL-2.0.0_ONL-OS_YYYY-MM-DD.XXXX-04257be_AMD64_SWI_INSTALLER.md5sum
 ONL-2.0.0_ONL-OS_YYYY-MM-DD.XXXX-04257be_AMD64.swi.md5sum
 
-# Please use `*_INSTALLED_INSTALLER` files.
 
 ```
 
-## 2. Deploying KVM images at ONL
+Please use `*_INSTALLED_INSTALLER` files to install white-box switches. 
+
+## 2. Install ONL to white-box switches
+
+The install method of ONL is described at [setup-guide-onsl.md](setup-guide-onsl.md) or [setup-guide-ofdpa.md](setup-guide-onsl.md). Please refer this document.
+
+## 3. Deploying KVM images at ONL
 
 In this section, deploying methods of KVM images which installs Beluganos are described.
+
+### Pre-requirement
+
+- Already finished to install ONL to your switches. The ONL which is installed should be enabled version for KVM.
 
 ### Required files at a glance
 
