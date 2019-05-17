@@ -78,6 +78,7 @@ gobgp_upgrade() {
     cp ./etc/gobgp/gobgp-mp-nexthop-v1.33.patch /tmp/gobgp-mp-nexthop-v1.33.patch
     cp ./etc/gobgp/gobgp-vmx-v1.33.patch /tmp/gobgp-vmx-v1.33.patch
     cp ./etc/gobgp/gobgp-influxdata-v1.33.patch /tmp/gobgp-influxdata-v1.33.patch
+    cp ./etc/gobgp/gobgp-uuid-pkg-v1.33.patch /tmp/gobgp-uuid-pkg-v1.33.patch
 
     pushd ~/go/src/github.com/osrg/gobgp
 
@@ -90,6 +91,7 @@ gobgp_upgrade() {
     patch -p1 < /tmp/gobgp-mp-nexthop-v1.33.patch
     patch -p1 < /tmp/gobgp-vmx-v1.33.patch
     patch -p1 < /tmp/gobgp-influxdata-v1.33.patch
+    patch -p1 < /tmp/gobgp-uuid-pkg-v1.33.patch
 
     # reinstall
     go install ./gobgpd || { echo "gobgp_checkout error."; exit 1; }

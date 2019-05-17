@@ -1,0 +1,27 @@
+diff --git a/server/server.go b/server/server.go
+index 0b212e2b..c8322a47 100644
+--- a/server/server.go
++++ b/server/server.go
+@@ -24,7 +24,7 @@ import (
+ 	"time"
+ 
+ 	"github.com/eapache/channels"
+-	uuid "github.com/satori/go.uuid"
++	uuid "github.com/google/uuid"
+ 	log "github.com/sirupsen/logrus"
+ 
+ 	"github.com/osrg/gobgp/config"
+@@ -1600,9 +1600,10 @@ func (s *BgpServer) AddPath(vrfId string, pathList []*table.Path) (uuidBytes []b
+ 		}
+ 		if len(pathList) == 1 {
+ 			path := pathList[0]
+-			id, _ := uuid.NewV4()
+-			s.uuidMap[id] = pathTokey(path)
+-			uuidBytes = id.Bytes()
++			if id, err := uuid.NewRandom(); err == nil {
++				s.uuidMap[id] = pathTokey(path)
++				uuidBytes, _ = id.MarshalBinary()
++			}
+ 		}
+ 		s.propagateUpdate(nil, pathList)
+ 		return nil
