@@ -123,7 +123,7 @@ Transfer the binary to OpenNetwork Linux. For example, SCP or SFTP are assumed. 
 - `opennsl-accton_3.5.0.3+accton4.0-2_amd64.deb`
 - `gonsl_1.0.0-1_amd64.deb`
 
-#### (Step 3) Setup agent settings
+#### (Step 3) Setup agent and OpenNSL settings
 
 ```
 > vi /etc/beluganos/gonsld.yaml
@@ -146,6 +146,13 @@ dpaths:
 ```
 
 - `DEBUG`: Set debug flag. If you want to use, please comment out.
+
+```
+> mkdir /etc/opennsl/
+> vi /etc/opennsl/opennsl.conf
+```
+
+Note that the file `opennsl.conf` should be configure as your hardware. The sample file is available at [Edge-core's blog](https://support.edge-core.com/hc/en-us/sections/360002115754-OpenNSL) or [Broadcom's repository](https://github.com/Broadcom-Switch/OpenNSL). In Broadcom's repository, sample file is available by the name of "config.as7712" and so on.
 
 #### (Step 4) Install OpenNSL and agent
 
