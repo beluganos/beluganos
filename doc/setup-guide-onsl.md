@@ -78,7 +78,11 @@ Please get the binary of OpenNSL. The required version of OpenNSL 3.5, and follo
 - [Edge-core's blog](https://support.edge-core.com/hc/en-us/sections/360002115754-OpenNSL)
 - [Broadcom's repository](https://github.com/Broadcom-Switch/OpenNSL)
 
+<<<<<<< HEAD
 If you cannot find OpenNSL binary (.deb), you should create this personally. Please refer appendix (E) of this documents.
+=======
+If you cannot find OpenNSL binary (.deb), you should create this personally. Please refer appendix (F) of this documents.
+>>>>>>> develop
 
 In this documents, `opennsl-accton_3.5.0.3+accton4.0-2_amd64.deb` from Edge-core's blog is used to describe following steps.
 
@@ -123,7 +127,11 @@ Transfer the binary to OpenNetwork Linux. For example, SCP or SFTP are assumed. 
 - `opennsl-accton_3.5.0.3+accton4.0-2_amd64.deb`
 - `gonsl_1.0.0-1_amd64.deb`
 
+<<<<<<< HEAD
 #### (Step 3) Setup agent and OpenNSL settings
+=======
+#### (Step 3) Setup agent
+>>>>>>> develop
 
 ```
 > vi /etc/beluganos/gonsld.yaml
@@ -208,7 +216,18 @@ $ cd ~
 $ ./create.sh opennsl
 ```
 
-### (Appendix B) Check interface speed
+### (Appendix B) Change OpenNSL configurations
+
+```
+> mkdir /etc/opennsl/
+> vi /etc/opennsl/opennsl.conf
+```
+
+Note that the file `opennsl.conf` should be configure as your hardware. The sample file is available at [Edge-core's blog](https://support.edge-core.com/hc/en-us/sections/360002115754-OpenNSL) or [Broadcom's repository](https://github.com/Broadcom-Switch/OpenNSL). In Broadcom's repository, sample file is available by the name of "config.as7712" and so on.
+
+If this file don't exists, default settings will be set by `gonsld`.
+
+### (Appendix C) Check interface speed
 
 You can check interface speed (1G or 10G or 40G) by following steps. Please note that following commands is available when gonsl (OpenNSL agent) is stopped.
 
@@ -229,15 +248,15 @@ drivshell> ps
        ~~~ (snipped) ~~~
 ```
 
-### (Appendix C) Change interface speed
+### (Appendix D) Change interface speed
 
 To change interface speed (1G or 10G or 40G), `opennsl.conf` should be changed. For detail, please refer [Edge-core's blog](https://support.edge-core.com/hc/en-us/articles/360010154034-OpenNSL-3-5-0-3).
 
-### (Appendix D) Log files of gonlsd
+### (Appendix E) Log files of gonlsd
 
 At `/var/log/gonsld.log`.
 
-### (Appendix E) Building OpenNSL .deb file
+### (Appendix F) Building OpenNSL .deb file
 
 If you cannot find OpenNSL binary at [OpenNSL's repository](https://github.com/Broadcom-Switch/OpenNSL), you should build it personally.
 
