@@ -45,7 +45,9 @@ do_start() {
     local DAEMON_ARGS="-a $API_ADDR -c $BELHOME/gonsld.yaml --dp $DATAPATH --log-file $LOGFILE --pid $PIDFILE $DAEMON_MODE $USESIM"
     echo $DAEMON_ARGS
 
-    export OPENNSL_CONFIG_FILE
+    if [ -e ${OPENNSL_CONFIG_FILE} ]; then
+        export OPENNSL_CONFIG_FILE
+    fi
 
     start-stop-daemon --start --quiet --exec $DAEMON --pidfile $PIDFILE -- $DAEMON_ARGS
     local result=$?
