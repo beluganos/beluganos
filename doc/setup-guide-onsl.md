@@ -78,11 +78,7 @@ Please get the binary of OpenNSL. The required version of OpenNSL 3.5, and follo
 - [Edge-core's blog](https://support.edge-core.com/hc/en-us/sections/360002115754-OpenNSL)
 - [Broadcom's repository](https://github.com/Broadcom-Switch/OpenNSL)
 
-<<<<<<< HEAD
-If you cannot find OpenNSL binary (.deb), you should create this personally. Please refer appendix (E) of this documents.
-=======
 If you cannot find OpenNSL binary (.deb), you should create this personally. Please refer appendix (F) of this documents.
->>>>>>> develop
 
 In this documents, `opennsl-accton_3.5.0.3+accton4.0-2_amd64.deb` from Edge-core's blog is used to describe following steps.
 
@@ -127,11 +123,7 @@ Transfer the binary to OpenNetwork Linux. For example, SCP or SFTP are assumed. 
 - `opennsl-accton_3.5.0.3+accton4.0-2_amd64.deb`
 - `gonsl_1.0.0-1_amd64.deb`
 
-<<<<<<< HEAD
-#### (Step 3) Setup agent and OpenNSL settings
-=======
 #### (Step 3) Setup agent
->>>>>>> develop
 
 ```
 > vi /etc/beluganos/gonsld.yaml
