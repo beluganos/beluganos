@@ -1,0 +1,6 @@
+---
+
+datapaths:
+  - name: whitebox2
+    dp_id: 14
+    mode: onsl   # "ofdpa2", "onsl", "generic" or "ovs"
