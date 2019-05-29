@@ -211,7 +211,7 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 |:------------------------|:--------|:---------|:--------|
 |Ping                     |Yes      |Yes       |Yes      |
 |Traceroute               |Yes      |Yes       |Yes      |
-|Interface admin shutdown |Planned  |Planned   |Planned  |
+|Interface admin shutdown |Planned  |Planned   |Yes      |
 |sflow                    |TBD      |TBD       |Planned  |
 |SPAN (mirroring)         |Planned  |Planned   |Planned  |
 |RSPAN (mirroring)        |TBD      |TBD       |Planned  |
