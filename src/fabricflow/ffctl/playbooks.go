@@ -582,7 +582,7 @@ func (c *PlaybookNetplanYamlCmd) createNetplanYaml(playbookName string) error {
 		return err
 	}
 
-	path := c.filesPath(playbookName, "netplan.yml")
+	path := c.filesPath(playbookName, "netplan.yaml")
 	f, err := createFile(path, c.overwrite, func(backup string) {
 		log.Debugf("%s backup", backup)
 	})
