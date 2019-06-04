@@ -35,6 +35,7 @@ network:
   {{- "{}" }}
 {{- end }}
 
+{{- if len .Vlans }}
   vlans:
 {{- range .Vlans }}
     {{ .Link }}.{{ .Vid }}:
@@ -42,6 +43,7 @@ network:
       id: {{ .Vid  }}
 {{- else }}
   {{- "{}" }}
+{{- end }}
 {{- end }}
 `
 
