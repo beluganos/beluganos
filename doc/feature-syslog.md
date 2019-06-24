@@ -4,7 +4,7 @@ This documents shows that where is the files of system log (syslog).
 
 ## Pre-requirements
 
-- Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
+- Please refer [install.md](install.md) and [setup.md](setup.md) before proceeding.
 
 ## The path of log files
 

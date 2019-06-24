@@ -1,27 +1,32 @@
 # Install guide
-This document shows how to install Beluganos in your systems. If you want to try Beluganos, you should read this page at first. Automation scripts are prepared to start easy.
+This document shows how to install Beluganos in your systems. If you want to try Beluganos, reading this page at first is recommended.
 
 ## Pre-requirements
 
-### Deploy style
+### Choose deploy style
 
-Generally, network OS is installed into the white-box switches. Beluganos can deploy **into the white-box switches (embedded-style)**, but Beluganos can also deploy at **separated server (separated-style)**. If it is a first time for you to try Beluganos, we recommend **separated-style** because it is easier to deploy. 
+<img src="img/deploy-style.png" width="300px" alt="embedded-style-vs-separated-style">
+
+Beluganos supports both **embedded-style** and **separated-style**. Please select each style.
 
 1. embedded-style
-	- Please prepare x86 physical server and virtual machine (VM) for installation, even if you prefer to select embedded-style. In this case, after installation to VM, you can move VM image (qcow2) from physical server to white-box switches.
+   - Beluganos will be deployed into the white-box switches, like conventional router.
+	- Generally, the virtual machine (KVM) on x86 server is required for installation, even if you prefer to select embedded-style. In this case, after installation, you may move the VM image (.qcow2) from x86 server to white-box switches.
+	- Building ONL is required to select embedded-style. Because this procedure is some complicated, choosing **separated-style is recommended** if it is the first time for you to try Beluganos.
+
 2. separated-style
-	- Please connect with separated server and the outbound port directly.
+   - Beluganos will be deployed at separated x86 server.
+	- The physical or virtual machine is required. Please connect with separated server and the outbound port directly.
 
 ### Resources
 
-
 1. Server
 	- Software requirements:
-		- **Ubuntu 18.04** (18.04-live-server-amd64) is strongly recommended.
-	    - If you use Ubuntu 18.04.1 or later, additional settings are required before proceed. Please check **Appendix A** of this document.
+		- **Ubuntu 18.04** (18.04-live-server-amd64).
+		- If you use Ubuntu 18.04.1 or later, additional settings are required before proceed. Please check **Appendix A** of this document.
 	- Network requirements:
-		- separated-style: **Two or more network interfaces** are required.
 		- embedded-style: **One or more network interfaces** are required.
+		- separated-style: **Two or more network interfaces** are required.
 	- Storage requirements:
 		- Some LXC instance will be created. More than **12GB HDD** is recommended.
 		- If you have a plan to use multiple VRF, more HDD is required.
@@ -31,7 +36,7 @@ Generally, network OS is installed into the white-box switches. Beluganos can de
 	- If you don't have real switches, any OpenFlow 1.3 switches are acceptable to try Beluganos. In this case, [Lagopus switch](http://www.lagopus.org/) is recommended.
 
 ## 1. Build
-Using shell scripts (`create.sh`) is recommended for building Beluganos. Before starting scripts, setting file (`create.ini`) should be edited for your environments. This script will get the required resources including repository of [beluganos/netconf](https://github.com/beluganos/netconf) and [beluganos/go-opennsl](https://github.com/beluganos/go-opennsl) automatically. The internet access is required.
+Using shell scripts (`create.sh`) is prepared for building Beluganos. Before starting scripts, setting file (`create.ini`) should be edited for your environments. Note that the internet access is required.
 
 ```
 $ cd ~
@@ -41,19 +46,24 @@ $ vi create.ini
   #
   # Proxy
   #
-  # PROXY=http://<ip>:<port>       # (Optional) Comment out if you need internet proxy server
+  # PROXY=http://<ip>:<port>       # (Optional) Comment out if you need proxy server.
 
   #
   # Host
   #
-  BELUG_OFC_IFACE=ens4             # Set your secure channel interface name connected to switches
-  BELUG_OFC_ADDR=172.16.0.55/24    # (Optional) You can change BELUG_OFC_IFACE's IP address and prefix-length if needed
-  # ENABLE_VIRTUALENV=yes
+  BELUG_OFC_IFACE=ens4             # Set interface name connected to OpenNetworkLinux (embedded-style) or white-box switches (separated-style).
+  BELUG_OFC_ADDR=172.16.0.55/24    # (Optional) Specify BELUG_OFC_IFACE's IP address and prefix-length if needed.
 
 $ ./create.sh
 ```
 
-The message `Finished processing dependencies for fibc==...` indicates that installation is finished.
+This script may take several minutes. The message 
+
+```
+Finished processing dependencies for fibc==...
+```
+
+indicates that all installation is successfully finished.
 
 ## 2. Register as a service
 
@@ -79,7 +89,7 @@ You may choose two options.
 If you want to try our example cases like [case 1 (IP/MPLS router)](example/case1/case1.md) or [case 2 (MPLS-VPN PE router)](example/case2/case2.md), please get back the example documentations.
 
 ### Step-by-step procedure
-You should register your white-box switches (or OpenFlow switches) to Beluganos's main module. Please refer [setup-guide.md](setup-guide.md) for more details.
+You should register your white-box switches (or OpenFlow switches) to Beluganos's main module. Please refer [setup.md](setup.md) for more details.
 
 
 ---
@@ -114,9 +124,9 @@ network:
   version: 2
   renderer: networkd
   ethernets:
-    ens4:  ## <= In case device name was changed
+    ens4:                 ## <= You can change device name
       addresses:
-        - 172.16.0.55/24  ## <= In case IP address was changed
+        - 172.16.0.55/24  ## <= You can change IP address
 
 ```
 
@@ -128,7 +138,7 @@ $ sudo netplan apply
 
 ### Appendix C. Change the building settings (`create.ini`)
 
-The settings of `create.sh` describes at `create.ini`.
+The settings of `create.sh` describes at `create.ini`. If you change following settings, please re-execute `create.sh` again.
 
 #### virtualenv
 
@@ -170,10 +180,10 @@ BEL_ONSL_PKG="github.com/beluganos/go-opennsl"
 ```
 
 - `BEL_ONSL_ENABLE`: Whether to enable OpenNSL support. "yes" or "no".
-- `BEL_ONSL_PLATFORM`: OpenNSL supported platform name (as5712, as7712, ...).
-- `BEL_ONSL_PKG`: DO NOT EDIT.
+- `BEL_ONSL_PLATFORM`: OpenNSL supported platform name (as5712, as7712, ...). The platform name is shown at the **directory name** of [Broadcom's repository](https://github.com/Broadcom-Switch/OpenNSL/tree/master/bin). If you will use the .deb package which is provided by switch vendor, you have not to care this parameter.
+- `BEL_ONSL_PKG`: The URL which is Beluganos's OpenNSL library. DO NOT EDIT.
 
-If you want to change this configuration after installation, please issue following:
+If you want to change this configuration after installation, please issue only following:
 
 ```
 $ cd ~/beluganos

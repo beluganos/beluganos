@@ -3,7 +3,9 @@
 Beluganos support PE router of BGP/MPLS based IP-VPN environments. To setup PE router, additional settings are needed.
 
 ## Pre-requirements
-After setting general settings by [setup-guide.md](setup-guide.md) and [configure-ansible.md](configure-ansible.md), please execute following procedure.
+
+- Please refer [install.md](install.md) and [setup.md](setup.md) before proceeding.
+- **ansible** is used for configure L3VPN. Please refer [configure-ansible.md](configure-ansible.md) before proceeding.
 
 ## Container constitution
 
@@ -51,11 +53,11 @@ samplr-ric11
 
 ### 2. Container basic settings (playbook)
 
-Common with [setup-guide](setup-guide.md).
+Common with [setup](setup.md).
 
 ## Router settings
 
-In sample of playbooks, the files under `etc/playbooks/roles/lxd/files/<container-name>` will be transfered each linux container. This capter will be described the difference from general routers. The files which is not mentioned in this capter is common with [setup-guide](setup-guide.md).
+In sample of playbooks, the files under `etc/playbooks/roles/lxd/files/<container-name>` will be transfered each linux container. This capter will be described the difference from general routers. The files which is not mentioned in this chapter is common with [setup.md](setup.md).
 
 ### 1. fibc.yml
 

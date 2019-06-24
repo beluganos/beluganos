@@ -1,14 +1,19 @@
-# Configure by NETCONF
+# Configure guide (NETCONF)
+
+Beluganos supports **NETCONF** over SSH to configure.
 
 ## Pre-requirements
-- Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
-	- In setup, you may specify switch name and `dp_id`. In this documents, the sample file's value (`name: sample_sw`, `dp_id: 153`) is assumed. If you changed this value, please change to match it.
+- The installation is required in advance. Please refer [install.md](install.md) before proceeding.
+- The setup of Beluganos is required in advance. Please refer [setup.md](setup.md) before proceeding.
+- In case you will use OpenNSL or OF-DPA:
+	- The installation of OpenNetworkLinux for your white-box switches is required in advance. Please refer [setup-hardware.md](setup-hardware.md) before proceeding.
+	- The setup for ASIC API is required in advance. Please refer [setup-onsl.md](setup-onsl.md) or [setup-ofdpa.md](setup-ofdpa.md).
 
-## Step 1. Prepare for launch
+### Step 1. First setup for NETCONF
 
-### 1-1. playbooks
+Even if you will NOT use ansible to configure router settings, the initial settings require ansible.
 
-You have to execute minimum playbooks even if you configure only by NETCONF before configuring.
+### 1-1. prepare playbooks
 
 ```
 $ cd ~/beluganos/etc/playbooks
@@ -58,7 +63,7 @@ To reflect, please execute ansible for setup.
 $ ansible-playbook -i hosts -K lxd-netconf.yml
 ```
 
-### 1-2. lxcinit
+### 1-2. prepare lxcinit files
 In NETCONF module of Beluganos, once you create `network-instance` by NETCONF, `/etc/lxcinit/<container-type>/lxcinit.sh` will be executed. This script contains initial settings. You should configure about this script by editing `ribxd.conf` at `/etc/lxcinit/<container-type>/conf`.
 
 #### container-type
@@ -110,19 +115,16 @@ interval = 5000
 	- reid (`<router-entity-id>`)
 		- Router identified name. Only Beluganos's main component will use this value to identify routers. This value is only internal use.
 
-In other case (`std_ric`, `vpn_mic`, and `vpn_ric`), please refer [configure-ansible.md](https://github.com/beluganos/beluganos/blob/master/doc/configure-ansible.md#8-ribxdconf-beluganoss-settings).
+Note that `ribxd.conf` is a same file of [configure-ansible.md](configure-ansible.md). For more detail, please refer it.
 
 ## Step 2. Launch components
 
-Actually, you have already finished to launch Beluganos! The configuring by NETCONF will be enabled after launching. Please start Beluganos by following commands.
+Before configure router settings like IP address or routing protocol, you have to start the process of Beluganos. Required steps are following:
 
-```
-$ sudo systemctl start fibcd
-$ sudo systemctl start netopeer2-server
-$ sudo systemctl start ncm.target
-```
+- [Step 1. Run ASIC driver agent](operation.md#step-1-run-asic-driver-agent)
+- [Step 2. Run Beluganos main module](operation.md#step-2-run-beluganos-main-module)
 
-You can also use `beluganos start` instead of `systemctl start fibcd`. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md). Note that above commands are describes at step 1 in this document. Moreover, in NETCONF case, step 2 is not required.
+Please keep in mind that `beluganos con <container-name>` command is NOT required in NETCONF case, which is described Step 3 at this document.
 
 ## Step 3. Configure by NETCONF
 
@@ -216,7 +218,7 @@ The naming rules of interface are `eth<n>` (`<n>` is a interface index). The max
 - Others
 	- The settings of white-box switches (like `dp_id`) cannot changed by NETCONF. You should use ansible.
 	- The settings of sub-IF (VLAN at routed port) should be operated at the same time of physical IF.
-	- The interface settings under `beluganos-interfaced` module should be added **before** adding interface under `beluganos-network-instances`.
+	- The interface settings under `beluganos-interface` module should be added **before** adding interface under `beluganos-network-instances`.
 	- The settings of network instance's name should be matched at `ribxd.conf` which is located at `/etc/lxcinit/<container-type>`. This restrictions will be removed at next release.
 
 ### Sample operations

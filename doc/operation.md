@@ -1,34 +1,57 @@
 # Operation Guide
 
-Beluganos consists of **main module** and **Linux container** which provide routing functions. You can operate both components by `beluganos`. In order to start Beluganos properly, you should start both main module and Linux container.
-
-In this page, operation about NETCONF module is also described. If you will not use NETCONF module, you can ignore some operations.
+Beluganos consists of **main module** and **Linux container** which provide routing functions. You can operate both components by `beluganos` commands. In order to start Beluganos properly, you should start both main module and Linux container.
 
 ## Pre-requirements
-- Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
-- If you use **ansible** to configure router settings, you have to execute playbook before starting to run Beluganos. Please refer [configure-ansible.md](configure-ansible.md) before proceeding.
-- If you use **NETCONF** to configure router settings, you have to execute minimum playbook before starting to run Beluganos. Please refer [configure-netconf.md](configure-netconf.md) before proceeding.
-- If you use **SNMP**, please refer [feature-snmp.md](feature-snmp.md) before proceeding.
+
+- The installation is required in advance. Please refer [install.md](install.md) before proceeding.
+- The setup of Beluganos is required in advance. Please refer [setup.md](setup.md) before proceeding.
+- In case you will use OpenNSL or OF-DPA:
+	- The installation of OpenNetworkLinux for your white-box switches is required in advance. Please refer [setup-hardware.md](setup-hardware.md) before proceeding.
+	- The setup for ASIC API is required in advance. Please refer [setup-onsl.md](setup-onsl.md) or [setup-ofdpa.md](setup-ofdpa.md).
+- The startup configuration is required in advance. Please refer [configure.md](configure.md) or [configure-ansible.md](configure-ansible.md) or [configure-netconf.md](configure-netconf.md).
+
+## Overview
+
+To start, you should run 3 components in a fixed order.
+
+- Step 1. Run ASIC driver agent
+- Step 2. Run Beluganos's main module
+- Step 3. Run Linux containers
+
+To stop or restart Beluganos, please stop it in the reverse order of startup.
 
 ## Step 1. Run ASIC driver agent
 
-- OpenNSL: Login to OpenNetworkLinux. Please refer [setup-guide-onsl.md](setup-guide-onsl.md)
-	- `/etc/init.d/gonsl start`
-- OF-DPA: Login to OpenNetworkLinux. Please refer [setup-guide-ofdpa.md](setup-guide-ofdpa.md).
-	- `service ofdpa start`
-	- `brcm-indigo-ofdpa-ofagent --controller=<BeluganosVM-IP> --dpid=<Agent-dpid>`
-- OpenFlow switch: Please refer OpenFlow switch's documents.
+All commands should be executed at OpenNetworkLinux.
 
-## Step 2. Run Beluganos's main module
+### OpenNSL
 
-You have two options to start/stop Beluganos. Generally, in production, because you have already registered Beluganos as a Linux service at [install-guide.md](install-guide.md), **daemon mode** is recommended.
+```
+ONL> /etc/init.d/gonsl start
+```
+
+### OF-DPA
+
+``` 
+ONL> service ofdpa start
+ONL> brcm-indigo-ofdpa-ofagent --controller=<BeluganosVM-IP> --dpid=<Agent-dpid>
+```
+
+### OpenFlow switch
+
+Please refer your OpenFlow switch's documents.
+
+## Step 2. Run Beluganos main module
+
+You have two options to start/stop Beluganos. Generally, **daemon mode** is recommended in production. All commands should be executed at Beluganos's VM.
 
 ### Daemon mode [Recommended]
 
 To start,
 
 ```
-$ sudo systemctl start fibcd
+$ beluganos start
 $ sudo systemctl start netopeer2-server  # If NETCONF will be used
 $ sudo systemctl start ncm.target        # If NETCONF will be used
 $ sudo systemctl start snmpd             # If SNMP will be used
@@ -40,7 +63,7 @@ $ sudo systemctl start snmpproxyd-mib    # IF SNMP will be used
 To stop,
 
 ```
-$ sudo systemctl stop fibcd
+$ beluganos stop
 $ sudo systemctl stop ncmd               # If NETCONF was started
 $ sudo systemctl stop ncmi               # If NETCONF was started
 $ sudo systemctl stop ncms               # If NETCONF was started
@@ -50,42 +73,43 @@ $ sudo systemctl stop fibsd              # If SNMP was started
 $ sudo systemctl stop snmpd              # If SNMP was started
 ```
 
-### CLI mode
+### Debug mode (CLI mode)
 
 ```
-$ sudo beluganos run
+$ beluganos run
 ```
 
 In this method, Beluganos can be worked in your terminal for debug. This command will snatch your standard output. <kbd><kbd>Ctrl</kbd>+<kbd>C</kbd></kbd> to stop. Note that this mode is not supported in case you will use NETCONF or SNMP feature.
 
 ### Remarks
-The `fibcd` service and `beluganos run` command will make start to connect with OpenFlow agent. Before executing this commands, starting OF-DPA apps is recommended.
+The `beluganos start` and `beluganos run` command will make start to connect with OpenNSL or OpenFlow agent. Before executing this commands, starting ASIC driver agent is required.
 
-## Step 3. Add Linux containers
+## Step 3. Run Linux containers
 
 After starting main module of Beluganos, you should add Linux containers. In general, one container should be added. Only in VRF environments like MPLS-VPN, you should add all routing instance's containers.
 
-**Important Notice:** When NETCONF is used for configure, you do **NOT** have to manually add Linux containers. Following steps are required only the case which you have configured by [configure-ansible.md](configure-ansible.md).
+*Important Notice:* When **NETCONF** is used for configure, you do **NOT** have to manually add Linux containers. This step is required by only the case which you have configured by [configure.md](configure.md) or [configure-ansible.md](configure-ansible.md).
 
-To add:
+To start:
 
 ```
 $ beluganos add <container-name>
 ```
 
-To delete:
+To stop:
 
 ```
 $ beluganos del <container-name>
 ```
 
-You forgot container name? In the procedure of [configure-ansible.md](configure-ansible.md), you should have already specified this name. Please check inventory file (`etc/playbooks/hosts`) or task folder (`etc/playbooks/roles/lxd/tasks/<container-name>.yml`) to remember your container name.
+- Note:
+	- You forgot container name? In the **Linux style**, `MIC` is used for default container name. Besides, in **ansible**, you should have already specified this name. Please check inventory file (`etc/playbooks/hosts`) or task folder (`etc/playbooks/roles/lxd/tasks/<container-name>.yml`) to confirm your container name.
 
 ## Confirm
 
 ### Confirm main module's status
 
-`fibcd` is one of the main componet name of Beluganos.
+`fibcd` is one of the main component name of Beluganos.
 
 ```
 $ sudo systemctl status fibcd
@@ -167,20 +191,10 @@ sample#
 
 ## Appendix
 
-### Automatic start-up
-
-Automatic startup is just beta version.
-
-```
-$ sudo systemctl enable fibcd
-$ sudo systemctl enable netopeer2-server  #Only using NETCONF
-$ sudo systemctl enable ncm.target        #Only using NETCONF
-```
-
-### Command
+### Beluganos command
 The command of `beluganos` is created automatically by `create.sh`. The file (python script) is located at `/usr/local/bin/beluganos`.
 
-~~~~
+```
 $ beluganos -h
 usage: beluganos [-h] [-p [PROFILE]] [-b [BRIDGE]] [-e EXCLUDE [EXCLUDE ...]]
                [-v]
@@ -196,9 +210,20 @@ optional arguments:
   -b [BRIDGE], --bridge [BRIDGE]
   -e EXCLUDE [EXCLUDE ...], --exclude EXCLUDE [EXCLUDE ...]
   -v, --verbose
-~~~~
+```
 
 Note that `sudo systemctl start fibcd` can be used instead of `beluganos start`.
+
+### Interface status
+
+In Beluganos, interface status (up/down) of physical white-box switches will be synchronized with LXC. Thus, you can monitor the status of physical interfaces by `ip link` command at container. Moreover, if you want to down it administratively, `ip link set` command is available.
+
+```
+LXC> ip link
+LXC> ip link set <if-name> down
+```
+
+Note that interface status and traffic counter are available at SNMP features. For more detail, please refer [feature-snmp.md](feature-snmp.md).
 
 ### Port
 These port will be occupied by Beluganos. You should not use these port by another applications.

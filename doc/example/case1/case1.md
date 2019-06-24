@@ -102,12 +102,11 @@ In following chapter, you will get following environments at server 2 automatica
 
 ### Step 1-1. Install Beluganos
 
-The server 1 will be configured as Beluganos. Please refer [install-guide.md](../../install-guide.md) for install. Please note that `FFLOW_OFC_IFACE` should be set to the interface which is connected with server 2. If you need to change this interface name or IP address, please change `create.ini` before execute `create.sh`.
+The server 1 will be configured as Beluganos. Please refer [install.md](../../install.md) for install. Please note that `FFLOW_OFC_IFACE` should be set to the interface which is connected with server 2. If you need to change this interface name or IP address, please change `create.ini` before execute `create.sh`.
 
 ~~~~
 server1$ cd ~/beluganos
 server1$ vi create.ini
-  FFLOW_MNG_IFACE=ens3             # Set your management interface name for remote login
   FFLOW_OFC_IFACE=ens4             # Set your secure channel interface name connected to switches
   FFLOW_OFC_ADDR=172.16.0.55       # (Optional) You can change FFLOW_OFC_IFACE's IP address if needed
 ~~~~
@@ -119,7 +118,7 @@ server1$ cd ~/beluganos/etc/playbooks
 server1$ ansible-playbook -i hosts -K dp-sample.yml
 ~~~~
 
-If you want to know the detail of this playbooks, please refer [setup-guide.md](../../setup-guide.md).
+If you want to know the detail of this playbooks, please refer [setup.md](../../setup.md).
 
 ### Step 1-3. Settings for containers
 

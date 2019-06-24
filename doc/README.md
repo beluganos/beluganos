@@ -2,12 +2,12 @@
 
 ## Install
 
-- [install-guide.md](install-guide.md)
+- [install.md](install.md)
 	- Install Beluganos and related OSS automatically
 
 ## Use case
 
-After installing ([install-guide.md](install-guide.md)), you can check our use case to try Beluganos.
+After installing ([install.md](install.md)), you can check our use case to try Beluganos.
 
 - [case1.md](example/case1/case1.md)
 	- **Recommendation for beginner**
@@ -21,24 +21,30 @@ After installing ([install-guide.md](install-guide.md)), you can check our use c
 
 After installing ([install-guide.md](install-guide.md)), you may set up about hardware.
 
-- [setup-guide.md](setup-guide.md)
-	- Hardware settings of Beluganos
-- [setup-guide-ofdpa.md](setup-guide-ofdpa.md)
-	- Hardware set up for OF-DPA
-- [setup-guide-onsl.md](setup-guide-onsl.md)
-	- Hardware set up for OpenNSL
-- [setup-guide-embedded.md](setup-guide-embedded.md)
-	- [Embedded-style only] How to build OpenNetworkLinux
+- [setup.md](setup.md)
+	- Beluganos setup to connect with white-box switch
+- [setup-hardware.md](setup-hardware.md)
+	- Hardware setup
+- [setup-opennetworklinux.md](setup-opennetworklinux.md)
+	- Installation about OpenNetworkLinux
+- [setup-onsl.md](setup-onsl.md)
+	- OpenNetworkLinux setup to use OpenNSL
+- [setup-ofdpa.md](setup-ofdpa.md)
+	- OpenNetworkLinux setup to use OF-DPA
 
 ## Configure and operation
 
-After installing ([install-guide.md](install-guide.md)), you can configure Beluganos as you like.
+After installing ([install.md](install.md)), you can configure Beluganos as you like.
 
+- [configure.md](configure.md)
+	- Configuration guide of Linux style.
 - [configure-ansible.md](configure-ansible.md)
 	- Configuration guide of IP/MPLS router by ansible.
 - [configure-netconf.md](configure-netconf.md)
 	- Configuration guide of router by NETCONF.
-- [operation-guide.md](operation-guide.md)
+- [configure-portmapping.md](configure-portmapping.md)
+	- Interface mapping information between physical and logical port. This information is required at configuration.
+- [operation.md](operation.md)
 	- How to start/stop Beluganos
 	- How to login routing engine's console
 

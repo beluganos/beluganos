@@ -16,7 +16,7 @@ For more details, please check [doc/architecture.md](doc/architecture.md).
 
 ## Getting Started
 
-### 1. Quick start by example
+### 1. Quick start by example case
 In order to try Beluganos quickly, **some example cases are prepared**. This example can configure automatically not only Beluganos but also other routers to connect with Beluganos. If you wish to use this, please refer to [doc/example/case1/case1.md](doc/example/case1/case1.md) instead of the following description.
 
 ### 2. Step-by-step procedure
@@ -25,18 +25,24 @@ In order to try Beluganos quickly, **some example cases are prepared**. This exa
 
 - Step 1: Build
 	- Install Beluganos and related OSS automatically.
-	- See [doc/install-guide.md](doc/install-guide.md).
+		- Check [doc/install.md](doc/install.md).
 - Step 2: Setup
-	- Register your white-box switches to Beluganos.
-	- See [doc/setup-guide.md](doc/setup-guide.md).
- 	- In addition, if you will use OF-DPA swtiches, see [doc/setup-guide-ofdpa.md](doc/setup-guide-ofdpa.md)
-	- In addition, if you will use OpenNSL swtiches, see [doc/setup-guide-onsl.md](doc/setup-guide-onsl.md)
+	- Register your white-box switch to Beluganos.
+		- Check [doc/setup.md](doc/setup.md).
+ 	- Initial setup of your white-box switch.
+	 	- Check [doc/setup-hardware.md](doc/setup-hardware.md)
+	- Initial setup of ASIC API.
+		- If you use OpenNSL switch, check [doc/setup-onsl.md](doc/setup-onsl.md).
+	 	- If you use OF-DPA switch, check [doc/setup-ofdpa.md](doc/setup-ofdpa.md).
 - Step 3: Configure
 	- Change router settings like IP address, VLAN, and routing protocols as you like.
-	- To configure by ansible, please see [doc/configure-ansible.md](doc/configure-ansible.md).
-	- To configure by NETCONF, please see [doc/configure-netconf.md](doc/configure-netconf.md).
+		- Check [doc/configure.md](doc/configure.md).
+   - Some advanced configuration technology is also supported.
+		- To configure by ansible, check [doc/configure-ansible.md](doc/configure-ansible.md).
+		- To configure by NETCONF, check [doc/configure-netconf.md](doc/configure-netconf.md).
 - Step 4: Operation
-	- See [doc/operation-guide.md](doc/operation-guide.md)
+	- Start Beluganos. Monitor Beluganos.
+		- Check [doc/operation-guide.md](doc/operation-guide.md)
 
 ## Support
 Github issue page and e-mail are available. If you prefer to use e-mail, please contact `msf-contact-ml [at] hco.ntt.co.jp`.
@@ -45,7 +51,7 @@ Github issue page and e-mail are available. If you prefer to use e-mail, please 
 Any contribution is encouraged. The main component is written in Go and Python. For more details, please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
-Beluganos is licensed under the **Apache 2.0** license. See [LICENSE](LICENSE).
+Beluganos is licensed under the **Apache 2.0** license. Check [LICENSE](LICENSE).
 
 ## Project
 This project is a part of [Multi-Service Fabric](https://github.com/multi-service-fabric/msf).

@@ -1,10 +1,13 @@
-# Config guide (Linux commands and ansible)
-You can configure router options like IP addresses or settings of routing protocol by **ansible** as you like. Note that ansible generally uses for initial configurations.  Once you configure by ansible and start Beluganos, you can change the configuration by not only ansible but also Linux shell.
+# Config guide (ansible)
+You can configure router options like IP addresses or settings of routing protocol by **ansible** as you like. Note that ansible generally uses for initial configurations.  Once you configure by ansible and start Beluganos, you can change the configuration by not only ansible but also Linux style.
 
 ## Pre-requirements
-- Please refer [install-guide.md](install-guide.md) and [setup-guide.md](setup-guide.md) before proceeding.
-- In ansible, only startup-config can be edited. If you already start Beluganos by `beluganos run` or `beluganos start` or `systemctl start fibcd`command, please stop before starting ansible playbooks.
-- If you will configure L3VPN routers, please refer not only this documents but also [feature-l3vpn.md](feature-l3vpn.md).
+
+- The installation is required in advance. Please refer [install.md](install.md) before proceeding.
+- The setup of Beluganos is required in advance. Please refer [setup.md](setup.md) before proceeding.
+- In case you will use OpenNSL or OF-DPA:
+	- The installation of OpenNetworkLinux for your white-box switches is required in advance. Please refer [setup-hardware.md](setup-hardware.md) before proceeding.
+	- The setup for ASIC API is required in advance. Please refer [setup-onsl.md](setup-onsl.md) or [setup-ofdpa.md](setup-ofdpa.md).
 
 ## Config files at a glance
 The files under `etc/playbooks` are configuration files. In this page, `lxd-*.yml` and the files under `roles/lxd` are described.
@@ -216,7 +219,7 @@ In `fibc.yml`, you may set general settings. FIBC is one of the main components 
 
 Especially, you can determine about **interface mapping between your white-box switches and Linux containers**. In Beluganos's architecture, the path information which was installed to Linux containers will be copied to white-box switches. This is because you have to configure interface mapping between switches and containers.
 
-Note that mapping between physical interface and logical interface is sometimes different at OpenNSL case. For more detail, please check [setup-guide-onsl-portmapping.md](setup-guide-onsl-portmapping.md).
+Note that mapping between physical interface and logical interface is sometimes different at OpenNSL case. For more detail, please check [configure-portmapping.md](configure-portmapping.md).
 
 Please note that only physical interface should be described at `fibc.yml`. Logical (VLAN) settings should be described another files (`netplan.yml`).
 
@@ -437,7 +440,7 @@ interval = <beluganos-ribp-interval>
 	- api: set `localhost:50091`. Do NOT change.
 	- interval (`<beluganos-ribp-interval>`): The interval value which synchronize interface status between Linux container and main module of Beluganos. By our verification, `5000` is recommended value for stable operations is assumed.
 
-**Note**: In MPLS-VPN environments, more configurations are required. Please refer to [configure-ansible-l3vpn.md](configure-ansible-l3vpn.md).
+**Note**: In MPLS-VPN environments, more configurations are required. Please refer to [feature-l3vpn.md](feature-l3vpn.md).
 
 ### Reflect changes
 
@@ -448,16 +451,18 @@ $ cd ~/beluganos/etc/playbooks
 $ ansible-playbook -i hosts -K lxd-group.yml
 $ lxc stop master
 ```
+
+This ansible-playbook commands will send your files to LXC like `fibc.yml`, `ribxd.conf`, and `frr.conf`.
+
 ## Start Beluganos
 
-Once you finished the Beluganos's settings, let's start Beluganos! You can start main module of Beluganos by following commands:
+Before configure router settings like IP address or routing protocol, you have to start the process of Beluganos. Required steps are following:
 
-```
-$ sudo systemctl start fibcd
-$ beluganos add master
-```
+- [Step 1. Run ASIC driver agent](operation.md#step-1-run-asic-driver-agent)
+- [Step 2. Run Beluganos main module](operation.md#step-2-run-beluganos-main-module)
+- [Step 3. Add Linux containers](operation.md#step-3-add-linux-containers)
 
-"*master*" means your container name. For more detail about `beluganos` commands and operations, please refer [operation-guide.md](operation-guide.md). Please note that above two operations describe at step 1 and step 2 at [operation-guide.md](operation-guide.md), 
+Please refer [operation.md](operation.md) for more detail. 
 
 ## Linux shells
 
@@ -471,7 +476,6 @@ $ beluganos con master
 ```
 The main efforts of Beluganos's software is that the synchronization between LXC and ASIC of white-box switch. When you change the configuration of LXC, Beluganos will change the configuration of ASIC.
 
-## Note
+## Change configure after launch
 
-- MPLS-VPN configurations require more steps. Please refer [feature-l3vpn.md](feature-l3vpn.md).
-- Using both ansible and NETCONF are not permitted currently to configure router settings.
+In ansible, only startup-config can be edited. If you want to change the running-config directly, please refer [configure.md](configure.md#configure-beluganos).
