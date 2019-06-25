@@ -55,7 +55,7 @@ The syntax of `etc/playbooks/lxd-netconf.yml` is following:
 	- re_id (`<router-entity-id>`)
 		- Router identified name. Only Beluganos's main component will use this value to identify routers. This value is only internal use.
 	- datapath (`<switch-name>`) and dp_id (`<switch-dp-id>`)
-		- White-box hardware settings. The value of `fibc.yml` which was edited at [setup-guide.md](setup-guide.md) should be filled.
+		- White-box hardware settings. The value of `fibc.yml` which was edited at [setup.md](setup.md) should be filled.
 
 To reflect, please execute ansible for setup.
 

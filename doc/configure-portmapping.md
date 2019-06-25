@@ -2,7 +2,9 @@
 
 The port mapping is important to configure Beluganos. For example, `fibc.yml` at [configure-ansible.md](configure-ansible.md) requires the mapping of physical-logical mappings. In this page, the mapping information which we already confirmed is described.
 
-## OpenNSL AS5812-32X / AS5712-32X
+## OpenNSL
+
+### AS5812-32X / AS5712-32X (OpenNSL)
 
 | physical port    | logical port    |
 |------------------|-----------------|
@@ -62,7 +64,7 @@ The port mapping is important to configure Beluganos. For example, `fibc.yml` at
 | 54               | 69              |
 
 
-## OpenNSL AS7712-32X
+### AS7712-32X (OpenNSL)
 
 | physical port    | logical port    |
 |------------------|-----------------|
@@ -99,8 +101,7 @@ The port mapping is important to configure Beluganos. For example, `fibc.yml` at
 | 31               | 9               |
 | 32               | 13              |
 
-
-## OpenNSL AS7712-32X (10Gx4 breakout)
+### AS7712-32X (10Gx4 breakout)(OpenNSL)
 
 | physical port    | logical port    |
 |------------------|-----------------|
@@ -232,6 +233,10 @@ The port mapping is important to configure Beluganos. For example, `fibc.yml` at
 | 32-2             | 14              |
 | 32-3             | 15              |
 | 32-4             | 16              |
+
+### Other switches (OpenNSL)
+
+Please ask to the switch vendor.
 
 ## OF-DPA
 

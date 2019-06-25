@@ -74,7 +74,7 @@ Before configure router settings like IP address or routing protocol, you have t
 
 - [Step 1. Run ASIC driver agent](operation.md#step-1-run-asic-driver-agent)
 - [Step 2. Run Beluganos main module](operation.md#step-2-run-beluganos-main-module)
-- [Step 3. Add Linux containers](operation.md#step-3-add-linux-containers)
+- [Step 3. Add Linux containers](operation.md#step-3-run-linux-containers)
 
 Please refer [operation.md](operation.md) for more detail. 
 

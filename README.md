@@ -21,7 +21,7 @@ In order to try Beluganos quickly, **some example cases are prepared**. This exa
 
 ### 2. Step-by-step procedure
 
-<img src="doc/img/environments.png" width="260px" alt="beluganos-logomark">
+<img src="doc/img/environments.png" width="300px" alt="beluganos-install-environments">
 
 - Step 1: Build
 	- Install Beluganos and related OSS automatically.
@@ -42,7 +42,9 @@ In order to try Beluganos quickly, **some example cases are prepared**. This exa
 		- To configure by NETCONF, check [doc/configure-netconf.md](doc/configure-netconf.md).
 - Step 4: Operation
 	- Start Beluganos. Monitor Beluganos.
-		- Check [doc/operation-guide.md](doc/operation-guide.md)
+		- Check [doc/operation.md](doc/operation.md)
+
+Other document is listed at [document index page](doc/README.md).
 
 ## Support
 Github issue page and e-mail are available. If you prefer to use e-mail, please contact `msf-contact-ml [at] hco.ntt.co.jp`.

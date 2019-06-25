@@ -247,7 +247,7 @@ routers:
 - desc (`<description>`): Your preferable descriptions.
 - re_id (`<router-entity-id>`): Router entity id for internal use. In general, router-id is recommended.
 	- **For VRF environments only**: Please set **master instance's** router-id for all routing instances.
-- datapath (`<switch-name>`): Your switch name which is declared at `etc/playbooks/dp-sample.yml`. Please refer [setup-guide.md](setup-guide.md).
+- datapath (`<switch-name>`): Your switch name which is declared at `etc/playbooks/dp-sample.yml`. Please refer [setup.md](setup.md).
 - ports
     - name (`<lxc-interface-name>`): Specify interface name in Beluganos's Linux container.
     	- Note: `<lxc-interface-name>` should be matched with the value in `lxd_profile.yml`.
@@ -344,7 +344,7 @@ API_HOSTS = 127.0.0.1:50051
 
 GoBGP configurations. See [GoBGP configurations.md](https://github.com/osrg/gobgp/blob/master/docs/sources/configuration.md).
 
-**For MPLS-VPN environments only**: In MPLS-VPN, some optional settings about GoBGP is required. For more detail, please check `doc/setup-guide-l3vpn.md`.
+**For MPLS-VPN environments only**: In MPLS-VPN, some optional settings about GoBGP is required. For more detail, please check [feature-l3vpn.md](feature-l3vpn.md).
 
 ### 9. ribxd.conf: Beluganos's settings
 
@@ -460,21 +460,9 @@ Before configure router settings like IP address or routing protocol, you have t
 
 - [Step 1. Run ASIC driver agent](operation.md#step-1-run-asic-driver-agent)
 - [Step 2. Run Beluganos main module](operation.md#step-2-run-beluganos-main-module)
-- [Step 3. Add Linux containers](operation.md#step-3-add-linux-containers)
+- [Step 3. Add Linux containers](operation.md#step-3-run-linux-containers)
 
 Please refer [operation.md](operation.md) for more detail. 
-
-## Linux shells
-
-Once you finished to configure the initial configuration by ansible, you can change some settings by Linux commands.
-
-For example, in case of FRRouting:
-
-```
-$ beluganos con master
-> vtysh
-```
-The main efforts of Beluganos's software is that the synchronization between LXC and ASIC of white-box switch. When you change the configuration of LXC, Beluganos will change the configuration of ASIC.
 
 ## Change configure after launch
 

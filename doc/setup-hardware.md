@@ -6,9 +6,18 @@ This document describes about white-box switch's setup for Beluganos. The setup 
 - The setup of Beluganos is required in advance. Please refer [setup.md](setup.md) before proceeding.
 
 ## Index
-1. (embedded-style only) Build OpenNetworkLinux
-1. Install OpenNetworkLinux to white-box switches
-1. (embedded-style only) Connect Beluganos VM to your switch
+
+The required step is different depend on your deploy style.
+
+### embedded-style
+
+- 1. Build OpenNetworkLinux
+- 2. Install OpenNetworkLinux to white-box switches
+- 3. Move Beluganos VM to your switch
+
+### separated-style
+
+- 2. Install OpenNetworkLinux to white-box switches
 
 ## 1. Build OpenNetworkLinux
 
@@ -67,7 +76,7 @@ The installation of the OpenNetworkLinux will be performed to your white-box swi
 
 ### Get binary
 
-In **embedded-style**, please use binary which was build at the section of [1. Build OpenNetworkLinux](#1-build opennetworklinux).
+In **embedded-style**, please use binary which was build at the section of [1. Build OpenNetworkLinux](#1-build-opennetworklinux).
 
 In **separated-style**, please get binary from [OpenNetworkLinux's website](https://opennetlinux.org/binaries/). Following version is recommended:
 
@@ -103,7 +112,7 @@ beluganos/
 
 ```
 ONL> apt install libvirt-bin
-ONL> sudo reboot
+ONL> reboot
 
 ... After boot ...
 ONL> virsh list
@@ -117,7 +126,21 @@ Please prepare VM image files. This files should be .qcow2 format. Note that del
 Beluganos$ sudo rm /etc/netplan/02-beluganos.yaml
 ```
 
-### Transfer image files
+After that, please confirm that DHCP is enabled at interface `ens3`.
+
+```
+Beluganos$ sudo cat /etc/netplan/50-cloud-init.yaml
+
+network:
+    ethernets:
+        ens3:
+            dhcp4: true
+    version: 2
+```
+
+If not, please create the file of netplan configuration to enable DHCP at interface `ens3`.
+
+### Transfer required files
 
 Please transmit VM image files and other required files to ONL on white-box switches to following directory:
 
@@ -132,6 +155,8 @@ Please transmit VM image files and other required files to ONL on white-box swit
                 ubuntu-wbsw.qcow2
 ```
 
+Note that the .qcow2 file name should be `ubuntu-wbsw.qcow2`.
+
 ### Run
 
 ```
@@ -139,6 +164,7 @@ ONL> cd /mnt/onl/data/
 ONL> ./kvm.sh network add
 ONL> ./kvm.sh domain add
 ```
+Note that if `./kvm.sh network add` failed, please execute `./kvm.sh network del` in advance to initialize network.
 
 ### Check IP address
 

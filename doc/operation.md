@@ -1,4 +1,4 @@
-# Operation Guide
+# Operation guide
 
 Beluganos consists of **main module** and **Linux container** which provide routing functions. You can operate both components by `beluganos` commands. In order to start Beluganos properly, you should start both main module and Linux container.
 

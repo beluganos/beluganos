@@ -73,6 +73,5 @@ To apply,
 
 ~~~
 OpenNetworkLinux$ /etc/init.d/gonsld stop
-OpenNetworkLinux% /etc/init.d/gonsld start
+OpenNetworkLinux$ /etc/init.d/gonsld start
 ~~~
-

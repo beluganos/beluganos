@@ -19,7 +19,7 @@ After installing ([install.md](install.md)), you can check our use case to try B
 
 ## Setup hardware
 
-After installing ([install-guide.md](install-guide.md)), you may set up about hardware.
+After installing ([install.md](install.md)), you may set up about hardware.
 
 - [setup.md](setup.md)
 	- Beluganos setup to connect with white-box switch

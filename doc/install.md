@@ -23,7 +23,7 @@ Beluganos supports both **embedded-style** and **separated-style**. Please selec
 1. Server
 	- Software requirements:
 		- **Ubuntu 18.04** (18.04-live-server-amd64).
-		- If you use Ubuntu 18.04.1 or later, additional settings are required before proceed. Please check **Appendix A** of this document.
+		- If you use Ubuntu 18.04.1 or later, additional settings are required before proceed. Please check [Appendix A](#appendix-a-additional settings-at-ubuntu18041-or-later) of this document.
 	- Network requirements:
 		- embedded-style: **One or more network interfaces** are required.
 		- separated-style: **Two or more network interfaces** are required.
