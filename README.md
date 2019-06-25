@@ -21,7 +21,7 @@ In order to try Beluganos quickly, **some example cases are prepared**. This exa
 
 ### 2. Step-by-step procedure
 
-<img src="doc/img/environments.png" width="300px" alt="beluganos-install-environments">
+<img src="doc/img/environments.png" width="350px" alt="beluganos-install-environments">
 
 - Step 1: Build
 	- Install Beluganos and related OSS automatically.

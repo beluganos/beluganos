@@ -5,7 +5,7 @@ This document shows how to install Beluganos in your systems. If you want to try
 
 ### Choose deploy style
 
-<img src="img/deploy-style.png" width="300px" alt="embedded-style-vs-separated-style">
+<img src="img/deploy-style.png" width="320px" alt="embedded-style-vs-separated-style">
 
 Beluganos supports both **embedded-style** and **separated-style**. Please select each style.
 
