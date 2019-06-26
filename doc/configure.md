@@ -82,7 +82,7 @@ Please refer [operation.md](operation.md) for more detail.
 
 In Beluganos's architecture, the configuration of LXC will sync to the configuration of white-box switch. Thus, you should configure LXC to use Beluganos.
 
-#### IP address, routing settings
+#### 1. IP address, routing protocol settings
 
 Use FRRouting console.
 
@@ -92,21 +92,31 @@ LXC> vtysh
 FRRouting> conf t
 ```
 
-Cisco IOS like CLI is available. Note that start-up configuration does not automatically saved without `write memory`.For more detail, please refer [FRRouting official document](http://docs.frrouting.org/en/latest/).
+Cisco IOS like CLI is available. Note that start-up configuration does not automatically saved without `write memory`. For more detail, please refer [FRRouting official document](http://docs.frrouting.org/en/latest/).
 
-If you want to use GoBGP, edit the configuration file.
+#### 2. Routing protocol settings (GoBGP)
+
+Edit the configuration file.
 
 ```
 Beluganos$ beluganos con MIC
 LXC> vi /etc/frr/gobgpd.conf
 ```
 
-Please note that reflection of changes in gobgpd.conf requires restarting GoBGP. For more detail, please refer [GoBGP repository](https://github.com/osrg/gobgp).
+Please note that reflection of changes in `gobgpd.conf` requires restarting GoBGP. For more detail, please refer [GoBGP repository](https://github.com/osrg/gobgp).
 
-#### Other features
+#### 3. Sub IF (VLAN at routed port)
 
-Please refer feature guide.
+Use netplan. Please refer [netplan official document](https://netplan.io/).
 
-- [SNMP](feature-snmp.md): SNMP MIB, SNMP trap
-- [syslog](feature-syslog.md): syslog
-- [L3VPN](feature-l3vpn.md): MPLS-VPN L3VPN, VRF lite
+#### 4. Other features
+
+Please refer each feature guide.
+
+- Networking feature
+	- [L2 switching](feature-l2switching.md): MAC learning, access/trunk VLAN
+	- [L3VPN](feature-l3vpn.md): MPLS-VPN L3VPN, VRF lite
+	- [IP tunnel](feature-iptunnel.md): IP over IP tunneling
+- Management
+	- [SNMP](feature-snmp.md): SNMP MIB, SNMP trap
+	- [syslog](feature-syslog.md): syslog

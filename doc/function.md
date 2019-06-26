@@ -8,30 +8,37 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 
 | Function            | OF-DPA   | OFSwitch  | OpenNSL |
 |:--------------------|:---------|:----------|:--------|
-|L2 switching         |TBD       |TBD        |Planned  |
+|L2 switching         |TBD       |TBD        |Yes      |
 |IPv4 unicast routing |Yes       |Yes        |Yes      |
 |IPv6 unicast routing |Planned   |Planned    |Yes      |
 |IP multicast (v4/v6) |TBD       |TBD        |TBD      |
 |IP/MPLS              |Yes       |Yes        |Planned  |
 
-### Basic - L1 / Ethernet
+### Basic - L1-L2 / Ethernet
 
-| Function          | OF-DPA | OFSwitch | OpenNSL |
-|:------------------|:-------|:---------|:--------|
-|Breakout cable     |TBD     |TBD       | Yes     |
-|Auto negotiations  |Yes     |Yes       | Yes     |
-|Protocol MTU       |Yes     |Yes       | Yes     |
-|TTL check          |Yes     |Yes       | Yes     |
-|Carrier delay      |TBD     |TBD       | Planned |
+| Function                         | OF-DPA  | OFSwitch | OpenNSL  |
+|:---------------------------------|:--------|:---------|:---------|
+|Breakout cable                    |TBD      |TBD       |Yes       |
+|Auto negotiations                 |Yes      |Yes       |Yes       |
+|Protocol MTU                      |Yes      |Yes       |Yes       |
+|TTL check                         |Yes      |Yes       |Yes       |
+|Carrier delay                     |TBD      |TBD       |Planned   |
+|Link aggregation                  |Yes \*1  |Yes       |Yes       |
+|Link aggregation - routed port    |Yes \*1  |Yes       |Yes       |
+|Link aggregation - switch port    |TBD      |TBD       |Planned   |
+|Link aggregation - 802.3ad (LACP) |Yes      |Yes       |Yes       |
+
+- \*1: Because of OF-DPA restrictions, packet load-balancing is not worked properly in MPLS environments.
 
 ### Basic - L2 / switching
 
 | Function                      | OF-DPA  | OFSwitch | OpenNSL  |
 |:------------------------------|:--------|:---------|:---------|
-|802.1q (VLAN)                  |Yes \*1  |Yes       |Yes       |
+|Port VLAN                      |TBD      |TBD       |Yes       |
+|802.1q (tag VLAN)              |TBD      |TBD       |Yes       |
 |802.1ad (Q-in-Q)               |TBD      |TBD       |Planned   |
-|Link aggregation               |Yes \*2  |Yes       |Planned   |
-|802.3ad (LACP)                 |Yes      |Yes       |Planned   |
+|Hardware MAC learning          |TBD      |TBD       |Yes       |
+|MAC aging                      |TBD      |TBD       |Yes       |
 |RSTP                           |TBD      |TBD       |Planned   |
 |MSTP                           |TBD      |TBD       |Planned   |
 |Loop avoidance (storm-control) |TBD      |TBD       |Planned   |
@@ -43,10 +50,6 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 |MLD snooping                   |TBD      |TBD       |Planned   |
 |Proxy ARP                      |TBD      |TBD       |Planned   |
 |Proxy ND                       |TBD      |TBD       |Planned   |
-
-
-- \*1: Because of OF-DPA restrictions, non-tagged packet is not worked properly.
-- \*2: Because of OF-DPA restrictions, packet load-balancing is not worked properly in MPLS environments.
 
 ### Basic - L3 / Routing
 
@@ -76,9 +79,11 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 |VRRPv3                               |Planned   |Planned   |Planned   |
 |PIM-SSM for IPv4                     |TBD       |TBD       |TBD       |
 |PIM-SSM for IPv6                     |TBD       |TBD       |TBD       |
+|Sub IF (tagged VLAN interface)       |Yes \*1   |Yes       |Yes       |
 |SVI (switch virtual interface)       |TBD       |TBD       |Planned   |
 |Inter-VLAN routing                   |TBD       |TBD       |Planned   |
 
+- \*1: Because of OF-DPA restrictions, non-tagged packet is not worked properly.
 - BGP functions are depend on GoBGP.
 - Other routing protocol's functions are depend on FRRouting.
 
@@ -99,7 +104,7 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 |SR-TE                      |TBD       |TBD       |Planned  |
 |MPLS TTL                   |Yes       |Yes       |Planned  |
 
-### Bacis - L4
+### Basic - L4
 
 | Function           | OF-DPA  | OFSwitch | OpenNSL |
 |:-------------------|:--------|:---------|:--------|
@@ -126,7 +131,7 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 | VPLS (L2)            | TBD        | TBD        | Planned    |
 | EVPN-VXLAN (L2)      | TBD        | TBD        | Planned    |
 | EVPN-VXLAN (L3)      | TBD        | TBD        | Planned    |
-| IP tunneling (L3)    | TBD        | TBD        | Planned    |
+| IP tunneling (L3)    | TBD        | TBD        | Yes        |
 | GRE tunneling (L3)   | TBD        | TBD        | Planned    |
 
 ### Overlay - L3VPN
@@ -161,6 +166,16 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 |EVPN BGP               |TBD      |TBD       |Planned  |
 |Multi-homing           |TBD      |TBD       |Planned  |
 
+### Overlay - IP tunneling
+
+| Function                           | OF-DPA  | OFSwitch | OpenNSL |
+|:-----------------------------------|:--------|:---------|:--------|
+|IPv4 over IPv4                      |TBD      |TBD       |Planned  |
+|IPv4 over IPv6                      |TBD      |TBD       |Yes      |
+|IPv6 over IPv4                      |TBD      |TBD       |Planned  |
+|IPv6 over IPv6                      |TBD      |TBD       |Yes      |
+|Dynamic tunnel creation (BGP-based) |TBD      |TBD       |Yes      |
+
 ## Management
 
 ### Summary
@@ -173,13 +188,12 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 |SNMP MIB         |Yes               |Yes               |Yes               |
 |SNMP Trap        |Yes               |Yes               |Yes               |
 |Telemetry        |Planned           |Planned           |Planned           |
-|Syslog           |Yes \*2           |Yes \*2           |Yes \*2           |
+|Syslog           |Yes               |Yes               |Yes               |
 |Mirroring        |Planned           |Planned           |Planned           |
 |Management VRF   |Planned           |Planned           |Planned           |
 |NTP              |Yes               |Yes               |Yes               |
 
 - \*1: Only in demonstration level. Partially "show" command is supported.
-- \*2: Only in demonstration level.
 
 ### Management - Configuration
 
@@ -238,18 +252,17 @@ Supported feature and planned feature of Beluganos is described in this page. Th
 |Diffserv - scheduling    |No       |No        |TBD      |
 |Diffserv - marking       |No       |No        |Planned  |
 
-
 ## Appendix
 
 #### Legend of this function table
 
-| Value        | Description |
-|:------------:|:------------|
-|Yes           | Supported.|
-|Partially Yes | Supported, but some restriction is remained.|
-|Planned       | NOT supported yet, but there is a plan for implementation.  (SUBJECT TO CHANGE)|
-|TBD           | NOT supported yet.|
-|No            | NOT supported, and will not supported because of technical limitation.|
+| Value        | Description                                                                    |
+|:------------:|:-------------------------------------------------------------------------------|
+|Yes           |Supported.                                                                      |
+|Partially Yes |Supported, but some restriction is remained.                                    |
+|Planned       |NOT supported yet, but there is a plan for implementation.  (SUBJECT TO CHANGE) |
+|TBD           |NOT supported yet.                                                              |
+|No            |NOT supported, and will not supported because of technical limitation.          |
 
 #### The difference of hardware
 
@@ -269,5 +282,3 @@ Following table shows that our verification environments.
 |Tomahawk II    |No        |-         |TBD       |
 |DNX series     |No        |-         |Planned   |
 |x86            |-         |Verified  |-         |
-
-

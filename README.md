@@ -2,8 +2,8 @@
 
 Beluganos is a **new network OS** designed for **white-box switches**, which can apply large-scale networks.
 
-- IP Routing (BGP, OSPF, IPv6, ...)
-- **IP/MPLS**, BGP/MPLS IP-VPNs
+- IP Routing (BGP, OSPF, IPv6, ...) and L2 switching
+- **IP/MPLS**, BGP/MPLS IP-VPNs, IP-IP tunneling
 - **Interoperability** with conventional IP or IP/MPLS router
 - ASIC based **hardware packet processing**
 

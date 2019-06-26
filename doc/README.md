@@ -61,9 +61,13 @@ After installing ([install.md](install.md)), you can configure Beluganos as you 
 
 - [feature-l3vpn.md](feature-l3vpn.md)
 	- Configuration guide of MPLS-VPN PE router by ansible.
-- [feature-snmp.md](feature-snmp.md) 
+- [feature-l2switching.md](feature-l2switching.md)
+	- Configuration guide of L2 switching feature
+- [feature-iptunnel.md](feature-iptunnel.md)
+	- Configuration guide of IPIP tunneling feature
+- [feature-snmp.md](feature-snmp.md)
 	- SNMP feature guide (MIB, trap)
-- [feature-syslog.md](feature-syslog.md) 
+- [feature-syslog.md](feature-syslog.md)
 	- Syslog feature guide
 
 ## General
