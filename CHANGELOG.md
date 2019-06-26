@@ -1,5 +1,10 @@
 # Change logs
 
+## v0.4.0
+- Support IP-IP tunneling
+- Support L2 switching
+- Update document
+
 ## v0.3.1
 - Fix issues which OF-DPA mode is not worked
 - Fix document issues
