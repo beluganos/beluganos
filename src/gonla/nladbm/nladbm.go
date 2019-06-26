@@ -28,6 +28,7 @@ var (
 	vpns    VpnTable
 	encaps  EncapInfoTable
 	stats   StatTable
+	brvlans BridgeVlanInfoTable
 )
 
 func Create() {
@@ -41,6 +42,7 @@ func Create() {
 	vpns = NewVpnTable()
 	encaps = NewEncapInfoTable()
 	stats = NewStatTable()
+	brvlans = NewBridgeVlanInfoTable()
 }
 
 func Clients() ClientTable {
@@ -81,4 +83,8 @@ func Encaps() EncapInfoTable {
 
 func Stats() StatTable {
 	return stats
+}
+
+func BrVlans() BridgeVlanInfoTable {
+	return brvlans
 }

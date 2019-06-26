@@ -1,0 +1,30 @@
+---
+
+network: {}
+
+# network:
+#   # version: 2
+#   # renderer: networkd
+#
+#   vlans:
+#     eth1:
+#       # access port
+#       id: 10
+#     eth2:
+#       # access port
+#       id: 20
+#     eth3:
+#       # access port
+#       id: 20
+#     eth4:
+#       # trunk port
+#       ids: [10, 20]
+#
+#   bridges:
+#     l2swbr0:
+#       vlan_filtering: 1
+#       interfaces:
+#         - eth1
+#         - eth2
+#         - eth3
+#         - eth4

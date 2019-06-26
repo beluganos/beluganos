@@ -29,6 +29,30 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func ParsePortLine(s string) (uint, []uint, error) {
+	ss := strings.Split(s, ".")
+	if len(ss) == 0 {
+		return 0, nil, fmt.Errorf("bad iface, '%s'", s)
+	}
+
+	index, err := strconv.ParseUint(ss[0], 10, 32)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	vids := []uint{}
+	for _, vidstr := range ss[1:] {
+		vid, err := strconv.ParseUint(vidstr, 10, 32)
+		if err != nil {
+			return 0, nil, err
+		}
+
+		vids = append(vids, uint(vid))
+	}
+
+	return uint(index), vids, nil
+}
+
 type VlanConfig struct {
 	Eth uint
 	Vid uint
@@ -49,40 +73,97 @@ func (c *VlanConfig) String() string {
 }
 
 func ParseVlanConfig(s string) (*VlanConfig, error) {
-	ss := strings.Split(s, ".")
-	switch len(ss) {
+	pport, vids, err := ParsePortLine(s)
+	if err != nil {
+		return nil, err
+	}
+
+	switch len(vids) {
 	case 0:
-		return nil, fmt.Errorf("Bad vlan. %s", s)
+		return &VlanConfig{Eth: pport, Vid: 0}, nil
 
 	case 1:
-		pport, err := strconv.ParseUint(ss[0], 10, 32)
-		if err != nil {
-			return nil, err
-		}
-
-		return &VlanConfig{Eth: uint(pport), Vid: 0}, nil
-
-	case 2:
-		pport, err := strconv.ParseUint(ss[0], 10, 32)
-		if err != nil {
-			return nil, err
-		}
-
-		vlan, err := strconv.ParseUint(ss[1], 10, 32)
-		if err != nil {
-			return nil, err
-		}
-
-		return &VlanConfig{Eth: uint(pport), Vid: uint(vlan)}, nil
+		return &VlanConfig{Eth: pport, Vid: vids[0]}, nil
 
 	default:
 		return nil, fmt.Errorf("Bad vlan. %s", s)
 	}
 }
 
+type L2SWAccessConfig struct {
+	Eth uint
+	Vid uint
+}
+
+func NewL2SWAccessConfig(eth, vid uint) *L2SWAccessConfig {
+	return &L2SWAccessConfig{
+		Eth: eth,
+		Vid: vid,
+	}
+}
+
+func (c *L2SWAccessConfig) String() string {
+	if c.Vid != 0 {
+		return fmt.Sprintf("%d.%d", c.Eth, c.Vid)
+	}
+	return fmt.Sprintf("%d", c.Eth)
+}
+
+func ParseL2SWAccessConfig(s string) (*L2SWAccessConfig, error) {
+	port, vids, err := ParsePortLine(s)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(vids) != 1 {
+		return nil, fmt.Errorf("bad access port. %s", s)
+	}
+
+	return NewL2SWAccessConfig(port, vids[0]), nil
+}
+
+type L2SWTrunkConfig struct {
+	Eth  uint
+	Vids []uint
+}
+
+func NewL2SWTrunkConfig(eth uint, vids []uint) *L2SWTrunkConfig {
+	return &L2SWTrunkConfig{
+		Eth:  eth,
+		Vids: vids,
+	}
+}
+
+func (c *L2SWTrunkConfig) String() string {
+	vv := []string{fmt.Sprintf("%d", c.Eth)}
+	for _, vid := range c.Vids {
+		vv = append(vv, fmt.Sprintf("%d", vid))
+	}
+	return strings.Join(vv, ".")
+}
+
+func ParseL2SWTrunkConfig(s string) (*L2SWTrunkConfig, error) {
+	port, vids, err := ParsePortLine(s)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(vids) == 0 {
+		return nil, fmt.Errorf("bad trunk port. %s", s)
+	}
+
+	return NewL2SWTrunkConfig(port, vids), nil
+}
+
+type L2SWConfig struct {
+	Access []string `yaml:"access"`
+	Trunk  []string `yaml:"trunk"`
+}
+
 type PortConfig struct {
-	Eth  []uint   `yaml:"eth"`
-	Vlan []string `yaml:"vlan"`
+	Eth  []uint      `yaml:"eth"`
+	Vlan []string    `yaml:"vlan"`
+	L2sw *L2SWConfig `yaml:"l2sw"`
 }
 
 func NewPortConfig() *PortConfig {
@@ -132,6 +213,42 @@ func (c *PortConfig) Vlans() []*VlanConfig {
 	}
 
 	return vlans
+}
+
+func (c *PortConfig) L2SWAccessPorts() []*L2SWAccessConfig {
+	if c.L2sw == nil || c.L2sw.Access == nil {
+		return nil
+	}
+
+	cfgs := []*L2SWAccessConfig{}
+	for _, s := range c.L2sw.Access {
+		cfg, err := ParseL2SWAccessConfig(s)
+		if err != nil {
+			log.Errorf("Invalid L2SW(access). %s", s)
+		} else {
+			cfgs = append(cfgs, cfg)
+		}
+	}
+
+	return cfgs
+}
+
+func (c *PortConfig) L2SWTrunkPorts() []*L2SWTrunkConfig {
+	if c.L2sw == nil || c.L2sw.Trunk == nil {
+		return nil
+	}
+
+	cfgs := []*L2SWTrunkConfig{}
+	for _, s := range c.L2sw.Trunk {
+		cfg, err := ParseL2SWTrunkConfig(s)
+		if err != nil {
+			log.Errorf("Invalid L2SW(trunk). %s", s)
+		} else {
+			cfgs = append(cfgs, cfg)
+		}
+	}
+
+	return cfgs
 }
 
 type PortsConfig struct {

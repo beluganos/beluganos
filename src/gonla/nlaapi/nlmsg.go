@@ -111,6 +111,8 @@ func (n *NlMsgUni) ToNative(g uint16) interface{} {
 		return n.GetNode().ToNative()
 	case nlalink.RTMGRP_VPN:
 		return n.GetVpn().ToNative()
+	case nlalink.RTMGRP_BRIDGE:
+		return n.GetBrVlanInfo().ToNative()
 	default:
 		return nil
 	}
@@ -137,6 +139,9 @@ func NewNlMsgUni(n interface{}, g uint16) *NlMsgUni {
 
 	case nlalink.RTMGRP_VPN:
 		msg = &NlMsgUni_Vpn{Vpn: n.(*Vpn)}
+
+	case nlalink.RTMGRP_BRIDGE:
+		msg = &NlMsgUni_BrVlanInfo{BrVlanInfo: n.(*BridgeVlanInfo)}
 
 	default:
 		return nil
@@ -174,6 +179,9 @@ func NewNlMsgUniFromNative(n interface{}, g uint16) *NlMsgUni {
 
 	case nlalink.RTMGRP_VPN:
 		return NewNlMsgUni(NewVpnFromNative(n.(*nlamsg.Vpn)), g)
+
+	case nlalink.RTMGRP_BRIDGE:
+		return NewNlMsgUni(NewBridgeVlanInfoFromNative(n.(*nlamsg.BridgeVlanInfo)), g)
 
 	default:
 		return nil

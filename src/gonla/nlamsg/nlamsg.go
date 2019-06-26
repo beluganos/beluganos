@@ -40,6 +40,8 @@ func NlMsgGroupFromType(nlmsgType uint16) uint16 {
 		return nlalink.RTMGRP_NODE
 	case nlalink.RTM_NEWVPN, nlalink.RTM_DELVPN, nlalink.RTM_SETVPN:
 		return nlalink.RTMGRP_VPN
+	case nlalink.RTM_NEWBRIDGE, nlalink.RTM_DELBRIDGE, nlalink.RTM_SETBRIDGE:
+		return nlalink.RTMGRP_BRIDGE
 	default:
 		return nlalink.RTMGRP_UNSPEC
 	}
@@ -60,7 +62,10 @@ var NlMsgSrc_name = map[NlMsgSrc]string{
 }
 
 func (n NlMsgSrc) String() string {
-	return NlMsgSrc_name[n]
+	if s, ok := NlMsgSrc_name[n]; ok {
+		return s
+	}
+	return fmt.Sprintf("NlMsgSrc(%d)", n)
 }
 
 //
@@ -161,6 +166,13 @@ func (n *NetlinkMessageUnion) GetNode() *Node {
 
 func (n *NetlinkMessageUnion) GetVpn() *Vpn {
 	if v, ok := n.Msg.(*Vpn); ok {
+		return v
+	}
+	return nil
+}
+
+func (n *NetlinkMessageUnion) GetBridgeVlanInfo() *BridgeVlanInfo {
+	if v, ok := n.Msg.(*BridgeVlanInfo); ok {
 		return v
 	}
 	return nil

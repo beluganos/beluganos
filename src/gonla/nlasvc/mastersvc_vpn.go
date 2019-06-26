@@ -22,7 +22,6 @@ import (
 	"gonla/nlalib"
 	"gonla/nlamsg"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/vishvananda/netlink"
 )
 
@@ -30,14 +29,14 @@ func (n *NLAMasterService) NewVpnRoute(ricRoute *nlamsg.Route) *nlamsg.Route {
 
 	vpn := nladbm.Vpns().Select(nladbm.NewVpnKey(ricRoute.NId, ricRoute.GetDst(), ricRoute.GetGw()))
 	if vpn == nil {
-		log.Debugf("MasterService: NewVpnRoute VPN not found. nid:%d dst:%s gw:%s", ricRoute.NId, ricRoute.GetDst(), ricRoute.GetGw())
+		n.log.Debugf("NewVpnRoute VPN not found. nid:%d dst:%s gw:%s", ricRoute.NId, ricRoute.GetDst(), ricRoute.GetGw())
 		return nil
 	}
 
 	gwDst := nlalib.NewIPNetFromIP(vpn.NetVpnGw())
 	gwRoute := nladbm.Routes().Select(nladbm.NewRouteKey(n.NId, gwDst))
 	if gwRoute == nil {
-		log.Debugf("MasterService: NewVpnRoute Route for VPN not found. %d, %s", n.NId, gwDst)
+		n.log.Debugf("NewVpnRoute Route for VPN not found. %d, %s", n.NId, gwDst)
 		return nil
 	}
 
@@ -62,7 +61,7 @@ func (n *NLAMasterService) NewVpnRoute(ricRoute *nlamsg.Route) *nlamsg.Route {
 	vpnRoute.EnIds = enIds
 	vpnRoute.MultiPath = []*netlink.NexthopInfo{}
 
-	log.Debugf("MasterService: NewVpnRoute %v", vpnRoute)
+	n.log.Debugf("NewVpnRoute %v", vpnRoute)
 	return vpnRoute
 }
 
@@ -92,11 +91,11 @@ func (n *NLAMasterService) NewVpnRoutes(gwRoute *nlamsg.Route, f func(*nlamsg.Ro
 		vpnRoute.EnIds = vpnEnIds
 		vpnRoute.MultiPath = []*netlink.NexthopInfo{}
 
-		log.Debugf("MasterService: NewVpnRoutes %v", vpnRoute)
+		n.log.Debugf("NewVpnRoutes %v", vpnRoute)
 		return f(vpnRoute)
 	})
 
 	if err != nil {
-		log.Errorf("MasterService: NewVpnRoutes Walk error. %s", err)
+		n.log.Errorf("NewVpnRoutes Walk error. %s", err)
 	}
 }

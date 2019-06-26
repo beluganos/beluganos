@@ -70,4 +70,5 @@ func main() {
 	dumpTunnelInitiators(client)
 	dumpTunnelTerminators(client)
 	dumpIDMapEntries(client)
+	// dumpPortInfos(client)
 }

@@ -19,14 +19,15 @@ package nlasvc
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"golang.org/x/net/context"
 	"gonla/nlaapi"
 	"gonla/nladbm"
 	"gonla/nlamsg"
 	"gonla/nlamsg/nlalink"
-	"google.golang.org/grpc"
 	"net"
+
+	log "github.com/sirupsen/logrus"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
 //
@@ -35,12 +36,14 @@ import (
 type NLACoreApiServer struct {
 	addr   string
 	NlMsgs chan<- *nlamsg.NetlinkMessage
+	log    *log.Entry
 }
 
 func NewNLACoreApiServer(addr string) *NLACoreApiServer {
 	return &NLACoreApiServer{
 		addr:   addr,
 		NlMsgs: nil,
+		log:    NewLogger("NLACoreApiServer"),
 	}
 }
 
@@ -56,7 +59,7 @@ func (n *NLACoreApiServer) Start(ch chan<- *nlamsg.NetlinkMessage) error {
 	nlaapi.RegisterNLACoreApiServer(s, n)
 	go s.Serve(listen)
 
-	log.Infof("NLACoreApiServer: START")
+	n.log.Infof("Start:")
 	return nil
 }
 
@@ -66,7 +69,7 @@ func (n *NLACoreApiServer) SendNetlinkMessage(ctxt context.Context, req *nlaapi.
 }
 
 func (n *NLACoreApiServer) MonNetlinkMessage(req *nlaapi.Node, stream nlaapi.NLACoreApi_MonNetlinkMessageServer) error {
-	log.Infof("NLACoreApiServer: Monitor START. %v", req)
+	n.log.Infof("Monitor: START %v", req)
 
 	node := req.ToNative()
 	nid := node.NId
@@ -88,7 +91,7 @@ func (n *NLACoreApiServer) MonNetlinkMessage(req *nlaapi.Node, stream nlaapi.NLA
 	if done := stream.Context().Done(); done != nil {
 		go func() {
 			<-done
-			log.Infof("NLACoreApiServer: Monitor EXIT. nid:%d", nid)
+			n.log.Infof("Monitor:  EXIT nid:%d", nid)
 
 			nladbm.Nodes().Delete(nladbm.NodeToKey(node))
 			sendNode(nlalink.RTM_DELNODE)
@@ -102,10 +105,10 @@ func (n *NLACoreApiServer) MonNetlinkMessage(req *nlaapi.Node, stream nlaapi.NLA
 			break
 		}
 
-		log.Debugf("NLACoreApiServer: Send to slave. nid:%d %v", nid, m)
+		n.log.Debugf("Monitor; send to slave. nid:%d %v", nid, m)
 		nlmsg := nlaapi.NewNetlinkMessageUnionFromNative(m)
 		if err := stream.Send(nlmsg); err != nil {
-			log.Errorf("NLACoreApiServer: Stream.Send error. nid:%d %s", nid, err)
+			n.log.Errorf("Monitor: stream error. nid:%d %s", nid, err)
 		}
 	}
 

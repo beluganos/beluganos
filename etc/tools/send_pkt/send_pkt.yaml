@@ -1,0 +1,79 @@
+---
+
+tx:
+  payload:
+    sip1:
+      proto: udp
+      dst:   10.0.0.1
+      src:   10.0.0.2
+      dport: 5050
+      sport: 1234
+
+    sip2:
+      proto: tcp
+      dst:   10.0.0.2
+      src:   10.0.0.1
+      dport: 5050
+      sport: 1234
+
+    arp1:
+      proto: arp
+      hwsrc: "00:12:12:12:12:12"
+      psrc:  10.0.0.1
+      pdst:  10.0.0.2
+      op:    who-has
+
+    arp2:
+      proto: arp
+      hwdst: "00:12:12:12:12:12"
+      hwsrc: "00:21:21:21:21:21"
+      psrc:  10.0.0.2
+      pdst:  10.0.0.1
+      op:    is-at
+
+    icmp1:
+      proto: icmp
+      type:  echo-request
+      dst:   10.0.0.2
+      src:   10.0.0.1
+
+    icmp2:
+      proto: icmp
+      type:  echo-reply
+      dst:   10.0.0.1
+      src:   10.0.0.2
+
+    ospf1:
+      proto: [ospf, hello]
+      dst:   10.0.0.1
+      src:   10.0.0.2
+
+    ospf2:
+      proto: [ospf, dbdesc]
+      dst:   10.0.0.1
+      src:   10.0.0.2
+      mtu:   1500
+
+  packet:
+    pkt1:
+      dst: "00:11:11:11:11:11"
+      src: "00:22:22:22:22:22"
+      vid: 10
+
+    pkt2:
+      dst: "00:33:33:33:33:33"
+      src: "00:44:44:44:44:44"
+
+  iface:
+    dev1: ens3
+    dev2: lo
+
+  send:
+    - { packet:  pkt1, payload: sip1,  iface: dev2 }
+    - { packet:  pkt2, payload: sip2,  iface: dev2 }
+    - { packet:  pkt1, payload: arp1,  iface: dev2 }
+    - { packet:  pkt2, payload: arp2,  iface: dev2 }
+    - { packet:  pkt1, payload: icmp1, iface: dev2 }
+    - { packet:  pkt2, payload: icmp2, iface: dev2 }
+    - { packet:  pkt1, payload: ospf1, iface: dev2 }
+    - { packet:  pkt2, payload: ospf2, iface: dev2 }

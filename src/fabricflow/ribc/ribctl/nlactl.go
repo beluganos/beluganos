@@ -18,7 +18,7 @@
 package ribctl
 
 import (
-	"fabricflow/fibc/api"
+	fibcapi "fabricflow/fibc/api"
 	"gonla/nlaapi"
 	"gonla/nlalib"
 	"gonla/nlamsg"
@@ -35,6 +35,7 @@ type NLAController struct {
 	connCh chan net.IP
 	recvCh chan *nlamsg.NetlinkMessageUnion
 	client nlaapi.NLAApiClient
+	log    *log.Entry
 }
 
 func NewNLAController(addr string) *NLAController {
@@ -43,6 +44,7 @@ func NewNLAController(addr string) *NLAController {
 		connCh: make(chan net.IP),
 		recvCh: make(chan *nlamsg.NetlinkMessageUnion),
 		client: nil,
+		log:    log.WithFields(log.Fields{"module": "NLAController"}),
 	}
 }
 
@@ -55,10 +57,12 @@ func (n *NLAController) Recv() <-chan *nlamsg.NetlinkMessageUnion {
 }
 
 func (n *NLAController) Start() error {
+	n.log.Debugf("Start:")
 
 	ch := make(chan *nlalib.ConnInfo)
 	conn, err := nlalib.NewClientConn(n.addr, ch)
 	if err != nil {
+		n.log.Errorf("Start: connect error. %s", err)
 		close(ch)
 		return err
 	}
@@ -82,20 +86,20 @@ func (n *NLAController) Monitor(ci *nlalib.ConnInfo) {
 
 	stream, err := n.client.MonNetlink(context.Background(), &nlaapi.MonNetlinkRequest{})
 	if err != nil {
-		log.Errorf("NLAController: Monitor error. %s", err)
+		n.log.Errorf("Monitor: error. %s", err)
 		return
 	}
 
-	log.Infof("NLAController: Monitor START")
+	n.log.Infof("Monitor: START")
 
 	for {
 		nlmsg, err := stream.Recv()
 		if err != nil {
-			log.Infof("NLAController: Monitor EXIT. %s", err)
+			n.log.Infof("Monitor: EXIT. %s", err)
 			break
 		}
 
-		log.Debugf("NLAController: Monitor %v", nlmsg)
+		n.log.Debugf("Monitor: recv %v", nlmsg)
 		n.recvCh <- nlmsg.ToNative()
 	}
 }
@@ -245,6 +249,27 @@ func (n *NLAController) GetRoutes(nid uint8, f func(*nlamsg.Route) error) error 
 	}
 }
 
+func (n *NLAController) GetBridgeVlanInfos(nid uint8, ifindex int, f func(*nlamsg.BridgeVlanInfo)) error {
+	stream, err := n.client.GetBridgeVlanInfos(context.Background(), nlaapi.NewGetBridgeVlanInfosRequest(nid))
+	if err != nil {
+		return err
+	}
+
+	for {
+		brvlan, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		v := brvlan.ToNative()
+		if nid == v.NId && ifindex == v.Index {
+			f(v)
+		}
+	}
+}
+
 func (n *NLAController) ModLinkStatus(nid uint8, ifname string, operState string) error {
 	link := nlaapi.NewDeviceLink(nid, 0)
 	attr := link.GetDevice().GetLinkAttrs()
@@ -252,6 +277,21 @@ func (n *NLAController) ModLinkStatus(nid uint8, ifname string, operState string
 	attr.OperState = nlaapi.ParseLinkOperState(operState)
 
 	req := nlaapi.NewNetlinkMessageUnion(nid, syscall.RTM_SETLINK, link)
+	_, err := n.client.ModNetlink(context.Background(), req)
+
+	return err
+}
+
+func (n *NLAController) ModFdb(nid uint8, ifindex int, hwaddr net.HardwareAddr, vid uint16, mtype uint16) error {
+	neigh := &nlaapi.Neigh{
+		NId:          uint32(nid),
+		Ip:           []byte{},
+		LinkIndex:    int32(ifindex),
+		HardwareAddr: hwaddr,
+		VlanId:       int32(vid),
+	}
+
+	req := nlaapi.NewNetlinkMessageUnion(nid, mtype, neigh)
 	_, err := n.client.ModNetlink(context.Background(), req)
 
 	return err

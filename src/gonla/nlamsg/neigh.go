@@ -68,6 +68,10 @@ func (n *Neigh) IsTunnelRemote() bool {
 	return (n.Tunnel != nil)
 }
 
+func (n *Neigh) IsFdbEntry() bool {
+	return n.IP == nil || len(n.IP) == 0
+}
+
 func (n *Neigh) SetTunnel(phyLink int, tunnel NeighTunnel) {
 	n.PhyLink = phyLink
 	n.Tunnel = tunnel

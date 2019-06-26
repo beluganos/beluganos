@@ -18,17 +18,20 @@
 package nlasvc
 
 import (
-	log "github.com/sirupsen/logrus"
 	"gonla/nlactl"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type NLACoreApiService struct {
 	Addr string
+	log  *log.Entry
 }
 
 func NewNLACoreApiService(addr string) *NLACoreApiService {
 	return &NLACoreApiService{
 		Addr: addr,
+		log:  NewLogger("NLACoreApiService"),
 	}
 }
 
@@ -38,10 +41,10 @@ func (n *NLACoreApiService) Start(nid uint8, chans *nlactl.NLAChannels) error {
 		return err
 	}
 
-	log.Infof("CoreApiService: START")
+	n.log.Infof("Start:")
 	return nil
 }
 
 func (n *NLACoreApiService) Stop() {
-	log.Infof("CoreApiService: STOP")
+	n.log.Infof("Stop:")
 }

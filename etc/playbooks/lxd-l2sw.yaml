@@ -1,0 +1,57 @@
+---
+
+- hosts: hosts
+  connection: local
+  roles:
+    - { role: lxd, mode: host }
+  tags:
+    - host
+
+
+- hosts: hosts
+  connection: local
+  tasks:
+    - include_role:
+        name: lxd
+      vars:
+        mode: create
+      with_items:
+        - "{{ groups['lxd-l2sw'] }}"
+      loop_control:
+        loop_var: lxcname
+  tags:
+    - create
+    - lxd
+
+
+- hosts: lxd-l2sw
+  connection: lxd
+  roles:
+    - { role: lxd, lxcname: "{{ inventory_hostname }}", mode: setup }
+  tags:
+    - setup
+    - lxd
+
+#
+#                    +-------------+
+#                    |  L2 Switch  |
+#                    +-------------+
+#                           |
+#                      Trunk Port
+#                           | 
+#                          eth1
+#                   +----------------+
+#                   |                | Lo: 10.0.0.1/32
+#                   |  <beluganos>   | OSPF
+#                   |                |     .1
+#                   +----------------+ eth6-----------------+
+#                    eth2  eth3  eth4  eth5-----+           |
+#                     /     |      \       .1   |     10.10.3.0/24     
+#                 Access  Access  Access  10.10.2.0/24      |
+#                 Port    Port    Port          |           |
+#                  /        |        \       .2 |           | .2
+#              +-----+   +-----+  +-----+  +---------+  +---------+
+#              |Host1|   |Host2|  |Host3|  | Router2 |  | Router3 |
+#              +-----+   +-----+  +-----+  +---------+  +---------+
+#                                          10.0.0.2/32  10.0.0.3/32
+#                                          OSPF         OSPF

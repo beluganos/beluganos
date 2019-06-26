@@ -5,6 +5,7 @@ PYLIST = \
 	default.py \
 	generic.py \
 	ovs.py \
+	onsl.py \
 	ofdpa2.py
 
 

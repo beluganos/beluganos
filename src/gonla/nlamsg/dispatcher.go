@@ -130,6 +130,25 @@ func DispatchToVpn(nlmsg *NetlinkMessage, app interface{}) error {
 	return nil
 }
 
+func DispatchBridgeVlanInfo(nlmsg *NetlinkMessage, brVlan *BridgeVlanInfo, app interface{}) {
+	if h, ok := app.(NetlinkBridgeVlanInfoHandler); ok {
+		h.NetlinkBridgeVlanInfo(nlmsg, brVlan)
+	}
+}
+
+func DispatchToBridgeVlanInfo(nlmsg *NetlinkMessage, app interface{}) error {
+	if h, ok := app.(NetlinkBridgeVlanInfoHandler); ok {
+		brvlan, err := BridgeVlanInfoDeserialize(nlmsg)
+		if err != nil {
+			return err
+		}
+
+		h.NetlinkBridgeVlanInfo(nlmsg, brvlan)
+	}
+
+	return nil
+}
+
 func DispatchNetlinkMessage(nlmsg *NetlinkMessage, app interface{}) {
 	if h, ok := app.(NetlinkMessageHandler); ok {
 		h.NetlinkMessage(nlmsg)
@@ -158,6 +177,9 @@ func Dispatch(nlmsg *NetlinkMessage, app interface{}) error {
 
 	case nlalink.RTMGRP_VPN:
 		return DispatchToVpn(nlmsg, app)
+
+	case nlalink.RTMGRP_BRIDGE:
+		return DispatchToBridgeVlanInfo(nlmsg, app)
 
 	default:
 		return fmt.Errorf("Dispatcher: unsupported nlmsg. %d", nlmsg.Type())
@@ -190,6 +212,9 @@ func DispatchUnion(nlmsg *NetlinkMessageUnion, app interface{}) error {
 
 	case nlalink.RTMGRP_VPN:
 		DispatchVpn(m, nlmsg.GetVpn(), app)
+
+	case nlalink.RTMGRP_BRIDGE:
+		DispatchBridgeVlanInfo(m, nlmsg.GetBridgeVlanInfo(), app)
 
 	default:
 		return fmt.Errorf("Dispatcher: unsupported nlmsg. %d", nlmsg.Type())

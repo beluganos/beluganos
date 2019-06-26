@@ -73,6 +73,7 @@ func LinkAttrsToNative(a *LinkAttrs, n *netlink.LinkAttrs) {
 	n.Promisc = int(a.Promisc)
 	n.EncapType = a.EncapType
 	n.OperState = netlink.LinkOperState(a.OperState)
+	n.SlaveInfo = SlaveInfoToNative(a.GetSlaveInfo())
 }
 
 func LinkAttrsFromNative(a *LinkAttrs, n *netlink.LinkAttrs) {
@@ -89,6 +90,7 @@ func LinkAttrsFromNative(a *LinkAttrs, n *netlink.LinkAttrs) {
 	a.Promisc = int32(n.Promisc)
 	a.EncapType = n.EncapType
 	a.OperState = LinkOperState(n.OperState)
+	a.SlaveInfo = NewSlaveInfoFromNative(n.SlaveInfo)
 }
 
 // Link (Generic)
@@ -180,6 +182,28 @@ func NewBridgeLinkAttrsFromNative(ln netlink.Link) isLink_LinkAttrs {
 	a := NewBridgeLinkAttrs()
 	LinkAttrsFromNative(a.Bridge.GetLinkAttrs(), ln.Attrs())
 
+	n := ln.(*netlink.Bridge)
+	a.Bridge.MulticastSnooping = func() bool {
+		if mcSnoop := n.MulticastSnooping; mcSnoop != nil {
+			return *mcSnoop
+		}
+		return false
+	}()
+
+	a.Bridge.HelloTime = func() uint32 {
+		if helloTime := n.HelloTime; helloTime != nil {
+			return *helloTime
+		}
+		return 0
+	}()
+
+	a.Bridge.VlanFiltering = func() bool {
+		if vlanFiltering := n.VlanFiltering; vlanFiltering != nil {
+			return *vlanFiltering
+		}
+		return false
+	}()
+
 	return a
 }
 
@@ -187,6 +211,15 @@ func BridgeLinkToNative(ln *Link) netlink.Link {
 	n := &netlink.Bridge{}
 	a := ln.GetBridge()
 	LinkAttrsToNative(a.GetLinkAttrs(), n.Attrs())
+
+	mcSnoop := a.MulticastSnooping
+	n.MulticastSnooping = &mcSnoop
+
+	helloTime := a.HelloTime
+	n.HelloTime = &helloTime
+
+	vlanFiltering := a.VlanFiltering
+	n.VlanFiltering = &vlanFiltering
 
 	return n
 }

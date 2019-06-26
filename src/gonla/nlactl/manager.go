@@ -18,8 +18,9 @@
 package nlactl
 
 import (
-	log "github.com/sirupsen/logrus"
 	"gonla/nlamsg"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type NLAManager struct {
@@ -27,14 +28,20 @@ type NLAManager struct {
 	Svcs  []NLAService
 	Chans *NLAChannels
 	done  <-chan struct{}
+	log   *log.Entry
 }
 
 func NewNLAManager(nid uint8, done <-chan struct{}, svcs ...NLAService) *NLAManager {
+	fields := log.Fields{
+		"module": "NLAManager",
+	}
+
 	return &NLAManager{
 		NId:   nid,
 		Svcs:  svcs,
 		Chans: NewNLAChannels(),
 		done:  done,
+		log:   log.WithFields(fields),
 	}
 }
 
@@ -49,16 +56,16 @@ func (n *NLAManager) Serve() {
 		select {
 		case nlmsg := <-n.Chans.NlMsg:
 			if err := nlamsg.Dispatch(nlmsg, n); err != nil {
-				log.Warnf("NLAManager: Dispatch error. %s", err)
+				n.log.Warnf("Serve: Dispatch error. %s", err)
 			}
 
 		case nlmsg := <-n.Chans.Api:
 			if err := nlamsg.DispatchUnion(nlmsg, n); err != nil {
-				log.Warnf("NLAManager: DispatchUnion error. %s", err)
+				n.log.Warnf("Serve: DispatchUnion error. %s", err)
 			}
 
 		case <-n.done:
-			log.Infof("NLAManager: EXIT")
+			n.log.Infof("Serve: EXIT")
 			return
 		}
 	}
@@ -73,7 +80,7 @@ func (n *NLAManager) Start() error {
 
 	go n.Serve()
 
-	log.Infof("NLAManager: START")
+	n.log.Infof("Start:")
 	return nil
 }
 
@@ -82,7 +89,7 @@ func (n *NLAManager) Stop() {
 		svc.Stop()
 	}
 
-	log.Infof("NLAManager: STOP")
+	n.log.Infof("Stop:")
 }
 
 func (n *NLAManager) NetlinkMessage(nlmsg *nlamsg.NetlinkMessage) {
@@ -124,5 +131,11 @@ func (n *NLAManager) NetlinkNode(nlmsg *nlamsg.NetlinkMessage, node *nlamsg.Node
 func (n *NLAManager) NetlinkVpn(nlmsg *nlamsg.NetlinkMessage, vpn *nlamsg.Vpn) {
 	for _, svc := range n.Svcs {
 		nlamsg.DispatchVpn(nlmsg, vpn, svc)
+	}
+}
+
+func (n *NLAManager) NetlinkBridgeVlanInfo(nlmsg *nlamsg.NetlinkMessage, brvlan *nlamsg.BridgeVlanInfo) {
+	for _, svc := range n.Svcs {
+		nlamsg.DispatchBridgeVlanInfo(nlmsg, brvlan, svc)
 	}
 }

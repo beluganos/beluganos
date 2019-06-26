@@ -187,29 +187,6 @@ class FIBMapTable(object):
         return sorted(entries)
 
 
-    def slaves(self, entry):
-        """
-        list slaves(FIBCLink instances)
-        """
-        slaves = entry.get("slaves", None)
-        if slaves is None:
-            return []
-
-        return [self.find_by_key(slave) for slave in slaves]
-
-
-    def master(self, slave):
-        """
-        find maser(FINCLink instance)
-        """
-        for entry in self.entries.values():
-            slaves = entry.get("slaves", None)
-            if slaves and slave["name"] in slaves:
-                return entry
-
-        return None
-
-
     def subs(self, entry, exclude=True):
         """
         list sub interface entries(FIBCLink instances)

@@ -18,8 +18,8 @@
 package fibclib
 
 import (
-	"fabricflow/fibc/api"
-	"fabricflow/fibc/net"
+	fibcapi "fabricflow/fibc/api"
+	fibcnet "fabricflow/fibc/net"
 	"fmt"
 )
 
@@ -281,6 +281,40 @@ func notifyFFPortMod(header *fibcnet.Header, data []byte, handler interface{}) e
 	return nil
 }
 
+func notifyL2AddrStatus(header *fibcnet.Header, data []byte, handler interface{}) error {
+	if h, ok := handler.(L2AddrStatusHandler); ok {
+		m, err := fibcapi.NewL2AddrStatusFromBytes(data)
+		if err != nil {
+			return err
+		}
+
+		if err := notifyMessage(header, m, handler); err != nil {
+			return err
+		}
+
+		h.FIBCL2AddrStatus(header, m)
+	}
+
+	return nil
+}
+
+func notifyFFL2AddrStatus(header *fibcnet.Header, data []byte, handler interface{}) error {
+	if h, ok := handler.(FFL2AddrStatusHandler); ok {
+		m, err := fibcapi.NewFFL2AddrStatusFromBytes(data)
+		if err != nil {
+			return err
+		}
+
+		if err := notifyMessage(header, m, handler); err != nil {
+			return err
+		}
+
+		h.FIBCFFL2AddrStatus(header, m)
+	}
+
+	return nil
+}
+
 func Dispatch(h *fibcnet.Header, data []byte, handler interface{}) error {
 
 	switch fibcapi.FFM(h.Type) {
@@ -310,6 +344,10 @@ func Dispatch(h *fibcnet.Header, data []byte, handler interface{}) error {
 		return notifyFFPortStatus(h, data, handler)
 	case fibcapi.FFM_FF_PORT_MOD:
 		return notifyFFPortMod(h, data, handler)
+	case fibcapi.FFM_L2ADDR_STATUS:
+		return notifyL2AddrStatus(h, data, handler)
+	case fibcapi.FFM_FF_L2ADDR_STATUS:
+		return notifyFFL2AddrStatus(h, data, handler)
 	default:
 		return fmt.Errorf("Invalid Message Type. %d", h.Type)
 	}
@@ -372,6 +410,14 @@ func DispatchMsg(header *fibcnet.Header, m fibcnet.Message, handler interface{})
 	case fibcapi.FFM_FF_PORT_MOD:
 		if h, ok := handler.(FFPortModHandler); ok {
 			h.FIBCFFPortMod(header, m.(*fibcapi.FFPortMod))
+		}
+	case fibcapi.FFM_L2ADDR_STATUS:
+		if h, ok := handler.(L2AddrStatusHandler); ok {
+			h.FIBCL2AddrStatus(header, m.(*fibcapi.L2AddrStatus))
+		}
+	case fibcapi.FFM_FF_L2ADDR_STATUS:
+		if h, ok := handler.(FFL2AddrStatusHandler); ok {
+			h.FIBCFFL2AddrStatus(header, m.(*fibcapi.FFL2AddrStatus))
 		}
 	default:
 		return fmt.Errorf("Invalid Message Type. %d", header.Type)

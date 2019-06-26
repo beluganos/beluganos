@@ -18,7 +18,7 @@
 package ribctl
 
 import (
-	"fabricflow/fibc/api"
+	fibcapi "fabricflow/fibc/api"
 	"gonla/nlamsg"
 	"net"
 )
@@ -26,7 +26,7 @@ import (
 //
 // L2 Interface Group
 //
-func NewL2InterfaceGroup(link *nlamsg.Link) *fibcapi.L2InterfaceGroup {
+func NewL2InterfaceGroup(link *nlamsg.Link, master *IfDBEntry) *fibcapi.L2InterfaceGroup {
 	hwaddr := func() net.HardwareAddr {
 		if link.Iptun() != nil {
 			return fibcapi.HardwareAddrDummy
@@ -40,11 +40,12 @@ func NewL2InterfaceGroup(link *nlamsg.Link) *fibcapi.L2InterfaceGroup {
 		hwaddr,
 		link.Attrs().MTU,
 		link.NId,
+		master.PortId(),
 	)
 }
 
-func (r *RIBController) SendL2InterfaceGroup(cmd fibcapi.GroupMod_Cmd, link *nlamsg.Link) error {
-	g := NewL2InterfaceGroup(link)
+func (r *RIBController) SendL2InterfaceGroup(cmd fibcapi.GroupMod_Cmd, link *nlamsg.Link, master *IfDBEntry) error {
+	g := NewL2InterfaceGroup(link, master)
 	return r.fib.Send(g.ToMod(cmd, r.reId), 0)
 }
 

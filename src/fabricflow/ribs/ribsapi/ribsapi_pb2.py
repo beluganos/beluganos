@@ -7,6 +7,7 @@ from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
+from google.protobuf import descriptor_pb2
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
@@ -18,7 +19,6 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='ribsapi.proto',
   package='ribsapi',
   syntax='proto3',
-  serialized_options=None,
   serialized_pb=_b('\n\rribsapi.proto\x12\x07ribsapi\"\x10\n\x0eGetRicsRequest\"\x14\n\x12GetNexthopsRequest\"\x16\n\x14GetNexthopMapRequest\"\r\n\x0bModRibReply\"\x0e\n\x0cSyncRibReply\"\x1c\n\x0eSyncRibRequest\x12\n\n\x02rt\x18\x01 \x01(\t\"-\n\x11MonitorRibRequest\x12\n\n\x02rt\x18\x01 \x01(\t\x12\x0c\n\x04n_id\x18\x02 \x01(\r\"6\n\tRibUpdate\x12\n\n\x02rt\x18\x01 \x01(\t\x12\x0e\n\x06prefix\x18\x02 \x01(\t\x12\r\n\x05paths\x18\x03 \x03(\x0c\"h\n\x08RicEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04n_id\x18\x02 \x01(\r\x12\x0c\n\x04\x61\x64\x64r\x18\x03 \x01(\t\x12\x0c\n\x04port\x18\x04 \x01(\r\x12\n\n\x02rt\x18\x05 \x01(\t\x12\n\n\x02rd\x18\x06 \x01(\t\x12\r\n\x05label\x18\x07 \x01(\r\"\'\n\x04Path\x12\x0e\n\x06prefix\x18\x01 \x01(\t\x12\x0f\n\x07nexthop\x18\x02 \x01(\t\"3\n\x07Nexthop\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\t\x12\n\n\x02rt\x18\x02 \x01(\t\x12\x0e\n\x06src_id\x18\x03 \x01(\t\"&\n\nNexthopMap\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0b\n\x03val\x18\x02 \x01(\t2\xcf\x01\n\x07RIBSApi\x12\x39\n\x07GetRics\x12\x17.ribsapi.GetRicsRequest\x1a\x11.ribsapi.RicEntry\"\x00\x30\x01\x12@\n\x0bGetNexthops\x12\x1b.ribsapi.GetNexthopsRequest\x1a\x10.ribsapi.Nexthop\"\x00\x30\x01\x12G\n\rGetNexthopMap\x12\x1d.ribsapi.GetNexthopMapRequest\x1a\x13.ribsapi.NexthopMap\"\x00\x30\x01\x32\xc2\x01\n\x0bRIBSCoreApi\x12\x34\n\x06ModRib\x12\x12.ribsapi.RibUpdate\x1a\x14.ribsapi.ModRibReply\"\x00\x12@\n\nMonitorRib\x12\x1a.ribsapi.MonitorRibRequest\x1a\x12.ribsapi.RibUpdate\"\x00\x30\x01\x12;\n\x07SyncRib\x12\x17.ribsapi.SyncRibRequest\x1a\x15.ribsapi.SyncRibReply\"\x00\x62\x06proto3')
 )
 
@@ -38,7 +38,7 @@ _GETRICSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -62,7 +62,7 @@ _GETNEXTHOPSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -86,7 +86,7 @@ _GETNEXTHOPMAPREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -110,7 +110,7 @@ _MODRIBREPLY = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -134,7 +134,7 @@ _SYNCRIBREPLY = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -158,14 +158,14 @@ _SYNCRIBREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -189,21 +189,21 @@ _MONITORRIBREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='ribsapi.MonitorRibRequest.n_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -227,28 +227,28 @@ _RIBUPDATE = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='prefix', full_name='ribsapi.RibUpdate.prefix', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='paths', full_name='ribsapi.RibUpdate.paths', index=2,
       number=3, type=12, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -272,56 +272,56 @@ _RICENTRY = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='ribsapi.RicEntry.n_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='addr', full_name='ribsapi.RicEntry.addr', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='port', full_name='ribsapi.RicEntry.port', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='rt', full_name='ribsapi.RicEntry.rt', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='rd', full_name='ribsapi.RicEntry.rd', index=5,
       number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='label', full_name='ribsapi.RicEntry.label', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -345,21 +345,21 @@ _PATH = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='nexthop', full_name='ribsapi.Path.nexthop', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -383,28 +383,28 @@ _NEXTHOP = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='rt', full_name='ribsapi.Nexthop.rt', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_id', full_name='ribsapi.Nexthop.src_id', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -428,21 +428,21 @@ _NEXTHOPMAP = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='val', full_name='ribsapi.NexthopMap.val', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -557,7 +557,7 @@ _RIBSAPI = _descriptor.ServiceDescriptor(
   full_name='ribsapi.RIBSApi',
   file=DESCRIPTOR,
   index=0,
-  serialized_options=None,
+  options=None,
   serialized_start=495,
   serialized_end=702,
   methods=[
@@ -568,7 +568,7 @@ _RIBSAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_GETRICSREQUEST,
     output_type=_RICENTRY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetNexthops',
@@ -577,7 +577,7 @@ _RIBSAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_GETNEXTHOPSREQUEST,
     output_type=_NEXTHOP,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetNexthopMap',
@@ -586,7 +586,7 @@ _RIBSAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_GETNEXTHOPMAPREQUEST,
     output_type=_NEXTHOPMAP,
-    serialized_options=None,
+    options=None,
   ),
 ])
 _sym_db.RegisterServiceDescriptor(_RIBSAPI)
@@ -599,7 +599,7 @@ _RIBSCOREAPI = _descriptor.ServiceDescriptor(
   full_name='ribsapi.RIBSCoreApi',
   file=DESCRIPTOR,
   index=1,
-  serialized_options=None,
+  options=None,
   serialized_start=705,
   serialized_end=899,
   methods=[
@@ -610,7 +610,7 @@ _RIBSCOREAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_RIBUPDATE,
     output_type=_MODRIBREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='MonitorRib',
@@ -619,7 +619,7 @@ _RIBSCOREAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_MONITORRIBREQUEST,
     output_type=_RIBUPDATE,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='SyncRib',
@@ -628,7 +628,7 @@ _RIBSCOREAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_SYNCRIBREQUEST,
     output_type=_SYNCRIBREPLY,
-    serialized_options=None,
+    options=None,
   ),
 ])
 _sym_db.RegisterServiceDescriptor(_RIBSCOREAPI)

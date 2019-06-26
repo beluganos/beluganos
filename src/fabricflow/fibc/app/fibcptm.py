@@ -152,6 +152,7 @@ class FIBCPtmApp(app_manager.RyuApp):
 
             except KeyError as expt:
                 if msg.dp_port != 0:
+                    # port is bridge or bond master.
                     idmap = fibcdbm.idmap().find_by_re_id(msg.re_id)
                     entry = fibcdbm.FIBCPortEntry.new(
                         dp_id=idmap["dp_id"],
@@ -163,6 +164,7 @@ class FIBCPtmApp(app_manager.RyuApp):
                         dpenter=idmap["dp_status"],
                     )
                 else:
+                    # port is virtual device(ex. vlan)
                     entry = fibcdbm.FIBCPortEntry.new(
                         dp_id=0,
                         port=0,
@@ -179,8 +181,7 @@ class FIBCPtmApp(app_manager.RyuApp):
                 raise expt
 
         entry = _get_entry()
-        entry.update_vm(msg.port_id)
-        if msg.status == pb.PortStatus.UP:
+        if entry.update_vm(msg.port_id):
             self.send_port_status_if_ready(entry, msg.status)
 
         self._send_port_mod_event(entry, msg.status)
@@ -241,9 +242,13 @@ class FIBCPtmApp(app_manager.RyuApp):
             _LOG.debug("%s", pkt)
 
         try:
-            dp_port = fibcdbm.dps().find_port(evt.vs_id, evt.port_id)
+            hw_addr = fibcdbm.dps().find_port(evt.vs_id, evt.port_id).hw_addr
+        except:
+            hw_addr = "00:00:00:00:00:{0:02X}".format(evt.port_id & 0xff)
+
+        try:
             port = fibcdbm.portmap().find_by_name(re_id=pkt.re_id, name=pkt.ifname)
-            if port.update_vs(evt.vs_id, evt.port_id, dp_port.hw_addr):
+            if port.update_vs(evt.vs_id, evt.port_id, hw_addr):
                 self.send_port_status_if_ready(port, "UP")
 
         except KeyError:
@@ -267,12 +272,12 @@ class FIBCPtmApp(app_manager.RyuApp):
         try:
             port = fibcdbm.portmap().find_by_dp(dp_id=evt.dp_id, port_id=evt.port_id)
             if evt.enter:
-                port["dpenter"] = True
+                port.update_dp(evt.enter)
                 self.send_port_status_if_ready(port, "UP")
 
             else:
                 self.send_port_status_if_ready(port, "DOWN")
-                port["dpenter"] = False
+                port.update_dp(evt.enter)
 
         except KeyError as expt:
             _LOG.warn("dp port not registered. dpid:%d, port:%d",

@@ -26,7 +26,7 @@ import (
 )
 
 func printIDMapEntry(entry *api.IDMapEntry) {
-	fmt.Printf("IDMap: %-8s[%#08x] = %d\n", entry.Name, entry.Key, entry.Value)
+	fmt.Printf("IDMap: %-8s[%s] = %d\n", entry.Name, entry.Key, entry.Value)
 }
 
 func dumpIDMapEntries(client api.GoNSLApiClient) {

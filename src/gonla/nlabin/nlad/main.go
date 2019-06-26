@@ -59,12 +59,14 @@ func initlog(c *Config) {
 
 func services(c *Config) []nlactl.NLAService {
 	if c.IsMaster() {
+		brvlan := c.NLA.BridgeVlan
 		nlaapi := nlasvc.NewNLAApiService(c.NLA.Api)
 		return []nlactl.NLAService{
 			nlasvc.NewNLALogService(c.Log.Dump),
 			nlasvc.NewNLAMasterService(nlaapi),
 			nlasvc.NewNLACoreApiService(c.NLA.Core),
 			nlasvc.NewNLANetlinkService(),
+			nlasvc.NewNLABridgeVlanService(nlaapi, brvlan.UpdateTime(), brvlan.ChanSize),
 		}
 
 	} else {

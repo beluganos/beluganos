@@ -1,0 +1,464 @@
+diff --git a/addr_gonla.go b/addr_gonla.go
+new file mode 100644
+index 0000000..f76e094
+--- /dev/null
++++ b/addr_gonla.go
+@@ -0,0 +1,9 @@
++// -*- coding: utf-8 -*-
++
++package netlink
++
++import ()
++
++func AddrDeserialize(m []byte) (addr Addr, family, index int, err error) {
++	return parseAddr(m)
++}
+diff --git a/link.go b/link.go
+index 0afc69c..9d20c3a 100644
+--- a/link.go
++++ b/link.go
+@@ -44,6 +44,7 @@ type LinkAttrs struct {
+ 	GSOMaxSize   uint32
+ 	GSOMaxSegs   uint32
+ 	Vfs          []VfInfo // virtual functions available on link
++	SlaveInfo    LinkSlaveInfo
+ }
+ 
+ // VfInfo represents configuration of virtual function
+@@ -788,6 +789,9 @@ func (iptun *Iptun) Attrs() *LinkAttrs {
+ }
+ 
+ func (iptun *Iptun) Type() string {
++	if iptun.Local.To4() == nil {
++		return "ip6tnl"
++	}
+ 	return "ipip"
+ }
+ 
+diff --git a/link_linux.go b/link_linux.go
+index 63e4aeb..affb1d4 100644
+--- a/link_linux.go
++++ b/link_linux.go
+@@ -1411,6 +1411,11 @@ func LinkDeserialize(hdr *unix.NlMsghdr, m []byte) (Link, error) {
+ 		stats64  []byte
+ 		linkType string
+ 	)
++	var (
++		slaveType string
++		slaveInfo LinkSlaveInfo
++	)
++
+ 	for _, attr := range attrs {
+ 		switch attr.Attr.Type {
+ 		case unix.IFLA_LINKINFO:
+@@ -1449,6 +1454,8 @@ func LinkDeserialize(hdr *unix.NlMsghdr, m []byte) (Link, error) {
+ 						link = &Gretap{}
+ 					case "ipip":
+ 						link = &Iptun{}
++					case "ip6tnl":
++						link = &Iptun{}
+ 					case "sit":
+ 						link = &Sittun{}
+ 					case "gre":
+@@ -1492,6 +1499,8 @@ func LinkDeserialize(hdr *unix.NlMsghdr, m []byte) (Link, error) {
+ 						parseGretapData(link, data)
+ 					case "ipip":
+ 						parseIptunData(link, data)
++					case "ip6tnl":
++						parseIptunData(link, data)
+ 					case "sit":
+ 						parseSittunData(link, data)
+ 					case "gre":
+@@ -1511,6 +1520,20 @@ func LinkDeserialize(hdr *unix.NlMsghdr, m []byte) (Link, error) {
+ 					case "tun":
+ 						parseTuntapData(link, data)
+ 					}
++
++				case unix.IFLA_INFO_SLAVE_KIND:
++					slaveType = string(info.Value[:len(info.Value)-1])
++
++				case unix.IFLA_INFO_SLAVE_DATA:
++					data, err := nl.ParseRouteAttr(info.Value)
++					if err != nil {
++						return nil, err
++					}
++
++					switch slaveType {
++					case "bond":
++						slaveInfo = parseBondSlaveInfo(data)
++					}
+ 				}
+ 			}
+ 		case unix.IFLA_ADDRESS:
+@@ -1586,6 +1609,8 @@ func LinkDeserialize(hdr *unix.NlMsghdr, m []byte) (Link, error) {
+ 		base.Statistics = parseLinkStats32(stats32)
+ 	}
+ 
++	base.SlaveInfo = slaveInfo
++
+ 	// Links that don't have IFLA_INFO_KIND are hardware devices
+ 	if link == nil {
+ 		link = &Device{}
+@@ -2007,7 +2032,9 @@ func parseBondData(link Link, data []syscall.NetlinkRouteAttr) {
+ 		case nl.IFLA_BOND_AD_SELECT:
+ 			bond.AdSelect = BondAdSelect(data[i].Value[0])
+ 		case nl.IFLA_BOND_AD_INFO:
+-			// TODO: implement
++			if adInfo, err := parseBondAdInfo(data[i].Value); err == nil {
++				bond.AdInfo = adInfo
++			}
+ 		case nl.IFLA_BOND_AD_ACTOR_SYS_PRIO:
+ 			bond.AdActorSysPrio = int(native.Uint16(data[i].Value[0:2]))
+ 		case nl.IFLA_BOND_AD_USER_PORT_KEY:
+@@ -2302,13 +2329,17 @@ func addIptunAttrs(iptun *Iptun, linkInfo *nl.RtAttr) {
+ 
+ 	data := linkInfo.AddRtAttr(nl.IFLA_INFO_DATA, nil)
+ 
+-	ip := iptun.Local.To4()
+-	if ip != nil {
++	if ip := iptun.Local; ip != nil {
++		if ip.To4() != nil {
++			ip = ip.To4()
++		}
+ 		data.AddRtAttr(nl.IFLA_IPTUN_LOCAL, []byte(ip))
+ 	}
+ 
+-	ip = iptun.Remote.To4()
+-	if ip != nil {
++	if ip := iptun.Remote; ip != nil {
++		if ip.To4() != nil {
++			ip = ip.To4()
++		}
+ 		data.AddRtAttr(nl.IFLA_IPTUN_REMOTE, []byte(ip))
+ 	}
+ 
+@@ -2329,9 +2360,9 @@ func parseIptunData(link Link, data []syscall.NetlinkRouteAttr) {
+ 	for _, datum := range data {
+ 		switch datum.Attr.Type {
+ 		case nl.IFLA_IPTUN_LOCAL:
+-			iptun.Local = net.IP(datum.Value[0:4])
++			iptun.Local = net.IP(datum.Value)
+ 		case nl.IFLA_IPTUN_REMOTE:
+-			iptun.Remote = net.IP(datum.Value[0:4])
++			iptun.Remote = net.IP(datum.Value)
+ 		case nl.IFLA_IPTUN_TTL:
+ 			iptun.Ttl = uint8(datum.Value[0])
+ 		case nl.IFLA_IPTUN_TOS:
+diff --git a/link_linux_gonla.go b/link_linux_gonla.go
+new file mode 100644
+index 0000000..763cadb
+--- /dev/null
++++ b/link_linux_gonla.go
+@@ -0,0 +1,198 @@
++package netlink
++
++import (
++	"fmt"
++	"net"
++	"syscall"
++
++	"github.com/vishvananda/netlink/nl"
++	"golang.org/x/sys/unix"
++)
++
++type LinkSlaveInfo interface {
++	SlaveType() string
++}
++
++func LinkSetMulticastOn(link Link) error {
++	return pkgHandle.LinkSetMulticastOn(link)
++}
++
++func (h *Handle) LinkSetMulticastOn(link Link) error {
++	base := link.Attrs()
++	h.ensureIndex(base)
++	req := h.newNetlinkRequest(unix.RTM_NEWLINK, unix.NLM_F_ACK)
++
++	msg := nl.NewIfInfomsg(unix.AF_UNSPEC)
++	msg.Change = unix.IFF_MULTICAST
++	msg.Flags = unix.IFF_MULTICAST
++
++	msg.Index = int32(base.Index)
++	req.AddData(msg)
++
++	_, err := req.Execute(unix.NETLINK_ROUTE, 0)
++	return err
++}
++
++func LinkSetMulticastOff(link Link) error {
++	return pkgHandle.LinkSetMulticastOff(link)
++}
++
++func (h *Handle) LinkSetMulticastOff(link Link) error {
++	base := link.Attrs()
++	h.ensureIndex(base)
++	req := h.newNetlinkRequest(unix.RTM_NEWLINK, unix.NLM_F_ACK)
++
++	msg := nl.NewIfInfomsg(unix.AF_UNSPEC)
++	msg.Change = unix.IFF_MULTICAST
++	msg.Index = int32(base.Index)
++	req.AddData(msg)
++
++	_, err := req.Execute(unix.NETLINK_ROUTE, 0)
++	return err
++}
++
++func parseBondAdInfo(b []byte) (*BondAdInfo, error) {
++	attrs, err := nl.ParseRouteAttr(b)
++	if err != nil {
++		return nil, err
++	}
++
++	var adInfo BondAdInfo
++	for _, attr := range attrs {
++		switch attr.Attr.Type {
++		case nl.IFLA_BOND_AD_INFO_AGGREGATOR:
++			adInfo.AggregatorId = int(native.Uint16(attr.Value[0:2]))
++		case nl.IFLA_BOND_AD_INFO_NUM_PORTS:
++			adInfo.NumPorts = int(native.Uint16(attr.Value[0:2]))
++		case nl.IFLA_BOND_AD_INFO_ACTOR_KEY:
++			adInfo.ActorKey = int(native.Uint16(attr.Value[0:2]))
++		case nl.IFLA_BOND_AD_INFO_PARTNER_KEY:
++			adInfo.PartnerKey = int(native.Uint16(attr.Value[0:2]))
++		case nl.IFLA_BOND_AD_INFO_PARTNER_MAC:
++			adInfo.PartnerMac = net.HardwareAddr(attr.Value[0:6])
++		}
++	}
++
++	return &adInfo, nil
++}
++
++type BondLinkStatus int
++
++const (
++	BOND_LINK_UNKNOWN BondLinkStatus = -1
++	BOND_LINK_UP      BondLinkStatus = 0
++	BOND_LINK_FAIL    BondLinkStatus = 1
++	BOND_LINK_DOWN    BondLinkStatus = 2
++	BOND_LINK_BACK    BondLinkStatus = 3
++)
++
++var bondLinkStateToString = map[BondLinkStatus]string{
++	BOND_LINK_UP:   "UP",
++	BOND_LINK_FAIL: "GOING_DOWN",
++	BOND_LINK_DOWN: "DOWN",
++	BOND_LINK_BACK: "GOING_BACK",
++}
++
++var StringToBondLinkStatusMap = map[string]BondLinkStatus{
++	"UP":         BOND_LINK_UP,
++	"GOING_DOWN": BOND_LINK_FAIL,
++	"DOWN":       BOND_LINK_DOWN,
++	"GOING_BACK": BOND_LINK_BACK,
++}
++
++func (b BondLinkStatus) String() string {
++	if s, ok := bondLinkStateToString[b]; ok {
++		return s
++	}
++	return fmt.Sprintf("BondLinkStatus(%d)", b)
++}
++
++func StringToBondLinkState(s string) BondLinkStatus {
++	if b, ok := StringToBondLinkStatusMap[s]; ok {
++		return b
++	}
++	return BOND_LINK_UNKNOWN
++}
++
++type BondState int
++
++const (
++	BOND_STATE_UNKNOWN BondState = -1
++	BOND_STATE_ACTIVE  BondState = 0
++	BOND_STATE_BACKUP  BondState = 1
++)
++
++var bondStateStringToString = map[BondState]string{
++	BOND_STATE_ACTIVE: "ACTIVE",
++	BOND_STATE_BACKUP: "BACKUP",
++}
++
++var StringToBondStateMap = map[string]BondState{
++	"ACTIVE": BOND_STATE_ACTIVE,
++	"BACKUP": BOND_STATE_BACKUP,
++}
++
++func (b BondState) String() string {
++	if s, ok := bondStateStringToString[b]; ok {
++		return s
++	}
++	return fmt.Sprintf("BondState(%d)", b)
++}
++
++func StringToBondState(s string) BondState {
++	if b, ok := StringToBondStateMap[s]; ok {
++		return b
++	}
++	return BOND_STATE_UNKNOWN
++}
++
++type BondSlaveInfo struct {
++	State                  BondState
++	MiiStatus              BondLinkStatus
++	LinkFailureCount       uint32
++	PermanentHwAddr        net.HardwareAddr
++	QueueId                int
++	AggregatorId           int
++	ActorOperPortState     int
++	AdPartnerOperPortState int
++}
++
++func (b *BondSlaveInfo) SlaveType() string {
++	return "bond"
++}
++
++// [IFLA_LINKINFO]
++//   [IFLA_INFO_SLAVE_KIND] = "bond"
++//   [IFLA_INFO_SLAVE_DATA]
++func parseBondSlaveInfo(datas []syscall.NetlinkRouteAttr) *BondSlaveInfo {
++	var info BondSlaveInfo
++	for _, data := range datas {
++		switch data.Attr.Type {
++		case nl.IFLA_BOND_SLAVE_STATE:
++			info.State = BondState(uint8(data.Value[0]))
++
++		case nl.IFLA_BOND_SLAVE_MII_STATUS:
++			info.MiiStatus = BondLinkStatus(native.Uint16(data.Value[0:2]))
++
++		case nl.IFLA_BOND_SLAVE_LINK_FAILURE_COUNT:
++			info.LinkFailureCount = native.Uint32(data.Value[0:4])
++
++		case nl.IFLA_BOND_SLAVE_PERM_HWADDR:
++			info.PermanentHwAddr = net.HardwareAddr(data.Value)
++
++		case nl.IFLA_BOND_SLAVE_QUEUE_ID:
++			info.QueueId = int(native.Uint16(data.Value[0:2]))
++
++		case nl.IFLA_BOND_SLAVE_AD_AGGREGATOR_ID:
++			info.AggregatorId = int(native.Uint16(data.Value[0:2]))
++
++		case nl.IFLA_BOND_SLAVE_AD_ACTOR_OPER_PORT_STATE:
++			info.ActorOperPortState = int(uint8(data.Value[0]))
++
++		case nl.IFLA_BOND_SLAVE_AD_PARTNER_OPER_PORT_STATE:
++			info.AdPartnerOperPortState = int(native.Uint16(data.Value[0:2]))
++		}
++	}
++
++	return &info
++}
+diff --git a/nl/link_linux.go b/nl/link_linux.go
+index c236474..fab10d9 100644
+--- a/nl/link_linux.go
++++ b/nl/link_linux.go
+@@ -164,6 +164,8 @@ const (
+ 	IFLA_BOND_SLAVE_PERM_HWADDR
+ 	IFLA_BOND_SLAVE_QUEUE_ID
+ 	IFLA_BOND_SLAVE_AD_AGGREGATOR_ID
++	IFLA_BOND_SLAVE_AD_ACTOR_OPER_PORT_STATE
++	IFLA_BOND_SLAVE_AD_PARTNER_OPER_PORT_STATE
+ )
+ 
+ const (
+diff --git a/nl/mpls_gonla.go b/nl/mpls_gonla.go
+new file mode 100644
+index 0000000..bb11deb
+--- /dev/null
++++ b/nl/mpls_gonla.go
+@@ -0,0 +1,5 @@
++// -*- coding: utf-8 -*-
++
++package nl
++
++const RTNLGRP_MPLS_ROUTE = 27
+diff --git a/nl/nl_linux_gonla.go b/nl/nl_linux_gonla.go
+new file mode 100644
+index 0000000..a193981
+--- /dev/null
++++ b/nl/nl_linux_gonla.go
+@@ -0,0 +1,21 @@
++package nl
++
++import (
++	"golang.org/x/sys/unix"
++)
++
++func (s *NetlinkSocket) SetReceiveBuffer(bufsize int) error {
++	return unix.SetsockoptInt(int(s.fd), unix.SOL_SOCKET, unix.SO_RCVBUF, bufsize)
++}
++
++func (s *NetlinkSocket) GetReceiveBuffer() (int, error) {
++	return unix.GetsockoptInt(int(s.fd), unix.SOL_SOCKET, unix.SO_RCVBUF)
++}
++
++func (s *NetlinkSocket) SetSendBuffer(bufsize int) error {
++	return unix.SetsockoptInt(int(s.fd), unix.SOL_SOCKET, unix.SO_SNDBUF, bufsize)
++}
++
++func (s *NetlinkSocket) GetSendBuffer() (int, error) {
++	return unix.GetsockoptInt(int(s.fd), unix.SOL_SOCKET, unix.SO_SNDBUF)
++}
+diff --git a/nl/syscall.go b/nl/syscall.go
+index 0ff1bba..31382cb 100644
+--- a/nl/syscall.go
++++ b/nl/syscall.go
+@@ -47,6 +47,7 @@ const (
+ )
+ 
+ const (
++	RTA_VIA        = 0x12
+ 	RTA_NEWDST     = 0x13
+ 	RTA_ENCAP_TYPE = 0x15
+ 	RTA_ENCAP      = 0x16
+diff --git a/route.go b/route.go
+index 58ff1af..5a24551 100644
+--- a/route.go
++++ b/route.go
+@@ -56,7 +56,7 @@ func (r Route) String() string {
+ 		elems = append(elems, fmt.Sprintf("Ifindex: %d", r.LinkIndex))
+ 	}
+ 	if r.MPLSDst != nil {
+-		elems = append(elems, fmt.Sprintf("Dst: %d", r.MPLSDst))
++		elems = append(elems, fmt.Sprintf("Dst: %d", *r.MPLSDst))
+ 	} else {
+ 		elems = append(elems, fmt.Sprintf("Dst: %s", r.Dst))
+ 	}
+diff --git a/route_gonla.go b/route_gonla.go
+new file mode 100644
+index 0000000..08d5709
+--- /dev/null
++++ b/route_gonla.go
+@@ -0,0 +1,10 @@
++// -*- coding: utf-8 -*-
++
++package netlink
++
++import ()
++
++func RouteDeserialize(m []byte) (*Route, error) {
++	route, err := deserializeRoute(m)
++	return &route, err
++}
+diff --git a/route_linux.go b/route_linux.go
+index e0bba5b..facbe67 100644
+--- a/route_linux.go
++++ b/route_linux.go
+@@ -793,6 +793,8 @@ func deserializeRoute(m []byte) (Route, error) {
+ 		switch attr.Attr.Type {
+ 		case unix.RTA_GATEWAY:
+ 			route.Gw = net.IP(attr.Value)
++		case nl.RTA_VIA:
++			route.Gw = net.IP(attr.Value[2:])
+ 		case unix.RTA_PREFSRC:
+ 			route.Src = net.IP(attr.Value)
+ 		case unix.RTA_DST:
+@@ -839,6 +841,8 @@ func deserializeRoute(m []byte) (Route, error) {
+ 					switch attr.Attr.Type {
+ 					case unix.RTA_GATEWAY:
+ 						info.Gw = net.IP(attr.Value)
++					case nl.RTA_VIA:
++						info.Gw = net.IP(attr.Value[2:])
+ 					case nl.RTA_NEWDST:
+ 						var d Destination
+ 						switch msg.Family {

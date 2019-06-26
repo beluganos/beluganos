@@ -1,0 +1,53 @@
+---
+
+# ARP(req): dev1/vid:10 -> B.C.
+# ARP(req): dev1/vid:20 -> B.C.
+# ARP(res): dev4/vid:10 -> dev1
+# ARP(res): dev4/vid:20 -> dev1
+
+
+tx:
+  payload:
+    arp_req_1_to_4:
+      proto: arp
+      hwsrc: "00:11:11:11:11:11"
+      psrc:  10.0.0.1
+      pdst:  10.0.0.4
+      op:    who-has
+    arp_res_4_to_1:
+      proto: arp
+      hwsrc: "00:44:44:44:44:44"
+      hwdst: "00:11:11:11:11:11"
+      psrc:  10.0.0.4
+      pdst:  10.0.0.1
+      op:    is-at
+
+  packet:
+    1_to_bc10:
+      dst: "ff:ff:ff:ff:ff:ff"
+      src: "00:11:11:11:11:11"
+      vid: 10
+    1_to_bc20:
+      dst: "ff:ff:ff:ff:ff:ff"
+      src: "00:11:11:11:11:11"
+      vid: 20
+    4_to_1_10:
+      dst: "00:11:11:11:11:11"
+      src: "00:44:44:44:44:44"
+      vid: 10
+    4_to_1_20:
+      src: "00:11:11:11:11:11"
+      dst: "00:44:44:44:44:44"
+      vid: 20
+
+  iface:
+    dev1: enp131s0f0
+    dev2: enp131s0f1
+    dev3: enp132s0f0
+    dev4: enp132s0f1
+
+  send:
+    - { packet: 1_to_bc10, payload: arp_req_1_to_4, iface: dev1 }
+    - { packet: 1_to_bc20, payload: arp_req_1_to_4, iface: dev1 }
+    - { packet: 4_to_1_10, payload: arp_res_4_to_1, iface: dev4 }
+    - { packet: 4_to_1_20, payload: arp_res_4_to_1, iface: dev4 }

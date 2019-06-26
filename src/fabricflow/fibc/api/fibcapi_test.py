@@ -19,7 +19,8 @@
 
 import unittest
 from goryu.ofproto import offlow
-from fabricflow.fibc.api import fibcapi
+from fabricflow.fibc.api import fibcapi as api
+import fabricflow.fibc.api.fibcapi_pb2 as pb
 
 
 class TestVLANFlow(unittest.TestCase):
@@ -48,6 +49,58 @@ class TestApi(unittest.TestCase):
         ]
         for ip, pri, base in datas:
             self.assertEqual(offlow.priority_for_ipaddr(ip, base), pri)
+
+    def test_l2addr_status(self):
+        addrs = [
+            api.new_l2addr("11:22:33:44:55:66", 10, 100, "ADD"),
+            api.new_l2addr("11:22:33:44:55:77", 11, 101, "DELETE", "eth1"),
+        ]
+        msg = api.new_l2addr_status("1.1.1.1", addrs)
+        data = msg.SerializeToString()
+        msg = api.parse_l2addr_status(data)
+
+        self.assertEqual(msg.re_id, "1.1.1.1")
+
+        addr = msg.addrs[0]
+        self.assertEqual(addr.hw_addr, "11:22:33:44:55:66")
+        self.assertEqual(addr.vlan_vid, 10)
+        self.assertEqual(addr.port_id, 100)
+        self.assertEqual(addr.reason, pb.L2Addr.ADD)
+        self.assertEqual(addr.ifname, "")
+
+        addr = msg.addrs[1]
+        self.assertEqual(addr.hw_addr, "11:22:33:44:55:77")
+        self.assertEqual(addr.vlan_vid, 11)
+        self.assertEqual(addr.port_id, 101)
+        self.assertEqual(addr.reason, pb.L2Addr.DELETE)
+        self.assertEqual(addr.ifname, "eth1")
+
+
+    def test_ff_l2addr_status(self):
+        addrs = [
+            api.new_l2addr("11:22:33:44:55:66", 10, 100, "ADD"),
+            api.new_l2addr("11:22:33:44:55:77", 11, 101, "DELETE", "eth1"),
+        ]
+        msg = api.new_ff_l2addr_status(1234, addrs)
+        data = msg.SerializeToString()
+        msg = api.parse_ff_l2addr_status(data)
+
+        self.assertEqual(msg.dp_id, 1234)
+
+        addr = msg.addrs[0]
+        self.assertEqual(addr.hw_addr, "11:22:33:44:55:66")
+        self.assertEqual(addr.vlan_vid, 10)
+        self.assertEqual(addr.port_id, 100)
+        self.assertEqual(addr.reason, pb.L2Addr.ADD)
+        self.assertEqual(addr.ifname, "")
+
+        addr = msg.addrs[1]
+        self.assertEqual(addr.hw_addr, "11:22:33:44:55:77")
+        self.assertEqual(addr.vlan_vid, 11)
+        self.assertEqual(addr.port_id, 101)
+        self.assertEqual(addr.reason, pb.L2Addr.DELETE)
+        self.assertEqual(addr.ifname, "eth1")
+
 
 class TestDpMultipartPort(unittest.TestCase):
     def setUp(self):

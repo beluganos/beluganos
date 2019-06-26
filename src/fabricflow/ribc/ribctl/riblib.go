@@ -18,7 +18,7 @@
 package ribctl
 
 import (
-	"fabricflow/fibc/api"
+	fibcapi "fabricflow/fibc/api"
 	"fmt"
 	"gonla/nlamsg"
 	"gonla/nlamsg/nlalink"
@@ -26,6 +26,8 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+
+	"github.com/vishvananda/netlink"
 )
 
 func NewVRFLabel(base uint32, nid uint8) uint32 {
@@ -65,9 +67,13 @@ func NewAddrLinkName(addr *nlamsg.Addr, useNId bool) string {
 	return newLinkName(addr.NId, addr.Label, useNId)
 }
 
+func PortId(nid uint8, lnId uint16) uint32 {
+	return (uint32(nid) << 16) + uint32(lnId)
+}
+
 func NewPortId(link *nlamsg.Link) uint32 {
 	if link != nil {
-		return (uint32(link.NId) << 16) + uint32(link.LnId)
+		return PortId(link.NId, link.LnId)
 	} else {
 		return 0
 	}
@@ -78,13 +84,13 @@ func ParsePortId(linkId uint32) (uint8, uint16) {
 }
 
 func NewPortStatus(link *nlamsg.Link) fibcapi.PortStatus_Status {
-	switch link.Attrs().OperState.String() {
-	case "up":
+	switch link.Attrs().OperState {
+	case netlink.OperUp:
 		return fibcapi.PortStatus_UP
-	case "down":
+	case netlink.OperDown:
 		return fibcapi.PortStatus_DOWN
 	default:
-		if flag := link.Attrs().Flags & net.FlagUp; flag != 0 {
+		if (link.Attrs().Flags & net.FlagUp) != 0 {
 			return fibcapi.PortStatus_UP
 		}
 		return fibcapi.PortStatus_NOP
@@ -130,18 +136,25 @@ func GetGroupCmd(t uint16) fibcapi.GroupMod_Cmd {
 
 func GetFlowCmd(t uint16) fibcapi.FlowMod_Cmd {
 	switch t {
-	case syscall.RTM_NEWLINK, syscall.RTM_NEWADDR, syscall.RTM_NEWNEIGH, syscall.RTM_NEWROUTE:
+	case syscall.RTM_NEWLINK, syscall.RTM_NEWADDR, syscall.RTM_NEWNEIGH, syscall.RTM_NEWROUTE, nlalink.RTM_NEWBRIDGE:
 		return fibcapi.FlowMod_ADD
 
-	case syscall.RTM_SETLINK, nlalink.RTM_SETADDR, nlalink.RTM_SETNEIGH, nlalink.RTM_SETROUTE:
+	case syscall.RTM_SETLINK, nlalink.RTM_SETADDR, nlalink.RTM_SETNEIGH, nlalink.RTM_SETROUTE, nlalink.RTM_SETBRIDGE:
 		return fibcapi.FlowMod_MODIFY
 
-	case syscall.RTM_DELLINK, syscall.RTM_DELADDR, syscall.RTM_DELNEIGH, syscall.RTM_DELROUTE:
+	case syscall.RTM_DELLINK, syscall.RTM_DELADDR, syscall.RTM_DELNEIGH, syscall.RTM_DELROUTE, nlalink.RTM_DELBRIDGE:
 		return fibcapi.FlowMod_DELETE
 
 	default:
 		return fibcapi.FlowMod_NOP
 	}
+}
+
+func GetFlowCmdByLinkStatus(link *nlamsg.Link) fibcapi.FlowMod_Cmd {
+	if NewPortStatus(link) == fibcapi.PortStatus_UP {
+		return fibcapi.FlowMod_ADD
+	}
+	return fibcapi.FlowMod_DELETE
 }
 
 func FlowCmdToGroupCmd(cmd fibcapi.FlowMod_Cmd) fibcapi.GroupMod_Cmd {
@@ -155,4 +168,19 @@ func FlowCmdToGroupCmd(cmd fibcapi.FlowMod_Cmd) fibcapi.GroupMod_Cmd {
 	default:
 		return fibcapi.GroupMod_NOP
 	}
+}
+
+func LinkTypeFromLink(link *nlamsg.Link) fibcapi.LinkType_Type {
+	if slaveInfo := link.GetSlaveInfo(); slaveInfo != nil {
+		switch slaveInfo.(type) {
+		case *nlamsg.BridgeSlaveInfo:
+			return fibcapi.LinkType_BRIDGE_SLAVE
+
+		case *netlink.BondSlaveInfo:
+			return fibcapi.LinkType_BOND_SLAVE
+		}
+	}
+
+	// phy, vlan, bridge, bond ...
+	return fibcapi.ParseLinkTypeFromNativeMust(link.Type(), fibcapi.LinkType_DEVICE)
 }

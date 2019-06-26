@@ -1,0 +1,57 @@
+---
+
+- name: create profile
+  lxd_profile:
+    name: "{{ lxcname }}"
+    state: present
+    config: {"security.privileged": "true"}
+    devices:
+      eth0: # Management LAN
+        name: eth0
+        nictype: bridged
+        parent: lxdbr0
+        type: nic
+      eth1:
+        type: nic
+        name: eth1
+        host_name: "{{ lxcname }}.1"
+        nictype: p2p
+        mtu: "9000"
+      eth2:
+        type: nic
+        name: eth2
+        host_name: "{{ lxcname }}.2"
+        nictype: p2p
+        mtu: "9000"
+      eth3:
+        type: nic
+        name: eth3
+        host_name: "{{ lxcname }}.3"
+        nictype: p2p
+        mtu: "9000"
+      eth4:
+        type: nic
+        name: eth4
+        host_name: "{{ lxcname }}.4"
+        nictype: p2p
+        mtu: "9000"
+      eth5:
+        type: nic
+        name: eth5
+        host_name: "{{ lxcname }}.5"
+        nictype: p2p
+        mtu: "9000"
+      eth6:
+        type: nic
+        name: eth6
+        host_name: "{{ lxcname }}.6"
+        nictype: p2p
+        mtu: "9000"
+      logdir:
+        path: /var/log
+        source: /var/log/beluganos/{{ lxcname }}
+        type: disk
+      root:
+        path: /
+        pool: default
+        type: disk

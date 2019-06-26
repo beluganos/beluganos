@@ -19,6 +19,7 @@ package gonslib
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -94,6 +95,19 @@ func (c *BlockBcastConfig) Block() bool {
 }
 
 //
+// L2SWConfig is l2sw configurations.
+//
+type L2SWConfig struct {
+	NotifyLimit uint32 `mapstructure:"notify_limit"`
+	SweepSec    uint32 `mapstructure:"sweep_sec"`
+	AgingSec    uint32 `mapstructure:"aging_sec"`
+}
+
+func (c *L2SWConfig) String() string {
+	return fmt.Sprintf("aging: %d sweep:%d limit:%d", c.AgingSec, c.SweepSec, c.NotifyLimit)
+}
+
+//
 // DpConfig is part of gonsl config.
 //
 type DpConfig struct {
@@ -103,6 +117,7 @@ type DpConfig struct {
 	Unit       int              `mapstructure:"unit"`
 	BlockBcast BlockBcastConfig `mapstructure:"block_bcast"`
 	OpenNSL    *ONSLConfig      `mapstructure:"opennsl"`
+	L2SW       L2SWConfig       `mapstructure:"l2sw"`
 }
 
 //
@@ -137,6 +152,31 @@ func (c *DpConfig) GetPort() uint16 {
 //
 func (c *DpConfig) GetHost() string {
 	return fmt.Sprintf("%s:%d", c.GetAddr(), c.GetPort())
+}
+
+//
+// GetL2SweepTime returns l2 addr table sweep time.
+//
+func (c *DpConfig) GetL2SweepTime() time.Duration {
+	if c.L2SW.SweepSec == 0 {
+		c.L2SW.SweepSec = 5
+	}
+
+	return time.Duration(c.L2SW.SweepSec) * time.Second
+}
+
+//
+// GetL2AgingTimer returns l2 aging timer (second).
+//
+func (c *DpConfig) GetL2AgingTimer() int {
+	return int(c.L2SW.AgingSec)
+}
+
+func (c *DpConfig) GetL2NotifyLimit() uint32 {
+	if c.L2SW.NotifyLimit == 0 {
+		return 128
+	}
+	return c.L2SW.NotifyLimit
 }
 
 //

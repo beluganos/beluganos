@@ -40,7 +40,6 @@ class FIBCPortEntry(dict):
         self["vs"] = vs
         self["dp"] = dp
         self["link"] = kwargs.get("link", None)
-        self["slaves"] = kwargs.get("slaves", None)
         self["dpenter"] = kwargs.get("dpenter", False)
         self["no_vs"] = kwargs.get("no_vs", False)
         self["vs_hw_addr"] = kwargs.get("vs_hw_addr", "")
@@ -62,16 +61,12 @@ class FIBCPortEntry(dict):
             link = FIBCLink(vm_id, link)
         else:
             link = None
-        slaves = kwargs.get("slaves", None)
-        if slaves is not None:
-            slaves = [FIBCLink(vm_id, slave) for slave in slaves]
         return cls(
             dp=FIBCPort(dp_id, dp_port),
             vm=FIBCPort(vm_id, vm_port),
             vs=FIBCPort(vs_id, vs_port),
             name=FIBCLink(vm_id, kwargs["name"]),
             link=link,
-            slaves=slaves,
             dpenter=kwargs.get("dpenter", False),
             no_vs=kwargs.get("no_vs", False),
             vs_hw_addr=kwargs.get("vs_hw_addr", "")
@@ -95,9 +90,23 @@ class FIBCPortEntry(dict):
         """
         Replace vm port_id
         """
-        self["vm"] = FIBCPort(self["vm"].id, port_id)
-        return self
 
+        if self["vm"].port == port_id:
+            return False
+
+        self["vm"] = FIBCPort(self["vm"].id, port_id)
+        return True
+
+
+    def update_dp(self, enter):
+        """
+        set enter flag
+        """
+        if self["dpenter"] == enter:
+            return False
+
+        self["dpenter"] = enter
+        return True
 
     def is_datapath_ready(self):
         """
@@ -116,7 +125,7 @@ class FIBCPortEntry(dict):
         """
         Check if port entry from config file.
         """
-        return self["link"] is None and self["slaves"] is None and not self["no_vs"]
+        return self["link"] is None and not self["no_vs"]
 
 
 class FIBCDbPortMapTable(object):
@@ -241,32 +250,6 @@ class FIBCDbPortMapTable(object):
                 ports.append(port)
 
         return ports
-
-
-    def slave_ports(self, port):
-        """
-        Get slave port list.
-        """
-        slaves = port["slaves"]
-        if slaves is None:
-            return []
-
-        return [self.find_by_name_key(slave) for slave in slaves]
-
-
-    def master_port(self, port):
-        """
-        Get master port
-        """
-        for master in self.ports.values():
-            slaves = master.get("slaves", None)
-            if slaves is None:
-                continue
-
-            if port["name"] in slaves:
-                return master
-
-        raise KeyError("Not slave device. {0}".format(port))
 
 
     def upper_ports(self, port, exclude=True):

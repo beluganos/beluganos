@@ -216,6 +216,11 @@ class FIBCApiDpController(object):
             evt = fibcevt.EventFIBCFFPortStatus(msg)
             self._send_evt(evt)
 
+        elif mtype == pb.FF_L2ADDR_STATUS:
+            msg = fibcapi.parse_ff_l2addr_status(data)
+            evt = fibcevt.EventFIBCFFL2AddrStatus(self.dpath, msg)
+            self._send_evt(evt)
+
         else:
             _LOG.warn("Unknown message dp_id:%d %s", self.dpath.id, hdr)
             if fibclog.dump_msg():
@@ -236,6 +241,7 @@ class FIBCApiApp(app_manager.RyuApp):
         fibcevt.EventFIBCMultipartReply,
         fibcevt.EventFIBCPacketIn,
         fibcevt.EventFIBCFFPortStatus,
+        fibcevt.EventFIBCFFL2AddrStatus,
     ]
 
     def __init__(self, *args, **kwargs):
@@ -331,6 +337,7 @@ class FIBCApiApp(app_manager.RyuApp):
 
 
     @handler.set_ev_cls([fibcevt.EventFIBCPortStatus,
+                         fibcevt.EventFIBCL2AddrStatus,
                          fibcevt.EventFIBCDpStatus], handler.MAIN_DISPATCHER)
     def _send_msg_to_vm_handler(self, evt):
         """
@@ -338,5 +345,5 @@ class FIBCApiApp(app_manager.RyuApp):
         """
         msg = evt.msg
         mtype = evt.mtype
-        _LOG.info("PortStatus: %s %s", mtype, msg)
+        _LOG.info("send_to_vm: %s %s", mtype, msg)
         self.send_to_vm(mtype, msg)

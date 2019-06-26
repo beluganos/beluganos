@@ -8,6 +8,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -147,6 +149,14 @@ func (c *rIBPApiClient) SendFFPacket(ctx context.Context, in *FFPacketRequest, o
 // RIBPApiServer is the server API for RIBPApi service.
 type RIBPApiServer interface {
 	SendFFPacket(context.Context, *FFPacketRequest) (*SendFFPacketReply, error)
+}
+
+// UnimplementedRIBPApiServer can be embedded to have forward compatible implementations.
+type UnimplementedRIBPApiServer struct {
+}
+
+func (*UnimplementedRIBPApiServer) SendFFPacket(ctx context.Context, req *FFPacketRequest) (*SendFFPacketReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendFFPacket not implemented")
 }
 
 func RegisterRIBPApiServer(s *grpc.Server, srv RIBPApiServer) {

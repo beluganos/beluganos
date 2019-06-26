@@ -8,6 +8,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -733,6 +735,20 @@ type RIBSApiServer interface {
 	GetNexthopMap(*GetNexthopMapRequest, RIBSApi_GetNexthopMapServer) error
 }
 
+// UnimplementedRIBSApiServer can be embedded to have forward compatible implementations.
+type UnimplementedRIBSApiServer struct {
+}
+
+func (*UnimplementedRIBSApiServer) GetRics(req *GetRicsRequest, srv RIBSApi_GetRicsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetRics not implemented")
+}
+func (*UnimplementedRIBSApiServer) GetNexthops(req *GetNexthopsRequest, srv RIBSApi_GetNexthopsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetNexthops not implemented")
+}
+func (*UnimplementedRIBSApiServer) GetNexthopMap(req *GetNexthopMapRequest, srv RIBSApi_GetNexthopMapServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetNexthopMap not implemented")
+}
+
 func RegisterRIBSApiServer(s *grpc.Server, srv RIBSApiServer) {
 	s.RegisterService(&_RIBSApi_serviceDesc, srv)
 }
@@ -896,6 +912,20 @@ type RIBSCoreApiServer interface {
 	ModRib(context.Context, *RibUpdate) (*ModRibReply, error)
 	MonitorRib(*MonitorRibRequest, RIBSCoreApi_MonitorRibServer) error
 	SyncRib(context.Context, *SyncRibRequest) (*SyncRibReply, error)
+}
+
+// UnimplementedRIBSCoreApiServer can be embedded to have forward compatible implementations.
+type UnimplementedRIBSCoreApiServer struct {
+}
+
+func (*UnimplementedRIBSCoreApiServer) ModRib(ctx context.Context, req *RibUpdate) (*ModRibReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ModRib not implemented")
+}
+func (*UnimplementedRIBSCoreApiServer) MonitorRib(req *MonitorRibRequest, srv RIBSCoreApi_MonitorRibServer) error {
+	return status.Errorf(codes.Unimplemented, "method MonitorRib not implemented")
+}
+func (*UnimplementedRIBSCoreApiServer) SyncRib(ctx context.Context, req *SyncRibRequest) (*SyncRibReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SyncRib not implemented")
 }
 
 func RegisterRIBSCoreApiServer(s *grpc.Server, srv RIBSCoreApiServer) {

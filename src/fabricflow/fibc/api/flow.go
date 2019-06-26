@@ -18,9 +18,10 @@
 package fibcapi
 
 import (
+	"net"
+
 	"github.com/golang/protobuf/proto"
 	"golang.org/x/sys/unix"
-	"net"
 )
 
 //
@@ -80,6 +81,24 @@ func (f *VLANFlow) ToMod(cmd FlowMod_Cmd, reId string) *FlowMod {
 		ReId:  reId,
 		Entry: &FlowMod_Vlan{Vlan: f},
 	}
+}
+
+func (f VLANFlow) GetAction(name VLANFlow_Action_Name) *VLANFlow_Action {
+	for _, action := range f.Actions {
+		if action.GetName() == name {
+			return action
+		}
+	}
+
+	return nil
+}
+
+func (f VLANFlow) BridgeVlanInfoFlags() (BridgeVlanInfo_Flags, bool) {
+	if a := f.GetAction(VLANFlow_Action_SET_VLAN_L2_TYPE); a != nil {
+		return BridgeVlanInfo_Flags(a.GetValue()), true
+	}
+
+	return BridgeVlanInfo_NOP, false
 }
 
 //
@@ -210,6 +229,45 @@ func (f *UnicastRoutingFlow) ToMod(cmd FlowMod_Cmd, reId string) *FlowMod {
 }
 
 //
+// Bridging Flow Table
+//
+
+func (f *BridgingFlow) ToMod(cmd FlowMod_Cmd, reId string) *FlowMod {
+	return &FlowMod{
+		Cmd:   cmd,
+		Table: FlowMod_BRIDGING,
+		ReId:  reId,
+		Entry: &FlowMod_Bridging{Bridging: f},
+	}
+}
+
+func NewBridgingFlowMatch(ethDst string, vid uint16, tunId uint32) *BridgingFlow_Match {
+	return &BridgingFlow_Match{
+		EthDst:   ethDst,
+		VlanVid:  uint32(vid),
+		TunnelId: tunId,
+	}
+}
+
+func NewBridgingFlowAction(key string, value uint32) *BridgingFlow_Action {
+	if n, ok := BridgingFlow_Action_Name_value[key]; ok {
+		return &BridgingFlow_Action{
+			Name:  BridgingFlow_Action_Name(n),
+			Value: value,
+		}
+	}
+
+	return nil
+}
+
+func NewBridgingFlow(match *BridgingFlow_Match, action *BridgingFlow_Action) *BridgingFlow {
+	return &BridgingFlow{
+		Match:  match,
+		Action: action,
+	}
+}
+
+//
 // Policy ACL Flow Table
 //
 func (f *PolicyACLFlow) ToMod(cmd FlowMod_Cmd, reId string) *FlowMod {
@@ -224,11 +282,12 @@ func (f *PolicyACLFlow) ToMod(cmd FlowMod_Cmd, reId string) *FlowMod {
 //
 // Policy ACL Flow (match ip_dst and send controller)
 //
-func NewPolicyACLFlowByAddr(family int32, ipDst net.IP, vrf uint8) *PolicyACLFlow {
+func NewPolicyACLFlowByAddr(family int32, ipDst net.IP, vrf uint8, inPort uint32) *PolicyACLFlow {
 	return &PolicyACLFlow{
 		Match: &PolicyACLFlow_Match{
-			IpDst: ipDst.String(),
-			Vrf:   uint32(vrf),
+			InPort: inPort,
+			IpDst:  ipDst.String(),
+			Vrf:    uint32(vrf),
 			EthType: func() uint32 {
 				switch family {
 				case unix.AF_INET:

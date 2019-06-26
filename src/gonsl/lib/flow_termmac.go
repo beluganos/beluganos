@@ -18,8 +18,8 @@
 package gonslib
 
 import (
-	"fabricflow/fibc/api"
-	"fabricflow/fibc/net"
+	fibcapi "fabricflow/fibc/api"
+	fibcnet "fabricflow/fibc/net"
 
 	"github.com/beluganos/go-opennsl/opennsl"
 
@@ -31,6 +31,13 @@ import (
 //
 func (s *Server) FIBCTerminationMacFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow *fibcapi.TerminationMacFlow) {
 	log.Debugf("Server: FlowMod(TermMAC): %v %v %v", hdr, mod, flow)
+
+	port, portType := fibcapi.ParseDPPortId(flow.Match.InPort)
+	switch portType {
+	case fibcapi.LinkType_BRIDGE, fibcapi.LinkType_BOND:
+		log.Debugf("Server: FlowMod(TermMAC): %d %s skip", port, portType)
+		return
+	}
 
 	mac, mask, err := fibcapi.ParseMaskedMAC(flow.Match.EthDst)
 	if err != nil {
@@ -57,7 +64,7 @@ func (s *Server) FIBCTerminationMacFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 
 	l2addr := opennsl.NewL2Addr(mac, vlan)
 	l2addr.SetFlags(opennsl.L2_L3LOOKUP | opennsl.L2_STATIC)
-	l2addr.SetPort(opennsl.Port(flow.Match.InPort))
+	l2addr.SetPort(opennsl.Port(port))
 
 	switch mod.Cmd {
 	case fibcapi.FlowMod_ADD:

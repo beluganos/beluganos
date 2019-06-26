@@ -28,20 +28,24 @@ message FieldEntry {
 message EthDstFieldEntry {
   string eth_dst  = 1;
   string eth_mask = 2;
+  uint32 in_port  = 3;
 }
 
 message EthTypeFieldEntry {
   uint32 eth_type = 1;
+  uint32 in_port  = 2;
 }
 
 message DstIpFieldEntry {
   uint32 eth_type = 1;
   string ip_dst   = 2;
+  uint32 in_port  = 3;
 }
 
 message IpProtoFieldEntry {
   uint32 eth_type = 1;
   uint32 ip_proto = 2;
+  uint32 in_port  = 3;
 }
 
 message GetFieldEntriesRequest {
@@ -50,6 +54,23 @@ message GetFieldEntriesRequest {
 
 message GetFieldEntriesReply {
   repeated FieldEntry entries = 1;
+}
+
+//
+// Port
+//
+message PortInfo {
+  uint32 port          = 1;
+  int32  link_status   = 2;
+  uint32 untagged_vlan = 3;
+}
+
+message GetPortInfosRequest {
+
+}
+
+message GetPortInfosReply {
+  repeated PortInfo port_infos = 1;
 }
 
 //
@@ -261,7 +282,7 @@ message GetTunnelTerminatorsReply {
 //
 message IDMapEntry {
   string name  = 1;
-  uint32 key   = 2;
+  string key   = 2;
   uint32 value = 3;
 }
 
@@ -278,6 +299,7 @@ message GetIDMapEntriesReply {
 //
 service GoNSLApi {
   rpc GetFieldEntries (GetFieldEntriesRequest)   returns (GetFieldEntriesReply) {}
+  rpc GetPortInfos    (GetPortInfosRequest)      returns (GetPortInfosReply)    {}
   rpc GetVlans        (GetVlansRequest)          returns (GetVlansReply)        {}
   rpc GetL2Addrs      (GetL2AddrsRequest)        returns (GetL2AddrsReply)      {}
   rpc GetL2Stations   (GetL2StationsRequest)     returns (GetL2StationsReply)   {}

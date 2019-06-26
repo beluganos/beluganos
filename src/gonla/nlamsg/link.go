@@ -19,9 +19,17 @@ package nlamsg
 
 import (
 	"fmt"
+
 	"github.com/vishvananda/netlink"
 	"golang.org/x/sys/unix"
 )
+
+type BridgeSlaveInfo struct {
+}
+
+func (b *BridgeSlaveInfo) SlaveType() string {
+	return "bridge"
+}
 
 //
 // Link
@@ -58,6 +66,26 @@ func (ln *Link) Iptun() *netlink.Iptun {
 		return iptun
 	}
 	return nil
+}
+
+func (ln *Link) Bridge() *netlink.Bridge {
+	if br, ok := ln.Link.(*netlink.Bridge); ok {
+		return br
+	}
+	return nil
+}
+
+func (ln *Link) GetSlaveInfo() netlink.LinkSlaveInfo {
+	if ln.Attrs().MasterIndex == 0 {
+		return nil
+	}
+
+	if ln.Attrs().SlaveInfo == nil {
+		// Bridge slave
+		return &BridgeSlaveInfo{}
+	}
+
+	return ln.Attrs().SlaveInfo
 }
 
 func (ln *Link) Copy() *Link {

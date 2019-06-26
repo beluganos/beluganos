@@ -24,24 +24,27 @@ import (
 )
 
 var RTMStrings = map[uint16]string{
-	nlalink.RTM_NEWNODE:  "RTM_NEWNODE",
-	nlalink.RTM_DELNODE:  "RTM_DELNODE",
-	nlalink.RTM_SETNODE:  "RTM_SETNODE",
-	nlalink.RTM_NEWVPN:   "RTM_NEWVPN",
-	nlalink.RTM_DELVPN:   "RTM_DELVPN",
-	nlalink.RTM_SETVPN:   "RTM_SETVPN",
-	syscall.RTM_NEWLINK:  "RTM_NEWLINK",
-	syscall.RTM_DELLINK:  "RTM_DELLINK",
-	syscall.RTM_SETLINK:  "RTM_SETLINK",
-	syscall.RTM_NEWADDR:  "RTM_NEWADDR",
-	syscall.RTM_DELADDR:  "RTM_DELADDR",
-	nlalink.RTM_SETADDR:  "RTM_SETADDR",
-	syscall.RTM_NEWNEIGH: "RTM_NEWNEIGH",
-	syscall.RTM_DELNEIGH: "RTM_DELNEIGH",
-	nlalink.RTM_SETNEIGH: "RTM_SETNEIGH",
-	syscall.RTM_NEWROUTE: "RTM_NEWROUTE",
-	syscall.RTM_DELROUTE: "RTM_DELROUTE",
-	nlalink.RTM_SETROUTE: "RTM_SETROUTE",
+	nlalink.RTM_NEWNODE:   "RTM_NEWNODE",
+	nlalink.RTM_DELNODE:   "RTM_DELNODE",
+	nlalink.RTM_SETNODE:   "RTM_SETNODE",
+	nlalink.RTM_NEWVPN:    "RTM_NEWVPN",
+	nlalink.RTM_DELVPN:    "RTM_DELVPN",
+	nlalink.RTM_SETVPN:    "RTM_SETVPN",
+	nlalink.RTM_NEWBRIDGE: "RTM_NEWBRIDGE",
+	nlalink.RTM_DELBRIDGE: "RTM_DELBRIDGE",
+	nlalink.RTM_SETBRIDGE: "RTM_SETBRIDGE",
+	syscall.RTM_NEWLINK:   "RTM_NEWLINK",
+	syscall.RTM_DELLINK:   "RTM_DELLINK",
+	syscall.RTM_SETLINK:   "RTM_SETLINK",
+	syscall.RTM_NEWADDR:   "RTM_NEWADDR",
+	syscall.RTM_DELADDR:   "RTM_DELADDR",
+	nlalink.RTM_SETADDR:   "RTM_SETADDR",
+	syscall.RTM_NEWNEIGH:  "RTM_NEWNEIGH",
+	syscall.RTM_DELNEIGH:  "RTM_DELNEIGH",
+	nlalink.RTM_SETNEIGH:  "RTM_SETNEIGH",
+	syscall.RTM_NEWROUTE:  "RTM_NEWROUTE",
+	syscall.RTM_DELROUTE:  "RTM_DELROUTE",
+	nlalink.RTM_SETROUTE:  "RTM_SETROUTE",
 }
 
 func NlMsgTypeStr(t uint16) string {
@@ -52,12 +55,13 @@ func NlMsgTypeStr(t uint16) string {
 }
 
 var RTMGRPStrings = map[uint16]string{
-	nlalink.RTMGRP_NODE:  "RTMGRP_NODE",
-	nlalink.RTMGRP_VPN:   "RTMGRP_VPN",
-	nlalink.RTMGRP_LINK:  "RTMGRP_LINK",
-	nlalink.RTMGRP_ADDR:  "RTMGRP_ADDR",
-	nlalink.RTMGRP_NEIGH: "RTMGRP_NEIGH",
-	nlalink.RTMGRP_ROUTE: "RTMGRP_ROUTE",
+	nlalink.RTMGRP_NODE:   "RTMGRP_NODE",
+	nlalink.RTMGRP_VPN:    "RTMGRP_VPN",
+	nlalink.RTMGRP_BRIDGE: "RTMGRP_BRIDGE",
+	nlalink.RTMGRP_LINK:   "RTMGRP_LINK",
+	nlalink.RTMGRP_ADDR:   "RTMGRP_ADDR",
+	nlalink.RTMGRP_NEIGH:  "RTMGRP_NEIGH",
+	nlalink.RTMGRP_ROUTE:  "RTMGRP_ROUTE",
 }
 
 func NlMsgGroupStr(g uint16) string {

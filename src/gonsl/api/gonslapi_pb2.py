@@ -7,6 +7,7 @@ from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
+from google.protobuf import descriptor_pb2
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
@@ -18,8 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='gonslapi.proto',
   package='gonslapi',
   syntax='proto3',
-  serialized_options=None,
-  serialized_pb=_b('\n\x0egonslapi.proto\x12\x08gonslapi\"\xd2\x02\n\nFieldEntry\x12\x32\n\nentry_type\x18\x01 \x01(\x0e\x32\x1e.gonslapi.FieldEntry.EntryType\x12/\n\x08\x65th_type\x18\x02 \x01(\x0b\x32\x1b.gonslapi.EthTypeFieldEntryH\x00\x12+\n\x06\x64st_ip\x18\x03 \x01(\x0b\x32\x19.gonslapi.DstIpFieldEntryH\x00\x12/\n\x08ip_proto\x18\x04 \x01(\x0b\x32\x1b.gonslapi.IpProtoFieldEntryH\x00\x12-\n\x07\x65th_dst\x18\x05 \x01(\x0b\x32\x1a.gonslapi.EthDstFieldEntryH\x00\"I\n\tEntryType\x12\x07\n\x03NOP\x10\x00\x12\x0c\n\x08\x45TH_TYPE\x10\x01\x12\n\n\x06\x44ST_IP\x10\x02\x12\x0c\n\x08IP_PROTO\x10\x03\x12\x0b\n\x07\x45TH_DST\x10\x04\x42\x07\n\x05\x65ntry\"5\n\x10\x45thDstFieldEntry\x12\x0f\n\x07\x65th_dst\x18\x01 \x01(\t\x12\x10\n\x08\x65th_mask\x18\x02 \x01(\t\"%\n\x11\x45thTypeFieldEntry\x12\x10\n\x08\x65th_type\x18\x01 \x01(\r\"3\n\x0f\x44stIpFieldEntry\x12\x10\n\x08\x65th_type\x18\x01 \x01(\r\x12\x0e\n\x06ip_dst\x18\x02 \x01(\t\"7\n\x11IpProtoFieldEntry\x12\x10\n\x08\x65th_type\x18\x01 \x01(\r\x12\x10\n\x08ip_proto\x18\x02 \x01(\r\"\x18\n\x16GetFieldEntriesRequest\"=\n\x14GetFieldEntriesReply\x12%\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x14.gonslapi.FieldEntry\"<\n\tVlanEntry\x12\x0b\n\x03vid\x18\x01 \x01(\r\x12\r\n\x05ports\x18\x02 \x03(\r\x12\x13\n\x0buntag_ports\x18\x03 \x03(\r\"\x11\n\x0fGetVlansRequest\"3\n\rGetVlansReply\x12\"\n\x05vlans\x18\x01 \x03(\x0b\x32\x13.gonslapi.VlanEntry\"?\n\x06L2Addr\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x0b\n\x03mac\x18\x02 \x01(\t\x12\x0b\n\x03vid\x18\x03 \x01(\r\x12\x0c\n\x04port\x18\x04 \x01(\r\"\x13\n\x11GetL2AddrsRequest\"2\n\x0fGetL2AddrsReply\x12\x1f\n\x05\x61\x64\x64rs\x18\x01 \x03(\x0b\x32\x10.gonslapi.L2Addr\"\x8b\x01\n\tL2Station\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x0f\n\x07\x64st_mac\x18\x02 \x01(\t\x12\x14\n\x0c\x64st_mac_mask\x18\x03 \x01(\t\x12\x0c\n\x04vlan\x18\x04 \x01(\r\x12\x11\n\tvlan_mask\x18\x05 \x01(\r\x12\x10\n\x08src_port\x18\x06 \x01(\r\x12\x15\n\rsrc_port_mask\x18\x07 \x01(\r\"\x16\n\x14GetL2StationsRequest\";\n\x12GetL2StationsReply\x12%\n\x08stations\x18\x01 \x03(\x0b\x32\x13.gonslapi.L2Station\"|\n\x07L3Iface\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x10\n\x08iface_id\x18\x02 \x01(\r\x12\x0b\n\x03mac\x18\x03 \x01(\t\x12\x0b\n\x03mtu\x18\x04 \x01(\r\x12\x0f\n\x07mtu_fwd\x18\x05 \x01(\r\x12\x0b\n\x03ttl\x18\x06 \x01(\r\x12\x0b\n\x03vid\x18\x07 \x01(\r\x12\x0b\n\x03vrf\x18\x08 \x01(\r\".\n\x12\x46indL3IfaceRequest\x12\x0b\n\x03mac\x18\x01 \x01(\t\x12\x0b\n\x03vid\x18\x02 \x01(\r\"4\n\x10\x46indL3IfaceReply\x12 \n\x05iface\x18\x01 \x01(\x0b\x32\x11.gonslapi.L3Iface\"%\n\x11GetL3IfaceRequest\x12\x10\n\x08iface_id\x18\x01 \x01(\r\"3\n\x0fGetL3IfaceReply\x12 \n\x05iface\x18\x01 \x01(\x0b\x32\x11.gonslapi.L3Iface\"\x14\n\x12GetL3IfacesRequest\"5\n\x10GetL3IfacesReply\x12!\n\x06ifaces\x18\x01 \x03(\x0b\x32\x11.gonslapi.L3Iface\"v\n\x08L3Egress\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x0e\n\x06\x66lags2\x18\x02 \x01(\r\x12\x11\n\tegress_id\x18\x03 \x01(\r\x12\x10\n\x08iface_id\x18\x04 \x01(\r\x12\x0b\n\x03mac\x18\x05 \x01(\t\x12\x0b\n\x03vid\x18\x06 \x01(\r\x12\x0c\n\x04port\x18\x07 \x01(\r\"\x16\n\x14GetL3EgressesRequest\":\n\x12GetL3EgressesReply\x12$\n\x08\x65gresses\x18\x01 \x03(\x0b\x32\x12.gonslapi.L3Egress\"g\n\x06L3Host\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x11\n\tegress_id\x18\x02 \x01(\r\x12\x0f\n\x07ip_addr\x18\x03 \x01(\t\x12\x10\n\x08ip6_addr\x18\x04 \x01(\t\x12\x0b\n\x03mac\x18\x05 \x01(\t\x12\x0b\n\x03vrf\x18\x06 \x01(\r\"\x13\n\x11GetL3HostsRequest\"2\n\x0fGetL3HostsReply\x12\x1f\n\x05hosts\x18\x01 \x03(\x0b\x32\x10.gonslapi.L3Host\"[\n\x07L3Route\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x11\n\tegress_id\x18\x02 \x01(\r\x12\x0f\n\x07ip_addr\x18\x03 \x01(\t\x12\x10\n\x08ip6_addr\x18\x04 \x01(\t\x12\x0b\n\x03vrf\x18\x05 \x01(\r\"\x14\n\x12GetL3RoutesRequest\"5\n\x10GetL3RoutesReply\x12!\n\x06routes\x18\x01 \x03(\x0b\x32\x11.gonslapi.L3Route\"\xeb\x01\n\x0fTunnelInitiator\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x11\n\ttunnel_id\x18\x02 \x01(\r\x12\x13\n\x0btunnel_type\x18\x03 \x01(\t\x12\x13\n\x0bl3_iface_id\x18\x04 \x01(\r\x12\x0f\n\x07\x64st_mac\x18\x05 \x01(\t\x12\x0f\n\x07src_mac\x18\x06 \x01(\t\x12\x0e\n\x06\x64st_ip\x18\x07 \x01(\t\x12\x0e\n\x06src_ip\x18\x08 \x01(\t\x12\x10\n\x08\x64st_port\x18\t \x01(\r\x12\x10\n\x08src_port\x18\n \x01(\r\x12\x0b\n\x03ttl\x18\x0b \x01(\r\x12\x0b\n\x03mtu\x18\x0c \x01(\r\x12\x0c\n\x04vlan\x18\r \x01(\r\"\xcb\x01\n\x10TunnelTerminator\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x11\n\ttunnel_id\x18\x02 \x01(\r\x12\x13\n\x0btunnel_type\x18\x03 \x01(\t\x12\x13\n\x0bremote_port\x18\x04 \x01(\r\x12\x0e\n\x06\x64st_ip\x18\x05 \x01(\t\x12\x0e\n\x06src_ip\x18\x06 \x01(\t\x12\x10\n\x08\x64st_port\x18\x07 \x01(\r\x12\x10\n\x08src_port\x18\x08 \x01(\r\x12\x0c\n\x04vlan\x18\t \x01(\r\x12\x0b\n\x03vrf\x18\n \x01(\r\x12\x0c\n\x04pbmp\x18\x0b \x03(\r\"\x1c\n\x1aGetTunnelInitiatorsRequest\"F\n\x18GetTunnelInitiatorsReply\x12*\n\x07tunnels\x18\x01 \x03(\x0b\x32\x19.gonslapi.TunnelInitiator\"\x1d\n\x1bGetTunnelTerminatorsRequest\"H\n\x19GetTunnelTerminatorsReply\x12+\n\x07tunnels\x18\x01 \x03(\x0b\x32\x1a.gonslapi.TunnelTerminator\"6\n\nIDMapEntry\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0b\n\x03key\x18\x02 \x01(\r\x12\r\n\x05value\x18\x03 \x01(\r\"\x18\n\x16GetIDMapEntriesRequest\"=\n\x14GetIDMapEntriesReply\x12%\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x14.gonslapi.IDMapEntry2\x9e\x08\n\x08GoNSLApi\x12U\n\x0fGetFieldEntries\x12 .gonslapi.GetFieldEntriesRequest\x1a\x1e.gonslapi.GetFieldEntriesReply\"\x00\x12@\n\x08GetVlans\x12\x19.gonslapi.GetVlansRequest\x1a\x17.gonslapi.GetVlansReply\"\x00\x12\x46\n\nGetL2Addrs\x12\x1b.gonslapi.GetL2AddrsRequest\x1a\x19.gonslapi.GetL2AddrsReply\"\x00\x12O\n\rGetL2Stations\x12\x1e.gonslapi.GetL2StationsRequest\x1a\x1c.gonslapi.GetL2StationsReply\"\x00\x12I\n\x0b\x46indL3Iface\x12\x1c.gonslapi.FindL3IfaceRequest\x1a\x1a.gonslapi.FindL3IfaceReply\"\x00\x12\x46\n\nGetL3Iface\x12\x1b.gonslapi.GetL3IfaceRequest\x1a\x19.gonslapi.GetL3IfaceReply\"\x00\x12I\n\x0bGetL3Ifaces\x12\x1c.gonslapi.GetL3IfacesRequest\x1a\x1a.gonslapi.GetL3IfacesReply\"\x00\x12O\n\rGetL3Egresses\x12\x1e.gonslapi.GetL3EgressesRequest\x1a\x1c.gonslapi.GetL3EgressesReply\"\x00\x12\x46\n\nGetL3Hosts\x12\x1b.gonslapi.GetL3HostsRequest\x1a\x19.gonslapi.GetL3HostsReply\"\x00\x12I\n\x0bGetL3Routes\x12\x1c.gonslapi.GetL3RoutesRequest\x1a\x1a.gonslapi.GetL3RoutesReply\"\x00\x12U\n\x0fGetIDMapEntries\x12 .gonslapi.GetIDMapEntriesRequest\x1a\x1e.gonslapi.GetIDMapEntriesReply\"\x00\x12\x61\n\x13GetTunnelInitiators\x12$.gonslapi.GetTunnelInitiatorsRequest\x1a\".gonslapi.GetTunnelInitiatorsReply\"\x00\x12\x64\n\x14GetTunnelTerminators\x12%.gonslapi.GetTunnelTerminatorsRequest\x1a#.gonslapi.GetTunnelTerminatorsReply\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x0egonslapi.proto\x12\x08gonslapi\"\xd2\x02\n\nFieldEntry\x12\x32\n\nentry_type\x18\x01 \x01(\x0e\x32\x1e.gonslapi.FieldEntry.EntryType\x12/\n\x08\x65th_type\x18\x02 \x01(\x0b\x32\x1b.gonslapi.EthTypeFieldEntryH\x00\x12+\n\x06\x64st_ip\x18\x03 \x01(\x0b\x32\x19.gonslapi.DstIpFieldEntryH\x00\x12/\n\x08ip_proto\x18\x04 \x01(\x0b\x32\x1b.gonslapi.IpProtoFieldEntryH\x00\x12-\n\x07\x65th_dst\x18\x05 \x01(\x0b\x32\x1a.gonslapi.EthDstFieldEntryH\x00\"I\n\tEntryType\x12\x07\n\x03NOP\x10\x00\x12\x0c\n\x08\x45TH_TYPE\x10\x01\x12\n\n\x06\x44ST_IP\x10\x02\x12\x0c\n\x08IP_PROTO\x10\x03\x12\x0b\n\x07\x45TH_DST\x10\x04\x42\x07\n\x05\x65ntry\"F\n\x10\x45thDstFieldEntry\x12\x0f\n\x07\x65th_dst\x18\x01 \x01(\t\x12\x10\n\x08\x65th_mask\x18\x02 \x01(\t\x12\x0f\n\x07in_port\x18\x03 \x01(\r\"6\n\x11\x45thTypeFieldEntry\x12\x10\n\x08\x65th_type\x18\x01 \x01(\r\x12\x0f\n\x07in_port\x18\x02 \x01(\r\"D\n\x0f\x44stIpFieldEntry\x12\x10\n\x08\x65th_type\x18\x01 \x01(\r\x12\x0e\n\x06ip_dst\x18\x02 \x01(\t\x12\x0f\n\x07in_port\x18\x03 \x01(\r\"H\n\x11IpProtoFieldEntry\x12\x10\n\x08\x65th_type\x18\x01 \x01(\r\x12\x10\n\x08ip_proto\x18\x02 \x01(\r\x12\x0f\n\x07in_port\x18\x03 \x01(\r\"\x18\n\x16GetFieldEntriesRequest\"=\n\x14GetFieldEntriesReply\x12%\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x14.gonslapi.FieldEntry\"D\n\x08PortInfo\x12\x0c\n\x04port\x18\x01 \x01(\r\x12\x13\n\x0blink_status\x18\x02 \x01(\x05\x12\x15\n\runtagged_vlan\x18\x03 \x01(\r\"\x15\n\x13GetPortInfosRequest\";\n\x11GetPortInfosReply\x12&\n\nport_infos\x18\x01 \x03(\x0b\x32\x12.gonslapi.PortInfo\"<\n\tVlanEntry\x12\x0b\n\x03vid\x18\x01 \x01(\r\x12\r\n\x05ports\x18\x02 \x03(\r\x12\x13\n\x0buntag_ports\x18\x03 \x03(\r\"\x11\n\x0fGetVlansRequest\"3\n\rGetVlansReply\x12\"\n\x05vlans\x18\x01 \x03(\x0b\x32\x13.gonslapi.VlanEntry\"?\n\x06L2Addr\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x0b\n\x03mac\x18\x02 \x01(\t\x12\x0b\n\x03vid\x18\x03 \x01(\r\x12\x0c\n\x04port\x18\x04 \x01(\r\"\x13\n\x11GetL2AddrsRequest\"2\n\x0fGetL2AddrsReply\x12\x1f\n\x05\x61\x64\x64rs\x18\x01 \x03(\x0b\x32\x10.gonslapi.L2Addr\"\x8b\x01\n\tL2Station\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x0f\n\x07\x64st_mac\x18\x02 \x01(\t\x12\x14\n\x0c\x64st_mac_mask\x18\x03 \x01(\t\x12\x0c\n\x04vlan\x18\x04 \x01(\r\x12\x11\n\tvlan_mask\x18\x05 \x01(\r\x12\x10\n\x08src_port\x18\x06 \x01(\r\x12\x15\n\rsrc_port_mask\x18\x07 \x01(\r\"\x16\n\x14GetL2StationsRequest\";\n\x12GetL2StationsReply\x12%\n\x08stations\x18\x01 \x03(\x0b\x32\x13.gonslapi.L2Station\"|\n\x07L3Iface\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x10\n\x08iface_id\x18\x02 \x01(\r\x12\x0b\n\x03mac\x18\x03 \x01(\t\x12\x0b\n\x03mtu\x18\x04 \x01(\r\x12\x0f\n\x07mtu_fwd\x18\x05 \x01(\r\x12\x0b\n\x03ttl\x18\x06 \x01(\r\x12\x0b\n\x03vid\x18\x07 \x01(\r\x12\x0b\n\x03vrf\x18\x08 \x01(\r\".\n\x12\x46indL3IfaceRequest\x12\x0b\n\x03mac\x18\x01 \x01(\t\x12\x0b\n\x03vid\x18\x02 \x01(\r\"4\n\x10\x46indL3IfaceReply\x12 \n\x05iface\x18\x01 \x01(\x0b\x32\x11.gonslapi.L3Iface\"%\n\x11GetL3IfaceRequest\x12\x10\n\x08iface_id\x18\x01 \x01(\r\"3\n\x0fGetL3IfaceReply\x12 \n\x05iface\x18\x01 \x01(\x0b\x32\x11.gonslapi.L3Iface\"\x14\n\x12GetL3IfacesRequest\"5\n\x10GetL3IfacesReply\x12!\n\x06ifaces\x18\x01 \x03(\x0b\x32\x11.gonslapi.L3Iface\"v\n\x08L3Egress\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x0e\n\x06\x66lags2\x18\x02 \x01(\r\x12\x11\n\tegress_id\x18\x03 \x01(\r\x12\x10\n\x08iface_id\x18\x04 \x01(\r\x12\x0b\n\x03mac\x18\x05 \x01(\t\x12\x0b\n\x03vid\x18\x06 \x01(\r\x12\x0c\n\x04port\x18\x07 \x01(\r\"\x16\n\x14GetL3EgressesRequest\":\n\x12GetL3EgressesReply\x12$\n\x08\x65gresses\x18\x01 \x03(\x0b\x32\x12.gonslapi.L3Egress\"g\n\x06L3Host\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x11\n\tegress_id\x18\x02 \x01(\r\x12\x0f\n\x07ip_addr\x18\x03 \x01(\t\x12\x10\n\x08ip6_addr\x18\x04 \x01(\t\x12\x0b\n\x03mac\x18\x05 \x01(\t\x12\x0b\n\x03vrf\x18\x06 \x01(\r\"\x13\n\x11GetL3HostsRequest\"2\n\x0fGetL3HostsReply\x12\x1f\n\x05hosts\x18\x01 \x03(\x0b\x32\x10.gonslapi.L3Host\"[\n\x07L3Route\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x11\n\tegress_id\x18\x02 \x01(\r\x12\x0f\n\x07ip_addr\x18\x03 \x01(\t\x12\x10\n\x08ip6_addr\x18\x04 \x01(\t\x12\x0b\n\x03vrf\x18\x05 \x01(\r\"\x14\n\x12GetL3RoutesRequest\"5\n\x10GetL3RoutesReply\x12!\n\x06routes\x18\x01 \x03(\x0b\x32\x11.gonslapi.L3Route\"\xeb\x01\n\x0fTunnelInitiator\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x11\n\ttunnel_id\x18\x02 \x01(\r\x12\x13\n\x0btunnel_type\x18\x03 \x01(\t\x12\x13\n\x0bl3_iface_id\x18\x04 \x01(\r\x12\x0f\n\x07\x64st_mac\x18\x05 \x01(\t\x12\x0f\n\x07src_mac\x18\x06 \x01(\t\x12\x0e\n\x06\x64st_ip\x18\x07 \x01(\t\x12\x0e\n\x06src_ip\x18\x08 \x01(\t\x12\x10\n\x08\x64st_port\x18\t \x01(\r\x12\x10\n\x08src_port\x18\n \x01(\r\x12\x0b\n\x03ttl\x18\x0b \x01(\r\x12\x0b\n\x03mtu\x18\x0c \x01(\r\x12\x0c\n\x04vlan\x18\r \x01(\r\"\xcb\x01\n\x10TunnelTerminator\x12\r\n\x05\x66lags\x18\x01 \x01(\r\x12\x11\n\ttunnel_id\x18\x02 \x01(\r\x12\x13\n\x0btunnel_type\x18\x03 \x01(\t\x12\x13\n\x0bremote_port\x18\x04 \x01(\r\x12\x0e\n\x06\x64st_ip\x18\x05 \x01(\t\x12\x0e\n\x06src_ip\x18\x06 \x01(\t\x12\x10\n\x08\x64st_port\x18\x07 \x01(\r\x12\x10\n\x08src_port\x18\x08 \x01(\r\x12\x0c\n\x04vlan\x18\t \x01(\r\x12\x0b\n\x03vrf\x18\n \x01(\r\x12\x0c\n\x04pbmp\x18\x0b \x03(\r\"\x1c\n\x1aGetTunnelInitiatorsRequest\"F\n\x18GetTunnelInitiatorsReply\x12*\n\x07tunnels\x18\x01 \x03(\x0b\x32\x19.gonslapi.TunnelInitiator\"\x1d\n\x1bGetTunnelTerminatorsRequest\"H\n\x19GetTunnelTerminatorsReply\x12+\n\x07tunnels\x18\x01 \x03(\x0b\x32\x1a.gonslapi.TunnelTerminator\"6\n\nIDMapEntry\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\r\"\x18\n\x16GetIDMapEntriesRequest\"=\n\x14GetIDMapEntriesReply\x12%\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x14.gonslapi.IDMapEntry2\xec\x08\n\x08GoNSLApi\x12U\n\x0fGetFieldEntries\x12 .gonslapi.GetFieldEntriesRequest\x1a\x1e.gonslapi.GetFieldEntriesReply\"\x00\x12L\n\x0cGetPortInfos\x12\x1d.gonslapi.GetPortInfosRequest\x1a\x1b.gonslapi.GetPortInfosReply\"\x00\x12@\n\x08GetVlans\x12\x19.gonslapi.GetVlansRequest\x1a\x17.gonslapi.GetVlansReply\"\x00\x12\x46\n\nGetL2Addrs\x12\x1b.gonslapi.GetL2AddrsRequest\x1a\x19.gonslapi.GetL2AddrsReply\"\x00\x12O\n\rGetL2Stations\x12\x1e.gonslapi.GetL2StationsRequest\x1a\x1c.gonslapi.GetL2StationsReply\"\x00\x12I\n\x0b\x46indL3Iface\x12\x1c.gonslapi.FindL3IfaceRequest\x1a\x1a.gonslapi.FindL3IfaceReply\"\x00\x12\x46\n\nGetL3Iface\x12\x1b.gonslapi.GetL3IfaceRequest\x1a\x19.gonslapi.GetL3IfaceReply\"\x00\x12I\n\x0bGetL3Ifaces\x12\x1c.gonslapi.GetL3IfacesRequest\x1a\x1a.gonslapi.GetL3IfacesReply\"\x00\x12O\n\rGetL3Egresses\x12\x1e.gonslapi.GetL3EgressesRequest\x1a\x1c.gonslapi.GetL3EgressesReply\"\x00\x12\x46\n\nGetL3Hosts\x12\x1b.gonslapi.GetL3HostsRequest\x1a\x19.gonslapi.GetL3HostsReply\"\x00\x12I\n\x0bGetL3Routes\x12\x1c.gonslapi.GetL3RoutesRequest\x1a\x1a.gonslapi.GetL3RoutesReply\"\x00\x12U\n\x0fGetIDMapEntries\x12 .gonslapi.GetIDMapEntriesRequest\x1a\x1e.gonslapi.GetIDMapEntriesReply\"\x00\x12\x61\n\x13GetTunnelInitiators\x12$.gonslapi.GetTunnelInitiatorsRequest\x1a\".gonslapi.GetTunnelInitiatorsReply\"\x00\x12\x64\n\x14GetTunnelTerminators\x12%.gonslapi.GetTunnelTerminatorsRequest\x1a#.gonslapi.GetTunnelTerminatorsReply\"\x00\x62\x06proto3')
 )
 
 
@@ -32,27 +32,27 @@ _FIELDENTRY_ENTRYTYPE = _descriptor.EnumDescriptor(
   values=[
     _descriptor.EnumValueDescriptor(
       name='NOP', index=0, number=0,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='ETH_TYPE', index=1, number=1,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='DST_IP', index=2, number=2,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='IP_PROTO', index=3, number=3,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='ETH_DST', index=4, number=4,
-      serialized_options=None,
+      options=None,
       type=None),
   ],
   containing_type=None,
-  serialized_options=None,
+  options=None,
   serialized_start=285,
   serialized_end=358,
 )
@@ -72,35 +72,35 @@ _FIELDENTRY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='eth_type', full_name='gonslapi.FieldEntry.eth_type', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst_ip', full_name='gonslapi.FieldEntry.dst_ip', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ip_proto', full_name='gonslapi.FieldEntry.ip_proto', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='eth_dst', full_name='gonslapi.FieldEntry.eth_dst', index=4,
       number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -108,7 +108,7 @@ _FIELDENTRY = _descriptor.Descriptor(
   enum_types=[
     _FIELDENTRY_ENTRYTYPE,
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -135,28 +135,35 @@ _ETHDSTFIELDENTRY = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='eth_mask', full_name='gonslapi.EthDstFieldEntry.eth_mask', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='in_port', full_name='gonslapi.EthDstFieldEntry.in_port', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
   serialized_start=369,
-  serialized_end=422,
+  serialized_end=439,
 )
 
 
@@ -173,21 +180,28 @@ _ETHTYPEFIELDENTRY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='in_port', full_name='gonslapi.EthTypeFieldEntry.in_port', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=424,
-  serialized_end=461,
+  serialized_start=441,
+  serialized_end=495,
 )
 
 
@@ -204,28 +218,35 @@ _DSTIPFIELDENTRY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ip_dst', full_name='gonslapi.DstIpFieldEntry.ip_dst', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='in_port', full_name='gonslapi.DstIpFieldEntry.in_port', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=463,
-  serialized_end=514,
+  serialized_start=497,
+  serialized_end=565,
 )
 
 
@@ -242,28 +263,35 @@ _IPPROTOFIELDENTRY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ip_proto', full_name='gonslapi.IpProtoFieldEntry.ip_proto', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='in_port', full_name='gonslapi.IpProtoFieldEntry.in_port', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=516,
-  serialized_end=571,
+  serialized_start=567,
+  serialized_end=639,
 )
 
 
@@ -280,14 +308,14 @@ _GETFIELDENTRIESREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=573,
-  serialized_end=597,
+  serialized_start=641,
+  serialized_end=665,
 )
 
 
@@ -304,21 +332,121 @@ _GETFIELDENTRIESREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=599,
-  serialized_end=660,
+  serialized_start=667,
+  serialized_end=728,
+)
+
+
+_PORTINFO = _descriptor.Descriptor(
+  name='PortInfo',
+  full_name='gonslapi.PortInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='port', full_name='gonslapi.PortInfo.port', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='link_status', full_name='gonslapi.PortInfo.link_status', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='untagged_vlan', full_name='gonslapi.PortInfo.untagged_vlan', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=730,
+  serialized_end=798,
+)
+
+
+_GETPORTINFOSREQUEST = _descriptor.Descriptor(
+  name='GetPortInfosRequest',
+  full_name='gonslapi.GetPortInfosRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=800,
+  serialized_end=821,
+)
+
+
+_GETPORTINFOSREPLY = _descriptor.Descriptor(
+  name='GetPortInfosReply',
+  full_name='gonslapi.GetPortInfosReply',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='port_infos', full_name='gonslapi.GetPortInfosReply.port_infos', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=823,
+  serialized_end=882,
 )
 
 
@@ -335,35 +463,35 @@ _VLANENTRY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ports', full_name='gonslapi.VlanEntry.ports', index=1,
       number=2, type=13, cpp_type=3, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='untag_ports', full_name='gonslapi.VlanEntry.untag_ports', index=2,
       number=3, type=13, cpp_type=3, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=662,
-  serialized_end=722,
+  serialized_start=884,
+  serialized_end=944,
 )
 
 
@@ -380,14 +508,14 @@ _GETVLANSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=724,
-  serialized_end=741,
+  serialized_start=946,
+  serialized_end=963,
 )
 
 
@@ -404,21 +532,21 @@ _GETVLANSREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=743,
-  serialized_end=794,
+  serialized_start=965,
+  serialized_end=1016,
 )
 
 
@@ -435,42 +563,42 @@ _L2ADDR = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mac', full_name='gonslapi.L2Addr.mac', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vid', full_name='gonslapi.L2Addr.vid', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='port', full_name='gonslapi.L2Addr.port', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=796,
-  serialized_end=859,
+  serialized_start=1018,
+  serialized_end=1081,
 )
 
 
@@ -487,14 +615,14 @@ _GETL2ADDRSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=861,
-  serialized_end=880,
+  serialized_start=1083,
+  serialized_end=1102,
 )
 
 
@@ -511,21 +639,21 @@ _GETL2ADDRSREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=882,
-  serialized_end=932,
+  serialized_start=1104,
+  serialized_end=1154,
 )
 
 
@@ -542,63 +670,63 @@ _L2STATION = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst_mac', full_name='gonslapi.L2Station.dst_mac', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst_mac_mask', full_name='gonslapi.L2Station.dst_mac_mask', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan', full_name='gonslapi.L2Station.vlan', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan_mask', full_name='gonslapi.L2Station.vlan_mask', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_port', full_name='gonslapi.L2Station.src_port', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_port_mask', full_name='gonslapi.L2Station.src_port_mask', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=935,
-  serialized_end=1074,
+  serialized_start=1157,
+  serialized_end=1296,
 )
 
 
@@ -615,14 +743,14 @@ _GETL2STATIONSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1076,
-  serialized_end=1098,
+  serialized_start=1298,
+  serialized_end=1320,
 )
 
 
@@ -639,21 +767,21 @@ _GETL2STATIONSREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1100,
-  serialized_end=1159,
+  serialized_start=1322,
+  serialized_end=1381,
 )
 
 
@@ -670,70 +798,70 @@ _L3IFACE = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='iface_id', full_name='gonslapi.L3Iface.iface_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mac', full_name='gonslapi.L3Iface.mac', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mtu', full_name='gonslapi.L3Iface.mtu', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mtu_fwd', full_name='gonslapi.L3Iface.mtu_fwd', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ttl', full_name='gonslapi.L3Iface.ttl', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vid', full_name='gonslapi.L3Iface.vid', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vrf', full_name='gonslapi.L3Iface.vrf', index=7,
       number=8, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1161,
-  serialized_end=1285,
+  serialized_start=1383,
+  serialized_end=1507,
 )
 
 
@@ -750,28 +878,28 @@ _FINDL3IFACEREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vid', full_name='gonslapi.FindL3IfaceRequest.vid', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1287,
-  serialized_end=1333,
+  serialized_start=1509,
+  serialized_end=1555,
 )
 
 
@@ -788,21 +916,21 @@ _FINDL3IFACEREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1335,
-  serialized_end=1387,
+  serialized_start=1557,
+  serialized_end=1609,
 )
 
 
@@ -819,21 +947,21 @@ _GETL3IFACEREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1389,
-  serialized_end=1426,
+  serialized_start=1611,
+  serialized_end=1648,
 )
 
 
@@ -850,21 +978,21 @@ _GETL3IFACEREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1428,
-  serialized_end=1479,
+  serialized_start=1650,
+  serialized_end=1701,
 )
 
 
@@ -881,14 +1009,14 @@ _GETL3IFACESREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1481,
-  serialized_end=1501,
+  serialized_start=1703,
+  serialized_end=1723,
 )
 
 
@@ -905,21 +1033,21 @@ _GETL3IFACESREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1503,
-  serialized_end=1556,
+  serialized_start=1725,
+  serialized_end=1778,
 )
 
 
@@ -936,63 +1064,63 @@ _L3EGRESS = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='flags2', full_name='gonslapi.L3Egress.flags2', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='egress_id', full_name='gonslapi.L3Egress.egress_id', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='iface_id', full_name='gonslapi.L3Egress.iface_id', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mac', full_name='gonslapi.L3Egress.mac', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vid', full_name='gonslapi.L3Egress.vid', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='port', full_name='gonslapi.L3Egress.port', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1558,
-  serialized_end=1676,
+  serialized_start=1780,
+  serialized_end=1898,
 )
 
 
@@ -1009,14 +1137,14 @@ _GETL3EGRESSESREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1678,
-  serialized_end=1700,
+  serialized_start=1900,
+  serialized_end=1922,
 )
 
 
@@ -1033,21 +1161,21 @@ _GETL3EGRESSESREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1702,
-  serialized_end=1760,
+  serialized_start=1924,
+  serialized_end=1982,
 )
 
 
@@ -1064,56 +1192,56 @@ _L3HOST = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='egress_id', full_name='gonslapi.L3Host.egress_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ip_addr', full_name='gonslapi.L3Host.ip_addr', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ip6_addr', full_name='gonslapi.L3Host.ip6_addr', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mac', full_name='gonslapi.L3Host.mac', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vrf', full_name='gonslapi.L3Host.vrf', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1762,
-  serialized_end=1865,
+  serialized_start=1984,
+  serialized_end=2087,
 )
 
 
@@ -1130,14 +1258,14 @@ _GETL3HOSTSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1867,
-  serialized_end=1886,
+  serialized_start=2089,
+  serialized_end=2108,
 )
 
 
@@ -1154,21 +1282,21 @@ _GETL3HOSTSREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1888,
-  serialized_end=1938,
+  serialized_start=2110,
+  serialized_end=2160,
 )
 
 
@@ -1185,49 +1313,49 @@ _L3ROUTE = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='egress_id', full_name='gonslapi.L3Route.egress_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ip_addr', full_name='gonslapi.L3Route.ip_addr', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ip6_addr', full_name='gonslapi.L3Route.ip6_addr', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vrf', full_name='gonslapi.L3Route.vrf', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1940,
-  serialized_end=2031,
+  serialized_start=2162,
+  serialized_end=2253,
 )
 
 
@@ -1244,14 +1372,14 @@ _GETL3ROUTESREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2033,
-  serialized_end=2053,
+  serialized_start=2255,
+  serialized_end=2275,
 )
 
 
@@ -1268,21 +1396,21 @@ _GETL3ROUTESREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2055,
-  serialized_end=2108,
+  serialized_start=2277,
+  serialized_end=2330,
 )
 
 
@@ -1299,105 +1427,105 @@ _TUNNELINITIATOR = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='tunnel_id', full_name='gonslapi.TunnelInitiator.tunnel_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='tunnel_type', full_name='gonslapi.TunnelInitiator.tunnel_type', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='l3_iface_id', full_name='gonslapi.TunnelInitiator.l3_iface_id', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst_mac', full_name='gonslapi.TunnelInitiator.dst_mac', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_mac', full_name='gonslapi.TunnelInitiator.src_mac', index=5,
       number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst_ip', full_name='gonslapi.TunnelInitiator.dst_ip', index=6,
       number=7, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_ip', full_name='gonslapi.TunnelInitiator.src_ip', index=7,
       number=8, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst_port', full_name='gonslapi.TunnelInitiator.dst_port', index=8,
       number=9, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_port', full_name='gonslapi.TunnelInitiator.src_port', index=9,
       number=10, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ttl', full_name='gonslapi.TunnelInitiator.ttl', index=10,
       number=11, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mtu', full_name='gonslapi.TunnelInitiator.mtu', index=11,
       number=12, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan', full_name='gonslapi.TunnelInitiator.vlan', index=12,
       number=13, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2111,
-  serialized_end=2346,
+  serialized_start=2333,
+  serialized_end=2568,
 )
 
 
@@ -1414,91 +1542,91 @@ _TUNNELTERMINATOR = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='tunnel_id', full_name='gonslapi.TunnelTerminator.tunnel_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='tunnel_type', full_name='gonslapi.TunnelTerminator.tunnel_type', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='remote_port', full_name='gonslapi.TunnelTerminator.remote_port', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst_ip', full_name='gonslapi.TunnelTerminator.dst_ip', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_ip', full_name='gonslapi.TunnelTerminator.src_ip', index=5,
       number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst_port', full_name='gonslapi.TunnelTerminator.dst_port', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_port', full_name='gonslapi.TunnelTerminator.src_port', index=7,
       number=8, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan', full_name='gonslapi.TunnelTerminator.vlan', index=8,
       number=9, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vrf', full_name='gonslapi.TunnelTerminator.vrf', index=9,
       number=10, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='pbmp', full_name='gonslapi.TunnelTerminator.pbmp', index=10,
       number=11, type=13, cpp_type=3, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2349,
-  serialized_end=2552,
+  serialized_start=2571,
+  serialized_end=2774,
 )
 
 
@@ -1515,14 +1643,14 @@ _GETTUNNELINITIATORSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2554,
-  serialized_end=2582,
+  serialized_start=2776,
+  serialized_end=2804,
 )
 
 
@@ -1539,21 +1667,21 @@ _GETTUNNELINITIATORSREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2584,
-  serialized_end=2654,
+  serialized_start=2806,
+  serialized_end=2876,
 )
 
 
@@ -1570,14 +1698,14 @@ _GETTUNNELTERMINATORSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2656,
-  serialized_end=2685,
+  serialized_start=2878,
+  serialized_end=2907,
 )
 
 
@@ -1594,21 +1722,21 @@ _GETTUNNELTERMINATORSREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2687,
-  serialized_end=2759,
+  serialized_start=2909,
+  serialized_end=2981,
 )
 
 
@@ -1625,35 +1753,35 @@ _IDMAPENTRY = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='key', full_name='gonslapi.IDMapEntry.key', index=1,
-      number=2, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='value', full_name='gonslapi.IDMapEntry.value', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2761,
-  serialized_end=2815,
+  serialized_start=2983,
+  serialized_end=3037,
 )
 
 
@@ -1670,14 +1798,14 @@ _GETIDMAPENTRIESREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2817,
-  serialized_end=2841,
+  serialized_start=3039,
+  serialized_end=3063,
 )
 
 
@@ -1694,21 +1822,21 @@ _GETIDMAPENTRIESREPLY = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2843,
-  serialized_end=2904,
+  serialized_start=3065,
+  serialized_end=3126,
 )
 
 _FIELDENTRY.fields_by_name['entry_type'].enum_type = _FIELDENTRY_ENTRYTYPE
@@ -1730,6 +1858,7 @@ _FIELDENTRY.oneofs_by_name['entry'].fields.append(
   _FIELDENTRY.fields_by_name['eth_dst'])
 _FIELDENTRY.fields_by_name['eth_dst'].containing_oneof = _FIELDENTRY.oneofs_by_name['entry']
 _GETFIELDENTRIESREPLY.fields_by_name['entries'].message_type = _FIELDENTRY
+_GETPORTINFOSREPLY.fields_by_name['port_infos'].message_type = _PORTINFO
 _GETVLANSREPLY.fields_by_name['vlans'].message_type = _VLANENTRY
 _GETL2ADDRSREPLY.fields_by_name['addrs'].message_type = _L2ADDR
 _GETL2STATIONSREPLY.fields_by_name['stations'].message_type = _L2STATION
@@ -1749,6 +1878,9 @@ DESCRIPTOR.message_types_by_name['DstIpFieldEntry'] = _DSTIPFIELDENTRY
 DESCRIPTOR.message_types_by_name['IpProtoFieldEntry'] = _IPPROTOFIELDENTRY
 DESCRIPTOR.message_types_by_name['GetFieldEntriesRequest'] = _GETFIELDENTRIESREQUEST
 DESCRIPTOR.message_types_by_name['GetFieldEntriesReply'] = _GETFIELDENTRIESREPLY
+DESCRIPTOR.message_types_by_name['PortInfo'] = _PORTINFO
+DESCRIPTOR.message_types_by_name['GetPortInfosRequest'] = _GETPORTINFOSREQUEST
+DESCRIPTOR.message_types_by_name['GetPortInfosReply'] = _GETPORTINFOSREPLY
 DESCRIPTOR.message_types_by_name['VlanEntry'] = _VLANENTRY
 DESCRIPTOR.message_types_by_name['GetVlansRequest'] = _GETVLANSREQUEST
 DESCRIPTOR.message_types_by_name['GetVlansReply'] = _GETVLANSREPLY
@@ -1833,6 +1965,27 @@ GetFieldEntriesReply = _reflection.GeneratedProtocolMessageType('GetFieldEntries
   # @@protoc_insertion_point(class_scope:gonslapi.GetFieldEntriesReply)
   ))
 _sym_db.RegisterMessage(GetFieldEntriesReply)
+
+PortInfo = _reflection.GeneratedProtocolMessageType('PortInfo', (_message.Message,), dict(
+  DESCRIPTOR = _PORTINFO,
+  __module__ = 'gonslapi_pb2'
+  # @@protoc_insertion_point(class_scope:gonslapi.PortInfo)
+  ))
+_sym_db.RegisterMessage(PortInfo)
+
+GetPortInfosRequest = _reflection.GeneratedProtocolMessageType('GetPortInfosRequest', (_message.Message,), dict(
+  DESCRIPTOR = _GETPORTINFOSREQUEST,
+  __module__ = 'gonslapi_pb2'
+  # @@protoc_insertion_point(class_scope:gonslapi.GetPortInfosRequest)
+  ))
+_sym_db.RegisterMessage(GetPortInfosRequest)
+
+GetPortInfosReply = _reflection.GeneratedProtocolMessageType('GetPortInfosReply', (_message.Message,), dict(
+  DESCRIPTOR = _GETPORTINFOSREPLY,
+  __module__ = 'gonslapi_pb2'
+  # @@protoc_insertion_point(class_scope:gonslapi.GetPortInfosReply)
+  ))
+_sym_db.RegisterMessage(GetPortInfosReply)
 
 VlanEntry = _reflection.GeneratedProtocolMessageType('VlanEntry', (_message.Message,), dict(
   DESCRIPTOR = _VLANENTRY,
@@ -2079,9 +2232,9 @@ _GONSLAPI = _descriptor.ServiceDescriptor(
   full_name='gonslapi.GoNSLApi',
   file=DESCRIPTOR,
   index=0,
-  serialized_options=None,
-  serialized_start=2907,
-  serialized_end=3961,
+  options=None,
+  serialized_start=3129,
+  serialized_end=4261,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetFieldEntries',
@@ -2090,115 +2243,124 @@ _GONSLAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_GETFIELDENTRIESREQUEST,
     output_type=_GETFIELDENTRIESREPLY,
-    serialized_options=None,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetPortInfos',
+    full_name='gonslapi.GoNSLApi.GetPortInfos',
+    index=1,
+    containing_service=None,
+    input_type=_GETPORTINFOSREQUEST,
+    output_type=_GETPORTINFOSREPLY,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetVlans',
     full_name='gonslapi.GoNSLApi.GetVlans',
-    index=1,
+    index=2,
     containing_service=None,
     input_type=_GETVLANSREQUEST,
     output_type=_GETVLANSREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetL2Addrs',
     full_name='gonslapi.GoNSLApi.GetL2Addrs',
-    index=2,
+    index=3,
     containing_service=None,
     input_type=_GETL2ADDRSREQUEST,
     output_type=_GETL2ADDRSREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetL2Stations',
     full_name='gonslapi.GoNSLApi.GetL2Stations',
-    index=3,
+    index=4,
     containing_service=None,
     input_type=_GETL2STATIONSREQUEST,
     output_type=_GETL2STATIONSREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='FindL3Iface',
     full_name='gonslapi.GoNSLApi.FindL3Iface',
-    index=4,
+    index=5,
     containing_service=None,
     input_type=_FINDL3IFACEREQUEST,
     output_type=_FINDL3IFACEREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetL3Iface',
     full_name='gonslapi.GoNSLApi.GetL3Iface',
-    index=5,
+    index=6,
     containing_service=None,
     input_type=_GETL3IFACEREQUEST,
     output_type=_GETL3IFACEREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetL3Ifaces',
     full_name='gonslapi.GoNSLApi.GetL3Ifaces',
-    index=6,
+    index=7,
     containing_service=None,
     input_type=_GETL3IFACESREQUEST,
     output_type=_GETL3IFACESREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetL3Egresses',
     full_name='gonslapi.GoNSLApi.GetL3Egresses',
-    index=7,
+    index=8,
     containing_service=None,
     input_type=_GETL3EGRESSESREQUEST,
     output_type=_GETL3EGRESSESREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetL3Hosts',
     full_name='gonslapi.GoNSLApi.GetL3Hosts',
-    index=8,
+    index=9,
     containing_service=None,
     input_type=_GETL3HOSTSREQUEST,
     output_type=_GETL3HOSTSREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetL3Routes',
     full_name='gonslapi.GoNSLApi.GetL3Routes',
-    index=9,
+    index=10,
     containing_service=None,
     input_type=_GETL3ROUTESREQUEST,
     output_type=_GETL3ROUTESREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetIDMapEntries',
     full_name='gonslapi.GoNSLApi.GetIDMapEntries',
-    index=10,
+    index=11,
     containing_service=None,
     input_type=_GETIDMAPENTRIESREQUEST,
     output_type=_GETIDMAPENTRIESREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetTunnelInitiators',
     full_name='gonslapi.GoNSLApi.GetTunnelInitiators',
-    index=11,
+    index=12,
     containing_service=None,
     input_type=_GETTUNNELINITIATORSREQUEST,
     output_type=_GETTUNNELINITIATORSREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetTunnelTerminators',
     full_name='gonslapi.GoNSLApi.GetTunnelTerminators',
-    index=12,
+    index=13,
     containing_service=None,
     input_type=_GETTUNNELTERMINATORSREQUEST,
     output_type=_GETTUNNELTERMINATORSREPLY,
-    serialized_options=None,
+    options=None,
   ),
 ])
 _sym_db.RegisterServiceDescriptor(_GONSLAPI)

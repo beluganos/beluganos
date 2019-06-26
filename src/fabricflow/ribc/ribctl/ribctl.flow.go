@@ -18,7 +18,7 @@
 package ribctl
 
 import (
-	"fabricflow/fibc/api"
+	fibcapi "fabricflow/fibc/api"
 	"gonla/nlamsg"
 	"net"
 )
@@ -103,8 +103,33 @@ func (r *RIBController) SendVLANFlow(cmd fibcapi.FlowMod_Cmd, link *nlamsg.Link)
 	return nil
 }
 
+func NewVLANBridgeVlanFlow(brvlan *nlamsg.BridgeVlanInfo, portId uint32) *fibcapi.VLANFlow {
+	m := fibcapi.NewVLANFlowMatch(
+		portId,
+		uint32(brvlan.Vid),
+		fibcapi.OFPVID_ABSENT,
+	)
+	a := []*fibcapi.VLANFlow_Action{
+		fibcapi.NewVLANFlowAction("SET_VLAN_L2_TYPE", uint32(brvlan.Flags)),
+	}
+	if brvlan.NId != 0 {
+		a = append(a, fibcapi.NewVLANFlowAction("SET_VRF", uint32(brvlan.NId)))
+	}
+
+	return fibcapi.NewVLANFlow(m, a, uint32(fibcapi.FlowMod_TERM_MAC))
+}
+
+func (r *RIBController) SendVLANBridgeVlanFlow(cmd fibcapi.FlowMod_Cmd, brvlan *nlamsg.BridgeVlanInfo, portId uint32) error {
+	f := NewVLANBridgeVlanFlow(brvlan, portId)
+	if err := r.fib.Send(f.ToMod(cmd, r.reId), 0); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 //
-// Term MAC floe
+// Term MAC flow
 //
 func NewTermMACFlowIPv4(link *nlamsg.Link) *fibcapi.TerminationMacFlow {
 	m := fibcapi.NewTermMACMatch(
@@ -292,15 +317,47 @@ func (r *RIBController) SendUnicastRoutingFlowMPLS(cmd fibcapi.FlowMod_Cmd, rout
 //
 // PolicyACL (match ip_dst and send controller)
 //
-func NewACLFlowByAddr(addr *nlamsg.Addr) *fibcapi.PolicyACLFlow {
-	return fibcapi.NewPolicyACLFlowByAddr(addr.Family, addr.IPNet.IP, addr.NId)
+func NewACLFlowByAddr(addr *nlamsg.Addr, inPort uint32) *fibcapi.PolicyACLFlow {
+	return fibcapi.NewPolicyACLFlowByAddr(addr.Family, addr.IPNet.IP, addr.NId, inPort)
 }
 
-func (r *RIBController) SendACLFlowByAddr(cmd fibcapi.FlowMod_Cmd, addr *nlamsg.Addr) error {
+func (r *RIBController) SendACLFlowByAddr(cmd fibcapi.FlowMod_Cmd, addr *nlamsg.Addr, inPort uint32) error {
 	if !checkIP(addr.IP) {
 		return nil
 	}
 
-	f := NewACLFlowByAddr(addr)
+	f := NewACLFlowByAddr(addr, inPort)
+	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
+}
+
+//
+// PolicyACL (default flows of port)
+//
+func (r *RIBController) SendACLFlowByLink(cmd fibcapi.FlowMod_Cmd, link *nlamsg.Link) error {
+	for _, flow := range r.flowdb.PolicyACL {
+		f := flow.Clone().SetPort(link.NId, NewPortId(link)).ToAPI()
+		if f == nil {
+			continue
+		}
+
+		if err := r.fib.Send(f.ToMod(cmd, r.reId), 0); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+//
+// Bridging
+//
+func NewBridgingFlow(neigh *nlamsg.Neigh, portId uint32) *fibcapi.BridgingFlow {
+	m := fibcapi.NewBridgingFlowMatch(neigh.HardwareAddr.String(), uint16(neigh.Vlan), 0)
+	a := fibcapi.NewBridgingFlowAction("OUTPUT", portId)
+	return fibcapi.NewBridgingFlow(m, a)
+}
+
+func (r *RIBController) SendBridgingFlow(cmd fibcapi.FlowMod_Cmd, neigh *nlamsg.Neigh, portId uint32) error {
+	f := NewBridgingFlow(neigh, portId)
 	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
 }

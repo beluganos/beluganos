@@ -18,7 +18,7 @@
 package main
 
 import (
-	"gonsl/lib"
+	gonslib "gonsl/lib"
 	"os"
 	"os/signal"
 
@@ -90,6 +90,7 @@ func main() {
 
 	log.Debugf("DpConfig  : %s", dpcfg)
 	log.Debugf("BlockBcast: %s", &dpcfg.BlockBcast)
+	log.Debugf("L2SW      : %s", &dpcfg.L2SW)
 	for _, bp := range dpcfg.BlockBcast.Ports {
 		log.Debugf("BlockBcast: %s", bp)
 	}

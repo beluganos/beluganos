@@ -97,6 +97,26 @@ const (
 	MCADDR_ALLROUTERS = "224.0.0.2"
 	MCADDR_OSPF_HELLO = "224.0.0.5"
 	MCADDR_OSPF_ALLDR = "224.0.0.6"
+
+	// multicast addresses(IPv6)
+	MCADDR6_I_LOCAL      = "ff01::/64" // Interface Local
+	MCADDR6_L_LOCAL      = "ff02::/64" // Link Local
+	MCADDR6_S_LOCAL      = "ff05::/64" // Site Local
+	MCADDR6_L_ALLNODES   = "ff02::1"   // All Nodes / Link Local
+	MCADDR6_S_ALLNODES   = "ff05::1"   // All Nodes / Site Local
+	MCADDR6_L_ALLROUTERS = "ff02::2"   // All Routers / Link Local
+	MCADDR6_L_ALLOSPF    = "ff02::5"   // All OSPF Routers / Link Local
+	MCADDR6_L_ALLOSPF_DR = "ff02::6"   // All OSPF Routers / Link Local
+	MCADDR6_L_ALLRIP     = "ff02::9"   // All RIP Routers / Link Local
+	MCADDR6_L_ALLEIGRP   = "ff02::A"   // All EIGRP Routers / Link Local
+	MCADDR6_L_ALLPIM     = "ff02::D"   // All PIM Routers / Link Local
+	MCADDR6_L_ALLDHCP    = "ff02::1:2" // All DHCP Agents / Link Local
+	MCADDR6_S_ALLDHCP    = "ff05::1:3" // All DHCP Servers / Site Local
+	MCADDR6_L_ALLNTP     = "ff02::101" // All NTP Servers / Link Local
+	MCADDR6_S_ALLNTP     = "ff05::101" // All NTP Servers / Site Local
+
+	// unicast addresses (IPv6)
+	UCADDR6_L_LOCAL = "fe80::/64"
 )
 
 const (
@@ -113,6 +133,22 @@ const (
 	MPLSTYPE_PHP       = 0x20
 )
 
+const (
+	DPPORT_ID_MASK    uint32 = 0x0000ffff
+	DPPORT_VRF_MASK   uint32 = 0x00ff0000
+	DPPORT_VRF_SHIFT  uint32 = 16
+	DPPORT_TYPE_MASK  uint32 = 0xff000000
+	DPPORT_TYPE_SHIFT uint32 = 24
+)
+
+func NewDPPortId(port uint32, linkType LinkType_Type) uint32 {
+	return (uint32(linkType) << DPPORT_TYPE_SHIFT) + (port & DPPORT_ID_MASK)
+}
+
+func ParseDPPortId(port uint32) (uint32, LinkType_Type) {
+	return port & DPPORT_ID_MASK, LinkType_Type((port & DPPORT_TYPE_MASK) >> DPPORT_TYPE_SHIFT)
+}
+
 func NewIPNetFromIP(ip net.IP) *net.IPNet {
 	bitlen := 128
 	if ip.To4() != nil {
@@ -122,6 +158,18 @@ func NewIPNetFromIP(ip net.IP) *net.IPNet {
 		IP:   ip,
 		Mask: net.CIDRMask(bitlen, bitlen),
 	}
+}
+
+func ParseMaskedIP(s string) (net.IP, *net.IPNet, error) {
+	if ip, ipnet, err := net.ParseCIDR(s); err == nil {
+		return ip, ipnet, nil
+	}
+
+	if ip := net.ParseIP(s); ip != nil {
+		return ip, NewIPNetFromIP(ip), nil
+	}
+
+	return nil, nil, fmt.Errorf("bad ip address. '%s'", s)
 }
 
 func ParseMaskedMAC(mac string) (net.HardwareAddr, net.HardwareAddr, error) {
@@ -257,4 +305,48 @@ func ParseTunnelTypeFromNative(s string) (TunnelType_Type, error) {
 		return v, nil
 	}
 	return TunnelType_NOP, fmt.Errorf("Invalid TunnelType. %s", s)
+}
+
+func ParsePolicyACLFlowActionName(s string) (PolicyACLFlow_Action_Name, error) {
+	if v, ok := PolicyACLFlow_Action_Name_value[s]; ok {
+		return PolicyACLFlow_Action_Name(v), nil
+	}
+	return PolicyACLFlow_Action_UNSPEC, fmt.Errorf("Invalid name. %s", s)
+}
+
+//
+// LinkType
+//
+//var linkType_native_names = map[LinkType_Type]string{
+//	LinkType_DEVICE:       "device", // netlink.Device.Type()
+//	LinkType_IPTUN:        "iptun",  // netlink.Iptun
+//	LinkType_BRIDGE:       "bridge", // netlink.Bridge.Type()
+//	LinkType_BRIDGE_SLAVE: "bridge_slave",
+//	LinkType_BOND:         "bond", // netlink.Bond.Type()
+//	LinkType_BOND_SLAVE:   "bond_slave",
+//}
+
+var linkType_native_values = map[string]LinkType_Type{
+	"device":       LinkType_DEVICE,
+	"ipip":         LinkType_IPTUN,
+	"ip6tnl":       LinkType_IPTUN,
+	"iptun":        LinkType_IPTUN,
+	"bridge":       LinkType_BRIDGE,
+	"bridge_slave": LinkType_BRIDGE_SLAVE,
+	"bond":         LinkType_BOND,
+	"bond_slave":   LinkType_BOND_SLAVE,
+}
+
+func ParseLinkTypeFromNative(s string) (LinkType_Type, error) {
+	if v, ok := linkType_native_values[s]; ok {
+		return v, nil
+	}
+	return 0, fmt.Errorf("Invalid LinkType. %s", s)
+}
+
+func ParseLinkTypeFromNativeMust(s string, defaultType LinkType_Type) LinkType_Type {
+	if t, err := ParseLinkTypeFromNative(s); err == nil {
+		return t
+	}
+	return defaultType
 }

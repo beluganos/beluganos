@@ -1,0 +1,15 @@
+---
+
+flows:
+  default:
+    policy_acl:
+    - match:
+        eth_type: 0x0800
+        eth_dst: "00:11;22;33;44:55"
+        ip_proto: 17
+        ip_dst: "10.0.0.1/32"
+        tp_src: 5010
+        tp_dst: 8080
+      action:
+        name: "output"
+        value: 1

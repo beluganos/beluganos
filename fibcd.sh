@@ -16,8 +16,54 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-OPTS+=" --config-file /etc/fabricflow/fibc.conf"
-OPTS+=" --log-config-file /etc/fabricflow/fibc.log.conf"
-OPTS+=" --verbose"
+CNFOPT=" --config-file /etc/beluganos/fibc.conf"
+LOGOPT=" --log-config-file /etc/beluganos/fibc.log.conf"
 
-ryu-manager ryu.app.ofctl_rest fabricflow.fibc.app.fibcapp $OPTS
+LOGFILE=/tmp/fibc.log.trace
+
+do_usage() {
+    echo "$0 debug"
+    echo "  show detail messages."
+    echo ""
+    echo "$0 trace"
+    echo "  debug mode and output stdout to file."
+    echo ""
+    echo "$0 silent"
+    echo "  no messages."
+    echo ""
+    echo "$0"
+    echo "  show some messages."
+    echo ""
+    echo "$0 clean"
+    echo "  remove log files."
+}
+
+case $1 in
+    debug)
+	echo "DEBUG MODE"
+	ryu-manager ryu.app.ofctl_rest fabricflow.fibc.app.fibcapp --verbose $CNFOPT $LOGOPT
+	;;
+
+    trace)
+	echo "TRACE MODE"
+	ryu-manager ryu.app.ofctl_rest fabricflow.fibc.app.fibcapp --verbose $CNFOPT $LOGOPT 2>&1 | tee $LOGFILE
+	;;
+
+    silent)
+	echo "SILENT MODE"
+	ryu-manager ryu.app.ofctl_rest fabricflow.fibc.app.fibcapp $CNFOPT > /dev/null 2>&1
+	;;
+
+    clean)
+	rm -fv /tmp/fibc.log*
+	;;
+
+    help)
+	do_usage
+	;;
+
+    *)
+	echo "RELEASE MODE"
+	ryu-manager ryu.app.ofctl_rest fabricflow.fibc.app.fibcapp $CNFOPT
+	;;
+esac

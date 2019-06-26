@@ -47,7 +47,7 @@ func NewL2InterfaceGroupID(portId uint32, vlanId uint16) uint32 {
 	return (AdjustVlanVID(vlanId) << 16) + (portId & 0xffff)
 }
 
-func NewL2InterfaceGroup(portId uint32, vlanId uint16, vlanTranslation bool, hwAddr net.HardwareAddr, mtu int, vrf uint8) *L2InterfaceGroup {
+func NewL2InterfaceGroup(portId uint32, vlanId uint16, vlanTranslation bool, hwAddr net.HardwareAddr, mtu int, vrf uint8, master uint32) *L2InterfaceGroup {
 	return &L2InterfaceGroup{
 		PortId:          portId,
 		VlanVid:         uint32(vlanId),
@@ -55,6 +55,7 @@ func NewL2InterfaceGroup(portId uint32, vlanId uint16, vlanTranslation bool, hwA
 		HwAddr:          hwAddr.String(),
 		Mtu:             uint32(mtu),
 		Vrf:             uint32(vrf),
+		Master:          master,
 	}
 }
 

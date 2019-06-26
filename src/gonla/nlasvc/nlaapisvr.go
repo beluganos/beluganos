@@ -38,6 +38,7 @@ type NLAApiServer struct {
 	nid    uint8
 	addr   string
 	NlMsgs chan<- *nlamsg.NetlinkMessageUnion
+	log    *log.Entry
 }
 
 func NewNLAApiServer(addr string, nid uint8) *NLAApiServer {
@@ -45,6 +46,7 @@ func NewNLAApiServer(addr string, nid uint8) *NLAApiServer {
 		nid:    nid,
 		addr:   addr,
 		NlMsgs: nil,
+		log:    NewLogger("NLAApiServer"),
 	}
 }
 
@@ -60,12 +62,12 @@ func (n *NLAApiServer) Start(ch chan<- *nlamsg.NetlinkMessageUnion) error {
 	nlaapi.RegisterNLAApiServer(s, n)
 	go s.Serve(listen)
 
-	log.Infof("NLAApiServer: START")
+	n.log.Infof("Start:")
 	return nil
 }
 
 func (n *NLAApiServer) MonNetlink(req *nlaapi.MonNetlinkRequest, stream nlaapi.NLAApi_MonNetlinkServer) error {
-	log.Infof("NLAApiServer: Monitor START. %v", req)
+	n.log.Infof("Monitor START. %v", req)
 
 	client := nladbm.Clients().New()
 	defer close(client)
@@ -73,7 +75,7 @@ func (n *NLAApiServer) MonNetlink(req *nlaapi.MonNetlinkRequest, stream nlaapi.N
 	if done := stream.Context().Done(); done != nil {
 		go func() {
 			<-done
-			log.Infof("### NLAApiServer: Monitor EXIT. Closed.")
+			n.log.Infof("Monitor EXIT.")
 
 			nladbm.Clients().Delete(client)
 			client <- nil
@@ -82,12 +84,13 @@ func (n *NLAApiServer) MonNetlink(req *nlaapi.MonNetlinkRequest, stream nlaapi.N
 
 	for m := range client {
 		if m == nil {
+			n.log.Infof("Monitor EXIT. client closed.")
 			break
 		}
 
 		res := nlaapi.NewNetlinkMessageUnionFromNative(m)
 		if err := stream.Send(res); err != nil {
-			log.Infof("NLAApiServer: Monitor EXIT. Stream error. %s", err)
+			n.log.Infof("Monitor EXIT. Stream error. %s", err)
 		}
 	}
 
@@ -107,14 +110,14 @@ func (n *NLAApiServer) ModNetlink(ctxt context.Context, req *nlaapi.NetlinkMessa
 
 	if nlmsg.Group() == nlalink.RTMGRP_VPN || nlmsg.NId == n.nid {
 		// Dispatch to self.
-		log.Debugf("NLAApiServer: ModNetlink to self. %s", nlmsg)
+		n.log.Debugf("ModNetlink: send to self. %s", nlmsg)
 		n.NlMsgs <- nlmsg
 
 	} else {
 		// Send to slave
-		log.Debugf("NLAApiServer: Send to slave. %s", nlmsg)
+		n.log.Debugf("ModNetlink: send to slave. %s", nlmsg)
 		if err := nladbm.Nodes().Send(nladbm.NewNodeKey(nlmsg.NId), nlmsg); err != nil {
-			log.Errorf("NLAApiServer: ModNetlink send error. nid=%d %s", nlmsg.NId, err)
+			n.log.Errorf("ModNetlink: send error. nid=%d %s", nlmsg.NId, err)
 			return nil, err
 		}
 	}
@@ -201,15 +204,51 @@ func (n *NLAApiServer) GetIptun(ctxt context.Context, req *nlaapi.IptunKey) (*nl
 	return nil, fmt.Errorf("Iptun not found. nid:%d remote:%s", req.NId, req.GetRemoteIP())
 }
 
+func (n *NLAApiServer) GetBridgeVlanInfo(ctxt context.Context, req *nlaapi.BridgeVlanInfoKey) (*nlaapi.BridgeVlanInfo, error) {
+	if e := nladbm.BrVlans().Select(req.ToNative()); e != nil {
+		return nlaapi.NewBridgeVlanInfoFromNative(e), nil
+	}
+
+	return nil, fmt.Errorf("Bridge vlan info not found. %s", req)
+}
+
 func (n *NLAApiServer) GetLinks(req *nlaapi.GetLinksRequest, stream nlaapi.NLAApi_GetLinksServer) error {
 	nid := uint8(req.NId)
+
+	pandings := []*nlamsg.Link{}
+	sentMap := map[int]struct{}{}
+
 	nladbm.Links().Walk(func(link *nlamsg.Link) error {
 		if nid == link.NId || nid == nlamsg.NODE_ID_ALL {
+			if masterIndex := link.Attrs().MasterIndex; masterIndex != 0 {
+				if _, ok := sentMap[masterIndex]; !ok {
+					pandings = append(pandings, link)
+					return nil
+				}
+			}
+
+			if parentIndex := link.Attrs().ParentIndex; parentIndex != 0 {
+				if _, ok := sentMap[parentIndex]; !ok {
+					pandings = append(pandings, link)
+					return nil
+				}
+			}
+
+			sentMap[link.Attrs().Index] = struct{}{}
 			m := nlaapi.NewLinkFromNative(link)
 			return stream.Send(m)
 		}
+
 		return nil
 	})
+
+	for _, link := range pandings {
+		m := nlaapi.NewLinkFromNative(link)
+		if err := stream.Send(m); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -303,6 +342,18 @@ func (n *NLAApiServer) GetIptuns(req *nlaapi.GetIptunsRequest, stream nlaapi.NLA
 	nladbm.Links().WalkTun(func(e *nlamsg.Iptun) error {
 		m := nlaapi.NewIptunFromNative(e)
 		return stream.Send(m)
+	})
+	return nil
+}
+
+func (n *NLAApiServer) GetBridgeVlanInfos(req *nlaapi.GetBridgeVlanInfosRequest, stream nlaapi.NLAApi_GetBridgeVlanInfosServer) error {
+	nid := uint8(req.NId)
+	nladbm.BrVlans().Walk(func(info *nlamsg.BridgeVlanInfo) error {
+		if nid == info.NId || nid == nlamsg.NODE_ID_ALL {
+			m := nlaapi.NewBridgeVlanInfoFromNative(info)
+			return stream.Send(m)
+		}
+		return nil
 	})
 	return nil
 }

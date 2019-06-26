@@ -18,19 +18,22 @@
 package nlasvc
 
 import (
-	log "github.com/sirupsen/logrus"
 	"gonla/nlactl"
 	"gonla/nlalib"
 	"gonla/nlamsg"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type NLALogService struct {
 	dump uint32
+	log  *log.Entry
 }
 
 func NewNLALogService(dump uint32) *NLALogService {
 	return &NLALogService{
 		dump: dump,
+		log:  NewLogger("NLALogService"),
 	}
 }
 
@@ -44,34 +47,38 @@ func (n *NLALogService) Stop() {
 }
 
 func (n *NLALogService) NetlinkMessage(nlmsg *nlamsg.NetlinkMessage) {
-	log.Debugf("Log: %v", nlmsg)
+	n.log.Debugf("NLM : %s %v", nlmsg.Src, nlmsg)
 	if n.dump != 0 {
 		for _, line := range nlalib.HexSlice(nlmsg.Data) {
-			log.Debugf("Log: %s", line)
+			n.log.Debugf("NLM : %s", line)
 		}
 	}
 }
 
 func (n *NLALogService) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.Link) {
-	log.Debugf("Log: LINK %v, %v", &nlmsg.Header, link)
+	n.log.Debugf("LINK: %s %v %v", nlmsg.Src, &nlmsg.Header, link)
 }
 
 func (n *NLALogService) NetlinkAddr(nlmsg *nlamsg.NetlinkMessage, addr *nlamsg.Addr) {
-	log.Debugf("Log: ADDR %v, %v", &nlmsg.Header, addr)
+	n.log.Debugf("ADDR: %s %v %v", nlmsg.Src, &nlmsg.Header, addr)
 }
 
 func (n *NLALogService) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nlamsg.Neigh) {
-	log.Debugf("Log: NEIG %v, %v", &nlmsg.Header, neigh)
+	n.log.Debugf("NEIG: %s %v %v", nlmsg.Src, &nlmsg.Header, neigh)
 }
 
 func (n *NLALogService) NetlinkRoute(nlmsg *nlamsg.NetlinkMessage, route *nlamsg.Route) {
-	log.Debugf("Log: ROUT %v, %v", &nlmsg.Header, route)
+	n.log.Debugf("ROUT: %s %v %v", nlmsg.Src, &nlmsg.Header, route)
 }
 
 func (n *NLALogService) NetlinkNode(nlmsg *nlamsg.NetlinkMessage, node *nlamsg.Node) {
-	log.Debugf("Log: NODE %v, %v", &nlmsg.Header, node.IP())
+	n.log.Debugf("NODE: %s %v %v", nlmsg.Src, &nlmsg.Header, node.IP())
 }
 
 func (n *NLALogService) NetlinkVpn(nlmsg *nlamsg.NetlinkMessage, vpn *nlamsg.Vpn) {
-	log.Debugf("Log: VPN  %v, %v", &nlmsg.Header, vpn)
+	n.log.Debugf("VPN : %s %v %v", nlmsg.Src, &nlmsg.Header, vpn)
+}
+
+func (n *NLALogService) NetlinkBridgeVlanInfo(nlmsg *nlamsg.NetlinkMessage, brvlan *nlamsg.BridgeVlanInfo) {
+	n.log.Debugf("BRVI: %s %v %v", nlmsg.Src, &nlmsg.Header, brvlan)
 }

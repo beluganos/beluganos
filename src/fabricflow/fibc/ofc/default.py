@@ -203,7 +203,7 @@ def port_mod(dpath, mod, ofctl):
     PotMod
     mod: api.FFPortMod
     """
-    _LOG.debug("port_mod: %s %s", dpath, mod)
+    _LOG.debug("port_mod: %s %s %s", dpath, mod, ofctl)
 
     parser = dpath.ofproto_parser
     ofp = dpath.ofproto

@@ -111,6 +111,19 @@ MPLSTYPE_UNICAST = 0x08
 MPLSTYPE_MULTICAST = 0x10
 MPLSTYPE_PHP = 0x20
 
+# DP Port Types
+DPPORT_ID_MASK = 0x0000ffff
+DPPORT_VRF_MASK = 0x00ff0000
+DPPORT_VRF_SHiFT = 16
+DPPORT_TYPE_MASK = 0xff000000
+DPPORT_TYPE_SHIFT = 24
+
+def new_dpport_id(port_id, link_type):
+    return (link_type << DPPORT_TYPE_SHIFT) + (port_id & DPPORT_ID_MASK)
+
+def parse_dpport_id(port):
+    return port & DPPORT_ID_MASK, (port & DPPORT_TYPE_MASK) >> DPPORT_TYPE_SHIFT
+
 def flow_mod_cmd(cmd, ofproto):
     """
     Convert FlowMod command (API to Ryu)
@@ -180,7 +193,7 @@ def l2_interface_group_id(port_id, vlan_vid):
     L2 Interface Group Id
     """
     vlan_vid = adjust_vlan_vid(vlan_vid)
-    return ((vlan_vid << 16) & 0x0fff0000) + (port_id & 0xffff)
+    return ((vlan_vid << 16) & 0x0fff0000) + (port_id & DPPORT_ID_MASK)
 
 
 def l2_rewrite_group_id(ne_id):
@@ -281,7 +294,7 @@ def l2_unfiltered_iface_group_id(port_id):
     """
     L2 Unfiltered Interface Group
     """
-    return 0xb0000000 + (port_id & 0xffff)
+    return 0xb0000000 + (port_id & DPPORT_ID_MASK)
 
 
 def parse_ff_hello(data):
@@ -384,6 +397,7 @@ def new_policy_acl_match(**kwargs):
     Create PolicyACLFlow.Match
     """
     return pb.PolicyACLFlow.Match(
+        in_port=kwargs.get("in_port", 0),
         ip_dst=kwargs.get("ip_dst", ""),
         vrf=kwargs.get("vrf", 0),
         eth_type=kwargs.get("eth_type", 0),
@@ -408,3 +422,75 @@ def new_ff_port_mod(dp_id, port_no, status):
         dp_id=dp_id,
         port_no=port_no,
         status=status)
+
+def bridgevlaninfo_type_from_flags(flags):
+    """
+    converts BridgeVlanInfo Flags to PortType.
+    """
+    if (flags & pb.BridgeVlanInfo.PVID) != 0 and (flags & pb.BridgeVlanInfo.UNTAGGED) != 0:
+        return pb.BridgeVlanInfo.ACCESS_PORT
+
+    if (flags & pb.BridgeVlanInfo.PVID) == 0 and (flags & pb.BridgeVlanInfo.UNTAGGED) == 0:
+        return pb.BridgeVlanInfo.TRUNK_PORT
+
+    return pb.BridgeVlanInfo.NONE_PORT
+
+
+def parse_l2addr(data):
+    """
+    Parse binary data (pb.L2Addr)
+    """
+    msg = pb.L2Addr()
+    msg.ParseFromString(data)
+    return msg
+
+
+def new_l2addr(hw_addr, vlan_vid, port_id, reason, ifname=""):
+    """
+    Create L2Addr message
+    """
+    return pb.L2Addr(
+        hw_addr=hw_addr,
+        vlan_vid=vlan_vid,
+        port_id=(port_id & DPPORT_ID_MASK),
+        ifname=ifname,
+        reason=reason,
+    )
+
+
+def parse_ff_l2addr_status(data):
+    """
+    Parse binary data (pb.FFL2AddrStatus)
+    """
+    msg = pb.FFL2AddrStatus()
+    msg.ParseFromString(data)
+    return msg
+
+
+def new_ff_l2addr_status(dp_id, addrs):
+    """
+    Create FFL2AddrStatus message
+    """
+    return pb.FFL2AddrStatus(
+        dp_id=dp_id,
+        addrs=addrs,
+    )
+
+
+def parse_l2addr_status(data):
+    """
+    Parse binary data (pb.L2AddrStatus)
+    """
+    msg = pb.L2AddrStatus()
+    msg.ParseFromString(data)
+    return msg
+
+
+def new_l2addr_status(re_id, addrs):
+    """
+    Create L2AddrStatus message
+    """
+    return pb.L2AddrStatus(
+        re_id=re_id,
+        addrs=addrs,
+    )

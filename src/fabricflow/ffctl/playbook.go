@@ -335,6 +335,27 @@ func playbookCommonCmd() *cobra.Command {
 	return rootCmd
 }
 
+func playbookBrVlanCmd() *cobra.Command {
+	rootCmd := &cobra.Command{
+		Use:   "bridge-vlan",
+		Short: "bridge vlan command.",
+	}
+
+	brvlan := NewPlaybookBrVlanYamlCmd()
+	rootCmd.AddCommand(brvlan.SetFlags(
+		&cobra.Command{
+			Use:   "create [playbook name]",
+			Short: "Create new bridge vlan file",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return brvlan.createBrVlanYaml(args[0])
+			},
+		},
+	))
+
+	return rootCmd
+}
+
 func playbookCmd() *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:   "playbook",
@@ -368,6 +389,7 @@ func playbookCmd() *cobra.Command {
 		playbookRibxdConfCmd(),
 		playbookInventoryCmd(),
 		playbookCommonCmd(),
+		playbookBrVlanCmd(),
 	)
 
 	return rootCmd

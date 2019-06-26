@@ -22,3 +22,6 @@ MIC
 vpn-mic
 vpn-ric10
 vpn-ric11
+
+[lxd-l2sw]
+l2sw-mic

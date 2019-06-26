@@ -18,8 +18,8 @@
 package fibclib
 
 import (
-	"fabricflow/fibc/api"
-	"fabricflow/fibc/net"
+	fibcapi "fabricflow/fibc/api"
+	fibcnet "fabricflow/fibc/net"
 )
 
 //
@@ -135,4 +135,15 @@ type FFPortStatusHandler interface {
 //
 type FFPortModHandler interface {
 	FIBCFFPortMod(*fibcnet.Header, *fibcapi.FFPortMod)
+}
+
+//
+// L2AddrStatus
+//
+type L2AddrStatusHandler interface {
+	FIBCL2AddrStatus(*fibcnet.Header, *fibcapi.L2AddrStatus)
+}
+
+type FFL2AddrStatusHandler interface {
+	FIBCFFL2AddrStatus(*fibcnet.Header, *fibcapi.FFL2AddrStatus)
 }

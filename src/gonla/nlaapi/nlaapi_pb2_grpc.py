@@ -139,6 +139,11 @@ class NLAApiStub(object):
         request_serializer=nlaapi__pb2.IptunKey.SerializeToString,
         response_deserializer=nlaapi__pb2.Iptun.FromString,
         )
+    self.GetBridgeVlanInfo = channel.unary_unary(
+        '/nlaapi.NLAApi/GetBridgeVlanInfo',
+        request_serializer=nlaapi__pb2.BridgeVlanInfoKey.SerializeToString,
+        response_deserializer=nlaapi__pb2.BridgeVlanInfo.FromString,
+        )
     self.GetLinks = channel.unary_stream(
         '/nlaapi.NLAApi/GetLinks',
         request_serializer=nlaapi__pb2.GetLinksRequest.SerializeToString,
@@ -183,6 +188,11 @@ class NLAApiStub(object):
         '/nlaapi.NLAApi/GetIptuns',
         request_serializer=nlaapi__pb2.GetIptunsRequest.SerializeToString,
         response_deserializer=nlaapi__pb2.Iptun.FromString,
+        )
+    self.GetBridgeVlanInfos = channel.unary_stream(
+        '/nlaapi.NLAApi/GetBridgeVlanInfos',
+        request_serializer=nlaapi__pb2.GetBridgeVlanInfosRequest.SerializeToString,
+        response_deserializer=nlaapi__pb2.BridgeVlanInfo.FromString,
         )
     self.GetStats = channel.unary_stream(
         '/nlaapi.NLAApi/GetStats',
@@ -281,6 +291,13 @@ class NLAApiServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def GetBridgeVlanInfo(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
   def GetLinks(self, request, context):
     # missing associated documentation comment in .proto file
     pass
@@ -338,6 +355,13 @@ class NLAApiServicer(object):
     raise NotImplementedError('Method not implemented!')
 
   def GetIptuns(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetBridgeVlanInfos(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -414,6 +438,11 @@ def add_NLAApiServicer_to_server(servicer, server):
           request_deserializer=nlaapi__pb2.IptunKey.FromString,
           response_serializer=nlaapi__pb2.Iptun.SerializeToString,
       ),
+      'GetBridgeVlanInfo': grpc.unary_unary_rpc_method_handler(
+          servicer.GetBridgeVlanInfo,
+          request_deserializer=nlaapi__pb2.BridgeVlanInfoKey.FromString,
+          response_serializer=nlaapi__pb2.BridgeVlanInfo.SerializeToString,
+      ),
       'GetLinks': grpc.unary_stream_rpc_method_handler(
           servicer.GetLinks,
           request_deserializer=nlaapi__pb2.GetLinksRequest.FromString,
@@ -458,6 +487,11 @@ def add_NLAApiServicer_to_server(servicer, server):
           servicer.GetIptuns,
           request_deserializer=nlaapi__pb2.GetIptunsRequest.FromString,
           response_serializer=nlaapi__pb2.Iptun.SerializeToString,
+      ),
+      'GetBridgeVlanInfos': grpc.unary_stream_rpc_method_handler(
+          servicer.GetBridgeVlanInfos,
+          request_deserializer=nlaapi__pb2.GetBridgeVlanInfosRequest.FromString,
+          response_serializer=nlaapi__pb2.BridgeVlanInfo.SerializeToString,
       ),
       'GetStats': grpc.unary_stream_rpc_method_handler(
           servicer.GetStats,

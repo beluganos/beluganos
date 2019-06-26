@@ -29,19 +29,19 @@ func printFieldEntry(entry *api.FieldEntry) {
 	switch entry.GetEntryType() {
 	case api.FieldEntry_ETH_TYPE:
 		e := entry.GetEthType()
-		fmt.Printf("FieldEntry: eth_type:0x%04x\n", e.GetEthType())
+		fmt.Printf("FieldEntry: in_port:%d eth_type:0x%04x\n", e.GetInPort(), e.GetEthType())
 
 	case api.FieldEntry_DST_IP:
 		e := entry.GetDstIp()
-		fmt.Printf("FieldEntry: eth_type=0x%04x ip_dst:%s\n", e.GetEthType(), e.GetIpDst())
+		fmt.Printf("FieldEntry: in_port:%d eth_type:0x%04x ip_dst:%s\n", e.GetInPort(), e.GetEthType(), e.GetIpDst())
 
 	case api.FieldEntry_IP_PROTO:
 		e := entry.GetIpProto()
-		fmt.Printf("FieldEntry: eth_type:0x%04x ip_proto:%d\n", e.GetEthType(), e.GetIpProto())
+		fmt.Printf("FieldEntry: in_port:%d eth_type:0x%04x ip_proto:%d\n", e.GetInPort(), e.GetEthType(), e.GetIpProto())
 
 	case api.FieldEntry_ETH_DST:
 		e := entry.GetEthDst()
-		fmt.Printf("FieldEntry: eth_Dst: %s/%s", e.GetEthDst(), e.GetEthMask())
+		fmt.Printf("FieldEntry: in_port:%d eth_Dst:%s/%s", e.GetInPort(), e.GetEthDst(), e.GetEthMask())
 
 	default:
 		log.Errorf("Invalid EntryType. %d", entry.GetEntryType())

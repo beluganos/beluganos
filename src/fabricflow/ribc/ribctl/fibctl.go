@@ -18,7 +18,8 @@
 package ribctl
 
 import (
-	"fabricflow/fibc/net"
+	fibcnet "fabricflow/fibc/net"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -37,12 +38,14 @@ func NewFIBCData(h *fibcnet.Header, data []byte) *FIBCData {
 type FIBController struct {
 	*fibcnet.Client
 	recvCh chan *FIBCData
+	log    *log.Entry
 }
 
 func NewFIBController(addr string) *FIBController {
 	return &FIBController{
 		Client: fibcnet.NewClient(addr),
 		recvCh: make(chan *FIBCData),
+		log:    log.WithFields(log.Fields{"module": "FIBCController"}),
 	}
 }
 
@@ -56,12 +59,12 @@ func (f *FIBController) Recv() <-chan *FIBCData {
 
 func (f *FIBController) Start() {
 	go f.Client.Start(func(client *fibcnet.Client) {
-		log.Infof("FIBController: Monitor START.")
+		f.log.Infof("Monitor: START.")
 
 		for {
 			hdr, data, err := client.Read()
 			if err != nil {
-				log.Errorf("FIBController: Monitor EXIT. Read error. %s", err)
+				f.log.Errorf("Monitor: EXIT. Read error. %s", err)
 				return
 			}
 

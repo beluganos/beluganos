@@ -1,0 +1,13 @@
+---
+
+routers:
+  - desc: sample-router
+    re_id: 10.0.0.1  # Router entity id. (=router-id)
+    datapath: sample_sw
+    ports:
+      - { name: eth1,     port: 1 } # nid=0, lxc-iface=eth1, dp-port=1
+      - { name: eth2,     port: 2 } # nid=0, lxc-iface=eth2, dp-port=2
+      - { name: eth3,     port: 3 } # nid=0, lxc-iface=eth3, dp-port=3
+      - { name: eth4,     port: 4 } # nid=0, lxc-iface=eth4, dp-port=4
+      - { name: eth5,     port: 5 } # nid=0, lxc-iface=eth5, dp-port=5
+      - { name: eth6,     port: 6 } # nid=0, lxc-iface=eth6, dp-port=6

@@ -1,0 +1,54 @@
+---
+
+# OSPF(Hello) : dev1
+# OSPF(Hello) : dev2
+# OSPF(DBDesc): eth4/vid:10
+# OSPF(DBDesc): eth4/vid:20
+
+
+tx:
+  payload:
+    hello_1_to_mc:
+      proto: [ospf, hello]
+      src:   10.0.0.1
+    hello_2_to_mc:
+      proto: [ospf, hello]
+      src:   10.0.0.2
+    dbdesc_4_to_1:
+      proto: [ospf, dbdesc]
+      src:   10.0.0.4
+      dst:   10.0.0.1
+      mtu:   1500
+    dbdesc_4_to_2:
+      proto: [ospf, dbdesc]
+      src:   10.0.0.4
+      dst:   10.0.0.2
+      mtu:   1500
+
+  packet:
+    1_to_mc:
+      dst: "01:00:5e:00:00:05"
+      src: "00:11:11:11:11:11"
+    2_to_mc:
+      dst: "01:00:5e:00:00:05"
+      src: "00:22:22:22:22:22"
+    4_to_1:
+      dst: "00:11:11:11:11:11"
+      src: "00:44:44:44:44:44"
+      vid: 10
+    4_to_2:
+      dst: "00:22:22:22:22:22"
+      src: "00:44:44:44:44:44"
+      vid: 20
+
+  iface:
+    dev1: enp131s0f0
+    dev2: enp131s0f1
+    dev3: enp132s0f0
+    dev4: enp132s0f1
+
+  send:
+    - { packet: 1_to_mc, payload: hello_1_to_mc, iface: dev1 }
+    - { packet: 2_to_mc, payload: hello_2_to_mc, iface: dev2 }
+    - { packet: 4_to_1,  payload: dbdesc_4_to_1, iface: dev4 }
+    - { packet: 4_to_2,  payload: dbdesc_4_to_2, iface: dev4 }

@@ -61,6 +61,7 @@ service NLAApi {
   rpc GetVpn    (VpnKey)   returns (Vpn)  {}
   rpc GetEncapInfo (EncapInfoKey) returns (EncapInfo) {}
   rpc GetIptun  (IptunKey) returns (Iptun) {}
+  rpc GetBridgeVlanInfo (BridgeVlanInfoKey) returns (BridgeVlanInfo) {}
 
   rpc GetLinks  (GetLinksRequest)   returns (stream Link) {}
   rpc GetAddrs  (GetAddrsRequest)   returns (stream Addr) {}
@@ -71,6 +72,7 @@ service NLAApi {
   rpc GetVpns   (GetVpnsRequest)    returns (stream Vpn)  {}
   rpc GetEncapInfos (GetEncapInfosRequest) returns (stream EncapInfo) {}
   rpc GetIptuns (GetIptunsRequest) returns  (stream Iptun) {}
+  rpc GetBridgeVlanInfos (GetBridgeVlanInfosRequest) returns (stream BridgeVlanInfo) {}
 
   rpc GetStats  (GetStatsRequest)   returns (stream Stat) {}
 }
@@ -85,6 +87,7 @@ message NlMsgUni {
         Route  route  = 4;
         Node   node   = 5;
         Vpn    vpn    = 6;
+        BridgeVlanInfo br_vlan_info = 7;
     }
 }
 
@@ -120,6 +123,10 @@ message GetRoutesRequest{
 }
 
 message GetMplssRequest {
+  uint32 n_id = 1; // 255: all nodes.
+}
+
+message GetBridgeVlanInfosRequest {
   uint32 n_id = 1; // 255: all nodes.
 }
 
@@ -171,6 +178,12 @@ message IptunKey {
   bytes  remote = 2; // net.IP
 }
 
+message BridgeVlanInfoKey {
+  uint32 n_id = 1;
+  int32 index = 2;
+  uint32 vid  = 3;
+}
+
 //
 // Messages
 //
@@ -203,6 +216,34 @@ message Iptun {
   uint32 tnl_id   = 4;
 }
 
+message BridgeVlanInfo {
+  enum Flags {
+    NOP         = 0;
+    MASTER      = 1;
+    PVID        = 2;
+    UNTAGGED    = 4;
+    RANGE_BEGIN = 8;
+    RANGE_END   = 16;
+  }
+
+  enum PortType {
+    NONE_PORT   = 0;
+    ACCESS_PORT = 1;
+    TRUNK_PORT  = 2;
+    MASTER_PORT = 3;
+  }
+
+  Flags  flags        = 1;
+  uint32 vid          = 2;
+  int32  index        = 3;
+  string name         = 4;
+  int32  master_index = 5;
+  uint32 mtu          = 6;
+
+  uint32 n_id         = 7;
+  uint32 br_id        = 8;
+}
+
 enum LinkOperState {
     OperUnknown    = 0;
     OperNotPresent = 1;
@@ -211,6 +252,31 @@ enum LinkOperState {
     OperTesting    = 4;
     OperDormant    = 5;
     OperUp         = 6;
+}
+
+enum BondLinkState {
+  BOND_LINK_UP   = 0;
+  BOND_LINK_FAIL = 1;
+  BOND_LINK_DOWN = 2;
+  BOND_LINK_BACK = 3;
+  BOND_LINK_UNKNOWN = -1;
+}
+
+enum BondState {
+  BOND_STATE_ACTIVE = 0;
+  BOND_STATE_BACKUP = 1;
+  BOND_STATE_UNKNOWN = -1;
+}
+
+message BondSlaveInfo {
+  BondState     state      = 1;
+  BondLinkState mii_status = 2;
+  uint32        link_failure_count = 3;
+  bytes         permanent_hw_addr  = 4;
+  int32         queue_id           = 5;
+  int32         aggregator_id      = 6;
+  int32         actor_oper_port_state     = 7;
+  int32         ad_partner_oper_port_state = 8;
 }
 
 message LinkAttrs {
@@ -227,7 +293,9 @@ message LinkAttrs {
   int32    promisc       = 11;
   string   encap_type    = 12;
   LinkOperState oper_state=13;
-
+  oneof slave_info {
+    BondSlaveInfo bond_slave_info = 14;
+  }
 }
 
 message GenericLinkAttrs {
@@ -240,6 +308,9 @@ message DeviceLinkAttrs {
 
 message BridgeLinkAttrs {
   LinkAttrs link_attrs = 1;
+  bool      multicast_snooping = 2;
+  uint32    hello_time         = 3;
+  bool      vlan_filtering     = 4;
 }
 
 message VlanLinkAttrs {

@@ -18,11 +18,10 @@
 package gonslib
 
 import (
-	"fabricflow/fibc/api"
-	"fabricflow/fibc/net"
+	fibcapi "fabricflow/fibc/api"
+	fibcnet "fabricflow/fibc/net"
 
 	"github.com/beluganos/go-opennsl/opennsl"
-
 	log "github.com/sirupsen/logrus"
 )
 
@@ -33,38 +32,58 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 	log.Debugf("Server: GroupMod(L3-UC): %v %v %v", hdr, mod, group)
 
 	neid := group.NeId
+	vid := group.GetAdjustedVlanVid()
+	port, portType := fibcapi.ParseDPPortId(group.PortId)
+
+	var (
+		trunk   opennsl.Trunk
+		isTrunk bool
+	)
+
+	if portType == fibcapi.LinkType_BOND {
+		if trunk, isTrunk = s.idmaps.Trunks.Get(port, vid); !isTrunk {
+			log.Errorf("erver: GroupMod(L3-UC): Trunk(port:%d, vid:%d) not found.", port, vid)
+			return
+		}
+	}
 
 	switch mod.Cmd {
 	case fibcapi.GroupMod_ADD, fibcapi.GroupMod_MODIFY:
-		if _, ok := s.idmaps.L3Egress.Get(neid); ok {
+		oldL3egrID, ok := s.idmaps.L3Egress.Get(neid)
+		if ok && (mod.Cmd != fibcapi.GroupMod_MODIFY) {
 			log.Errorf("Server: L3-UC group: L3-UC(neid:%d) already exists. ", neid)
 			return
 		}
 
-		vid := group.GetAdjustedVlanVid()
-		ifaceID, ok := s.idmaps.L3Ifaces.Get(group.PortId, vid)
+		ifaceID, ok := s.idmaps.L3Ifaces.Get(port, vid)
 		if !ok {
-			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", group.PortId, vid)
+			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", port, vid)
 			return
 		}
 
 		flags := opennsl.L3_NONE
 		if mod.Cmd == fibcapi.GroupMod_MODIFY {
-			flags = opennsl.L3_REPLACE
+			flags = opennsl.L3_REPLACE | opennsl.L3_WITH_ID
 		}
 
-		pvid := s.vlanPorts.ConvVID(opennsl.Port(group.PhyPortId), opennsl.VlanDefaultMustGet(s.Unit()))
+		phyPort, _ := fibcapi.ParseDPPortId(group.PhyPortId)
+		pvid := s.vlanPorts.ConvVID(opennsl.Port(phyPort), opennsl.VlanDefaultMustGet(s.Unit()))
 
 		tunnelInitiatorAdd(s.Unit(), group, ifaceID, pvid)
 		tunnelTerminatorAdd(s.Unit(), group)
 
 		l3egr := opennsl.NewL3Egress()
 		l3egr.SetIfaceID(opennsl.L3IfaceID(ifaceID))
-		l3egr.SetPort(opennsl.Port(group.PhyPortId))
 		l3egr.SetMAC(group.GetEthDstHwAddr())
 		l3egr.SetVID(opennsl.Vlan(pvid))
+		if isTrunk {
+			flags |= opennsl.L3_TGID
+			l3egr.SetTrunk(trunk)
+		} else {
+			l3egr.SetPort(opennsl.Port(phyPort))
+		}
 
-		l3egrID, err := l3egr.Create(s.Unit(), flags, 0)
+		l3egrID, err := l3egr.Create(s.Unit(), flags, oldL3egrID)
 		if err != nil {
 			log.Errorf("Server: L3-UC group: L3 Egress create error. %s", err)
 			return
@@ -88,9 +107,9 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 		tunnelTerminatorDelete(s.Unit(), group)
 
 		vid := group.GetAdjustedVlanVid()
-		ifaceID, ok := s.idmaps.L3Ifaces.Get(group.PortId, vid)
+		ifaceID, ok := s.idmaps.L3Ifaces.Get(port, vid)
 		if !ok {
-			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", group.PortId, vid)
+			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", port, vid)
 			return
 		}
 

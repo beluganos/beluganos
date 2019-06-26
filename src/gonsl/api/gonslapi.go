@@ -24,20 +24,21 @@ import (
 //
 // NewEthTypeFieldEntry returns new instance
 //
-func NewEthTypeFieldEntry(ethType uint16) *EthTypeFieldEntry {
+func NewEthTypeFieldEntry(ethType uint16, inPort opennsl.Port) *EthTypeFieldEntry {
 	return &EthTypeFieldEntry{
 		EthType: uint32(ethType),
+		InPort:  uint32(inPort),
 	}
 }
 
 //
 // NewFieldEntryEthType returns new instance
 //
-func NewFieldEntryEthType(ethType uint16) *FieldEntry {
+func NewFieldEntryEthType(ethType uint16, inPort opennsl.Port) *FieldEntry {
 	return &FieldEntry{
 		EntryType: FieldEntry_ETH_TYPE,
 		Entry: &FieldEntry_EthType{
-			EthType: NewEthTypeFieldEntry(ethType),
+			EthType: NewEthTypeFieldEntry(ethType, inPort),
 		},
 	}
 }
@@ -45,21 +46,22 @@ func NewFieldEntryEthType(ethType uint16) *FieldEntry {
 //
 // NewDstIPFieldEntry returns new instance
 //
-func NewDstIPFieldEntry(ethType uint16, dstIP string) *DstIpFieldEntry {
+func NewDstIPFieldEntry(ethType uint16, dstIP string, inPort opennsl.Port) *DstIpFieldEntry {
 	return &DstIpFieldEntry{
 		EthType: uint32(ethType),
 		IpDst:   dstIP,
+		InPort:  uint32(inPort),
 	}
 }
 
 //
 // NewFieldEntryDstIP returns new instance
 //
-func NewFieldEntryDstIP(ethType uint16, dstIP string) *FieldEntry {
+func NewFieldEntryDstIP(ethType uint16, dstIP string, inPort opennsl.Port) *FieldEntry {
 	return &FieldEntry{
 		EntryType: FieldEntry_DST_IP,
 		Entry: &FieldEntry_DstIp{
-			DstIp: NewDstIPFieldEntry(ethType, dstIP),
+			DstIp: NewDstIPFieldEntry(ethType, dstIP, inPort),
 		},
 	}
 }
@@ -67,21 +69,22 @@ func NewFieldEntryDstIP(ethType uint16, dstIP string) *FieldEntry {
 //
 // NewIPProtoFieldEntry returns new instance
 //
-func NewIPProtoFieldEntry(ethType uint16, ipProto uint8) *IpProtoFieldEntry {
+func NewIPProtoFieldEntry(ethType uint16, ipProto uint8, inPort opennsl.Port) *IpProtoFieldEntry {
 	return &IpProtoFieldEntry{
 		EthType: uint32(ethType),
 		IpProto: uint32(ipProto),
+		InPort:  uint32(inPort),
 	}
 }
 
 //
 // NewFieldEntryIPProto returns new instance
 //
-func NewFieldEntryIPProto(ethType uint16, ipProto uint8) *FieldEntry {
+func NewFieldEntryIPProto(ethType uint16, ipProto uint8, inPort opennsl.Port) *FieldEntry {
 	return &FieldEntry{
 		EntryType: FieldEntry_IP_PROTO,
 		Entry: &FieldEntry_IpProto{
-			IpProto: NewIPProtoFieldEntry(ethType, ipProto),
+			IpProto: NewIPProtoFieldEntry(ethType, ipProto, inPort),
 		},
 	}
 }
@@ -443,12 +446,14 @@ const (
 	IDMapNameL3Egress = "L3Egress"
 	// IDMapNameL3Iface is L3Iface entry name.
 	IDMapNameL3Iface = "L3Iface"
+	// IDMapNameTrunk is Trunk entry name.
+	IDMapNameTrunk = "Trunk"
 )
 
 //
 // NewIDMapEntry returns new instance.
 //
-func NewIDMapEntry(name IDMapName, key uint32, value uint32) *IDMapEntry {
+func NewIDMapEntry(name IDMapName, key string, value uint32) *IDMapEntry {
 	return &IDMapEntry{
 		Name:  string(name),
 		Key:   key,
@@ -557,4 +562,25 @@ func NewGetTunnelTerminatorsReply(entries []*TunnelTerminator) *GetTunnelTermina
 	return &GetTunnelTerminatorsReply{
 		Tunnels: entries,
 	}
+}
+
+//
+// PortInfo
+//
+func NewPortInfoFromNative(port opennsl.Port, pinfo *opennsl.PortInfo) *PortInfo {
+	return &PortInfo{
+		Port:         uint32(port),
+		LinkStatus:   int32(pinfo.LinkStatus()),
+		UntaggedVlan: uint32(pinfo.UntaggedVlan()),
+	}
+}
+
+func NewGetPortInfosReply(pinfos []*PortInfo) *GetPortInfosReply {
+	return &GetPortInfosReply{
+		PortInfos: pinfos,
+	}
+}
+
+func NewGetPortInfosRequest() *GetPortInfosRequest {
+	return &GetPortInfosRequest{}
 }

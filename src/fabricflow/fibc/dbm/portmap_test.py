@@ -44,8 +44,9 @@ class TestFIBCDbPortMapTable(unittest.TestCase):
             vs=portmap.FIBCPort(0, 0),
             name=portmap.FIBCLink(reid, name),
             link=None,
-            slaves=None,
             dpenter=False,
+            no_vs=False,
+            vs_hw_addr="",
         )
         self.assertEqual(ret, expect)
 
@@ -66,8 +67,9 @@ class TestFIBCDbPortMapTable(unittest.TestCase):
             vs=portmap.FIBCPort(0, 0),
             name=portmap.FIBCLink(reid, name),
             link=portmap.FIBCLink(reid, link),
-            slaves=None,
             dpenter=False,
+            no_vs=False,
+            vs_hw_addr="",
         )
         self.assertEqual(ret, expect)
 
@@ -75,11 +77,10 @@ class TestFIBCDbPortMapTable(unittest.TestCase):
         dpid = 100
         reid = "1.1.1.1"
         name = "ethX"
-        slaves = ["ethA", "ethB"]
  
         # exec
         ret = fibcdbm.FIBCPortEntry.new(
-            dp_id=dpid, re_id=reid, name=name, port=1, slaves=slaves)
+            dp_id=dpid, re_id=reid, name=name, port=1)
 
         # check
         expect = dict(
@@ -89,10 +90,8 @@ class TestFIBCDbPortMapTable(unittest.TestCase):
             name=portmap.FIBCLink(reid, name),
             link=None,
             dpenter=False,
-            slaves=[
-                portmap.FIBCLink(reid, slaves[0]),
-                portmap.FIBCLink(reid, slaves[1]),
-            ],
+            no_vs=False,
+            vs_hw_addr="",
         )
         self.assertEqual(ret, expect)
 
@@ -117,76 +116,6 @@ class TestFIBCDbPortMapTable(unittest.TestCase):
 
         with self.assertRaises(KeyError):
             table.find_by_name(reid, "20/eth0")
-
-
-    def test_slave_ports(self):
-        dpid = 100
-        reid = "1.1.1.1"
-        _ports = [
-            dict(name="10/eth1",  port=1),
-            dict(name="10/eth2",  port=2),
-            dict(name="10/eth3",  port=3),
-            dict(name="10/eth3.10",port=0, link="10/eth3"),
-            dict(name="20/bond1", port=100, slaves=["10/eth1", "10/eth2"]),
-            dict(name="30/vlan1", port=0, link="20/bond1"),
-        ]
-        ports = [fibcdbm.FIBCPortEntry.new(dp_id=dpid, re_id=reid, **p) for p in _ports]
-        table = fibcdbm.FIBCDbPortMapTable()
-        for port in ports:
-            table.add(port)
-
-        # not bond devce.
-        port = fibcdbm.FIBCPortEntry.new(dp_id=dpid, re_id=reid, name="10/eth3", port=3)
-        ret = table.slave_ports(port)
-        self.assertEqual(ret, [])
-
-        # vlan tagged, not bond devce.
-        port = fibcdbm.FIBCPortEntry.new(dp_id=dpid, re_id=reid, name="10/eth3.10", port=0)
-        ret = table.slave_ports(port)
-        self.assertEqual(ret, [])
-
-        # bond device
-        port = fibcdbm.FIBCPortEntry.new(
-            dp_id=dpid, re_id=reid, name="20/bond1", port=100, slaves=["10/eth1", "10/eth2"])
-        ret = table.slave_ports(port)
-        self.assertEqual(ret, [ports[0], ports[1]])
-
-        # vlan tagged bond device.
-        port = fibcdbm.FIBCPortEntry.new(
-            dp_id=dpid, re_id=reid, name="30/vlan1", port=0, link="20/bond1")
-        ret = table.slave_ports(port)
-        self.assertEqual(ret, [])
-
-
-    def test_master_port(self):
-        dpid = 100
-        reid = "1.1.1.1"
-        _ports = [
-            dict(name="10/eth1",  port=1),
-            dict(name="10/eth2",  port=2),
-            dict(name="10/eth3",  port=3),
-            dict(name="20/bond1", port=100, slaves=["10/eth1", "10/eth2"]),
-            dict(name="30/vlan1", port=0, link="20/bond1"),
-        ]
-        ports = [fibcdbm.FIBCPortEntry.new(dp_id=dpid, re_id=reid, **p) for p in _ports]
-        table = fibcdbm.FIBCDbPortMapTable()
-        for port in ports:
-            table.add(port)
-
-        # 10/eth1 -> 20/bond1
-        port = fibcdbm.FIBCPortEntry.new(dp_id=dpid, re_id=reid, **_ports[0])
-        ret = table.master_port(port)
-        self.assertEqual(ret, ports[3])
-
-        # 10/eth2 -> 20/bond1
-        port = fibcdbm.FIBCPortEntry.new(dp_id=dpid, re_id=reid, **_ports[1])
-        ret = table.master_port(port)
-        self.assertEqual(ret, ports[3])
-
-        # 10/eth3 -> KeyError
-        port = fibcdbm.FIBCPortEntry.new(dp_id=dpid, re_id=reid, **_ports[2])
-        with self.assertRaises(KeyError):
-            table.master_port(port)
 
 
     def test_lower_port(self):

@@ -32,32 +32,34 @@ type NLAMasterIptun struct {
 	mutex          sync.Mutex
 	master         *NLAMasterService
 	updateInterval time.Duration
+	log            *log.Entry
 }
 
 func NewNLAMasterIptun(master *NLAMasterService, updateInterval time.Duration) *NLAMasterIptun {
 	return &NLAMasterIptun{
 		master:         master,
 		updateInterval: updateInterval,
+		log:            NewLogger("NLAMasterIptun"),
 	}
 }
 
 func (n *NLAMasterIptun) NewNeigh(tun *nlamsg.Iptun, route *nlamsg.Route) {
 	nid := tun.NId
 
-	phyln := nladbm.Links().Select(nladbm.NewLinkKey(nid, route.LinkIndex))
+	phyln := nladbm.Links().Select(nladbm.NewLinkKey(nid, route.GetLinkIndex()))
 	if phyln == nil {
-		log.Warnf("NLAMasterIptun: NewNeigh phy-link %d/%d not found.", nid, route.LinkIndex)
+		n.log.Warnf("NewNeigh phy-link %d/%d not found.", nid, route.GetLinkIndex())
 		return
 	}
 
-	neigh := nladbm.Neighs().Select(nladbm.NewNeighKey(nid, route.Gw))
+	neigh := nladbm.Neighs().Select(nladbm.NewNeighKey(nid, route.GetGw()))
 	if neigh == nil {
-		log.Warnf("NLAMasterIptun: NewNeigh neigh %d/%s not found.", nid, route.Gw)
+		n.log.Warnf("NewNeigh neigh %d/%s not found.", nid, route.GetGw())
 		return
 	}
 
 	tun.LocalMAC = phyln.Attrs().HardwareAddr
-	log.Infof("NLAMasterIptun: NewNeigh remote %d/%s", nid, tun.Remote())
+	n.log.Infof("NewNeigh remote %d/%s", nid, tun.Remote())
 
 	neigh = neigh.Copy()
 	neigh.NeId = 0
@@ -74,7 +76,7 @@ func (n *NLAMasterIptun) NewNeigh(tun *nlamsg.Iptun, route *nlamsg.Route) {
 	nlmsg.Src = nlamsg.SRC_KNL
 	nlmsg.Header.Type = syscall.RTM_NEWNEIGH
 
-	log.Debugf("NLAMasterIptun: NewNeigh %s", neigh)
+	n.log.Debugf("NewNeigh %s", neigh)
 
 	n.master.NetlinkNeigh(nlmsg, neigh)
 }
@@ -82,7 +84,7 @@ func (n *NLAMasterIptun) NewNeigh(tun *nlamsg.Iptun, route *nlamsg.Route) {
 func (n *NLAMasterIptun) DelNeigh(tun *nlamsg.Iptun) {
 	nid := tun.NId
 
-	log.Infof("NLAMasterIptun: DelNeigh neigh %d/%s", nid, tun.Remote())
+	n.log.Infof("DelNeigh neigh %d/%s", nid, tun.Remote())
 
 	neigh := nlamsg.NewNeigh(nil, nid, 0)
 	neigh.NeId = 0
@@ -101,7 +103,7 @@ func (n *NLAMasterIptun) DelNeigh(tun *nlamsg.Iptun) {
 
 	tun.LocalMAC = nil
 
-	log.Debugf("NLAMasterIptun: DelNeigh %s", neigh)
+	n.log.Debugf("DelNeigh %s", neigh)
 
 	n.master.NetlinkNeigh(nlmsg, neigh)
 }
@@ -113,7 +115,7 @@ func (n *NLAMasterIptun) RemoteUp(nid uint8, remote net.IP) {
 	route := nladbm.Routes().SelectByTunRemote(nid, remote)
 
 	if route == nil {
-		log.Warnf("NLAMasterIptun: RemoteUp route %d/%s not found.", nid, remote)
+		n.log.Warnf("RemoteUp route %d/%s not found.", nid, remote)
 		return
 	}
 
@@ -144,7 +146,7 @@ func (n *NLAMasterIptun) remoteDown(nid uint8, remote net.IP, checkRoute bool) {
 	if checkRoute {
 		route := nladbm.Routes().SelectByTunRemote(nid, remote)
 		if route != nil {
-			log.Debugf("NLAMasterIptun: RemoteDown neigh %d/%s not down.", nid, remote)
+			n.log.Debugf("remoteDown neigh %d/%s not down.", nid, remote)
 			return
 		}
 	}
@@ -167,23 +169,23 @@ func (n *NLAMasterIptun) RemoteRouteDown(route *nlamsg.Route) {
 
 func (n *NLAMasterIptun) NewIptunRoute(route *nlamsg.Route) *nlamsg.Route {
 	nid := route.NId
-	ifindex := route.LinkIndex
+	ifindex := route.GetLinkIndex()
 
 	link := nladbm.Links().Select(nladbm.NewLinkKey(nid, ifindex))
 	if link == nil {
-		log.Errorf("NLAMasterIptun: NewRouteIptun link %d/%d not found.", nid, ifindex)
+		n.log.Errorf("NewIptunRoute link %d/%d not found.", nid, ifindex)
 		return nil
 	}
 
 	iptun := link.Iptun()
 	if iptun == nil {
-		log.Debugf("NLAMasterIptun: NewRouteIptun link %d/%d is not iptun.", nid, ifindex)
+		n.log.Debugf("NewIptunRoute link %d/%d is not iptun.", nid, ifindex)
 		return nil
 	}
 
 	neigh := nladbm.Neighs().Select(nladbm.NewNeighKey(nid, iptun.Remote))
 	if neigh == nil {
-		log.Debugf("NLAMasterIptun: NewRouteIptun neigh %d/%s nod found.", nid, iptun.Remote)
+		n.log.Debugf("NewIptunRoute neigh %d/%s nod found.", nid, iptun.Remote)
 		return nil
 	}
 
@@ -198,7 +200,7 @@ func (n *NLAMasterIptun) NewRoutes(neigh *nlamsg.Neigh, f func(*nlamsg.Route)) {
 	gw := neigh.IP
 
 	if tunRemote := neigh.IsTunnelRemote(); !tunRemote {
-		log.Debugf("NLAMasterIptun: NewIptunRoutes neigh %d/%s not tunnel-remote.", nid, gw)
+		n.log.Debugf("NewRoutes neigh %d/%s not tunnel-remote.", nid, gw)
 		return
 	}
 
@@ -212,18 +214,18 @@ func (n *NLAMasterIptun) NewRoutes(neigh *nlamsg.Neigh, f func(*nlamsg.Route)) {
 
 func (n *NLAMasterIptun) Serve() {
 	if n.updateInterval == 0 {
-		log.Infof("NLAMasterIptun: Disabled.")
+		n.log.Infof("Disabled.")
 		return
 	}
 
 	ticker := time.NewTicker(n.updateInterval)
 
-	log.Infof("NLAMasterIptun: START")
+	n.log.Infof("START")
 
 	for {
 		select {
 		case <-ticker.C:
-			log.Infof("NLAMasterIptun: Update START")
+			n.log.Infof("Serve auto update start")
 
 			nladbm.Links().WalkTun(func(tun *nlamsg.Iptun) error {
 				if local := tun.LocalMAC; local == nil {
@@ -234,7 +236,7 @@ func (n *NLAMasterIptun) Serve() {
 				return nil
 			})
 
-			log.Infof("NLAMasterIptun: Update END")
+			n.log.Infof("Serve auto update end")
 		}
 	}
 }

@@ -251,3 +251,27 @@ class EventFIBCPacketOut(EventFIBCBase):
         super(EventFIBCPacketOut, self).__init__(msg, pb.FF_PACKET_OUT)
         self.datapath = dpath
         self.xid = xid
+
+
+class EventFIBCL2AddrStatus(EventFIBCBase):
+    """
+    FIBC L2AddrStatus event
+
+    msg: pb.L2AddrStatus
+    dpath: FFDatapath
+    """
+    def __init__(self, msg):
+        super(EventFIBCL2AddrStatus, self).__init__(msg, pb.L2ADDR_STATUS)
+
+
+class EventFIBCFFL2AddrStatus(EventFIBCBase):
+    """
+    FIBC FFL2AddrStatus event
+
+    msg: pb.FFL2AddrStatus
+    dpath: FFDatapath
+    """
+    def __init__(self, dpath, msg, xid=0):
+        super(EventFIBCFFL2AddrStatus, self).__init__(msg, pb.FF_L2ADDR_STATUS)
+        self.datapath = dpath
+        self.xid = xid

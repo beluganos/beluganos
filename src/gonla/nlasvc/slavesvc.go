@@ -18,12 +18,13 @@
 package nlasvc
 
 import (
-	log "github.com/sirupsen/logrus"
-	"golang.org/x/net/context"
 	"gonla/nlaapi"
 	"gonla/nlactl"
 	"gonla/nlalib"
 	"gonla/nlamsg"
+
+	log "github.com/sirupsen/logrus"
+	"golang.org/x/net/context"
 )
 
 type NLASlaveService struct {
@@ -31,6 +32,7 @@ type NLASlaveService struct {
 	NId    uint8
 	Addr   string
 	Chans  *nlactl.NLAChannels
+	log    *log.Entry
 }
 
 func NewNLASlaveService(addr string) *NLASlaveService {
@@ -39,6 +41,7 @@ func NewNLASlaveService(addr string) *NLASlaveService {
 		NId:    0,
 		Addr:   addr,
 		Chans:  nil,
+		log:    NewLogger("NLASlaveService"),
 	}
 	return p
 }
@@ -53,13 +56,13 @@ func (n *NLASlaveService) Start(nid uint8, chans *nlactl.NLAChannels) error {
 	n.Chans = chans
 
 	go n.Serve(connected)
-	log.Infof("SlaveService: START")
+	n.log.Infof("Start:")
 	return nil
 }
 
 func (n *NLASlaveService) Stop() {
 	// nothing to do
-	log.Infof("SlaveService: STOP")
+	n.log.Infof("Stop:")
 }
 
 func (n *NLASlaveService) Connect(addr string) (<-chan *nlalib.ConnInfo, error) {
@@ -71,7 +74,7 @@ func (n *NLASlaveService) Connect(addr string) (<-chan *nlalib.ConnInfo, error) 
 	}
 
 	n.client = nlaapi.NewNLACoreApiClient(conn)
-	log.Infof("SlaveService: Connected %s", addr)
+	n.log.Infof("Connected %s", addr)
 
 	return connected, nil
 }
@@ -93,18 +96,18 @@ func (n *NLASlaveService) MonNetlinkMessage(ci *nlalib.ConnInfo) {
 	}
 	stream, err := n.client.MonNetlinkMessage(context.Background(), req)
 	if err != nil {
-		log.Errorf("SlaveService: MonNetlinkMessage error. %s", err)
+		n.log.Errorf("MonNetlinkMessage error. %s", err)
 		return
 	}
 
-	log.Infof("SlaveService: MonNetlinkMessage START")
+	n.log.Infof("MonNetlinkMessage START")
 
 	SubscribeNetlinkResources(n.Chans.NlMsg, n.NId)
 
 	for {
 		nlmsg, err := stream.Recv()
 		if err != nil {
-			log.Errorf("SlaveService: MonNetlinkMessage EXIT. %s", err)
+			n.log.Errorf("MonNetlinkMessage EXIT. %s", err)
 			return
 		}
 
@@ -119,9 +122,9 @@ func (n *NLASlaveService) NetlinkMessage(nlmsg *nlamsg.NetlinkMessage) {
 
 	msg := nlaapi.NewNetlinkMessageFromNative(nlmsg)
 	if _, err := n.client.SendNetlinkMessage(context.Background(), msg); err != nil {
-		log.Errorf("SlaveService: SendNetlinkMessage error. %s", err)
+		n.log.Errorf("SendNetlinkMessage error. %s", err)
 		return
 	}
 
-	log.Debugf("SlaveService: Send to master. %v", &msg.Header)
+	n.log.Debugf("Send to master. %v", &msg.Header)
 }

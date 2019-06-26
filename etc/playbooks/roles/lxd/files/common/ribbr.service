@@ -1,0 +1,14 @@
+[Unit]
+Description=RIB Bridge VLAN setup service
+After=syslog.target network.target
+ConditionPathExists=/etc/beluganos/bridge_vlan.yaml
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ffctl bridge vlan net-apply --config-file /etc/beluganos/bridge_vlan.yaml
+User=root
+Group=root
+# Restart=on-abort
+
+[Install]
+WantedBy=network.target

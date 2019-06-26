@@ -705,3 +705,53 @@ func (c *PlaybookRibxdConfCmd) createRibxdConf(playbookName string) error {
 
 	return t.Execute(f)
 }
+
+type PlaybookBrVlanYamlCmd struct {
+	*PlaybookCmd
+	dpType string
+	config string
+}
+
+func NewPlaybookBrVlanYamlCmd() *PlaybookBrVlanYamlCmd {
+	return &PlaybookBrVlanYamlCmd{
+		PlaybookCmd: NewPlaybookCmd(),
+	}
+}
+
+func (c *PlaybookBrVlanYamlCmd) SetFlags(cmd *cobra.Command) *cobra.Command {
+	c.PlaybookCmd.setFlags(cmd)
+	cmd.PersistentFlags().StringVarP(&c.dpType, "dp-type", "", "as5812", "datapath type.")
+	cmd.PersistentFlags().StringVarP(&c.config, "ports", "", "./ports.yaml", "Port filepath.")
+
+	return cmd
+}
+
+func (c *PlaybookBrVlanYamlCmd) createBrVlanYaml(playbookName string) error {
+	_, dpPortCfg, err := getDpPortMapAndCfg(c.dpType, c.config, playbookName)
+	if err != nil {
+		return err
+	}
+
+	path := c.filesPath(playbookName, "bridge_vlan.yaml")
+	f, err := createFile(path, c.overwrite, func(backup string) {
+		log.Debugf("%s backup", backup)
+	})
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	log.Debugf("%s created.", path)
+
+	t := templates.NewPlaybookBrVlanYaml()
+
+	for _, cfg := range dpPortCfg.L2SWAccessPorts() {
+		t.AddAccessPort(cfg.Eth, cfg.Vid)
+	}
+
+	for _, cfg := range dpPortCfg.L2SWTrunkPorts() {
+		t.AddTrunkPort(cfg.Eth, cfg.Vids...)
+	}
+
+	return t.Execute(f)
+}

@@ -21,7 +21,11 @@ import (
 	"gonla/nlalib"
 	"gonla/nlamsg"
 	"syscall"
+
+	log "github.com/sirupsen/logrus"
 )
+
+const DEFAULT_VLAN_VID = 1
 
 func DatasToNetlnkMessages(nid uint8, mtype uint16, datas [][]byte) []*nlamsg.NetlinkMessage {
 	msgs := []*nlamsg.NetlinkMessage{}
@@ -87,4 +91,13 @@ func SubscribeNetlinkResources(ch chan<- *nlamsg.NetlinkMessage, nid uint8) erro
 	}
 
 	return nil
+}
+
+func NewLogEntry(module string, fields log.Fields) *log.Entry {
+	fields["module"] = module
+	return log.WithFields(fields)
+}
+
+func NewLogger(module string) *log.Entry {
+	return NewLogEntry(module, log.Fields{})
 }

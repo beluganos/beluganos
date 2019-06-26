@@ -63,12 +63,12 @@ func TestVlanPortTable_ConvVlan_minmax(t *testing.T) {
 	}
 
 	vid = tbl.ConvVID(opennsl.Port(50), opennsl.Vlan(1))
-	if vid != opennsl.Vlan(51) {
+	if vid != opennsl.Vlan(2) {
 		t.Errorf("ConvVID unmatch. vid=%d", vid)
 	}
 
 	vid = tbl.ConvVID(opennsl.Port(55), opennsl.Vlan(1))
-	if vid != opennsl.Vlan(56) {
+	if vid != opennsl.Vlan(7) {
 		t.Errorf("ConvVID unmatch. vid=%d", vid)
 	}
 
@@ -95,5 +95,65 @@ func TestVlanPortTable_ConvVlan_minmax(t *testing.T) {
 	vid = tbl.ConvVID(opennsl.Port(56), opennsl.Vlan(2))
 	if vid != opennsl.Vlan(2) {
 		t.Errorf("ConvVID unmatch. vid=%d", vid)
+	}
+}
+
+func TestVlanPortTableHasDefaultVIDBase(t *testing.T) {
+	tbl := NewVlanPortTable()
+	tbl.SetMinPort(opennsl.Port(50))
+	tbl.SetMaxPort(opennsl.Port(55))
+	tbl.SetBaseVID(opennsl.Vlan(1))
+
+	// port: 49 -> x
+	// port: 50 -> 2
+	// port: 51 -> 3
+	// ...
+	// port: 55 -> 7
+	// port: 56 -> x
+
+	if b := tbl.Has(1); b {
+		t.Errorf("Has 1 unmatch. %t", b)
+	}
+
+	if b := tbl.Has(2); !b {
+		t.Errorf("Has 2 unmatch. %t", b)
+	}
+
+	if b := tbl.Has(7); !b {
+		t.Errorf("Has 7 unmatch. %t", b)
+	}
+
+	if b := tbl.Has(8); b {
+		t.Errorf("Has 8 unmatch. %t", b)
+	}
+}
+
+func TestVlanPortTableHas(t *testing.T) {
+	tbl := NewVlanPortTable()
+	tbl.SetMinPort(opennsl.Port(50))
+	tbl.SetMaxPort(opennsl.Port(55))
+	tbl.SetBaseVID(opennsl.Vlan(4000))
+
+	// port: 49 -> x
+	// port: 50 -> 4001
+	// port: 51 -> 4002
+	// ...
+	// port: 55 -> 4006
+	// port: 56 -> x
+
+	if b := tbl.Has(4000); b {
+		t.Errorf("Has 4000 unmatch. %t", b)
+	}
+
+	if b := tbl.Has(4001); !b {
+		t.Errorf("Has 4001 unmatch. %t", b)
+	}
+
+	if b := tbl.Has(4006); !b {
+		t.Errorf("Has 4006 unmatch. %t", b)
+	}
+
+	if b := tbl.Has(4007); b {
+		t.Errorf("Has 4007 unmatch. %t", b)
 	}
 }

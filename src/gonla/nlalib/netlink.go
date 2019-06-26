@@ -18,10 +18,14 @@
 package nlalib
 
 import (
+	"fmt"
+	"net"
+	"strings"
+	"syscall"
+
 	"github.com/vishvananda/netlink"
 	"github.com/vishvananda/netlink/nl"
-	"net"
-	"syscall"
+	"golang.org/x/sys/unix"
 )
 
 const (
@@ -30,27 +34,27 @@ const (
 )
 
 func GetNetlinkLinks() ([][]byte, error) {
-	req := nl.NewNetlinkRequest(syscall.RTM_GETLINK, syscall.NLM_F_DUMP)
-	req.AddData(nl.NewIfInfomsg(syscall.AF_UNSPEC))
-	return req.Execute(syscall.NETLINK_ROUTE, syscall.RTM_NEWLINK)
+	req := nl.NewNetlinkRequest(unix.RTM_GETLINK, unix.NLM_F_DUMP)
+	req.AddData(nl.NewIfInfomsg(unix.AF_UNSPEC))
+	return req.Execute(unix.NETLINK_ROUTE, unix.RTM_NEWLINK)
 }
 
 func GetNetlinkAddrs() ([][]byte, error) {
-	req := nl.NewNetlinkRequest(syscall.RTM_GETADDR, syscall.NLM_F_DUMP)
-	req.AddData(nl.NewIfInfomsg(syscall.AF_UNSPEC))
-	return req.Execute(syscall.NETLINK_ROUTE, syscall.RTM_NEWADDR)
+	req := nl.NewNetlinkRequest(unix.RTM_GETADDR, unix.NLM_F_DUMP)
+	req.AddData(nl.NewIfInfomsg(unix.AF_UNSPEC))
+	return req.Execute(unix.NETLINK_ROUTE, unix.RTM_NEWADDR)
 }
 
 func GetNetlinkNeighs() ([][]byte, error) {
-	req := nl.NewNetlinkRequest(syscall.RTM_GETNEIGH, syscall.NLM_F_DUMP)
-	req.AddData(nl.NewIfInfomsg(syscall.AF_UNSPEC))
-	return req.Execute(syscall.NETLINK_ROUTE, syscall.RTM_NEWNEIGH)
+	req := nl.NewNetlinkRequest(unix.RTM_GETNEIGH, unix.NLM_F_DUMP)
+	req.AddData(nl.NewIfInfomsg(unix.AF_UNSPEC))
+	return req.Execute(unix.NETLINK_ROUTE, unix.RTM_NEWNEIGH)
 }
 
 func GetNetlinkRoutes() ([][]byte, error) {
-	req := nl.NewNetlinkRequest(syscall.RTM_GETROUTE, syscall.NLM_F_DUMP)
-	req.AddData(nl.NewIfInfomsg(syscall.AF_UNSPEC))
-	return req.Execute(syscall.NETLINK_ROUTE, syscall.RTM_NEWROUTE)
+	req := nl.NewNetlinkRequest(unix.RTM_GETROUTE, unix.NLM_F_DUMP)
+	req.AddData(nl.NewIfInfomsg(unix.AF_UNSPEC))
+	return req.Execute(unix.NETLINK_ROUTE, unix.RTM_NEWROUTE)
 }
 
 func NewNlMsghdr(t uint16, length uint32) syscall.NlMsghdr {
@@ -136,4 +140,57 @@ func IsInvalidHardwareAddr(hwaddr net.HardwareAddr) bool {
 	default:
 		return false
 	}
+}
+
+func NewFDBEntry(hwaddr net.HardwareAddr, index int, vid uint16, flags int, state int) *netlink.Neigh {
+	return &netlink.Neigh{
+		LinkIndex:    index,
+		IP:           nil,
+		Family:       unix.AF_BRIDGE,
+		HardwareAddr: hwaddr,
+		Vlan:         int(vid),
+		Flags:        flags | unix.NTF_MASTER,
+		State:        state | unix.NUD_PERMANENT,
+	}
+}
+
+var bridgeVlanInfoFlags_names = map[uint16]string{
+	nl.BRIDGE_VLAN_INFO_MASTER:      "MASTER",
+	nl.BRIDGE_VLAN_INFO_PVID:        "PVID",
+	nl.BRIDGE_VLAN_INFO_UNTAGGED:    "UNTAGGED",
+	nl.BRIDGE_VLAN_INFO_RANGE_BEGIN: "RANGE_BEGIN",
+	nl.BRIDGE_VLAN_INFO_RANGE_END:   "RANGE_END",
+}
+
+var bridgeVlanInfoFlags_values = map[string]uint16{
+	"MASTER":      nl.BRIDGE_VLAN_INFO_MASTER,
+	"PVID":        nl.BRIDGE_VLAN_INFO_PVID,
+	"UNTAGGED":    nl.BRIDGE_VLAN_INFO_UNTAGGED,
+	"RANGE_BEGIN": nl.BRIDGE_VLAN_INFO_RANGE_BEGIN,
+	"RANGE_END":   nl.BRIDGE_VLAN_INFO_RANGE_END,
+}
+
+func StringBridgeVlanInfoFlags(flags uint16) string {
+	names := []string{}
+	for val, name := range bridgeVlanInfoFlags_names {
+		if (flags & val) != 0 {
+			names = append(names, name)
+		}
+	}
+	return strings.Join(names, ",")
+}
+
+func ParseBridgeVlanInfoFlags(s string) (uint16, error) {
+	names := strings.Split(s, ",")
+	var flags uint16
+	for _, name := range names {
+		v, ok := bridgeVlanInfoFlags_values[name]
+		if !ok {
+			return 0, fmt.Errorf("Invalid Flags. %s", s)
+		}
+
+		flags |= v
+	}
+
+	return flags, nil
 }

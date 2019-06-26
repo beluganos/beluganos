@@ -54,7 +54,7 @@ func NewNeighFdbKey(nid uint8, lladdr string, ifindex int, vid int) *NeighKey {
 }
 
 func NeighToKey(n *nlamsg.Neigh) *NeighKey {
-	if n.IP == nil || len(n.IP) == 0 {
+	if n.IsFdbEntry() {
 		return NeighToFdbKey(n)
 	}
 	return NewNeighKey(n.NId, n.IP)

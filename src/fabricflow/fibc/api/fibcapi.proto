@@ -20,6 +20,8 @@ enum FFM {
     FF_PACKET_OUT = 11;
     FF_PORT_STATUS= 12;
     FF_PORT_MOD   = 13;
+    L2ADDR_STATUS    = 14;
+    FF_L2ADDR_STATUS = 15;
 }
 
 message Hello {
@@ -47,6 +49,17 @@ message TunnelType {
   }
 }
 
+message BridgeVlanInfo {
+  enum Flags {
+    NOP         = 0;  // unused
+    MASTER      = 1;  // BRIDGE_VLAN_INFO_MASTER
+    PVID        = 2;  // BRIDGE_VLAN_INFO_PVID
+    UNTAGGED    = 4;  // BRIDGE_VLAN_INFO_UNTAGGED
+    RANGE_BEGIN = 8;  // BRIDGE_VLAN_INFO_RANGE_BEGIN
+    RANGE_END   = 16; // BRIDGE_VLAN_INFO_RANGE_END
+  }
+}
+
 message PortStatus {
     enum Status {
         NOP  = 0;  // unused
@@ -58,6 +71,17 @@ message PortStatus {
     string re_id     = 2;
     uint32 port_id   = 3;
     string ifname    = 4;
+}
+
+message LinkType {
+  enum Type {
+    DEVICE        = 0; // physical device (associated with ovs-port)
+    IPTUN         = 1; // IP4/6 tunnel
+    BRIDGE        = 2; // bridge master device
+    BRIDGE_SLAVE  = 3; // bridge slave device
+    BOND          = 4; // bonding master device
+    BOND_SLAVE    = 5; // bonding slave device
+  }
 }
 
 message PortConfig {
@@ -73,9 +97,8 @@ message PortConfig {
     string ifname    = 3;
     uint32 port_id   = 4;
     string link      = 5;
-    repeated string   slaves = 6;
-    PortStatus.Status status = 7;
-    uint32 dp_port   = 8; // 0:UNSPEC
+    PortStatus.Status status = 6;
+    uint32 dp_port   = 7; // 0:UNSPEC, iptun:TnlId, bond:LnId
 }
 
 message FlowMod {
@@ -180,6 +203,7 @@ message VLANFlow {
             POP_VLAN      = 6; // value: -
             SET_MPLS_L2_TYPE = 7;
             SET_TUNNEL_ID = 8;
+            SET_VLAN_L2_TYPE = 9; // value: BridgeVlanInfo.Flags
         }
         Name   name  = 1;
         uint32 value = 2;
@@ -309,6 +333,7 @@ message PolicyACLFlow {
         uint32 tp_src   = 5; // uint16 (0: unspec)
         uint32 tp_dst   = 6; // uint16 (0: unspec)
         string eth_dst  = 7; // <dst>
+        uint32 in_port  = 8;
     }
 
     message Action {
@@ -332,6 +357,7 @@ message L2InterfaceGroup {
   string hw_addr  = 4;
   uint32 mtu      = 5; // uint16
   uint32 vrf      = 6; // uint8
+  uint32 master   = 7; // VRF+LnId // bridge/bond master
 }
 
 // 0x20VVNNNN (VV:VRF, NNNN:NeId)
@@ -481,4 +507,32 @@ message FFPortMod {
   uint32 port_no   = 2;
   string hw_addr   = 3;
   PortStatus.Status status = 4;
+}
+
+// FFL2AddrStatus (dp->fibc)
+message FFL2AddrStatus {
+  uint64          dp_id = 1;
+  repeated L2Addr addrs = 2;
+}
+
+// L2AddrStatus (fibc->ribc)
+message L2AddrStatus {
+  string          re_id = 1;
+  repeated L2Addr addrs = 2;
+}
+
+// L2Addr
+message L2Addr {
+  enum Reason {
+    NOP    = 0; // unused
+    ADD    = 1;
+    DELETE = 2;
+    // MODIFY = 3;
+  }
+
+  string hw_addr  = 1;
+  uint32 vlan_vid = 2; // uint16
+  uint32 port_id  = 3; // VRF+LnId(fibc->ribc), port_id(dp->fibc)
+  string ifname   = 4; // fibc->ribc only.
+  Reason reason   = 5;
 }

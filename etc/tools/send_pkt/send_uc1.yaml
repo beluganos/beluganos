@@ -1,0 +1,64 @@
+---
+
+# UDP: dev1
+# UDP: dev2
+# UDP: eth4 -> dev1/vid:10
+# UDP: eth4 -> dev2/vid:20
+
+
+tx:
+  payload:
+    udp_1_to_4:
+      proto: udp
+      src:   10.0.0.1
+      dst:   10.0.0.4
+      sport: 5051
+      dport: 5050
+    udp_2_to_4:
+      proto: udp
+      src:   10.0.0.2
+      dst:   10.0.0.4
+      sport: 5051
+      dport: 5050
+    udp_4_to_1:
+      proto: udp
+      src:   10.0.0.4
+      dst:   10.0.0.1
+      sport: 5050
+      dport: 5051
+    udp_4_to_2:
+      proto: udp
+      src:   10.0.0.4
+      dst:   10.0.0.2
+      sport: 5050
+      dport: 5051
+
+  packet:
+    1_to_4:
+      dst: "00:44:44:44:44:44"
+      src: "00:11:11:11:11:11"
+    2_to_4:
+      dst: "00:44:44:44:44:44"
+      src: "00:22:22:22:22:22"
+    4_to_1:
+      dst: "00:11:11:11:11:11"
+      src: "00:44:44:44:44:44"
+      vid: 10
+    4_to_2:
+      dst: "00:22:22:22:22:22"
+      src: "00:44:44:44:44:44"
+      vid: 20
+
+  iface:
+    dev1: enp131s0f0
+    dev2: enp131s0f1
+    dev3: enp132s0f0
+    dev4: enp132s0f1
+
+  send:
+    - { packet: 1_to_4, payload: udp_1_to_4, iface: dev1 }
+    - { packet: 2_to_4, payload: udp_2_to_4, iface: dev2 }
+    - { packet: 4_to_1, payload: udp_4_to_1, iface: dev4 }
+    - { packet: 4_to_2, payload: udp_4_to_2, iface: dev4 }
+    - { packet: 1_to_4, payload: udp_1_to_4, iface: dev1 }
+    - { packet: 2_to_4, payload: udp_2_to_4, iface: dev2 }

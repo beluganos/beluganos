@@ -18,54 +18,121 @@
 package nlasvc
 
 import (
+	"gonla/nlactl"
+	"gonla/nlalib"
+	"gonla/nlamsg"
+	"gonla/nlamsg/nlalink"
+	"syscall"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/vishvananda/netlink"
-	"gonla/nlactl"
-	"gonla/nlamsg"
-	"syscall"
+	"golang.org/x/sys/unix"
 )
 
 type NLANetlinkService struct {
+	log *log.Entry
 }
 
 func NewNLANetlinkService() *NLANetlinkService {
-	return &NLANetlinkService{}
+	return &NLANetlinkService{
+		log: NewLogger("NLANetlinkService"),
+	}
 }
 
 func (s *NLANetlinkService) Start(uint8, *nlactl.NLAChannels) error {
-	log.Infof("NetlinkService: START")
+	s.log.Infof("Start:")
 	return nil
 }
 
 func (s *NLANetlinkService) Stop() {
-	log.Infof("NetlinkService: STOP")
+	s.log.Infof("Stop:")
 }
 
 func (s *NLANetlinkService) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.Link) {
 	if nlmsg.Src != nlamsg.SRC_API {
-		log.Debugf("NetlinkService: Link skip. %s", nlmsg)
+		s.log.Debugf("LINK: skip. %s", nlmsg)
 		return
 	}
 
 	attr := link.Attrs()
-	log.Debugf("NetlinkService: LinkAttr %v", attr)
+	s.log.Debugf("LINK: attrs:%v", attr)
 
 	switch nlmsg.Type() {
 	case syscall.RTM_SETLINK:
 		switch attr.OperState {
 		case netlink.OperUp:
-			log.Infof("NetlinkService: OperUp %s", attr.Name)
+			s.log.Infof("LINK: OperUp %s", attr.Name)
 			if err := netlink.LinkSetUp(link.Link); err != nil {
-				log.Errorf("NetlinkService: LinkSetUp error. %s", err)
+				s.log.Errorf("NetlinkLink: LinkSetUp error. %s", err)
 			}
 
 		case netlink.OperDown:
-			log.Infof("NetlinkService: OperDown %s", attr.Name)
+			s.log.Infof("LINK: OperDown %s", attr.Name)
 			if err := netlink.LinkSetDown(link.Link); err != nil {
-				log.Errorf("NetlinkService: LinkSetDown error. %s", err)
+				s.log.Errorf("LINK: LinkSetDown error. %s", err)
 			}
 		default:
-			log.Debugf("NetlinkService: OperState not changed.")
+			s.log.Debugf("LINK: OperState not changed.")
+		}
+	}
+}
+
+func (s *NLANetlinkService) getBridgeVlanVid(neigh *nlamsg.Neigh) uint16 {
+	return uint16(neigh.Vlan)
+
+	//vid := uint16(neigh.Vlan)
+	//if vid == DEFAULT_VLAN_VID {
+	//	nladbm.BrVlans().ListByIndex(neigh.LinkIndex, func(brvlan *nlamsg.BridgeVlanInfo) bool {
+	//		if brvlan.PortType() == nlamsg.BRIDGE_VLAN_PORT_ACCESS {
+	//			if brvlan.Vid != DEFAULT_VLAN_VID {
+	//				vid = brvlan.Vid
+	//				return false // no more callback.
+	//			}
+	//		}
+	//
+	//		return true
+	//  })
+	//}
+	//
+	// return vid
+}
+
+func (s *NLANetlinkService) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nlamsg.Neigh) {
+	if nlmsg.Src != nlamsg.SRC_API {
+		s.log.Debugf("NEIGH: skip. %s", nlmsg)
+		return
+	}
+
+	if neigh.IsFdbEntry() {
+		// FDB entry.
+		fdb := nlalib.NewFDBEntry(
+			neigh.HardwareAddr,
+			neigh.LinkIndex,
+			s.getBridgeVlanVid(neigh),
+			0, 0,
+		)
+
+		switch nlmsg.Type() {
+		case unix.RTM_NEWNEIGH:
+			s.log.Debugf("NEIGH: add fdb %s if=%d vid=%d", fdb.HardwareAddr, fdb.LinkIndex, fdb.Vlan)
+			if err := netlink.NeighAdd(fdb); err != nil {
+				s.log.Errorf("NEIGH: add fdb error. %s", err)
+			}
+
+		case nlalink.RTM_SETNEIGH:
+			s.log.Debugf("NEIGH: set fdb %s if=%d vid=%d", fdb.HardwareAddr, fdb.LinkIndex, fdb.Vlan)
+			if err := netlink.NeighSet(fdb); err != nil {
+				s.log.Errorf("NEIGH: set fdb error. %s", err)
+			}
+
+		case unix.RTM_DELNEIGH:
+			s.log.Debugf("NEIGH: del fdb %s if=%d vid=%d", fdb.HardwareAddr, fdb.LinkIndex, fdb.Vlan)
+			if err := netlink.NeighDel(fdb); err != nil {
+				s.log.Errorf("NEIGH: del fdb error. %s", err)
+			}
+
+		default:
+			s.log.Errorf("NEIGH: invalid fdb. msgType=%d", nlmsg.Type())
 		}
 	}
 }

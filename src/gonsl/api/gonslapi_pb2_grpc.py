@@ -21,6 +21,11 @@ class GoNSLApiStub(object):
         request_serializer=gonslapi__pb2.GetFieldEntriesRequest.SerializeToString,
         response_deserializer=gonslapi__pb2.GetFieldEntriesReply.FromString,
         )
+    self.GetPortInfos = channel.unary_unary(
+        '/gonslapi.GoNSLApi/GetPortInfos',
+        request_serializer=gonslapi__pb2.GetPortInfosRequest.SerializeToString,
+        response_deserializer=gonslapi__pb2.GetPortInfosReply.FromString,
+        )
     self.GetVlans = channel.unary_unary(
         '/gonslapi.GoNSLApi/GetVlans',
         request_serializer=gonslapi__pb2.GetVlansRequest.SerializeToString,
@@ -90,6 +95,13 @@ class GoNSLApiServicer(object):
   """
 
   def GetFieldEntries(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetPortInfos(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -187,6 +199,11 @@ def add_GoNSLApiServicer_to_server(servicer, server):
           servicer.GetFieldEntries,
           request_deserializer=gonslapi__pb2.GetFieldEntriesRequest.FromString,
           response_serializer=gonslapi__pb2.GetFieldEntriesReply.SerializeToString,
+      ),
+      'GetPortInfos': grpc.unary_unary_rpc_method_handler(
+          servicer.GetPortInfos,
+          request_deserializer=gonslapi__pb2.GetPortInfosRequest.FromString,
+          response_serializer=gonslapi__pb2.GetPortInfosReply.SerializeToString,
       ),
       'GetVlans': grpc.unary_unary_rpc_method_handler(
           servicer.GetVlans,

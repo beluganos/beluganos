@@ -125,10 +125,25 @@ func (t *VlanPortTable) ConvVID(port opennsl.Port, vid opennsl.Vlan) opennsl.Vla
 	}
 
 	if port := key.Port; (port >= t.minPort) && (port <= t.maxPort) {
-		return opennsl.Vlan(port) + t.baseVid
+		return opennsl.Vlan(port-t.minPort+1) + t.baseVid
 	}
 
 	return t.defaultVid
+}
+
+func (t *VlanPortTable) Has(vid opennsl.Vlan) bool {
+	t.mutex.RLock()
+	defer t.mutex.RUnlock()
+
+	if vid <= t.baseVid {
+		return false
+	}
+
+	if maxPort := opennsl.Port(vid-t.baseVid) + t.minPort - 1; maxPort > t.maxPort {
+		return false
+	}
+
+	return true
 }
 
 func NewVlanPortTableFromConfig(config *BlockBcastConfig) *VlanPortTable {

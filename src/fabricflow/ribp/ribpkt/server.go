@@ -18,8 +18,9 @@
 package ribpkt
 
 import (
-	"fabricflow/fibc/net"
+	fibcnet "fabricflow/fibc/net"
 	"fmt"
+	"net"
 	"syscall"
 	"time"
 
@@ -35,6 +36,8 @@ type Server struct {
 	linkCh   chan netlink.LinkUpdate
 	ctrlCh   chan string
 	useVrf   bool
+
+	excludeIfaces map[string]struct{}
 }
 
 func NewServer(reId string, vrf uint8, interval int, useVrf bool) *Server {
@@ -46,6 +49,15 @@ func NewServer(reId string, vrf uint8, interval int, useVrf bool) *Server {
 		linkCh:   make(chan netlink.LinkUpdate),
 		ctrlCh:   make(chan string),
 		useVrf:   useVrf,
+
+		excludeIfaces: map[string]struct{}{},
+	}
+}
+
+func (s *Server) AddExcludeIfnames(ifnames ...string) {
+	for _, ifname := range ifnames {
+		s.excludeIfaces[ifname] = struct{}{}
+		log.Infof("Exclude: %s", ifname)
 	}
 }
 
@@ -104,16 +116,42 @@ func (s *Server) Serve(done <-chan struct{}) {
 }
 
 func (s *Server) AddLink(link netlink.Link) {
-	if link.Type() != "device" && link.Type() != "veth" {
+	log.Debugf("AddLink: %s %s i:%d m:%d p:%d", link.Attrs().Name, link.Type(), link.Attrs().Index, link.Attrs().MasterIndex, link.Attrs().ParentIndex)
+
+	ifname := link.Attrs().Name
+
+	switch link.Type() {
+	case "veth", "device":
+		// pass
+
+	case "vlan":
+		vlan := link.(*netlink.Vlan)
+		if vlan.VlanId != 0 {
+			// Ignore vlan device.
+			log.Debugf("AddLink: ignore vlan link %s", ifname)
+			return
+		}
+
+	default:
+		// Ignore virtual device.
+		log.Debugf("AddLink: ignore virtual link %s", ifname)
+		return
+
+	}
+
+	if _, ok := s.excludeIfaces[ifname]; ok {
+		log.Debugf("AddLink: ignore excluded link %s", ifname)
 		return
 	}
 
-	if link.Attrs().Name == "lo" {
+	if flags := link.Attrs().Flags; (flags & net.FlagLoopback) != 0 {
+		// Ignore loopback device.
+		log.Debugf("AddLink: ignore lo link. %s", ifname)
 		return
 	}
 
 	s.links[link.Attrs().Index] = link
-	log.Infof("ADD %s", link.Attrs().Name)
+	log.Infof("ADD %s", ifname)
 }
 
 func (s *Server) DelLink(link netlink.Link) {

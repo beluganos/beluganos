@@ -18,16 +18,15 @@
 package ribctl
 
 import (
-	"fabricflow/fibc/api"
-	log "github.com/sirupsen/logrus"
+	fibcapi "fabricflow/fibc/api"
 )
 
 func (r *RIBController) SendHello() {
 	hello := fibcapi.NewHello(r.reId)
 	if err := r.fib.Send(hello, 0); err != nil {
-		log.Errorf("RIBController: Hello error. %s", err)
+		r.log.Errorf("Hello: error. %s", err)
 		return
 	}
 
-	log.Infof("RIBController: Hello sent.")
+	r.log.Infof("Hello: sent.")
 }

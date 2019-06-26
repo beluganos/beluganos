@@ -31,6 +31,15 @@ const (
 	fieldCosDefault = 1
 )
 
+//
+// FieldEntry is interface of field entry.
+//
+type FieldEntry interface {
+	key() string
+	setTo(int, uint32, opennsl.FieldEntry)
+	getFrom(int, opennsl.FieldEntry) error
+}
+
 const (
 	fieldPriHigher = iota + 100
 	fieldPriEthDst
@@ -45,11 +54,11 @@ const (
 // FieldGroups has opennsl field_groups.
 //
 type FieldGroups struct {
-	EthDst  *FieldGroupEthDst
-	EthType *FieldGroupEthType
-	DstIPv4 *FieldGroupDstIP
-	DstIPv6 *FieldGroupDstIP
-	IPProto *FieldGroupIPProto
+	EthDst  *FieldGroup
+	EthType *FieldGroup
+	DstIPv4 *FieldGroup
+	DstIPv6 *FieldGroup
+	IPProto *FieldGroup
 }
 
 //
@@ -98,7 +107,7 @@ func NewFieldGroup(unit int, cos uint32, pri int, qs ...opennsl.FieldQualify) *F
 //
 // InstallEntry installs field group entry.
 //
-func (f *FieldGroup) InstallEntry(key string, entry opennsl.FieldEntry) error {
+func (f *FieldGroup) installEntry(key string, entry opennsl.FieldEntry) error {
 	if _, ok := f.entries[key]; ok {
 		return fmt.Errorf("FieldEntry already exist. key='%s'", key)
 	}
@@ -114,7 +123,7 @@ func (f *FieldGroup) InstallEntry(key string, entry opennsl.FieldEntry) error {
 //
 // UninstallEntry uninstalls field group entry.
 //
-func (f *FieldGroup) UninstallEntry(key string) {
+func (f *FieldGroup) uninstallEntry(key string) {
 	entry, ok := f.entries[key]
 	if !ok {
 		log.Warnf("FieldEntry not found. key='%s'", key)
@@ -123,285 +132,346 @@ func (f *FieldGroup) UninstallEntry(key string) {
 
 	delete(f.entries, key)
 
-	if err := entry.Remove(f.unit); err != nil {
+	if err := entry.Destroy(f.unit); err != nil {
 		log.Warnf("FieldEntry remove error. %s", err)
 	}
 }
 
 //
-// GetEntries returns field group entry.
+// AddEntry installs field entry.
+//
+func (f *FieldGroup) AddEntry(e FieldEntry) error {
+	entry, err := f.group.EntryCreate(f.unit)
+	if err != nil {
+		log.Errorf("EntryCreate error. %s", err)
+		return err
+	}
+
+	e.setTo(f.unit, f.cos, entry)
+	return f.installEntry(e.key(), entry)
+}
+
+//
+// DeleteEntry uninstall field entry.
+//
+func (f *FieldGroup) DeleteEntry(e FieldEntry) {
+	f.uninstallEntry(e.key())
+}
+
+//
+// GetEntry get field entry form H.W.
+//
+func (f *FieldGroup) GetEntry(e FieldEntry, entry opennsl.FieldEntry) error {
+	return e.getFrom(f.unit, entry)
+}
+
+//
+// GetEntries get all field entry from H.W.
 //
 func (f *FieldGroup) GetEntries() ([]opennsl.FieldEntry, error) {
 	return f.group.EntryMultiGet(f.unit, -1)
 }
 
 //
-// FieldGroupEthDst is opennsl field group(ether-dest)
+// NewFieldGroupEthDst created new FieldGroup for FieldEntryEthDst.
 //
-type FieldGroupEthDst struct {
-	*FieldGroup
+func NewFieldGroupEthDst(unit int) *FieldGroup {
+	return NewFieldGroup(
+		unit, fieldCosDefault, fieldPriEthDst,
+		opennsl.FieldQualifyDstMac,
+		opennsl.FieldQualifyInPort,
+	)
 }
 
-func NewFieldGroupEthDst(unit int) *FieldGroupEthDst {
-	return &FieldGroupEthDst{
-		FieldGroup: NewFieldGroup(
-			unit, fieldCosDefault, fieldPriEthDst,
-			opennsl.FieldQualifyDstMac,
-		),
+//
+// FieldEntryEthDst is field entry (EthDst).
+//
+type FieldEntryEthDst struct {
+	Dest   net.HardwareAddr
+	Mask   net.HardwareAddr
+	InPort opennsl.Port
+}
+
+//
+// NewFieldEntryEthDst returns new FieldEntryEthDst.
+func NewFieldEntryEthDst(dest, mask net.HardwareAddr, inPort opennsl.Port) *FieldEntryEthDst {
+	return &FieldEntryEthDst{
+		Dest:   dest,
+		Mask:   mask,
+		InPort: inPort,
 	}
 }
 
-func (f *FieldGroupEthDst) Key(dest, mask net.HardwareAddr) string {
-	return fmt.Sprintf("%s/%s", dest, mask)
+func (e *FieldEntryEthDst) key() string {
+	return fmt.Sprintf("%s/%s_%d", e.Dest, e.Mask, e.InPort)
 }
 
-func (f *FieldGroupEthDst) AddEntry(dest, mask net.HardwareAddr) error {
-	entry, err := f.group.EntryCreate(f.unit)
+//
+// String returns string.
+//
+func (e *FieldEntryEthDst) String() string {
+	return fmt.Sprintf("%s/%s in_port:%d", e.Dest, e.Mask, e.InPort)
+}
+
+func (e *FieldEntryEthDst) setTo(unit int, cos uint32, entry opennsl.FieldEntry) {
+	entry.Qualify().DstMAC(unit, e.Dest, e.Mask)
+	entry.Qualify().InPort(unit, e.InPort, 0)
+	entry.Action().AddP(unit, opennsl.NewFieldActionCosQCpuNew(cos))
+	entry.Action().AddP(unit, opennsl.NewFieldActionCopyToCpu())
+}
+
+func (e *FieldEntryEthDst) getFrom(unit int, entry opennsl.FieldEntry) error {
+	dest, mask, err := entry.Qualify().DstMACGet(unit)
 	if err != nil {
-		log.Errorf("EntryCreate error. %s", err)
 		return err
 	}
 
-	entry.Qualify().DstMAC(f.unit, dest, mask)
-	entry.Action().AddP(f.unit, opennsl.NewFieldActionCosQCpuNew(f.cos))
-	entry.Action().AddP(f.unit, opennsl.NewFieldActionCopyToCpu())
-
-	return f.InstallEntry(f.Key(dest, mask), entry)
-}
-
-//
-// DeleteEntry uninstall and remove field group entry.
-//
-func (f *FieldGroupEthDst) DeleteEntry(dest, mask net.HardwareAddr) {
-	f.UninstallEntry(f.Key(dest, mask))
-}
-
-//
-// GetEntry returns field group entry.
-//
-func (f *FieldGroupEthDst) GetEntry(entry opennsl.FieldEntry) (net.HardwareAddr, net.HardwareAddr, error) {
-	return entry.Qualify().DstMACGet(f.unit)
-}
-
-//
-// FieldGroupEthType is opennsl field group(ether-type)
-//
-type FieldGroupEthType struct {
-	*FieldGroup
-}
-
-//
-// NewFieldGroupEthType returns new instance.
-//
-func NewFieldGroupEthType(unit int) *FieldGroupEthType {
-	return &FieldGroupEthType{
-		FieldGroup: NewFieldGroup(
-			unit, fieldCosDefault, fieldPriEthType,
-			opennsl.FieldQualifyEtherType,
-		),
-	}
-}
-
-//
-// Key creates new key.
-//
-func (f *FieldGroupEthType) Key(etherType uint16) string {
-	return fmt.Sprintf("%d", etherType)
-}
-
-//
-// AddEntry creates and installs field group entry.
-//
-func (f *FieldGroupEthType) AddEntry(etherType uint16) error {
-	entry, err := f.group.EntryCreate(f.unit)
+	inPort, _, err := entry.Qualify().InPortGet(unit)
 	if err != nil {
-		log.Errorf("EntryCreate error. %s", err)
 		return err
 	}
 
-	entry.Qualify().EtherType(f.unit, opennsl.Ethertype(etherType), 0xffff)
-	entry.Action().AddP(f.unit, opennsl.NewFieldActionCosQCpuNew(f.cos))
-	entry.Action().AddP(f.unit, opennsl.NewFieldActionCopyToCpu())
+	e.Dest = dest
+	e.Mask = mask
+	e.InPort = inPort
 
-	return f.InstallEntry(f.Key(etherType), entry)
+	return nil
 }
 
 //
-// DeleteEntry uninstall and remove field group entry.
+// NewFieldGroupEthType create new FieldGroup for FieldEntryEthType.
 //
-func (f *FieldGroupEthType) DeleteEntry(etherType uint16) {
-	f.UninstallEntry(f.Key(etherType))
+func NewFieldGroupEthType(unit int) *FieldGroup {
+	return NewFieldGroup(
+		unit, fieldCosDefault, fieldPriEthType,
+		opennsl.FieldQualifyEtherType,
+		opennsl.FieldQualifyInPort,
+	)
 }
 
 //
-// GetEntry returns field group entry.
+// FieldEntryEthType is field entry (EthType).
 //
-func (f *FieldGroupEthType) GetEntry(entry opennsl.FieldEntry) (opennsl.Ethertype, error) {
-	ethType, _, err := entry.Qualify().EtherTypeGet(f.unit)
-	return ethType, err
+type FieldEntryEthType struct {
+	EthType uint16
+	InPort  opennsl.Port
 }
 
 //
-// FieldGroupDstIP is field group(dst-ip)
+// NewFieldEntryEthType returns new FieldEntryEthType.
 //
-type FieldGroupDstIP struct {
-	*FieldGroup
-	etherType opennsl.Ethertype
-}
-
-//
-// NewFieldGroupDstIP returns new instalce.
-//
-func NewFieldGroupDstIPv4(unit int) *FieldGroupDstIP {
-	return &FieldGroupDstIP{
-		FieldGroup: NewFieldGroup(
-			unit, fieldCosDefault, fieldPriDstIPv4,
-			opennsl.FieldQualifyEtherType,
-			opennsl.FieldQualifyDstIp,
-		),
-		etherType: opennsl.Ethertype(unix.ETH_P_IP),
+func NewFieldEntryEthType(ethType uint16, inPort opennsl.Port) *FieldEntryEthType {
+	return &FieldEntryEthType{
+		EthType: ethType,
+		InPort:  inPort,
 	}
 }
 
-func NewFieldGroupDstIPv6(unit int) *FieldGroupDstIP {
-	return &FieldGroupDstIP{
-		FieldGroup: NewFieldGroup(
-			unit, fieldCosDefault, fieldPriDstIPv6,
-			opennsl.FieldQualifyEtherType,
-			opennsl.FieldQualifyDstIp6,
-		),
-		etherType: opennsl.Ethertype(unix.ETH_P_IPV6),
-	}
+func (e *FieldEntryEthType) key() string {
+	return fmt.Sprintf("%d_%d", e.EthType, e.InPort)
 }
 
-//
-// Key creates new key.
-//
-func (f *FieldGroupDstIP) Key(ipDst *net.IPNet) string {
-	return ipDst.String()
+func (e *FieldEntryEthType) String() string {
+	return fmt.Sprintf("%04x in_port:%d", e.EthType, e.InPort)
 }
 
-//
-// AddEntry creates and install field group entry.
-//
-func (f *FieldGroupDstIP) AddEntry(ipDst *net.IPNet) error {
-	entry, err := f.group.EntryCreate(f.unit)
+func (e *FieldEntryEthType) setTo(unit int, cos uint32, entry opennsl.FieldEntry) {
+	entry.Qualify().InPort(unit, e.InPort, 0)
+	entry.Qualify().EtherType(unit, opennsl.Ethertype(e.EthType), 0xffff)
+	entry.Action().AddP(unit, opennsl.NewFieldActionCosQCpuNew(cos))
+	entry.Action().AddP(unit, opennsl.NewFieldActionCopyToCpu())
+}
+
+func (e *FieldEntryEthType) getFrom(unit int, entry opennsl.FieldEntry) error {
+	ethType, _, err := entry.Qualify().EtherTypeGet(unit)
 	if err != nil {
-		log.Errorf("EntryCreate error. %s", err)
 		return err
 	}
 
-	entry.Qualify().EtherType(f.unit, f.etherType, 0xffff)
-	if f.etherType == unix.ETH_P_IP {
-		entry.Qualify().DstIp(f.unit, ipDst.IP, ipDst.Mask)
+	inPort, _, err := entry.Qualify().InPortGet(unit)
+	if err != nil {
+		return err
+	}
+
+	e.EthType = uint16(ethType)
+	e.InPort = inPort
+
+	return nil
+}
+
+//
+// NewFieldGroupDstIPv4 returns new FieldGroup for FieldEntryDstIP(v4)
+//
+func NewFieldGroupDstIPv4(unit int) *FieldGroup {
+	return NewFieldGroup(
+		unit, fieldCosDefault, fieldPriDstIPv4,
+		opennsl.FieldQualifyEtherType,
+		opennsl.FieldQualifyDstIp,
+		opennsl.FieldQualifyInPort,
+	)
+}
+
+//
+// NewFieldGroupDstIPv6 returns new FieldGroup for FieldEntryDstIP(v6)
+//
+func NewFieldGroupDstIPv6(unit int) *FieldGroup {
+	return NewFieldGroup(
+		unit, fieldCosDefault, fieldPriDstIPv6,
+		opennsl.FieldQualifyEtherType,
+		opennsl.FieldQualifyDstIp6,
+		opennsl.FieldQualifyInPort,
+	)
+}
+
+//
+// FieldEntryDstIP is field entry (DstIPv4 or DstIPv6).
+//
+type FieldEntryDstIP struct {
+	EthType opennsl.Ethertype
+	Dest    *net.IPNet
+	InPort  opennsl.Port
+}
+
+//
+// NewFieldEntryDstIP returns new FieldEntryDstIP(IPv4 or IPv6)
+//
+func NewFieldEntryDstIP(dest *net.IPNet, inPort opennsl.Port, ethType uint16) *FieldEntryDstIP {
+	return &FieldEntryDstIP{
+		EthType: opennsl.Ethertype(ethType),
+		Dest:    dest,
+		InPort:  inPort,
+	}
+}
+
+//
+// NewFieldEntryDstIPv4 returns new FieldEntryDstIP(IPv4)
+//
+func NewFieldEntryDstIPv4(dest *net.IPNet, inPort opennsl.Port) *FieldEntryDstIP {
+	return NewFieldEntryDstIP(dest, inPort, unix.ETH_P_IP)
+}
+
+//
+// NewFieldEntryDstIPv6 returns new FieldEntryDstIP(IPv6)
+//
+func NewFieldEntryDstIPv6(dest *net.IPNet, inPort opennsl.Port) *FieldEntryDstIP {
+	return NewFieldEntryDstIP(dest, inPort, unix.ETH_P_IPV6)
+}
+
+func (e *FieldEntryDstIP) key() string {
+	return fmt.Sprintf("%s_%d", e.Dest, e.InPort)
+}
+
+func (e *FieldEntryDstIP) String() string {
+	return fmt.Sprintf("%s in_port=%d", e.Dest, e.InPort)
+}
+
+func (e *FieldEntryDstIP) setTo(unit int, cos uint32, entry opennsl.FieldEntry) {
+	entry.Qualify().InPort(unit, e.InPort, 0)
+	entry.Qualify().EtherType(unit, e.EthType, 0xffff)
+	if e.EthType == unix.ETH_P_IP {
+		entry.Qualify().DstIp(unit, e.Dest.IP, e.Dest.Mask)
 	} else {
-		entry.Qualify().DstIp6(f.unit, ipDst.IP, ipDst.Mask)
+		entry.Qualify().DstIp6(unit, e.Dest.IP, e.Dest.Mask)
 	}
-	entry.Action().AddP(f.unit, opennsl.NewFieldActionCosQCpuNew(f.cos))
-	entry.Action().AddP(f.unit, opennsl.NewFieldActionCopyToCpu())
-
-	return f.InstallEntry(f.Key(ipDst), entry)
+	entry.Action().AddP(unit, opennsl.NewFieldActionCosQCpuNew(cos))
+	entry.Action().AddP(unit, opennsl.NewFieldActionCopyToCpu())
 }
 
-//
-// DeleteEntry uninstall and remove field group entry.
-//
-func (f *FieldGroupDstIP) DeleteEntry(ipDst *net.IPNet) {
-	f.UninstallEntry(f.Key(ipDst))
-}
-
-//
-// GetEntry returns field group entry.
-//
-func (f *FieldGroupDstIP) GetEntry(entry opennsl.FieldEntry) (opennsl.Ethertype, *net.IPNet, error) {
-	ethType, _, err := entry.Qualify().EtherTypeGet(f.unit)
+func (e *FieldEntryDstIP) getFrom(unit int, entry opennsl.FieldEntry) error {
+	ethType, _, err := entry.Qualify().EtherTypeGet(unit)
 	if err != nil {
-		return 0, nil, err
+		return err
 	}
 
 	ip, mask, err := func() (net.IP, net.IPMask, error) {
 		if ethType == unix.ETH_P_IPV6 {
-			return entry.Qualify().DstIp6Get(f.unit)
+			return entry.Qualify().DstIp6Get(unit)
 		}
-		return entry.Qualify().DstIpGet(f.unit)
+		return entry.Qualify().DstIpGet(unit)
 	}()
 	if err != nil {
-		return ethType, nil, err
-	}
-
-	dstip := &net.IPNet{
-		IP:   ip,
-		Mask: mask,
-	}
-
-	return ethType, dstip, nil
-}
-
-//
-// FieldGroupIPProto is field group(ip-proto)
-//
-type FieldGroupIPProto struct {
-	*FieldGroup
-}
-
-//
-// NewFieldGroupIPProto returns new instance.
-//
-func NewFieldGroupIPProto(unit int) *FieldGroupIPProto {
-	return &FieldGroupIPProto{
-		FieldGroup: NewFieldGroup(
-			unit, fieldCosDefault, fieldPriIPProto,
-			opennsl.FieldQualifyEtherType,
-			opennsl.FieldQualifyIpProtocol,
-		),
-	}
-}
-
-//
-// Key creates new key.
-//
-func (f *FieldGroupIPProto) Key(etherType uint16, proto uint8) string {
-	return fmt.Sprintf("%d_%d", etherType, proto)
-}
-
-//
-// AddEntry create and install field group entry.
-//
-func (f *FieldGroupIPProto) AddEntry(etherType uint16, proto uint8) error {
-	entry, err := f.group.EntryCreate(f.unit)
-	if err != nil {
-		log.Errorf("EntryCreate error. %s", err)
 		return err
 	}
 
-	entry.Qualify().EtherType(f.unit, opennsl.Ethertype(etherType), 0xffff)
-	entry.Qualify().IpProtocol(f.unit, proto, 0xff)
-	entry.Action().AddP(f.unit, opennsl.NewFieldActionCosQCpuNew(f.cos))
-	entry.Action().AddP(f.unit, opennsl.NewFieldActionCopyToCpu())
+	inPort, _, err := entry.Qualify().InPortGet(unit)
+	if err != nil {
+		return err
+	}
 
-	return f.InstallEntry(f.Key(etherType, proto), entry)
+	e.EthType = ethType
+	e.Dest = &net.IPNet{IP: ip, Mask: mask}
+	e.InPort = inPort
+
+	return nil
 }
 
 //
-// DeleteEntry uninstalls and remove field group entry.
+// NewFieldGroupIPProto created new FieldGroup for FieldEntryIPProto.
 //
-func (f *FieldGroupIPProto) DeleteEntry(etherType uint16, proto uint8) {
-	f.UninstallEntry(f.Key(etherType, proto))
+func NewFieldGroupIPProto(unit int) *FieldGroup {
+	return NewFieldGroup(
+		unit, fieldCosDefault, fieldPriIPProto,
+		opennsl.FieldQualifyEtherType,
+		opennsl.FieldQualifyIpProtocol,
+		opennsl.FieldQualifyInPort,
+	)
 }
 
 //
-// GetEntry returns field group entry.
+// FieldEntryIPProto is field entry (IP proto).
 //
-func (f *FieldGroupIPProto) GetEntry(entry opennsl.FieldEntry) (opennsl.Ethertype, uint8, error) {
-	ethType, _, err := entry.Qualify().EtherTypeGet(f.unit)
+type FieldEntryIPProto struct {
+	EthType uint16
+	IPProto uint8
+	InPort  opennsl.Port
+}
+
+//
+// NewFieldEntryIPProto returns new FieldEntryIPProto.
+//
+func NewFieldEntryIPProto(ipProto uint8, ethType uint16, inPort opennsl.Port) *FieldEntryIPProto {
+	return &FieldEntryIPProto{
+		EthType: ethType,
+		IPProto: ipProto,
+		InPort:  inPort,
+	}
+}
+
+func (e *FieldEntryIPProto) key() string {
+	return fmt.Sprintf("%d_%d_%d", e.EthType, e.IPProto, e.InPort)
+}
+
+func (e *FieldEntryIPProto) String() string {
+	return fmt.Sprintf("%d eth_type:%04x in_port:%d", e.EthType, e.IPProto, e.InPort)
+}
+
+func (e *FieldEntryIPProto) setTo(unit int, cos uint32, entry opennsl.FieldEntry) {
+	entry.Qualify().InPort(unit, e.InPort, 0)
+	entry.Qualify().EtherType(unit, opennsl.Ethertype(e.EthType), 0xffff)
+	entry.Qualify().IpProtocol(unit, e.IPProto, 0xff)
+	entry.Action().AddP(unit, opennsl.NewFieldActionCosQCpuNew(cos))
+	entry.Action().AddP(unit, opennsl.NewFieldActionCopyToCpu())
+}
+
+func (e *FieldEntryIPProto) getFrom(unit int, entry opennsl.FieldEntry) error {
+	ethType, _, err := entry.Qualify().EtherTypeGet(unit)
 	if err != nil {
-		return 0, 0, err
+		return err
 	}
 
-	proto, _, err := entry.Qualify().IpProtocolGet(f.unit)
+	proto, _, err := entry.Qualify().IpProtocolGet(unit)
 	if err != nil {
-		return ethType, 0, err
+		return err
 	}
 
-	return ethType, proto, nil
+	inPort, _, err := entry.Qualify().InPortGet(unit)
+	if err != nil {
+		return err
+	}
+
+	e.EthType = uint16(ethType)
+	e.IPProto = proto
+	e.InPort = inPort
+
+	return nil
 }

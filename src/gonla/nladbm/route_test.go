@@ -64,22 +64,34 @@ func TestTouteTableIptunRemote(t *testing.T) {
 	}
 
 	route = tbl.SelectByTunRemote(nid, net.ParseIP("2001:2001::253"))
-	if route != nil {
+	if route == nil {
 		t.Errorf("routeTable.SelectByTunRemote unmatch. route=%s", route)
+	}
+	if v := route.Dst; v.String() != "2001:2001::/64" {
+		t.Errorf("routeTable.SelectByTunRemote unmatch. dst=%s", v)
 	}
 
 	route = tbl.SelectByTunRemote(nid, net.ParseIP("2001:2001::254"))
 	if route == nil {
 		t.Errorf("routeTable.SelectByTunRemote unmatch. route=%s", route)
 	}
+	if v := route.Dst; v.String() != "2001:2001::254/128" {
+		t.Errorf("routeTable.SelectByTunRemote unmatch. dst=%s", v)
+	}
 
 	route = tbl.SelectByTunRemote(nid, net.ParseIP("2001:2002::254"))
-	if route != nil {
+	if route == nil {
 		t.Errorf("routeTable.SelectByTunRemote unmatch. route=%s", route)
+	}
+	if v := route.Dst; v.String() != "2001:2002::/32" {
+		t.Errorf("routeTable.SelectByTunRemote unmatch. dst=%s", v)
 	}
 
 	route = tbl.SelectByTunRemote(nid, net.ParseIP("2001:2002:1::254"))
-	if route != nil {
+	if route == nil {
 		t.Errorf("routeTable.SelectByTunRemote unmatch. route=%s", route)
+	}
+	if v := route.Dst; v.String() != "2001:2002:1::/64" {
+		t.Errorf("routeTable.SelectByTunRemote unmatch. dst=%s", v)
 	}
 }

@@ -50,9 +50,29 @@ def conv_termmac_flow(mod, portmap):
         portmap, mod.re_id, mod.term_mac.match.in_port)
 
 
+def conv_bridging_flow(mod, portmap):
+    """
+    Convert mod for Bridging flow table.
+    """
+    action = mod.bridging.action
+    if action.name == pb.PolicyACLFlow.Action.OUTPUT and action.value != 0:
+        mod.bridging.action.value = get_dp_port(
+            portmap, mod.re_id, action.value)
+
+
+def conv_policy_acl_flow(mod, portmap):
+    """
+    Convert mod for PolicyACL flow table.
+    """
+    mod.acl.match.in_port = get_dp_port(
+        portmap, mod.re_id, mod.acl.match.in_port)
+
+
 _FLOW_MAP = {
     pb.FlowMod.VLAN: conv_vlan_flow,
     pb.FlowMod.TERM_MAC: conv_termmac_flow,
+    pb.FlowMod.BRIDGING: conv_bridging_flow,
+    pb.FlowMod.POLICY_ACL: conv_policy_acl_flow,
 }
 
 def conv_flow(mod, portmap):
@@ -69,6 +89,7 @@ def conv_l2_interface_group(mod, portmap):
     Conver Group mod for L2 Interface Group.
     """
     mod.l2_iface.port_id = get_dp_port(portmap, mod.re_id, mod.l2_iface.port_id)
+    mod.l2_iface.master = get_dp_port(portmap, mod.re_id, mod.l2_iface.master)
 
 
 def conv_l3_unicast_group(mod, portmap):

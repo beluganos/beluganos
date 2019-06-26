@@ -18,11 +18,12 @@
 package gonslib
 
 import (
-	"fabricflow/fibc/api"
-	"fabricflow/fibc/net"
+	fibcapi "fabricflow/fibc/api"
+	fibcnet "fabricflow/fibc/net"
 	"fmt"
 	"net"
 
+	"github.com/beluganos/go-opennsl/opennsl"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/sys/unix"
 )
@@ -32,6 +33,16 @@ import (
 //
 func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow *fibcapi.PolicyACLFlow) {
 	log.Debugf("Server: FlowMod(ACL): %v %v", hdr, mod)
+
+	port, portType := fibcapi.ParseDPPortId(flow.Match.InPort)
+
+	switch portType {
+	case fibcapi.LinkType_BRIDGE, fibcapi.LinkType_BOND:
+		log.Debugf("Server: FlowMod(ACL): %d %s skip.", port, portType)
+		return
+	}
+
+	inPort := opennsl.Port(port)
 
 	switch {
 	case len(flow.Match.IpDst) != 0:
@@ -58,9 +69,9 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 			err := func() error {
 				switch flow.Match.EthType {
 				case unix.ETH_P_IP:
-					return s.Fields().DstIPv4.AddEntry(dstIP)
+					return s.Fields().DstIPv4.AddEntry(NewFieldEntryDstIPv4(dstIP, inPort))
 				case unix.ETH_P_IPV6:
-					return s.Fields().DstIPv6.AddEntry(dstIP)
+					return s.Fields().DstIPv6.AddEntry(NewFieldEntryDstIPv6(dstIP, inPort))
 				default:
 					return fmt.Errorf("Invalid ether type. %04x", flow.Match.EthType)
 				}
@@ -72,9 +83,9 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 		case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
 			switch flow.Match.EthType {
 			case unix.ETH_P_IP:
-				s.Fields().DstIPv4.DeleteEntry(dstIP)
+				s.Fields().DstIPv4.DeleteEntry(NewFieldEntryDstIPv4(dstIP, inPort))
 			case unix.ETH_P_IPV6:
-				s.Fields().DstIPv6.DeleteEntry(dstIP)
+				s.Fields().DstIPv6.DeleteEntry(NewFieldEntryDstIPv6(dstIP, inPort))
 			default:
 				log.Warnf("Server: FlowMod(ACL): DeleteEntry error. %s", dstIP)
 			}
@@ -86,14 +97,15 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 	case flow.Match.EthType != 0:
 		log.Debugf("Server: FlowMod(ACL): eth_type. %s", flow)
 
+		e := NewFieldEntryEthType(uint16(flow.Match.EthType), inPort)
 		switch mod.Cmd {
 		case fibcapi.FlowMod_ADD:
-			if err := s.Fields().EthType.AddEntry(uint16(flow.Match.EthType)); err != nil {
-				log.Errorf("Server: FlowMod(ACL): AddEntry error. %d %s", flow.Match.EthType, err)
+			if err := s.Fields().EthType.AddEntry(e); err != nil {
+				log.Errorf("Server: FlowMod(ACL): AddEntry error. %d %s", e, err)
 			}
 
 		case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
-			s.Fields().EthType.DeleteEntry(uint16(flow.Match.EthType))
+			s.Fields().EthType.DeleteEntry(e)
 
 		default:
 			log.Warnf("Server: FlowMod(ACL): Invalid cmd. %s", mod.Cmd)
@@ -108,14 +120,15 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 			return
 		}
 
+		entry := NewFieldEntryEthDst(dstMAC, fibcapi.HardwareAddrExactMask, inPort)
 		switch mod.Cmd {
 		case fibcapi.FlowMod_ADD:
-			if err := s.Fields().EthDst.AddEntry(dstMAC, fibcapi.HardwareAddrExactMask); err != nil {
-				log.Errorf("Server:  FlowMod(ACL): AddEntry error. %s %s", dstMAC, err)
+			if err := s.Fields().EthDst.AddEntry(entry); err != nil {
+				log.Errorf("Server:  FlowMod(ACL): AddEntry error. %s %s", entry, err)
 			}
 
 		case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
-			s.Fields().EthDst.DeleteEntry(dstMAC, fibcapi.HardwareAddrExactMask)
+			s.Fields().EthDst.DeleteEntry(entry)
 
 		default:
 			log.Warnf("Server: FlowMod(ACL): Invalid cmd. %s", mod.Cmd)

@@ -18,12 +18,12 @@
 package nlalink
 
 import (
-	"syscall"
+	"golang.org/x/sys/unix"
 )
 
 const (
 	// RTM_SETLINK  -> netlink.RTM_SETLINK
-	RTM_SETADDR = syscall.RTM_MAX + iota
+	RTM_SETADDR = unix.RTM_MAX + iota
 	RTM_SETNEIGH
 	RTM_SETROUTE
 	RTM_NEWNODE
@@ -32,6 +32,9 @@ const (
 	RTM_NEWVPN
 	RTM_DELVPN
 	RTM_SETVPN
+	RTM_NEWBRIDGE
+	RTM_DELBRIDGE
+	RTM_SETBRIDGE
 )
 
 const (
@@ -42,4 +45,5 @@ const (
 	RTMGRP_ADDR
 	RTMGRP_NEIGH
 	RTMGRP_ROUTE
+	RTMGRP_BRIDGE
 )

@@ -24,6 +24,7 @@ config_files:
   - { src: "ribxd.conf",      dst: "/etc/beluganos/ribxd.conf",       owner: "beluganos"  }
   - { src: "ribtd.conf",      dst: "/etc/beluganos/ribtd.conf",       owner: "beluganos"  }
   - { src: "snmpproxyd.conf", dst: "/etc/beluganos/snmpproxyd.conf",  owner: "beluganos"  }
+  - { src: "bridge_vlan.yaml", dst: "/etc/beluganos/bridge_vlan.yaml", owner: "beluganos"  }
   - { src: "daemons",         dst: "/etc/frr/daemons",                owner: "frr" }
   - { src: "frr.conf",        dst: "/etc/frr/frr.conf",               owner: "frr" }
   - { src: "gobgp.conf",      dst: "/etc/frr/gobgp.conf",             owner: "frr" }
@@ -39,6 +40,7 @@ services:
   - ribsd.service
   - ribpd.service
   - ribtd.service
+  - ribbr.service
   - beluganos.target
   - gobgpd.service
   - snmpproxyd-ifmon.service
@@ -54,3 +56,4 @@ binfiles:
   - gobgpd
   - gobgp
   - snmpifmond
+  - ffctl

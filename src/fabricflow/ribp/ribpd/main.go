@@ -56,6 +56,7 @@ func main() {
 	}
 
 	s := ribpkt.NewServer(cfg.Node.ReId, nid, cfg.Ribp.Interval, cfg.Node.DupIfname)
+	s.AddExcludeIfnames(cfg.Ribp.Excludes...)
 	if err := s.Start(done); err != nil {
 		log.Errorf("RIBP Server Start error. %s", err)
 		return

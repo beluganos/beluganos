@@ -28,6 +28,7 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/vishvananda/netlink"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
@@ -97,6 +98,8 @@ func (c *Command) Init() {
 					printStats(c.client)
 				case "iptun":
 					printIptuns(c.client)
+				case "brvlan":
+					printBrVlanInfo(c.client)
 				case "all":
 					printAll(c.client)
 				default:
@@ -149,10 +152,57 @@ func printNodes(c nlaapi.NLAApiClient) {
 	}
 }
 
+func strLinkArgs(link netlink.Link) string {
+	switch l := link.(type) {
+	case *netlink.Vlan:
+		return fmt.Sprintf("vid=%d", l.VlanId)
+
+	case *netlink.Veth:
+		return fmt.Sprintf("peer='%s'", l.PeerName)
+
+	case *netlink.Bridge:
+		s := ""
+		if mcsnoop := l.MulticastSnooping; mcsnoop != nil {
+			s = fmt.Sprintf("%ssnoop=%t ", s, *mcsnoop)
+		}
+		if hello := l.HelloTime; hello != nil {
+			s = fmt.Sprintf("%shello=%d ", s, *hello)
+		}
+		if vfilter := l.VlanFiltering; vfilter != nil {
+			s = fmt.Sprintf("%svlanfilt=%t ", s, *vfilter)
+		}
+		return s
+
+	case *netlink.Bond:
+		adinfo := func() string {
+			if l.AdInfo == nil {
+				return ""
+			}
+			return fmt.Sprintf("ag:%d pt#%d '%s'", l.AdInfo.AggregatorId, l.AdInfo.NumPorts, l.AdInfo.PartnerMac)
+		}()
+
+		return fmt.Sprintf("%s act#%d act:'%s' %s", l.Mode, l.ActiveSlave, l.AdActorSystem, adinfo)
+
+	default:
+		return ""
+	}
+}
+
+func strLinkSlaveInfo(attrs *netlink.LinkAttrs) string {
+	switch si := attrs.SlaveInfo.(type) {
+	case *netlink.BondSlaveInfo:
+		return fmt.Sprintf("slave:bond %s ag:%d %s", si.State, si.AggregatorId, si.PermanentHwAddr)
+	default:
+		return ""
+	}
+}
+
 func strLink(link *nlaapi.Link) string {
 	n := link.ToNative()
 	a := n.Attrs()
-	return fmt.Sprintf("LINK_:%03d:%04d %-16s %-8s %-8s %18s %s i=%d,p=%d,m=%d",
+	linkArgs := strLinkArgs(n.Link)
+	slaveInfo := strLinkSlaveInfo(a)
+	return fmt.Sprintf("LINK_:%03d:%04d %-16s %-8s %-8s %18s %s i=%d,p=%d,m=%d %s %s",
 		link.NId,
 		link.LnId,
 		a.Name,
@@ -163,6 +213,8 @@ func strLink(link *nlaapi.Link) string {
 		a.Index,
 		a.ParentIndex,
 		a.MasterIndex,
+		linkArgs,
+		slaveInfo,
 	)
 }
 
@@ -416,6 +468,38 @@ func printMplss(c nlaapi.NLAApiClient) {
 	}
 }
 
+func strBrVlanInfo(br *nlaapi.BridgeVlanInfo) string {
+	return fmt.Sprintf("BRVLN:%03d:%04d %-16s %d %s %s i=%d,m=%d",
+		br.NId,
+		br.BrId,
+		br.Name,
+		br.Vid,
+		br.Flags,
+		br.PortType(),
+		br.Index,
+		br.MasterIndex,
+	)
+}
+
+func printBrVlanInfo(c nlaapi.NLAApiClient) {
+	stream, err := c.GetBridgeVlanInfos(context.Background(), &nlaapi.GetBridgeVlanInfosRequest{})
+	if err != nil {
+		log.Errorf("GetBridgeVlanInfos error. %v", err)
+		return
+	}
+	for {
+		br, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Errorf("stream.Recv error. %v", err)
+			break
+		}
+		fmt.Println(strBrVlanInfo(br))
+	}
+}
+
 func strVpn(vpn *nlaapi.Vpn) string {
 	return fmt.Sprintf("VPN  :%03d:%04d %-32s %-15s(%-15s) %5d",
 		vpn.NId,
@@ -540,6 +624,7 @@ func printAll(c nlaapi.NLAApiClient) {
 	printEncapInfos(c)
 	printStats(c)
 	printIptuns(c)
+	printBrVlanInfo(c)
 }
 
 func strNlMsgUion(m *nlaapi.NetlinkMessageUnion) string {
@@ -556,6 +641,8 @@ func strNlMsgUion(m *nlaapi.NetlinkMessageUnion) string {
 		return strNode(m.Msg.GetNode())
 	case nlalink.RTMGRP_VPN:
 		return strVpn(m.Msg.GetVpn())
+	case nlalink.RTMGRP_BRIDGE:
+		return strBrVlanInfo(m.Msg.GetBrVlanInfo())
 	default:
 		return fmt.Sprintf("%v", m)
 	}
@@ -576,7 +663,7 @@ func monNetlink(c nlaapi.NLAApiClient) {
 		}
 		now := time.Now().Format("15:04:05")
 		t := nlamsg.NlMsgTypeStr(nlmsg.Type())
-		fmt.Printf("%s %-12s %s\n", now, t, strNlMsgUion(nlmsg))
+		fmt.Printf("%s %-16s %s\n", now, t, strNlMsgUion(nlmsg))
 	}
 }
 

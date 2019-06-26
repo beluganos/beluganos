@@ -82,11 +82,11 @@ func (s *APIServer) GetFieldEntries(ctxt context.Context, req *api.GetFieldEntri
 	}
 
 	for _, entry := range entries {
-		ethType, err := fields.EthType.GetEntry(entry)
-		if err != nil {
+		e := FieldEntryEthType{}
+		if err := fields.EthType.GetEntry(&e, entry); err != nil {
 			log.Warnf("Api.GetFieldEntries: GetEntry error. %d %s", entry, err)
 		} else {
-			result = append(result, api.NewFieldEntryEthType(uint16(ethType)))
+			result = append(result, api.NewFieldEntryEthType(e.EthType, e.InPort))
 		}
 	}
 
@@ -95,11 +95,11 @@ func (s *APIServer) GetFieldEntries(ctxt context.Context, req *api.GetFieldEntri
 	}
 
 	for _, entry := range entries {
-		ethType, dstIP, err := fields.DstIPv4.GetEntry(entry)
-		if err != nil {
+		e := FieldEntryDstIP{}
+		if err := fields.DstIPv4.GetEntry(&e, entry); err != nil {
 			log.Warnf("Api.GetFieldEntries: GetEntry error. %d %s", entry, err)
 		} else {
-			result = append(result, api.NewFieldEntryDstIP(uint16(ethType), dstIP.String()))
+			result = append(result, api.NewFieldEntryDstIP(uint16(e.EthType), e.Dest.String(), e.InPort))
 		}
 	}
 
@@ -108,11 +108,11 @@ func (s *APIServer) GetFieldEntries(ctxt context.Context, req *api.GetFieldEntri
 	}
 
 	for _, entry := range entries {
-		ethType, dstIP, err := fields.DstIPv6.GetEntry(entry)
-		if err != nil {
+		e := FieldEntryDstIP{}
+		if err := fields.DstIPv6.GetEntry(&e, entry); err != nil {
 			log.Warnf("Api.GetFieldEntries: GetEntry error. %d %s", entry, err)
 		} else {
-			result = append(result, api.NewFieldEntryDstIP(uint16(ethType), dstIP.String()))
+			result = append(result, api.NewFieldEntryDstIP(uint16(e.EthType), e.Dest.String(), e.InPort))
 		}
 	}
 
@@ -121,15 +121,43 @@ func (s *APIServer) GetFieldEntries(ctxt context.Context, req *api.GetFieldEntri
 	}
 
 	for _, entry := range entries {
-		ethType, ipProto, err := fields.IPProto.GetEntry(entry)
-		if err != nil {
+		e := FieldEntryIPProto{}
+		if err := fields.IPProto.GetEntry(&e, entry); err != nil {
 			log.Warnf("Api.GetFieldEntries: GetEntry error. %d %s", entry, err)
 		} else {
-			result = append(result, api.NewFieldEntryIPProto(uint16(ethType), uint8(ipProto)))
+			result = append(result, api.NewFieldEntryIPProto(uint16(e.EthType), uint8(e.IPProto), e.InPort))
 		}
 	}
 
 	return api.NewGetFieldEntriesReply(result), nil
+}
+
+//
+// GetPortInfos
+//
+
+func (s *APIServer) GetPortInfos(ctxt context.Context, req *api.GetPortInfosRequest) (*api.GetPortInfosReply, error) {
+	pbmp, err := PortBmpGet(s.server.Unit())
+	if err != nil {
+		return nil, err
+	}
+
+	portInfos := []*api.PortInfo{}
+	err = pbmp.Each(func(port opennsl.Port) error {
+		pinfo := opennsl.NewPortInfo()
+		if err := pinfo.PortSelectiveGet(s.server.Unit(), port); err != nil {
+			return err
+		}
+
+		portInfos = append(portInfos, api.NewPortInfoFromNative(port, pinfo))
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return api.NewGetPortInfosReply(portInfos), nil
 }
 
 //
@@ -171,7 +199,7 @@ func (s *APIServer) GetL2Addrs(ctxt context.Context, req *api.GetL2AddrsRequest)
 //
 func (s *APIServer) GetL2Stations(ctxt context.Context, req *api.GetL2StationsRequest) (*api.GetL2StationsReply, error) {
 	l2stations := []*api.L2Station{}
-	s.server.idmaps.L2Stations.Traverse(func(gid uint32, l2stationId opennsl.L2StationID) bool {
+	s.server.idmaps.L2Stations.Traverse(func(key L2StationIDKey, l2stationId opennsl.L2StationID) bool {
 		l2station, err := l2stationId.Get(s.server.Unit())
 		if err != nil {
 			log.Errorf("L2StationGet error. %d %s", l2stationId, err)
@@ -219,7 +247,7 @@ func (s *APIServer) GetL3Iface(ctxt context.Context, req *api.GetL3IfaceRequest)
 func (s *APIServer) GetL3Ifaces(ctxt context.Context, req *api.GetL3IfacesRequest) (*api.GetL3IfacesReply, error) {
 
 	l3Ifaces := []*api.L3Iface{}
-	s.server.idmaps.L3Ifaces.Traverse(func(key uint32, ifaceId opennsl.L3IfaceID) bool {
+	s.server.idmaps.L3Ifaces.Traverse(func(key L3IfaceIDKey, ifaceId opennsl.L3IfaceID) bool {
 		l3iface, err := opennsl.L3IfaceGet(s.server.Unit(), ifaceId)
 		if err != nil {
 			log.Errorf("Api.GetL3Ifaces: L3IfaceGet error. %d %s", ifaceId, err)
@@ -307,17 +335,24 @@ func (s *APIServer) GetL3Routes(ctxt context.Context, req *api.GetL3RoutesReques
 //
 func (s *APIServer) GetIDMapEntries(ctxt context.Context, req *api.GetIDMapEntriesRequest) (*api.GetIDMapEntriesReply, error) {
 	entries := []*api.IDMapEntry{}
-	s.server.idmaps.L3Ifaces.Traverse(func(key uint32, value opennsl.L3IfaceID) bool {
-		entry := api.NewIDMapEntry(api.IDMapNameL3Iface, key, uint32(value))
+	s.server.idmaps.L3Ifaces.Traverse(func(key L3IfaceIDKey, value opennsl.L3IfaceID) bool {
+		entry := api.NewIDMapEntry(api.IDMapNameL3Iface, key.String(), uint32(value))
 		entries = append(entries, entry)
 		return true
 	})
 
-	s.server.idmaps.L3Egress.Traverse(func(key uint32, value opennsl.L3EgressID) bool {
-		entry := api.NewIDMapEntry(api.IDMapNameL3Egress, key, uint32(value))
+	s.server.idmaps.L3Egress.Traverse(func(key L3EgressIDKey, value opennsl.L3EgressID) bool {
+		entry := api.NewIDMapEntry(api.IDMapNameL3Egress, key.String(), uint32(value))
 		entries = append(entries, entry)
 		return true
 	})
+
+	s.server.idmaps.Trunks.Traverse(func(key TrunkIDKey, value opennsl.Trunk) bool {
+		entry := api.NewIDMapEntry(api.IDMapNameTrunk, key.String(), uint32(value))
+		entries = append(entries, entry)
+		return true
+	})
+
 	return api.NewGetIDMapEntriesReply(entries), nil
 }
 

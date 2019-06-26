@@ -58,12 +58,10 @@ protoc_install() {
 # patch for netlink
 #
 netlink_patch() {
-    cp ./etc/netlink/netlink_gonla.patch /tmp/
-    cp ./etc/netlink/netlink_ip6tnl.patch /tmp/
+    cp ./etc/netlink/netlink.patch /tmp/
 
     pushd ~/go/src/github.com/vishvananda/netlink/
-    patch -p1 < /tmp/netlink_gonla.patch
-    patch -p1 < /tmp/netlink_ip6tnl.patch
+    patch -p1 < /tmp/netlink.patch
     go install || { echo "netlink_patch/install error."; exit 1; }
     popd
 }

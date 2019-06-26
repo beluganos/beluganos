@@ -18,10 +18,11 @@
 package nlasvc
 
 import (
-	log "github.com/sirupsen/logrus"
 	"gonla/nlactl"
 	"gonla/nladbm"
 	"gonla/nlamsg"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //
@@ -31,6 +32,7 @@ type NLAApiService struct {
 	NId    uint8
 	Addr   string
 	NlMsgs chan *nlamsg.NetlinkMessageUnion
+	log    *log.Entry
 }
 
 func NewNLAApiService(addr string) *NLAApiService {
@@ -38,6 +40,7 @@ func NewNLAApiService(addr string) *NLAApiService {
 		NId:    0,
 		Addr:   addr,
 		NlMsgs: make(chan *nlamsg.NetlinkMessageUnion),
+		log:    NewLogger("NLAApiService"),
 	}
 }
 
@@ -48,16 +51,16 @@ func (n *NLAApiService) Start(nid uint8, chans *nlactl.NLAChannels) error {
 		return err
 	}
 
-	log.Infof("NLAApiService: START")
+	n.log.Infof("Start:")
 	return nil
 }
 
 func (n *NLAApiService) Stop() {
-	log.Infof("NLAApiService: STOP")
+	n.log.Infof("Stop:")
 }
 
 func (n *NLAApiService) NetlinkMessage(nlmsg *nlamsg.NetlinkMessage) {
-	//log.Debugf("NLAApiService: NlMsg")
+	// n.log.Debugf("NlMsg")
 }
 
 func (n *NLAApiService) sendToClients(nlmsg *nlamsg.NetlinkMessage, m interface{}) {
@@ -66,31 +69,36 @@ func (n *NLAApiService) sendToClients(nlmsg *nlamsg.NetlinkMessage, m interface{
 }
 
 func (n *NLAApiService) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.Link) {
-	// log.Debugf("NLAApiService: LINK")
+	// n.log.Debugf("LINK")
 	n.sendToClients(nlmsg, link)
 }
 
 func (n *NLAApiService) NetlinkAddr(nlmsg *nlamsg.NetlinkMessage, addr *nlamsg.Addr) {
-	// log.Debugf("NLAApiService: ADDR")
+	// n.log.Debugf("ADDR")
 	n.sendToClients(nlmsg, addr)
 }
 
 func (n *NLAApiService) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nlamsg.Neigh) {
-	// log.Debugf("NLAApiService: NEIG")
+	// n.log.Debugf("NEIG")
 	n.sendToClients(nlmsg, neigh)
 }
 
 func (n *NLAApiService) NetlinkRoute(nlmsg *nlamsg.NetlinkMessage, route *nlamsg.Route) {
-	// log.Debugf("NLAApiService: ROUT")
+	// n.log.Debugf("ROUT")
 	n.sendToClients(nlmsg, route)
 }
 
 func (n *NLAApiService) NetlinkNode(nlmsg *nlamsg.NetlinkMessage, node *nlamsg.Node) {
-	// log.Debugf("NLAApiService: NODE")
+	// n.log.Debugf("NODE")
 	n.sendToClients(nlmsg, node)
 }
 
 func (n *NLAApiService) NetlinkVpn(nlmsg *nlamsg.NetlinkMessage, vpn *nlamsg.Vpn) {
-	// log.Debugf("NLAApiService: VPN")
+	// n.log.Debugf("VPN")
 	n.sendToClients(nlmsg, vpn)
+}
+
+func (n *NLAApiService) NetlinkBridgeVlanInfo(nlmsg *nlamsg.NetlinkMessage, brvlan *nlamsg.BridgeVlanInfo) {
+	// n.log.Debugf("BRVLAN")
+	n.sendToClients(nlmsg, brvlan)
 }

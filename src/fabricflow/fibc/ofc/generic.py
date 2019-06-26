@@ -298,6 +298,12 @@ def policy_acl_flow(dpath, mod, ofctl, use_metadata=True):
     """
     _LOG.debug("ACL FLow: %d %s", dpath.id, mod)
 
+    if entry.match.in_port:
+        # omoeflow mode:
+        # send no flows for a port.
+        # flows for a port are send by setup_flow().
+        return
+
     cmd = fibcapi.flow_mod_cmd(mod.cmd, dpath.ofproto)
     entry = mod.acl
     match = ofmatch.Match().ip_dst(entry.match.ip_dst).vrf(entry.match.vrf, use_metadata)
@@ -575,12 +581,12 @@ def port_mod(dpath, mod, ofctl):
     PotMod
     mod: api.FFPortMod
     """
-    _LOG.debug("port_mod: %s %s", dpath, mod)
+    _LOG.debug("port_mod: %s %s %s", dpath, mod, ofctl)
 
     parser = dpath.ofproto_parser
     ofp = dpath.ofproto
 
-    config = 0 if port.state == pb.PortStatus.UP else ofp.OFPPC_PORT_DOWN
+    config = 0 if mod.status == pb.PortStatus.UP else ofp.OFPPC_PORT_DOWN
     msg = parser.OFPPortMod(
         port_no=mod.port_no,
         hw_addr=mod.hw_addr,

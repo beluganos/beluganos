@@ -41,6 +41,16 @@ ports:
   #   vlan:
   #     - 9.10
   #     - 10.10
+
+  L2SW-MIC:
+    eth: []
+    l2sw:
+      access:
+        - 1.10
+        - 2.20
+        - 3.20
+      trunk:
+        - 4.10.20
 EOF
 
 
@@ -68,6 +78,7 @@ create_playbook() {
     ${FFCTL} snmpd-conf create ${NAME} ${SNMPOPT} ${FFOPT}
     ${FFCTL} snmpproxyd-conf create ${NAME} ${FFOPT}
     ${FFCTL} sysctl      create ${NAME} --ports ${PORTS} --dp-type ${DPTYPE} ${FFOPT}
+    ${FFCTL} bridge-vlan create ${NAME} --ports ${PORTS} --dp-type ${DPTYPE} ${FFOPT}
 }
 
 ## DO NOT EDIT ##
@@ -88,10 +99,12 @@ create_playbooks() {
     create_playbook MIC  0
     # create_playbook RIC1 11 10:10 10:100
     # create_playbook RIC2 12 20:10 20:100
+    # create_playbook L2SW-MIC 0
 
     create_common
     create_inventory MIC
     # create_inventory MIC RIC1 RIC2
+    # create_inventory L2SW-MIC
 }
 
 ## DO NOT EDIT ##

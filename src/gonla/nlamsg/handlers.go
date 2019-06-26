@@ -17,8 +17,6 @@
 
 package nlamsg
 
-import ()
-
 type NetlinkMessageHandler interface {
 	NetlinkMessage(*NetlinkMessage)
 }
@@ -45,4 +43,8 @@ type NetlinkNodeHandler interface {
 
 type NetlinkVpnHandler interface {
 	NetlinkVpn(*NetlinkMessage, *Vpn)
+}
+
+type NetlinkBridgeVlanInfoHandler interface {
+	NetlinkBridgeVlanInfo(*NetlinkMessage, *BridgeVlanInfo)
 }

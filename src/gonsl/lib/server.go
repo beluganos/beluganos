@@ -19,10 +19,11 @@ package gonslib
 
 import (
 	"bytes"
-	"fabricflow/fibc/api"
-	"fabricflow/fibc/lib"
-	"fabricflow/fibc/net"
+	fibcapi "fabricflow/fibc/api"
+	fibclib "fabricflow/fibc/lib"
+	fibcnet "fabricflow/fibc/net"
 
+	"github.com/beluganos/go-opennsl/opennsl"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -36,6 +37,7 @@ type Server struct {
 	fields    *FieldGroups
 	idmaps    *IDMaps
 	vlanPorts *VlanPortTable
+	l2addrCh  chan []*L2addrmonEntry
 }
 
 //
@@ -49,6 +51,7 @@ func NewServer(dpCfg *DpConfig, logCfg *LogConfig) *Server {
 		fields:    NewFieldGroups(dpCfg.Unit),
 		idmaps:    NewIDMaps(),
 		vlanPorts: NewVlanPortTableFromConfig(&dpCfg.BlockBcast),
+		l2addrCh:  make(chan []*L2addrmonEntry),
 	}
 }
 
@@ -106,6 +109,7 @@ func (s *Server) Serve(done <-chan struct{}) {
 	defer s.client.Stop()
 	rxCh := s.RxStart(done)
 	linkCh := s.LinkmonStart(done)
+	s.L2AddrMonStart(done)
 
 	for {
 		select {
@@ -142,6 +146,37 @@ func (s *Server) Serve(done <-chan struct{}) {
 			port.State = linkInfo.PortState()
 			portStatus := fibcapi.NewFFPortStatus(s.DpID(), port, fibcapi.FFPortStatus_MODIFY)
 			if err := s.client.Write(portStatus, 0); err != nil {
+				log.Errorf("Server: client.Write error. %s", err)
+			}
+
+		case entries := <-s.l2addrCh:
+			log.Debugf("Server: L2AddrEntry %d", len(entries))
+
+			reason := func(oper opennsl.L2CallbackOper) fibcapi.L2Addr_Reason {
+				switch oper {
+				case opennsl.L2_CALLBACK_ADD:
+					return fibcapi.L2Addr_ADD
+
+				case opennsl.L2_CALLBACK_DELETE:
+					return fibcapi.L2Addr_DELETE
+
+				default:
+					return fibcapi.L2Addr_NOP
+				}
+			}
+
+			addrs := make([]*fibcapi.L2Addr, len(entries))
+			for index, entry := range entries {
+				addrs[index] = fibcapi.NewL2AddrDP(
+					entry.L2Addr.MAC(),
+					uint16(entry.L2Addr.VID()),
+					uint32(entry.L2Addr.Port()),
+					reason(entry.Oper),
+				)
+			}
+
+			status := fibcapi.NewFFL2AddrStatus(s.DpID(), addrs)
+			if err := s.client.Write(status, 0); err != nil {
 				log.Errorf("Server: client.Write error. %s", err)
 			}
 

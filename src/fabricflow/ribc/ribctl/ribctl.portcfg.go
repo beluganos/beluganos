@@ -18,50 +18,46 @@
 package ribctl
 
 import (
-	"fabricflow/fibc/api"
+	fibcapi "fabricflow/fibc/api"
 	"gonla/nlamsg"
-
-	log "github.com/sirupsen/logrus"
-)
-
-const (
-	RIBC_TUNNEL_DPPORT_OFFSET = 256
 )
 
 func (r *RIBController) NewPortConfig(cmd string, reId string, link *nlamsg.Link) *fibcapi.PortConfig {
 	pc := fibcapi.NewPortConfig(cmd, reId, NewLinkName(link, r.useNId), NewPortId(link), NewPortStatus(link))
-	pc.Link = func() string {
-		if parent, err := r.nla.GetLink(link.NId, link.Attrs().ParentIndex); err == nil {
-			return NewLinkName(parent, r.useNId)
-		}
-		return ""
-	}()
 
-	if iptun := link.Iptun(); iptun != nil {
-		if tun, err := r.nla.GetIptun(link.NId, iptun.Remote); err != nil {
-			log.Warnf("RIBController: NewPortConfig GetIptun error. %s", err)
-		} else {
-			pc.DpPort = uint32(tun.TnlId + RIBC_TUNNEL_DPPORT_OFFSET)
+	if parentIndex := link.Attrs().ParentIndex; parentIndex != 0 {
+		if parent, err := r.nla.GetLink(link.NId, parentIndex); err == nil {
+			pc.Link = NewLinkName(parent, r.useNId)
 		}
+	}
+
+	linkType := LinkTypeFromLink(link)
+
+	switch linkType {
+	case fibcapi.LinkType_IPTUN:
+		if iptun := link.Iptun(); iptun != nil {
+			if tun, err := r.nla.GetIptun(link.NId, iptun.Remote); err != nil {
+				r.log.Warnf("PortConfig: GetIptun error. %s", err)
+			} else {
+				pc.DpPort = fibcapi.NewDPPortId(uint32(tun.TnlId), linkType)
+				r.log.Debugf("PortConfig: iptun.dp_port=0x%x", pc.DpPort)
+			}
+		}
+
+	case fibcapi.LinkType_BRIDGE, fibcapi.LinkType_BOND:
+		pc.DpPort = fibcapi.NewDPPortId(NewPortId(link), linkType)
+		r.log.Debugf("PortConfig: master.dp_port=0x%x", pc.DpPort)
+
+	default:
+		// pass
 	}
 
 	return pc
 }
 
 func (r *RIBController) SendPortConfig(cmd string, link *nlamsg.Link) error {
+	r.log.Debugf("PortConfig: %s %v", cmd, link)
+
 	p := r.NewPortConfig(cmd, r.reId, link)
 	return r.fib.Send(p, 0)
-}
-
-func (r *RIBController) SendPortConfigs() {
-	err := r.nla.GetLinks(nlamsg.NODE_ID_ALL, func(link *nlamsg.Link) error {
-		return r.SendPortConfig("ADD", link)
-	})
-
-	if err != nil {
-		log.Errorf("RIBController: SendPortConfig error. %s", err)
-		return
-	}
-
-	log.Infof("RIBController: PortConfigs sent.")
 }

@@ -75,15 +75,21 @@ type NLAServer struct {
 	done            chan struct{}
 	recvChanSize    int
 	recvSockBufSize int
+	log             *log.Entry
 }
 
 func NewNLAServer(nid uint8, nlmsgs chan<- *nlamsg.NetlinkMessage, done chan struct{}) *NLAServer {
+	fields := log.Fields{
+		"module": "NLAServer",
+	}
+
 	return &NLAServer{
 		Nid:             nid,
 		nlmsgs:          nlmsgs,
 		done:            done,
 		recvChanSize:    16,
 		recvSockBufSize: 1024 * 1024,
+		log:             log.WithFields(fields),
 	}
 }
 
@@ -102,7 +108,7 @@ func (s *NLAServer) parseNlMsgs(recvCh <-chan *NLARecvBuffer) {
 	for rb := range recvCh {
 		nlmsgs, err := syscall.ParseNetlinkMessage(rb.Bytes())
 		if err != nil {
-			log.Errorf("NLAServer EXIT. parse error. %s", err)
+			s.log.Errorf("parseNlMsg: parse error. %s", err)
 			return
 		}
 
@@ -130,16 +136,16 @@ func (s *NLAServer) Serve(sock *nl.NetlinkSocket) {
 			switch err {
 			case unix.EINTR, unix.EAGAIN:
 				statRetry.Inc()
-				log.Debugf("NLAServer Recvfrom retry. %s", err)
+				s.log.Debugf("Serve: Recvfrom retry. %s", err)
 				continue
 
 			case unix.ENOBUFS:
 				statNoBufs.Inc()
-				log.Warnf("NLAServer Recvfrom error. %s", err)
+				s.log.Warnf("Serve: Recvfrom error. %s", err)
 				continue
 
 			default:
-				log.Errorf("NLAServer EXIT. Recvfrom error. %s", err)
+				s.log.Errorf("Serve: EXIT. Recvfrom error. %s", err)
 				return
 			}
 		}
@@ -153,7 +159,7 @@ func (s *NLAServer) Serve(sock *nl.NetlinkSocket) {
 func (s *NLAServer) Start() error {
 	sock, err := nl.Subscribe(syscall.NETLINK_ROUTE, RTNLGRPLIST...)
 	if err != nil {
-		log.Errorf("NLAServer: nl.SubscribeAt error. %s", err)
+		s.log.Errorf("Start: subscribe error. %s", err)
 		if s.done != nil {
 			close(s.done)
 		}
@@ -161,7 +167,7 @@ func (s *NLAServer) Start() error {
 	}
 
 	if err := sock.SetReceiveBuffer(s.recvSockBufSize); err != nil {
-		log.Errorf("NLAServer: sock.SetReceiveBuffer error. %s", err)
+		s.log.Errorf("Start: sock.SetReceiveBuffer error. %s", err)
 		sock.Close()
 		if s.done != nil {
 			close(s.done)
@@ -170,7 +176,7 @@ func (s *NLAServer) Start() error {
 	}
 
 	n, _ := sock.GetReceiveBuffer()
-	log.Infof("NLAServer: socketopt(RCVBUF) = %d", n)
+	s.log.Infof("Start: socketopt(RCVBUF) = %d", n)
 
 	if s.done != nil {
 		go func() {
@@ -180,6 +186,6 @@ func (s *NLAServer) Start() error {
 	}
 
 	go s.Serve(sock)
-	log.Info("NLAServer: START")
+	log.Info("Start:")
 	return nil
 }

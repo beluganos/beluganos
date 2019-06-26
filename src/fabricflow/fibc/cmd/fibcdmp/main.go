@@ -32,7 +32,7 @@ type Port struct {
 }
 
 func (p *Port) String() string {
-	return fmt.Sprintf("{'%s', %d, '%s'}", p.Id, p.Port, p.HwAddr)
+	return fmt.Sprintf("{'%s', 0x%x, '%s'}", p.Id, p.Port, p.HwAddr)
 }
 
 type Link struct {
@@ -53,35 +53,57 @@ type PortMap struct {
 	Vs      Port
 	Dp      Port
 	Link    *Link
-	Slaves  []*Link
 	DpEnter bool
 	NoVS    bool
 }
 
 func (p *PortMap) String() string {
-	dpEnter := func() string {
+	var cnt int
+
+	vm := func() string {
+		if p.Vm.Port != 0 {
+			cnt++
+			return fmt.Sprintf("+%s", &p.Vm)
+		}
+		return fmt.Sprintf("-%s", &p.Vm)
+	}()
+
+	dp := func() string {
 		if p.DpEnter {
-			return "+"
-		} else {
-			return "-"
+			cnt++
+			return fmt.Sprintf("+%s", &p.Dp)
 		}
+		if p.Link != nil {
+			cnt++
+			return fmt.Sprintf("|%s", &p.Dp)
+		}
+		return fmt.Sprintf("-%s", &p.Dp)
 	}()
-	noVS := func() string {
+
+	vs := func() string {
 		if p.NoVS {
-			return "*"
+			cnt++
+			return fmt.Sprintf("*%s", &p.Vs)
 		}
-		return ""
+		if p.Link != nil {
+			cnt++
+			return fmt.Sprintf("|%s", &p.Vs)
+		}
+		if p.Vs.Port != 0 {
+			cnt++
+			return fmt.Sprintf("+%s", &p.Vs)
+		}
+		return fmt.Sprintf("-%s", &p.Vs)
 	}()
-	return fmt.Sprintf("IF=%s, VM=%s, DP=%s%s, VS=%s%s, Link=%s, Slaves=%s",
-		p.Name.String(),
-		p.Vm.String(),
-		dpEnter,
-		p.Dp.String(),
-		noVS,
-		p.Vs.String(),
-		p.Link.String(),
-		p.Slaves,
-	)
+
+	name := func() string {
+		if cnt == 3 {
+			return fmt.Sprintf("%s +", &p.Name)
+		}
+		return fmt.Sprintf("%s -", &p.Name)
+	}()
+
+	return fmt.Sprintf("IF=%s VM%s DP%s VS%s Link=%s", name, vm, dp, vs, p.Link)
 }
 
 func DecodePortMap(datas map[string]interface{}) *PortMap {
@@ -125,18 +147,6 @@ func DecodePortMap(datas map[string]interface{}) *PortMap {
 				pm.Link = &Link{
 					ReId: field[0].(string),
 					Name: field[1].(string),
-				}
-			}
-
-		case "slaves":
-			if val != nil {
-				for _, fields := range val.([]interface{}) {
-					field := fields.([]interface{})
-					slave := &Link{
-						ReId: field[0].(string),
-						Name: field[1].(string),
-					}
-					pm.Slaves = append(pm.Slaves, slave)
 				}
 			}
 

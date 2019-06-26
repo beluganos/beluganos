@@ -34,6 +34,7 @@ def setup_flow(dpath, mod, ofctl):
     """
     _LOG.debug("Default FLow: %d %s", dpath.id, mod)
 
+    """
     matches = [
         fibcapi.new_policy_acl_match(eth_type=fibcapi.ETHTYPE_LACP),
         fibcapi.new_policy_acl_match(eth_type=fibcapi.ETHTYPE_ARP),
@@ -60,6 +61,7 @@ def setup_flow(dpath, mod, ofctl):
             acl=acl)
 
         dpath.send_msg(pb.FLOW_MOD, mod)
+    """
 
 
 def vlan_flow(dpath, mod, ofctl):
@@ -111,6 +113,10 @@ def policy_acl_flow(dpath, mod, ofctl):
     Policy ACL flow table.
     """
     _LOG.debug("ACL FLow: %d %s", dpath.id, mod)
+
+    if mod.acl.match.in_port == 0:
+        # ignore flow mod that match.in_port not specified.
+        return
 
     dpath.send_msg(pb.FLOW_MOD, mod)
 

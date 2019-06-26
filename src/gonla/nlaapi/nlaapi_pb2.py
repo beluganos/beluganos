@@ -8,6 +8,7 @@ from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
+from google.protobuf import descriptor_pb2
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
@@ -19,8 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='nlaapi.proto',
   package='nlaapi',
   syntax='proto3',
-  serialized_options=None,
-  serialized_pb=_b('\n\x0cnlaapi.proto\x12\x06nlaapi\"N\n\x08NlMsghdr\x12\x0b\n\x03len\x18\x01 \x01(\r\x12\x0c\n\x04type\x18\x02 \x01(\r\x12\r\n\x05\x66lags\x18\x03 \x01(\r\x12\x0b\n\x03seq\x18\x04 \x01(\r\x12\x0b\n\x03pid\x18\x05 \x01(\r\"m\n\x0eNetlinkMessage\x12 \n\x06header\x18\x01 \x01(\x0b\x32\x10.nlaapi.NlMsghdr\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\x12\x0c\n\x04n_id\x18\x03 \x01(\r\x12\x1d\n\x03src\x18\x04 \x01(\x0e\x32\x10.nlaapi.NlMsgSrc\"\x15\n\x13NetlinkMessageReply\"\x13\n\x11MonNetlinkRequest\"\xc7\x01\n\x08NlMsgUni\x12\x1c\n\x04link\x18\x01 \x01(\x0b\x32\x0c.nlaapi.LinkH\x00\x12\x1c\n\x04\x61\x64\x64r\x18\x02 \x01(\x0b\x32\x0c.nlaapi.AddrH\x00\x12\x1e\n\x05neigh\x18\x03 \x01(\x0b\x32\r.nlaapi.NeighH\x00\x12\x1e\n\x05route\x18\x04 \x01(\x0b\x32\r.nlaapi.RouteH\x00\x12\x1c\n\x04node\x18\x05 \x01(\x0b\x32\x0c.nlaapi.NodeH\x00\x12\x1a\n\x03vpn\x18\x06 \x01(\x0b\x32\x0b.nlaapi.VpnH\x00\x42\x05\n\x03msg\"\x83\x01\n\x13NetlinkMessageUnion\x12 \n\x06header\x18\x01 \x01(\x0b\x32\x10.nlaapi.NlMsghdr\x12\x1d\n\x03msg\x18\x02 \x01(\x0b\x32\x10.nlaapi.NlMsgUni\x12\x0c\n\x04n_id\x18\x03 \x01(\r\x12\x1d\n\x03src\x18\x04 \x01(\x0e\x32\x10.nlaapi.NlMsgSrc\"7\n\rModVpnRequest\x12\x0c\n\x04type\x18\x01 \x01(\r\x12\x18\n\x03vpn\x18\x02 \x01(\x0b\x32\x0b.nlaapi.Vpn\"\r\n\x0bModVpnReply\"\x11\n\x0fModNetlinkReply\"\x1f\n\x0fGetLinksRequest\x12\x0c\n\x04n_id\x18\x01 \x01(\r\"\x1f\n\x0fGetAddrsRequest\x12\x0c\n\x04n_id\x18\x01 \x01(\r\" \n\x10GetNeighsRequest\x12\x0c\n\x04n_id\x18\x01 \x01(\r\" \n\x10GetRoutesRequest\x12\x0c\n\x04n_id\x18\x01 \x01(\r\"\x1f\n\x0fGetMplssRequest\x12\x0c\n\x04n_id\x18\x01 \x01(\r\"\x11\n\x0fGetNodesRequest\"\x10\n\x0eGetVpnsRequest\"\x16\n\x14GetEncapInfosRequest\"\x12\n\x10GetIptunsRequest\"\x11\n\x0fGetStatsRequest\"&\n\x07LinkKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\r\n\x05index\x18\x02 \x01(\x05\"%\n\x07\x41\x64\x64rKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\"H\n\x08NeighKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\x12\x0f\n\x07ifindex\x18\x03 \x01(\x05\x12\x0f\n\x07vlan_id\x18\x04 \x01(\x05\"&\n\x08RouteKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\"(\n\x07MplsKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0f\n\x07l_label\x18\x02 \x01(\r\"\x17\n\x07NodeKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\"/\n\x06VpnKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0b\n\x03\x64st\x18\x02 \x01(\t\x12\n\n\x02gw\x18\x03 \x01(\t\"(\n\x08IptunKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0e\n\x06remote\x18\x02 \x01(\x0c\" \n\x04Stat\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0b\n\x03val\x18\x02 \x01(\x04\" \n\x04Node\x12\n\n\x02ip\x18\x01 \x01(\x0c\x12\x0c\n\x04n_id\x18\x02 \x01(\r\"h\n\x03Vpn\x12\n\n\x02ip\x18\x01 \x01(\x0c\x12\x0c\n\x04mask\x18\x02 \x01(\x0c\x12\n\n\x02gw\x18\x03 \x01(\x0c\x12\r\n\x05label\x18\x04 \x01(\r\x12\x0e\n\x06vpn_gw\x18\x05 \x01(\x0c\x12\x0c\n\x04n_id\x18\x06 \x01(\r\x12\x0e\n\x06vpn_id\x18\x07 \x01(\r\"T\n\x05Iptun\x12\x1a\n\x04link\x18\x01 \x01(\x0b\x32\x0c.nlaapi.Link\x12\x11\n\tlocal_mac\x18\x02 \x01(\x0c\x12\x0c\n\x04n_id\x18\x03 \x01(\r\x12\x0e\n\x06tnl_id\x18\x04 \x01(\r\"\x8b\x02\n\tLinkAttrs\x12\r\n\x05index\x18\x01 \x01(\x05\x12\x0b\n\x03mtu\x18\x02 \x01(\x05\x12\x10\n\x08tx_q_len\x18\x03 \x01(\x05\x12\x0c\n\x04name\x18\x04 \x01(\t\x12\x15\n\rhardware_addr\x18\x05 \x01(\x0c\x12\r\n\x05\x66lags\x18\x06 \x01(\r\x12\x11\n\traw_flags\x18\x07 \x01(\r\x12\x14\n\x0cparent_index\x18\x08 \x01(\x05\x12\x14\n\x0cmaster_index\x18\t \x01(\x05\x12\r\n\x05\x61lias\x18\n \x01(\t\x12\x0f\n\x07promisc\x18\x0b \x01(\x05\x12\x12\n\nencap_type\x18\x0c \x01(\t\x12)\n\noper_state\x18\r \x01(\x0e\x32\x15.nlaapi.LinkOperState\"9\n\x10GenericLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\"8\n\x0f\x44\x65viceLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\"8\n\x0f\x42ridgeLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\"G\n\rVlanLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\x0f\n\x07vlan_id\x18\x02 \x01(\x05\"\xe9\x02\n\x0eVxlanLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\x10\n\x08vxlan_id\x18\x02 \x01(\x05\x12\x16\n\x0evtep_dev_index\x18\x03 \x01(\x05\x12\x10\n\x08src_addr\x18\x04 \x01(\x0c\x12\r\n\x05group\x18\x05 \x01(\x0c\x12\x0b\n\x03ttl\x18\x06 \x01(\x05\x12\x0b\n\x03tos\x18\x07 \x01(\x05\x12\x10\n\x08learning\x18\x08 \x01(\x08\x12\r\n\x05proxy\x18\t \x01(\x08\x12\x0b\n\x03rsc\x18\n \x01(\x08\x12\x0e\n\x06l2miss\x18\x0b \x01(\x08\x12\x0e\n\x06l3miss\x18\x0c \x01(\x08\x12\x11\n\tudp_c_sum\x18\r \x01(\x08\x12\x0e\n\x06no_age\x18\x0e \x01(\x08\x12\x0b\n\x03gbp\x18\x0f \x01(\x08\x12\x0b\n\x03\x61ge\x18\x10 \x01(\x05\x12\r\n\x05limit\x18\x11 \x01(\x05\x12\x0c\n\x04port\x18\x12 \x01(\x05\x12\x10\n\x08port_low\x18\x13 \x01(\x05\x12\x11\n\tport_high\x18\x14 \x01(\x05\"\x80\x01\n\x0cVtiLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\r\n\x05i_key\x18\x02 \x01(\r\x12\r\n\x05o_key\x18\x03 \x01(\r\x12\x0c\n\x04link\x18\x04 \x01(\r\x12\r\n\x05local\x18\x05 \x01(\x0c\x12\x0e\n\x06remote\x18\x06 \x01(\x0c\"I\n\rVethLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\x11\n\tpeer_name\x18\x02 \x01(\t\"s\n\nBondAdInfo\x12\x15\n\raggregator_id\x18\x01 \x01(\x05\x12\x11\n\tnum_ports\x18\x02 \x01(\x05\x12\x11\n\tactor_key\x18\x03 \x01(\x05\x12\x13\n\x0bpartner_key\x18\x04 \x01(\x05\x12\x13\n\x0bpartner_mac\x18\x05 \x01(\x0c\"\xf8\x05\n\rBondLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\x1e\n\x04mode\x18\x02 \x01(\x0e\x32\x10.nlaapi.BondMode\x12\x14\n\x0c\x61\x63tive_slave\x18\x03 \x01(\x05\x12\x0e\n\x06miimon\x18\x04 \x01(\x05\x12\x10\n\x08up_delay\x18\x05 \x01(\x05\x12\x12\n\ndown_delay\x18\x06 \x01(\x05\x12\x13\n\x0buse_carrier\x18\x07 \x01(\x05\x12\x14\n\x0c\x61rp_interval\x18\x08 \x01(\x05\x12\x16\n\x0e\x61rp_ip_targets\x18\t \x03(\x0c\x12-\n\x0c\x61rp_validate\x18\n \x01(\x0e\x32\x17.nlaapi.BondArpValidate\x12\x32\n\x0f\x61rp_all_targets\x18\x0b \x01(\x0e\x32\x19.nlaapi.BondArpAllTargets\x12\x0f\n\x07primary\x18\x0c \x01(\x05\x12\x35\n\x10primary_reselect\x18\r \x01(\x0e\x32\x1b.nlaapi.BondPrimaryReselect\x12.\n\rfail_over_mac\x18\x0e \x01(\x0e\x32\x17.nlaapi.BondFailOverMac\x12\x34\n\x10xmit_hash_policy\x18\x0f \x01(\x0e\x32\x1a.nlaapi.BondXmitHashPolicy\x12\x13\n\x0bresend_igmp\x18\x10 \x01(\x05\x12\x16\n\x0enum_peer_notif\x18\x11 \x01(\x05\x12\x19\n\x11\x61ll_slaves_active\x18\x12 \x01(\x05\x12\x11\n\tmin_links\x18\x13 \x01(\x05\x12\x13\n\x0blp_interval\x18\x14 \x01(\x05\x12\x19\n\x11packers_per_slave\x18\x15 \x01(\x05\x12\'\n\tlacp_rate\x18\x16 \x01(\x0e\x32\x14.nlaapi.BondLacpRate\x12\'\n\tad_select\x18\x17 \x01(\x0e\x32\x14.nlaapi.BondAdSelect\x12#\n\x07\x61\x64_info\x18\x18 \x01(\x0b\x32\x12.nlaapi.BondAdInfo\"\xf9\x01\n\x0eIptunLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\x0b\n\x03ttl\x18\x02 \x01(\r\x12\x0b\n\x03tos\x18\x03 \x01(\r\x12\x12\n\np_mtu_disc\x18\x04 \x01(\r\x12\x0c\n\x04link\x18\x05 \x01(\r\x12\r\n\x05local\x18\x06 \x01(\x0c\x12\x0e\n\x06remote\x18\x07 \x01(\x0c\x12\x13\n\x0b\x65ncap_sport\x18\x08 \x01(\r\x12\x13\n\x0b\x65ncap_dport\x18\t \x01(\r\x12\x12\n\nencap_type\x18\n \x01(\r\x12\x13\n\x0b\x65ncap_flags\x18\x0b \x01(\r\x12\x12\n\nflow_based\x18\x0c \x01(\x08\"\xae\x03\n\x04Link\x12\x0c\n\x04type\x18\x01 \x01(\t\x12)\n\x06\x64\x65vice\x18\x04 \x01(\x0b\x32\x17.nlaapi.DeviceLinkAttrsH\x00\x12)\n\x06\x62ridge\x18\x05 \x01(\x0b\x32\x17.nlaapi.BridgeLinkAttrsH\x00\x12%\n\x04vlan\x18\x06 \x01(\x0b\x32\x15.nlaapi.VlanLinkAttrsH\x00\x12\'\n\x05vxlan\x18\x07 \x01(\x0b\x32\x16.nlaapi.VxlanLinkAttrsH\x00\x12#\n\x03vti\x18\x08 \x01(\x0b\x32\x14.nlaapi.VtiLinkAttrsH\x00\x12%\n\x04veth\x18\t \x01(\x0b\x32\x15.nlaapi.VethLinkAttrsH\x00\x12%\n\x04\x62ond\x18\n \x01(\x0b\x32\x15.nlaapi.BondLinkAttrsH\x00\x12+\n\x07generic\x18\x0b \x01(\x0b\x32\x18.nlaapi.GenericLinkAttrsH\x00\x12\'\n\x05iptun\x18\x0c \x01(\x0b\x32\x16.nlaapi.IptunLinkAttrsH\x00\x12\x0c\n\x04n_id\x18\x02 \x01(\r\x12\r\n\x05ln_id\x18\x03 \x01(\rB\x0c\n\nlink_attrs\"\xc0\x01\n\x04\x41\x64\x64r\x12\n\n\x02ip\x18\x01 \x01(\x0c\x12\x0f\n\x07ip_mask\x18\x02 \x01(\x0c\x12\r\n\x05label\x18\x03 \x01(\t\x12\r\n\x05\x66lags\x18\x04 \x01(\x05\x12\r\n\x05scope\x18\x05 \x01(\x05\x12\x0c\n\x04peer\x18\x06 \x01(\x0c\x12\x11\n\tpeer_mask\x18\x07 \x01(\x0c\x12\x11\n\tbroadcast\x18\x08 \x01(\x0c\x12\r\n\x05index\x18\t \x01(\x05\x12\x0e\n\x06\x66\x61mily\x18\n \x01(\x05\x12\x0c\n\x04n_id\x18\x0b \x01(\r\x12\r\n\x05\x61\x64_id\x18\x0c \x01(\r\"\x0c\n\nNeighNotun\".\n\nNeighIptun\x12\x10\n\x08tun_type\x18\x01 \x01(\t\x12\x0e\n\x06src_ip\x18\x02 \x01(\x0c\"\xaf\x02\n\x05Neigh\x12\x12\n\nlink_index\x18\x01 \x01(\x05\x12\x0e\n\x06\x66\x61mily\x18\x02 \x01(\x05\x12\r\n\x05state\x18\x03 \x01(\x05\x12\x0c\n\x04type\x18\x04 \x01(\x05\x12\r\n\x05\x66lags\x18\x05 \x01(\x05\x12\n\n\x02ip\x18\x06 \x01(\x0c\x12\x15\n\rhardware_addr\x18\x07 \x01(\x0c\x12\x12\n\nll_ip_addr\x18\x08 \x01(\x0c\x12\x0f\n\x07vlan_id\x18\t \x01(\x05\x12\x0b\n\x03vni\x18\n \x01(\x05\x12\x0c\n\x04n_id\x18\x0b \x01(\r\x12\r\n\x05ne_id\x18\x0c \x01(\r\x12\x10\n\x08phy_link\x18\r \x01(\x05\x12#\n\x05notun\x18\x0e \x01(\x0b\x32\x12.nlaapi.NeighNotunH\x00\x12#\n\x05iptun\x18\x0f \x01(\x0b\x32\x12.nlaapi.NeighIptunH\x00\x42\x08\n\x06tunnel\"\x8e\x01\n\x0bNexthopInfo\x12\x12\n\nlink_index\x18\x01 \x01(\x05\x12\x0c\n\x04hops\x18\x02 \x01(\x05\x12\n\n\x02gw\x18\x03 \x01(\x0c\x12\r\n\x05\x66lags\x18\x04 \x01(\x05\x12$\n\x07new_dst\x18\x05 \x01(\x0b\x32\x13.nlaapi.Destination\x12\x1c\n\x05\x65ncap\x18\x06 \x01(\x0b\x32\r.nlaapi.Encap\"!\n\x0fMPLSDestination\x12\x0e\n\x06labels\x18\x01 \x03(\r\"N\n\x0b\x44\x65stination\x12\x0e\n\x06\x66\x61mily\x18\x01 \x01(\x05\x12\'\n\x04mpls\x18\x02 \x01(\x0b\x32\x17.nlaapi.MPLSDestinationH\x00\x42\x06\n\x04\x64\x65st\"\x1b\n\tMPLSEncap\x12\x0e\n\x06labels\x18\x01 \x03(\r\"A\n\x05\x45ncap\x12\x0c\n\x04type\x18\x01 \x01(\r\x12!\n\x04mpls\x18\x02 \x01(\x0b\x32\x11.nlaapi.MPLSEncapH\x00\x42\x07\n\x05\x65ncap\"(\n\x0c\x45ncapInfoKey\x12\x0b\n\x03\x64st\x18\x01 \x01(\t\x12\x0b\n\x03vrf\x18\x02 \x01(\r\"A\n\tEncapInfo\x12\n\n\x02ip\x18\x01 \x01(\x0c\x12\x0c\n\x04mask\x18\x02 \x01(\x0c\x12\x0b\n\x03vrf\x18\x03 \x01(\r\x12\r\n\x05\x65n_id\x18\x04 \x01(\r\"\x91\x03\n\x05Route\x12\x12\n\nlink_index\x18\x01 \x01(\x05\x12\x14\n\x0ci_link_index\x18\x02 \x01(\x05\x12\r\n\x05scope\x18\x03 \x01(\x05\x12\x0b\n\x03\x64st\x18\x04 \x01(\x0c\x12\x10\n\x08\x64st_mask\x18\x05 \x01(\x0c\x12\x0b\n\x03src\x18\x06 \x01(\x0c\x12\n\n\x02gw\x18\x07 \x01(\x0c\x12\'\n\nmulti_path\x18\x08 \x03(\x0b\x32\x13.nlaapi.NexthopInfo\x12\x10\n\x08protocol\x18\t \x01(\x05\x12\x10\n\x08priority\x18\n \x01(\x05\x12\r\n\x05table\x18\x0b \x01(\x05\x12\x0c\n\x04type\x18\x0c \x01(\x05\x12\x0b\n\x03tos\x18\r \x01(\x05\x12\r\n\x05\x66lags\x18\x0e \x01(\x05\x12\x10\n\x08mpls_dst\x18\x0f \x01(\x05\x12$\n\x07new_dst\x18\x10 \x01(\x0b\x32\x13.nlaapi.Destination\x12\x1c\n\x05\x65ncap\x18\x11 \x01(\x0b\x32\r.nlaapi.Encap\x12\x0c\n\x04n_id\x18\x12 \x01(\r\x12\r\n\x05rt_id\x18\x13 \x01(\r\x12\x0e\n\x06vpn_gw\x18\x14 \x01(\x0c\x12\x0e\n\x06\x65n_ids\x18\x15 \x03(\r*%\n\x08NlMsgSrc\x12\x07\n\x03NOP\x10\x00\x12\x07\n\x03KNL\x10\x01\x12\x07\n\x03\x41PI\x10\x02*\x88\x01\n\rLinkOperState\x12\x0f\n\x0bOperUnknown\x10\x00\x12\x12\n\x0eOperNotPresent\x10\x01\x12\x0c\n\x08OperDown\x10\x02\x12\x16\n\x12OperLowerLayerDown\x10\x03\x12\x0f\n\x0bOperTesting\x10\x04\x12\x0f\n\x0bOperDormant\x10\x05\x12\n\n\x06OperUp\x10\x06*\xd9\x01\n\x08\x42ondMode\x12\x18\n\x14\x42OND_MODE_BALANCE_RR\x10\x00\x12\x1b\n\x17\x42OND_MODE_ACTIVE_BACKUP\x10\x01\x12\x19\n\x15\x42OND_MODE_BALANCE_XOR\x10\x02\x12\x17\n\x13\x42OND_MODE_BROADCAST\x10\x03\x12\x15\n\x11\x42OND_MODE_802_3AD\x10\x04\x12\x19\n\x15\x42OND_MODE_BALANCE_TLB\x10\x05\x12\x19\n\x15\x42OND_MODE_BALANCE_ALB\x10\x06\x12\x15\n\x11\x42OND_MODE_UNKNOWN\x10\x07*\x84\x01\n\x0f\x42ondArpValidate\x12\x1a\n\x16\x42OND_ARP_VALIDATE_NONE\x10\x00\x12\x1c\n\x18\x42OND_ARP_VALIDATE_ACTIVE\x10\x01\x12\x1c\n\x18\x42OND_ARP_VALIDATE_BACKUP\x10\x02\x12\x19\n\x15\x42OND_ARP_VALIDATE_ALL\x10\x03*O\n\x11\x42ondArpAllTargets\x12\x1c\n\x18\x42OND_ARP_ALL_TARGETS_ANY\x10\x00\x12\x1c\n\x18\x42OND_ARP_ALL_TARGETS_ALL\x10\x01*|\n\x13\x42ondPrimaryReselect\x12 \n\x1c\x42OND_PRIMARY_RESELECT_ALWAYS\x10\x00\x12 \n\x1c\x42OND_PRIMARY_RESELECT_BETTER\x10\x01\x12!\n\x1d\x42OND_PRIMARY_RESELECT_FAILURE\x10\x02*l\n\x0f\x42ondFailOverMac\x12\x1b\n\x17\x42OND_FAIL_OVER_MAC_NONE\x10\x00\x12\x1d\n\x19\x42OND_FAIL_OVER_MAC_ACTIVE\x10\x01\x12\x1d\n\x19\x42OND_FAIL_OVER_MAC_FOLLOW\x10\x02*\xe9\x01\n\x12\x42ondXmitHashPolicy\x12 \n\x1c\x42OND_XMIT_HASH_POLICY_LAYER2\x10\x00\x12\"\n\x1e\x42OND_XMIT_HASH_POLICY_LAYER3_4\x10\x01\x12\"\n\x1e\x42OND_XMIT_HASH_POLICY_LAYER2_3\x10\x02\x12\"\n\x1e\x42OND_XMIT_HASH_POLICY_ENCAP2_3\x10\x03\x12\"\n\x1e\x42OND_XMIT_HASH_POLICY_ENCAP3_4\x10\x04\x12!\n\x1d\x42OND_XMIT_HASH_POLICY_UNKNOWN\x10\x05*\\\n\x0c\x42ondLacpRate\x12\x17\n\x13\x42OND_LACP_RATE_SLOW\x10\x00\x12\x17\n\x13\x42OND_LACP_RATE_FAST\x10\x01\x12\x1a\n\x16\x42OND_LACP_RATE_UNKNOWN\x10\x02*a\n\x0c\x42ondAdSelect\x12\x19\n\x15\x42OND_AD_SELECT_STABLE\x10\x00\x12\x1c\n\x18\x42OND_AD_SELECT_BANDWIDTH\x10\x01\x12\x18\n\x14\x42OND_AD_SELECT_COUNT\x10\x02\x32\x9d\x01\n\nNLACoreApi\x12K\n\x12SendNetlinkMessage\x12\x16.nlaapi.NetlinkMessage\x1a\x1b.nlaapi.NetlinkMessageReply\"\x00\x12\x42\n\x11MonNetlinkMessage\x12\x0c.nlaapi.Node\x1a\x1b.nlaapi.NetlinkMessageUnion\"\x00\x30\x01\x32\xae\t\n\x06NLAApi\x12\x36\n\x06ModVpn\x12\x15.nlaapi.ModVpnRequest\x1a\x13.nlaapi.ModVpnReply\"\x00\x12\x44\n\nModNetlink\x12\x1b.nlaapi.NetlinkMessageUnion\x1a\x17.nlaapi.ModNetlinkReply\"\x00\x12H\n\nMonNetlink\x12\x19.nlaapi.MonNetlinkRequest\x1a\x1b.nlaapi.NetlinkMessageUnion\"\x00\x30\x01\x12*\n\x07GetLink\x12\x0f.nlaapi.LinkKey\x1a\x0c.nlaapi.Link\"\x00\x12*\n\x07GetAddr\x12\x0f.nlaapi.AddrKey\x1a\x0c.nlaapi.Addr\"\x00\x12-\n\x08GetNeigh\x12\x10.nlaapi.NeighKey\x1a\r.nlaapi.Neigh\"\x00\x12-\n\x08GetRoute\x12\x10.nlaapi.RouteKey\x1a\r.nlaapi.Route\"\x00\x12+\n\x07GetMpls\x12\x0f.nlaapi.MplsKey\x1a\r.nlaapi.Route\"\x00\x12*\n\x07GetNode\x12\x0f.nlaapi.NodeKey\x1a\x0c.nlaapi.Node\"\x00\x12\'\n\x06GetVpn\x12\x0e.nlaapi.VpnKey\x1a\x0b.nlaapi.Vpn\"\x00\x12\x39\n\x0cGetEncapInfo\x12\x14.nlaapi.EncapInfoKey\x1a\x11.nlaapi.EncapInfo\"\x00\x12-\n\x08GetIptun\x12\x10.nlaapi.IptunKey\x1a\r.nlaapi.Iptun\"\x00\x12\x35\n\x08GetLinks\x12\x17.nlaapi.GetLinksRequest\x1a\x0c.nlaapi.Link\"\x00\x30\x01\x12\x35\n\x08GetAddrs\x12\x17.nlaapi.GetAddrsRequest\x1a\x0c.nlaapi.Addr\"\x00\x30\x01\x12\x38\n\tGetNeighs\x12\x18.nlaapi.GetNeighsRequest\x1a\r.nlaapi.Neigh\"\x00\x30\x01\x12\x38\n\tGetRoutes\x12\x18.nlaapi.GetRoutesRequest\x1a\r.nlaapi.Route\"\x00\x30\x01\x12\x36\n\x08GetMplss\x12\x17.nlaapi.GetMplssRequest\x1a\r.nlaapi.Route\"\x00\x30\x01\x12\x35\n\x08GetNodes\x12\x17.nlaapi.GetNodesRequest\x1a\x0c.nlaapi.Node\"\x00\x30\x01\x12\x32\n\x07GetVpns\x12\x16.nlaapi.GetVpnsRequest\x1a\x0b.nlaapi.Vpn\"\x00\x30\x01\x12\x44\n\rGetEncapInfos\x12\x1c.nlaapi.GetEncapInfosRequest\x1a\x11.nlaapi.EncapInfo\"\x00\x30\x01\x12\x38\n\tGetIptuns\x12\x18.nlaapi.GetIptunsRequest\x1a\r.nlaapi.Iptun\"\x00\x30\x01\x12\x35\n\x08GetStats\x12\x17.nlaapi.GetStatsRequest\x1a\x0c.nlaapi.Stat\"\x00\x30\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x0cnlaapi.proto\x12\x06nlaapi\"N\n\x08NlMsghdr\x12\x0b\n\x03len\x18\x01 \x01(\r\x12\x0c\n\x04type\x18\x02 \x01(\r\x12\r\n\x05\x66lags\x18\x03 \x01(\r\x12\x0b\n\x03seq\x18\x04 \x01(\r\x12\x0b\n\x03pid\x18\x05 \x01(\r\"m\n\x0eNetlinkMessage\x12 \n\x06header\x18\x01 \x01(\x0b\x32\x10.nlaapi.NlMsghdr\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\x12\x0c\n\x04n_id\x18\x03 \x01(\r\x12\x1d\n\x03src\x18\x04 \x01(\x0e\x32\x10.nlaapi.NlMsgSrc\"\x15\n\x13NetlinkMessageReply\"\x13\n\x11MonNetlinkRequest\"\xf7\x01\n\x08NlMsgUni\x12\x1c\n\x04link\x18\x01 \x01(\x0b\x32\x0c.nlaapi.LinkH\x00\x12\x1c\n\x04\x61\x64\x64r\x18\x02 \x01(\x0b\x32\x0c.nlaapi.AddrH\x00\x12\x1e\n\x05neigh\x18\x03 \x01(\x0b\x32\r.nlaapi.NeighH\x00\x12\x1e\n\x05route\x18\x04 \x01(\x0b\x32\r.nlaapi.RouteH\x00\x12\x1c\n\x04node\x18\x05 \x01(\x0b\x32\x0c.nlaapi.NodeH\x00\x12\x1a\n\x03vpn\x18\x06 \x01(\x0b\x32\x0b.nlaapi.VpnH\x00\x12.\n\x0c\x62r_vlan_info\x18\x07 \x01(\x0b\x32\x16.nlaapi.BridgeVlanInfoH\x00\x42\x05\n\x03msg\"\x83\x01\n\x13NetlinkMessageUnion\x12 \n\x06header\x18\x01 \x01(\x0b\x32\x10.nlaapi.NlMsghdr\x12\x1d\n\x03msg\x18\x02 \x01(\x0b\x32\x10.nlaapi.NlMsgUni\x12\x0c\n\x04n_id\x18\x03 \x01(\r\x12\x1d\n\x03src\x18\x04 \x01(\x0e\x32\x10.nlaapi.NlMsgSrc\"7\n\rModVpnRequest\x12\x0c\n\x04type\x18\x01 \x01(\r\x12\x18\n\x03vpn\x18\x02 \x01(\x0b\x32\x0b.nlaapi.Vpn\"\r\n\x0bModVpnReply\"\x11\n\x0fModNetlinkReply\"\x1f\n\x0fGetLinksRequest\x12\x0c\n\x04n_id\x18\x01 \x01(\r\"\x1f\n\x0fGetAddrsRequest\x12\x0c\n\x04n_id\x18\x01 \x01(\r\" \n\x10GetNeighsRequest\x12\x0c\n\x04n_id\x18\x01 \x01(\r\" \n\x10GetRoutesRequest\x12\x0c\n\x04n_id\x18\x01 \x01(\r\"\x1f\n\x0fGetMplssRequest\x12\x0c\n\x04n_id\x18\x01 \x01(\r\")\n\x19GetBridgeVlanInfosRequest\x12\x0c\n\x04n_id\x18\x01 \x01(\r\"\x11\n\x0fGetNodesRequest\"\x10\n\x0eGetVpnsRequest\"\x16\n\x14GetEncapInfosRequest\"\x12\n\x10GetIptunsRequest\"\x11\n\x0fGetStatsRequest\"&\n\x07LinkKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\r\n\x05index\x18\x02 \x01(\x05\"%\n\x07\x41\x64\x64rKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\"H\n\x08NeighKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\x12\x0f\n\x07ifindex\x18\x03 \x01(\x05\x12\x0f\n\x07vlan_id\x18\x04 \x01(\x05\"&\n\x08RouteKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\"(\n\x07MplsKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0f\n\x07l_label\x18\x02 \x01(\r\"\x17\n\x07NodeKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\"/\n\x06VpnKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0b\n\x03\x64st\x18\x02 \x01(\t\x12\n\n\x02gw\x18\x03 \x01(\t\"(\n\x08IptunKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\x0e\n\x06remote\x18\x02 \x01(\x0c\"=\n\x11\x42ridgeVlanInfoKey\x12\x0c\n\x04n_id\x18\x01 \x01(\r\x12\r\n\x05index\x18\x02 \x01(\x05\x12\x0b\n\x03vid\x18\x03 \x01(\r\" \n\x04Stat\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0b\n\x03val\x18\x02 \x01(\x04\" \n\x04Node\x12\n\n\x02ip\x18\x01 \x01(\x0c\x12\x0c\n\x04n_id\x18\x02 \x01(\r\"h\n\x03Vpn\x12\n\n\x02ip\x18\x01 \x01(\x0c\x12\x0c\n\x04mask\x18\x02 \x01(\x0c\x12\n\n\x02gw\x18\x03 \x01(\x0c\x12\r\n\x05label\x18\x04 \x01(\r\x12\x0e\n\x06vpn_gw\x18\x05 \x01(\x0c\x12\x0c\n\x04n_id\x18\x06 \x01(\r\x12\x0e\n\x06vpn_id\x18\x07 \x01(\r\"T\n\x05Iptun\x12\x1a\n\x04link\x18\x01 \x01(\x0b\x32\x0c.nlaapi.Link\x12\x11\n\tlocal_mac\x18\x02 \x01(\x0c\x12\x0c\n\x04n_id\x18\x03 \x01(\r\x12\x0e\n\x06tnl_id\x18\x04 \x01(\r\"\xca\x02\n\x0e\x42ridgeVlanInfo\x12+\n\x05\x66lags\x18\x01 \x01(\x0e\x32\x1c.nlaapi.BridgeVlanInfo.Flags\x12\x0b\n\x03vid\x18\x02 \x01(\r\x12\r\n\x05index\x18\x03 \x01(\x05\x12\x0c\n\x04name\x18\x04 \x01(\t\x12\x14\n\x0cmaster_index\x18\x05 \x01(\x05\x12\x0b\n\x03mtu\x18\x06 \x01(\r\x12\x0c\n\x04n_id\x18\x07 \x01(\r\x12\r\n\x05\x62r_id\x18\x08 \x01(\r\"T\n\x05\x46lags\x12\x07\n\x03NOP\x10\x00\x12\n\n\x06MASTER\x10\x01\x12\x08\n\x04PVID\x10\x02\x12\x0c\n\x08UNTAGGED\x10\x04\x12\x0f\n\x0bRANGE_BEGIN\x10\x08\x12\r\n\tRANGE_END\x10\x10\"K\n\x08PortType\x12\r\n\tNONE_PORT\x10\x00\x12\x0f\n\x0b\x41\x43\x43\x45SS_PORT\x10\x01\x12\x0e\n\nTRUNK_PORT\x10\x02\x12\x0f\n\x0bMASTER_PORT\x10\x03\"\xff\x01\n\rBondSlaveInfo\x12 \n\x05state\x18\x01 \x01(\x0e\x32\x11.nlaapi.BondState\x12)\n\nmii_status\x18\x02 \x01(\x0e\x32\x15.nlaapi.BondLinkState\x12\x1a\n\x12link_failure_count\x18\x03 \x01(\r\x12\x19\n\x11permanent_hw_addr\x18\x04 \x01(\x0c\x12\x10\n\x08queue_id\x18\x05 \x01(\x05\x12\x15\n\raggregator_id\x18\x06 \x01(\x05\x12\x1d\n\x15\x61\x63tor_oper_port_state\x18\x07 \x01(\x05\x12\"\n\x1a\x61\x64_partner_oper_port_state\x18\x08 \x01(\x05\"\xcb\x02\n\tLinkAttrs\x12\r\n\x05index\x18\x01 \x01(\x05\x12\x0b\n\x03mtu\x18\x02 \x01(\x05\x12\x10\n\x08tx_q_len\x18\x03 \x01(\x05\x12\x0c\n\x04name\x18\x04 \x01(\t\x12\x15\n\rhardware_addr\x18\x05 \x01(\x0c\x12\r\n\x05\x66lags\x18\x06 \x01(\r\x12\x11\n\traw_flags\x18\x07 \x01(\r\x12\x14\n\x0cparent_index\x18\x08 \x01(\x05\x12\x14\n\x0cmaster_index\x18\t \x01(\x05\x12\r\n\x05\x61lias\x18\n \x01(\t\x12\x0f\n\x07promisc\x18\x0b \x01(\x05\x12\x12\n\nencap_type\x18\x0c \x01(\t\x12)\n\noper_state\x18\r \x01(\x0e\x32\x15.nlaapi.LinkOperState\x12\x30\n\x0f\x62ond_slave_info\x18\x0e \x01(\x0b\x32\x15.nlaapi.BondSlaveInfoH\x00\x42\x0c\n\nslave_info\"9\n\x10GenericLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\"8\n\x0f\x44\x65viceLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\"\x80\x01\n\x0f\x42ridgeLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\x1a\n\x12multicast_snooping\x18\x02 \x01(\x08\x12\x12\n\nhello_time\x18\x03 \x01(\r\x12\x16\n\x0evlan_filtering\x18\x04 \x01(\x08\"G\n\rVlanLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\x0f\n\x07vlan_id\x18\x02 \x01(\x05\"\xe9\x02\n\x0eVxlanLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\x10\n\x08vxlan_id\x18\x02 \x01(\x05\x12\x16\n\x0evtep_dev_index\x18\x03 \x01(\x05\x12\x10\n\x08src_addr\x18\x04 \x01(\x0c\x12\r\n\x05group\x18\x05 \x01(\x0c\x12\x0b\n\x03ttl\x18\x06 \x01(\x05\x12\x0b\n\x03tos\x18\x07 \x01(\x05\x12\x10\n\x08learning\x18\x08 \x01(\x08\x12\r\n\x05proxy\x18\t \x01(\x08\x12\x0b\n\x03rsc\x18\n \x01(\x08\x12\x0e\n\x06l2miss\x18\x0b \x01(\x08\x12\x0e\n\x06l3miss\x18\x0c \x01(\x08\x12\x11\n\tudp_c_sum\x18\r \x01(\x08\x12\x0e\n\x06no_age\x18\x0e \x01(\x08\x12\x0b\n\x03gbp\x18\x0f \x01(\x08\x12\x0b\n\x03\x61ge\x18\x10 \x01(\x05\x12\r\n\x05limit\x18\x11 \x01(\x05\x12\x0c\n\x04port\x18\x12 \x01(\x05\x12\x10\n\x08port_low\x18\x13 \x01(\x05\x12\x11\n\tport_high\x18\x14 \x01(\x05\"\x80\x01\n\x0cVtiLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\r\n\x05i_key\x18\x02 \x01(\r\x12\r\n\x05o_key\x18\x03 \x01(\r\x12\x0c\n\x04link\x18\x04 \x01(\r\x12\r\n\x05local\x18\x05 \x01(\x0c\x12\x0e\n\x06remote\x18\x06 \x01(\x0c\"I\n\rVethLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\x11\n\tpeer_name\x18\x02 \x01(\t\"s\n\nBondAdInfo\x12\x15\n\raggregator_id\x18\x01 \x01(\x05\x12\x11\n\tnum_ports\x18\x02 \x01(\x05\x12\x11\n\tactor_key\x18\x03 \x01(\x05\x12\x13\n\x0bpartner_key\x18\x04 \x01(\x05\x12\x13\n\x0bpartner_mac\x18\x05 \x01(\x0c\"\xf8\x05\n\rBondLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\x1e\n\x04mode\x18\x02 \x01(\x0e\x32\x10.nlaapi.BondMode\x12\x14\n\x0c\x61\x63tive_slave\x18\x03 \x01(\x05\x12\x0e\n\x06miimon\x18\x04 \x01(\x05\x12\x10\n\x08up_delay\x18\x05 \x01(\x05\x12\x12\n\ndown_delay\x18\x06 \x01(\x05\x12\x13\n\x0buse_carrier\x18\x07 \x01(\x05\x12\x14\n\x0c\x61rp_interval\x18\x08 \x01(\x05\x12\x16\n\x0e\x61rp_ip_targets\x18\t \x03(\x0c\x12-\n\x0c\x61rp_validate\x18\n \x01(\x0e\x32\x17.nlaapi.BondArpValidate\x12\x32\n\x0f\x61rp_all_targets\x18\x0b \x01(\x0e\x32\x19.nlaapi.BondArpAllTargets\x12\x0f\n\x07primary\x18\x0c \x01(\x05\x12\x35\n\x10primary_reselect\x18\r \x01(\x0e\x32\x1b.nlaapi.BondPrimaryReselect\x12.\n\rfail_over_mac\x18\x0e \x01(\x0e\x32\x17.nlaapi.BondFailOverMac\x12\x34\n\x10xmit_hash_policy\x18\x0f \x01(\x0e\x32\x1a.nlaapi.BondXmitHashPolicy\x12\x13\n\x0bresend_igmp\x18\x10 \x01(\x05\x12\x16\n\x0enum_peer_notif\x18\x11 \x01(\x05\x12\x19\n\x11\x61ll_slaves_active\x18\x12 \x01(\x05\x12\x11\n\tmin_links\x18\x13 \x01(\x05\x12\x13\n\x0blp_interval\x18\x14 \x01(\x05\x12\x19\n\x11packers_per_slave\x18\x15 \x01(\x05\x12\'\n\tlacp_rate\x18\x16 \x01(\x0e\x32\x14.nlaapi.BondLacpRate\x12\'\n\tad_select\x18\x17 \x01(\x0e\x32\x14.nlaapi.BondAdSelect\x12#\n\x07\x61\x64_info\x18\x18 \x01(\x0b\x32\x12.nlaapi.BondAdInfo\"\xf9\x01\n\x0eIptunLinkAttrs\x12%\n\nlink_attrs\x18\x01 \x01(\x0b\x32\x11.nlaapi.LinkAttrs\x12\x0b\n\x03ttl\x18\x02 \x01(\r\x12\x0b\n\x03tos\x18\x03 \x01(\r\x12\x12\n\np_mtu_disc\x18\x04 \x01(\r\x12\x0c\n\x04link\x18\x05 \x01(\r\x12\r\n\x05local\x18\x06 \x01(\x0c\x12\x0e\n\x06remote\x18\x07 \x01(\x0c\x12\x13\n\x0b\x65ncap_sport\x18\x08 \x01(\r\x12\x13\n\x0b\x65ncap_dport\x18\t \x01(\r\x12\x12\n\nencap_type\x18\n \x01(\r\x12\x13\n\x0b\x65ncap_flags\x18\x0b \x01(\r\x12\x12\n\nflow_based\x18\x0c \x01(\x08\"\xae\x03\n\x04Link\x12\x0c\n\x04type\x18\x01 \x01(\t\x12)\n\x06\x64\x65vice\x18\x04 \x01(\x0b\x32\x17.nlaapi.DeviceLinkAttrsH\x00\x12)\n\x06\x62ridge\x18\x05 \x01(\x0b\x32\x17.nlaapi.BridgeLinkAttrsH\x00\x12%\n\x04vlan\x18\x06 \x01(\x0b\x32\x15.nlaapi.VlanLinkAttrsH\x00\x12\'\n\x05vxlan\x18\x07 \x01(\x0b\x32\x16.nlaapi.VxlanLinkAttrsH\x00\x12#\n\x03vti\x18\x08 \x01(\x0b\x32\x14.nlaapi.VtiLinkAttrsH\x00\x12%\n\x04veth\x18\t \x01(\x0b\x32\x15.nlaapi.VethLinkAttrsH\x00\x12%\n\x04\x62ond\x18\n \x01(\x0b\x32\x15.nlaapi.BondLinkAttrsH\x00\x12+\n\x07generic\x18\x0b \x01(\x0b\x32\x18.nlaapi.GenericLinkAttrsH\x00\x12\'\n\x05iptun\x18\x0c \x01(\x0b\x32\x16.nlaapi.IptunLinkAttrsH\x00\x12\x0c\n\x04n_id\x18\x02 \x01(\r\x12\r\n\x05ln_id\x18\x03 \x01(\rB\x0c\n\nlink_attrs\"\xc0\x01\n\x04\x41\x64\x64r\x12\n\n\x02ip\x18\x01 \x01(\x0c\x12\x0f\n\x07ip_mask\x18\x02 \x01(\x0c\x12\r\n\x05label\x18\x03 \x01(\t\x12\r\n\x05\x66lags\x18\x04 \x01(\x05\x12\r\n\x05scope\x18\x05 \x01(\x05\x12\x0c\n\x04peer\x18\x06 \x01(\x0c\x12\x11\n\tpeer_mask\x18\x07 \x01(\x0c\x12\x11\n\tbroadcast\x18\x08 \x01(\x0c\x12\r\n\x05index\x18\t \x01(\x05\x12\x0e\n\x06\x66\x61mily\x18\n \x01(\x05\x12\x0c\n\x04n_id\x18\x0b \x01(\r\x12\r\n\x05\x61\x64_id\x18\x0c \x01(\r\"\x0c\n\nNeighNotun\".\n\nNeighIptun\x12\x10\n\x08tun_type\x18\x01 \x01(\t\x12\x0e\n\x06src_ip\x18\x02 \x01(\x0c\"\xaf\x02\n\x05Neigh\x12\x12\n\nlink_index\x18\x01 \x01(\x05\x12\x0e\n\x06\x66\x61mily\x18\x02 \x01(\x05\x12\r\n\x05state\x18\x03 \x01(\x05\x12\x0c\n\x04type\x18\x04 \x01(\x05\x12\r\n\x05\x66lags\x18\x05 \x01(\x05\x12\n\n\x02ip\x18\x06 \x01(\x0c\x12\x15\n\rhardware_addr\x18\x07 \x01(\x0c\x12\x12\n\nll_ip_addr\x18\x08 \x01(\x0c\x12\x0f\n\x07vlan_id\x18\t \x01(\x05\x12\x0b\n\x03vni\x18\n \x01(\x05\x12\x0c\n\x04n_id\x18\x0b \x01(\r\x12\r\n\x05ne_id\x18\x0c \x01(\r\x12\x10\n\x08phy_link\x18\r \x01(\x05\x12#\n\x05notun\x18\x0e \x01(\x0b\x32\x12.nlaapi.NeighNotunH\x00\x12#\n\x05iptun\x18\x0f \x01(\x0b\x32\x12.nlaapi.NeighIptunH\x00\x42\x08\n\x06tunnel\"\x8e\x01\n\x0bNexthopInfo\x12\x12\n\nlink_index\x18\x01 \x01(\x05\x12\x0c\n\x04hops\x18\x02 \x01(\x05\x12\n\n\x02gw\x18\x03 \x01(\x0c\x12\r\n\x05\x66lags\x18\x04 \x01(\x05\x12$\n\x07new_dst\x18\x05 \x01(\x0b\x32\x13.nlaapi.Destination\x12\x1c\n\x05\x65ncap\x18\x06 \x01(\x0b\x32\r.nlaapi.Encap\"!\n\x0fMPLSDestination\x12\x0e\n\x06labels\x18\x01 \x03(\r\"N\n\x0b\x44\x65stination\x12\x0e\n\x06\x66\x61mily\x18\x01 \x01(\x05\x12\'\n\x04mpls\x18\x02 \x01(\x0b\x32\x17.nlaapi.MPLSDestinationH\x00\x42\x06\n\x04\x64\x65st\"\x1b\n\tMPLSEncap\x12\x0e\n\x06labels\x18\x01 \x03(\r\"A\n\x05\x45ncap\x12\x0c\n\x04type\x18\x01 \x01(\r\x12!\n\x04mpls\x18\x02 \x01(\x0b\x32\x11.nlaapi.MPLSEncapH\x00\x42\x07\n\x05\x65ncap\"(\n\x0c\x45ncapInfoKey\x12\x0b\n\x03\x64st\x18\x01 \x01(\t\x12\x0b\n\x03vrf\x18\x02 \x01(\r\"A\n\tEncapInfo\x12\n\n\x02ip\x18\x01 \x01(\x0c\x12\x0c\n\x04mask\x18\x02 \x01(\x0c\x12\x0b\n\x03vrf\x18\x03 \x01(\r\x12\r\n\x05\x65n_id\x18\x04 \x01(\r\"\x91\x03\n\x05Route\x12\x12\n\nlink_index\x18\x01 \x01(\x05\x12\x14\n\x0ci_link_index\x18\x02 \x01(\x05\x12\r\n\x05scope\x18\x03 \x01(\x05\x12\x0b\n\x03\x64st\x18\x04 \x01(\x0c\x12\x10\n\x08\x64st_mask\x18\x05 \x01(\x0c\x12\x0b\n\x03src\x18\x06 \x01(\x0c\x12\n\n\x02gw\x18\x07 \x01(\x0c\x12\'\n\nmulti_path\x18\x08 \x03(\x0b\x32\x13.nlaapi.NexthopInfo\x12\x10\n\x08protocol\x18\t \x01(\x05\x12\x10\n\x08priority\x18\n \x01(\x05\x12\r\n\x05table\x18\x0b \x01(\x05\x12\x0c\n\x04type\x18\x0c \x01(\x05\x12\x0b\n\x03tos\x18\r \x01(\x05\x12\r\n\x05\x66lags\x18\x0e \x01(\x05\x12\x10\n\x08mpls_dst\x18\x0f \x01(\x05\x12$\n\x07new_dst\x18\x10 \x01(\x0b\x32\x13.nlaapi.Destination\x12\x1c\n\x05\x65ncap\x18\x11 \x01(\x0b\x32\r.nlaapi.Encap\x12\x0c\n\x04n_id\x18\x12 \x01(\r\x12\r\n\x05rt_id\x18\x13 \x01(\r\x12\x0e\n\x06vpn_gw\x18\x14 \x01(\x0c\x12\x0e\n\x06\x65n_ids\x18\x15 \x03(\r*%\n\x08NlMsgSrc\x12\x07\n\x03NOP\x10\x00\x12\x07\n\x03KNL\x10\x01\x12\x07\n\x03\x41PI\x10\x02*\x88\x01\n\rLinkOperState\x12\x0f\n\x0bOperUnknown\x10\x00\x12\x12\n\x0eOperNotPresent\x10\x01\x12\x0c\n\x08OperDown\x10\x02\x12\x16\n\x12OperLowerLayerDown\x10\x03\x12\x0f\n\x0bOperTesting\x10\x04\x12\x0f\n\x0bOperDormant\x10\x05\x12\n\n\x06OperUp\x10\x06*}\n\rBondLinkState\x12\x10\n\x0c\x42OND_LINK_UP\x10\x00\x12\x12\n\x0e\x42OND_LINK_FAIL\x10\x01\x12\x12\n\x0e\x42OND_LINK_DOWN\x10\x02\x12\x12\n\x0e\x42OND_LINK_BACK\x10\x03\x12\x1e\n\x11\x42OND_LINK_UNKNOWN\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01*Z\n\tBondState\x12\x15\n\x11\x42OND_STATE_ACTIVE\x10\x00\x12\x15\n\x11\x42OND_STATE_BACKUP\x10\x01\x12\x1f\n\x12\x42OND_STATE_UNKNOWN\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01*\xd9\x01\n\x08\x42ondMode\x12\x18\n\x14\x42OND_MODE_BALANCE_RR\x10\x00\x12\x1b\n\x17\x42OND_MODE_ACTIVE_BACKUP\x10\x01\x12\x19\n\x15\x42OND_MODE_BALANCE_XOR\x10\x02\x12\x17\n\x13\x42OND_MODE_BROADCAST\x10\x03\x12\x15\n\x11\x42OND_MODE_802_3AD\x10\x04\x12\x19\n\x15\x42OND_MODE_BALANCE_TLB\x10\x05\x12\x19\n\x15\x42OND_MODE_BALANCE_ALB\x10\x06\x12\x15\n\x11\x42OND_MODE_UNKNOWN\x10\x07*\x84\x01\n\x0f\x42ondArpValidate\x12\x1a\n\x16\x42OND_ARP_VALIDATE_NONE\x10\x00\x12\x1c\n\x18\x42OND_ARP_VALIDATE_ACTIVE\x10\x01\x12\x1c\n\x18\x42OND_ARP_VALIDATE_BACKUP\x10\x02\x12\x19\n\x15\x42OND_ARP_VALIDATE_ALL\x10\x03*O\n\x11\x42ondArpAllTargets\x12\x1c\n\x18\x42OND_ARP_ALL_TARGETS_ANY\x10\x00\x12\x1c\n\x18\x42OND_ARP_ALL_TARGETS_ALL\x10\x01*|\n\x13\x42ondPrimaryReselect\x12 \n\x1c\x42OND_PRIMARY_RESELECT_ALWAYS\x10\x00\x12 \n\x1c\x42OND_PRIMARY_RESELECT_BETTER\x10\x01\x12!\n\x1d\x42OND_PRIMARY_RESELECT_FAILURE\x10\x02*l\n\x0f\x42ondFailOverMac\x12\x1b\n\x17\x42OND_FAIL_OVER_MAC_NONE\x10\x00\x12\x1d\n\x19\x42OND_FAIL_OVER_MAC_ACTIVE\x10\x01\x12\x1d\n\x19\x42OND_FAIL_OVER_MAC_FOLLOW\x10\x02*\xe9\x01\n\x12\x42ondXmitHashPolicy\x12 \n\x1c\x42OND_XMIT_HASH_POLICY_LAYER2\x10\x00\x12\"\n\x1e\x42OND_XMIT_HASH_POLICY_LAYER3_4\x10\x01\x12\"\n\x1e\x42OND_XMIT_HASH_POLICY_LAYER2_3\x10\x02\x12\"\n\x1e\x42OND_XMIT_HASH_POLICY_ENCAP2_3\x10\x03\x12\"\n\x1e\x42OND_XMIT_HASH_POLICY_ENCAP3_4\x10\x04\x12!\n\x1d\x42OND_XMIT_HASH_POLICY_UNKNOWN\x10\x05*\\\n\x0c\x42ondLacpRate\x12\x17\n\x13\x42OND_LACP_RATE_SLOW\x10\x00\x12\x17\n\x13\x42OND_LACP_RATE_FAST\x10\x01\x12\x1a\n\x16\x42OND_LACP_RATE_UNKNOWN\x10\x02*a\n\x0c\x42ondAdSelect\x12\x19\n\x15\x42OND_AD_SELECT_STABLE\x10\x00\x12\x1c\n\x18\x42OND_AD_SELECT_BANDWIDTH\x10\x01\x12\x18\n\x14\x42OND_AD_SELECT_COUNT\x10\x02\x32\x9d\x01\n\nNLACoreApi\x12K\n\x12SendNetlinkMessage\x12\x16.nlaapi.NetlinkMessage\x1a\x1b.nlaapi.NetlinkMessageReply\"\x00\x12\x42\n\x11MonNetlinkMessage\x12\x0c.nlaapi.Node\x1a\x1b.nlaapi.NetlinkMessageUnion\"\x00\x30\x01\x32\xcd\n\n\x06NLAApi\x12\x36\n\x06ModVpn\x12\x15.nlaapi.ModVpnRequest\x1a\x13.nlaapi.ModVpnReply\"\x00\x12\x44\n\nModNetlink\x12\x1b.nlaapi.NetlinkMessageUnion\x1a\x17.nlaapi.ModNetlinkReply\"\x00\x12H\n\nMonNetlink\x12\x19.nlaapi.MonNetlinkRequest\x1a\x1b.nlaapi.NetlinkMessageUnion\"\x00\x30\x01\x12*\n\x07GetLink\x12\x0f.nlaapi.LinkKey\x1a\x0c.nlaapi.Link\"\x00\x12*\n\x07GetAddr\x12\x0f.nlaapi.AddrKey\x1a\x0c.nlaapi.Addr\"\x00\x12-\n\x08GetNeigh\x12\x10.nlaapi.NeighKey\x1a\r.nlaapi.Neigh\"\x00\x12-\n\x08GetRoute\x12\x10.nlaapi.RouteKey\x1a\r.nlaapi.Route\"\x00\x12+\n\x07GetMpls\x12\x0f.nlaapi.MplsKey\x1a\r.nlaapi.Route\"\x00\x12*\n\x07GetNode\x12\x0f.nlaapi.NodeKey\x1a\x0c.nlaapi.Node\"\x00\x12\'\n\x06GetVpn\x12\x0e.nlaapi.VpnKey\x1a\x0b.nlaapi.Vpn\"\x00\x12\x39\n\x0cGetEncapInfo\x12\x14.nlaapi.EncapInfoKey\x1a\x11.nlaapi.EncapInfo\"\x00\x12-\n\x08GetIptun\x12\x10.nlaapi.IptunKey\x1a\r.nlaapi.Iptun\"\x00\x12H\n\x11GetBridgeVlanInfo\x12\x19.nlaapi.BridgeVlanInfoKey\x1a\x16.nlaapi.BridgeVlanInfo\"\x00\x12\x35\n\x08GetLinks\x12\x17.nlaapi.GetLinksRequest\x1a\x0c.nlaapi.Link\"\x00\x30\x01\x12\x35\n\x08GetAddrs\x12\x17.nlaapi.GetAddrsRequest\x1a\x0c.nlaapi.Addr\"\x00\x30\x01\x12\x38\n\tGetNeighs\x12\x18.nlaapi.GetNeighsRequest\x1a\r.nlaapi.Neigh\"\x00\x30\x01\x12\x38\n\tGetRoutes\x12\x18.nlaapi.GetRoutesRequest\x1a\r.nlaapi.Route\"\x00\x30\x01\x12\x36\n\x08GetMplss\x12\x17.nlaapi.GetMplssRequest\x1a\r.nlaapi.Route\"\x00\x30\x01\x12\x35\n\x08GetNodes\x12\x17.nlaapi.GetNodesRequest\x1a\x0c.nlaapi.Node\"\x00\x30\x01\x12\x32\n\x07GetVpns\x12\x16.nlaapi.GetVpnsRequest\x1a\x0b.nlaapi.Vpn\"\x00\x30\x01\x12\x44\n\rGetEncapInfos\x12\x1c.nlaapi.GetEncapInfosRequest\x1a\x11.nlaapi.EncapInfo\"\x00\x30\x01\x12\x38\n\tGetIptuns\x12\x18.nlaapi.GetIptunsRequest\x1a\r.nlaapi.Iptun\"\x00\x30\x01\x12S\n\x12GetBridgeVlanInfos\x12!.nlaapi.GetBridgeVlanInfosRequest\x1a\x16.nlaapi.BridgeVlanInfo\"\x00\x30\x01\x12\x35\n\x08GetStats\x12\x17.nlaapi.GetStatsRequest\x1a\x0c.nlaapi.Stat\"\x00\x30\x01\x62\x06proto3')
 )
 
 _NLMSGSRC = _descriptor.EnumDescriptor(
@@ -31,21 +31,21 @@ _NLMSGSRC = _descriptor.EnumDescriptor(
   values=[
     _descriptor.EnumValueDescriptor(
       name='NOP', index=0, number=0,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='KNL', index=1, number=1,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='API', index=2, number=2,
-      serialized_options=None,
+      options=None,
       type=None),
   ],
   containing_type=None,
-  serialized_options=None,
-  serialized_start=5649,
-  serialized_end=5686,
+  options=None,
+  serialized_start=6531,
+  serialized_end=6568,
 )
 _sym_db.RegisterEnumDescriptor(_NLMSGSRC)
 
@@ -58,41 +58,103 @@ _LINKOPERSTATE = _descriptor.EnumDescriptor(
   values=[
     _descriptor.EnumValueDescriptor(
       name='OperUnknown', index=0, number=0,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='OperNotPresent', index=1, number=1,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='OperDown', index=2, number=2,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='OperLowerLayerDown', index=3, number=3,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='OperTesting', index=4, number=4,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='OperDormant', index=5, number=5,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='OperUp', index=6, number=6,
-      serialized_options=None,
+      options=None,
       type=None),
   ],
   containing_type=None,
-  serialized_options=None,
-  serialized_start=5689,
-  serialized_end=5825,
+  options=None,
+  serialized_start=6571,
+  serialized_end=6707,
 )
 _sym_db.RegisterEnumDescriptor(_LINKOPERSTATE)
 
 LinkOperState = enum_type_wrapper.EnumTypeWrapper(_LINKOPERSTATE)
+_BONDLINKSTATE = _descriptor.EnumDescriptor(
+  name='BondLinkState',
+  full_name='nlaapi.BondLinkState',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='BOND_LINK_UP', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BOND_LINK_FAIL', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BOND_LINK_DOWN', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BOND_LINK_BACK', index=3, number=3,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BOND_LINK_UNKNOWN', index=4, number=-1,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=6709,
+  serialized_end=6834,
+)
+_sym_db.RegisterEnumDescriptor(_BONDLINKSTATE)
+
+BondLinkState = enum_type_wrapper.EnumTypeWrapper(_BONDLINKSTATE)
+_BONDSTATE = _descriptor.EnumDescriptor(
+  name='BondState',
+  full_name='nlaapi.BondState',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='BOND_STATE_ACTIVE', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BOND_STATE_BACKUP', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BOND_STATE_UNKNOWN', index=2, number=-1,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=6836,
+  serialized_end=6926,
+)
+_sym_db.RegisterEnumDescriptor(_BONDSTATE)
+
+BondState = enum_type_wrapper.EnumTypeWrapper(_BONDSTATE)
 _BONDMODE = _descriptor.EnumDescriptor(
   name='BondMode',
   full_name='nlaapi.BondMode',
@@ -101,41 +163,41 @@ _BONDMODE = _descriptor.EnumDescriptor(
   values=[
     _descriptor.EnumValueDescriptor(
       name='BOND_MODE_BALANCE_RR', index=0, number=0,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_MODE_ACTIVE_BACKUP', index=1, number=1,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_MODE_BALANCE_XOR', index=2, number=2,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_MODE_BROADCAST', index=3, number=3,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_MODE_802_3AD', index=4, number=4,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_MODE_BALANCE_TLB', index=5, number=5,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_MODE_BALANCE_ALB', index=6, number=6,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_MODE_UNKNOWN', index=7, number=7,
-      serialized_options=None,
+      options=None,
       type=None),
   ],
   containing_type=None,
-  serialized_options=None,
-  serialized_start=5828,
-  serialized_end=6045,
+  options=None,
+  serialized_start=6929,
+  serialized_end=7146,
 )
 _sym_db.RegisterEnumDescriptor(_BONDMODE)
 
@@ -148,25 +210,25 @@ _BONDARPVALIDATE = _descriptor.EnumDescriptor(
   values=[
     _descriptor.EnumValueDescriptor(
       name='BOND_ARP_VALIDATE_NONE', index=0, number=0,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_ARP_VALIDATE_ACTIVE', index=1, number=1,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_ARP_VALIDATE_BACKUP', index=2, number=2,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_ARP_VALIDATE_ALL', index=3, number=3,
-      serialized_options=None,
+      options=None,
       type=None),
   ],
   containing_type=None,
-  serialized_options=None,
-  serialized_start=6048,
-  serialized_end=6180,
+  options=None,
+  serialized_start=7149,
+  serialized_end=7281,
 )
 _sym_db.RegisterEnumDescriptor(_BONDARPVALIDATE)
 
@@ -179,17 +241,17 @@ _BONDARPALLTARGETS = _descriptor.EnumDescriptor(
   values=[
     _descriptor.EnumValueDescriptor(
       name='BOND_ARP_ALL_TARGETS_ANY', index=0, number=0,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_ARP_ALL_TARGETS_ALL', index=1, number=1,
-      serialized_options=None,
+      options=None,
       type=None),
   ],
   containing_type=None,
-  serialized_options=None,
-  serialized_start=6182,
-  serialized_end=6261,
+  options=None,
+  serialized_start=7283,
+  serialized_end=7362,
 )
 _sym_db.RegisterEnumDescriptor(_BONDARPALLTARGETS)
 
@@ -202,21 +264,21 @@ _BONDPRIMARYRESELECT = _descriptor.EnumDescriptor(
   values=[
     _descriptor.EnumValueDescriptor(
       name='BOND_PRIMARY_RESELECT_ALWAYS', index=0, number=0,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_PRIMARY_RESELECT_BETTER', index=1, number=1,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_PRIMARY_RESELECT_FAILURE', index=2, number=2,
-      serialized_options=None,
+      options=None,
       type=None),
   ],
   containing_type=None,
-  serialized_options=None,
-  serialized_start=6263,
-  serialized_end=6387,
+  options=None,
+  serialized_start=7364,
+  serialized_end=7488,
 )
 _sym_db.RegisterEnumDescriptor(_BONDPRIMARYRESELECT)
 
@@ -229,21 +291,21 @@ _BONDFAILOVERMAC = _descriptor.EnumDescriptor(
   values=[
     _descriptor.EnumValueDescriptor(
       name='BOND_FAIL_OVER_MAC_NONE', index=0, number=0,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_FAIL_OVER_MAC_ACTIVE', index=1, number=1,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_FAIL_OVER_MAC_FOLLOW', index=2, number=2,
-      serialized_options=None,
+      options=None,
       type=None),
   ],
   containing_type=None,
-  serialized_options=None,
-  serialized_start=6389,
-  serialized_end=6497,
+  options=None,
+  serialized_start=7490,
+  serialized_end=7598,
 )
 _sym_db.RegisterEnumDescriptor(_BONDFAILOVERMAC)
 
@@ -256,33 +318,33 @@ _BONDXMITHASHPOLICY = _descriptor.EnumDescriptor(
   values=[
     _descriptor.EnumValueDescriptor(
       name='BOND_XMIT_HASH_POLICY_LAYER2', index=0, number=0,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_XMIT_HASH_POLICY_LAYER3_4', index=1, number=1,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_XMIT_HASH_POLICY_LAYER2_3', index=2, number=2,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_XMIT_HASH_POLICY_ENCAP2_3', index=3, number=3,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_XMIT_HASH_POLICY_ENCAP3_4', index=4, number=4,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_XMIT_HASH_POLICY_UNKNOWN', index=5, number=5,
-      serialized_options=None,
+      options=None,
       type=None),
   ],
   containing_type=None,
-  serialized_options=None,
-  serialized_start=6500,
-  serialized_end=6733,
+  options=None,
+  serialized_start=7601,
+  serialized_end=7834,
 )
 _sym_db.RegisterEnumDescriptor(_BONDXMITHASHPOLICY)
 
@@ -295,21 +357,21 @@ _BONDLACPRATE = _descriptor.EnumDescriptor(
   values=[
     _descriptor.EnumValueDescriptor(
       name='BOND_LACP_RATE_SLOW', index=0, number=0,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_LACP_RATE_FAST', index=1, number=1,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_LACP_RATE_UNKNOWN', index=2, number=2,
-      serialized_options=None,
+      options=None,
       type=None),
   ],
   containing_type=None,
-  serialized_options=None,
-  serialized_start=6735,
-  serialized_end=6827,
+  options=None,
+  serialized_start=7836,
+  serialized_end=7928,
 )
 _sym_db.RegisterEnumDescriptor(_BONDLACPRATE)
 
@@ -322,21 +384,21 @@ _BONDADSELECT = _descriptor.EnumDescriptor(
   values=[
     _descriptor.EnumValueDescriptor(
       name='BOND_AD_SELECT_STABLE', index=0, number=0,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_AD_SELECT_BANDWIDTH', index=1, number=1,
-      serialized_options=None,
+      options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
       name='BOND_AD_SELECT_COUNT', index=2, number=2,
-      serialized_options=None,
+      options=None,
       type=None),
   ],
   containing_type=None,
-  serialized_options=None,
-  serialized_start=6829,
-  serialized_end=6926,
+  options=None,
+  serialized_start=7930,
+  serialized_end=8027,
 )
 _sym_db.RegisterEnumDescriptor(_BONDADSELECT)
 
@@ -351,6 +413,14 @@ OperLowerLayerDown = 3
 OperTesting = 4
 OperDormant = 5
 OperUp = 6
+BOND_LINK_UP = 0
+BOND_LINK_FAIL = 1
+BOND_LINK_DOWN = 2
+BOND_LINK_BACK = 3
+BOND_LINK_UNKNOWN = -1
+BOND_STATE_ACTIVE = 0
+BOND_STATE_BACKUP = 1
+BOND_STATE_UNKNOWN = -1
 BOND_MODE_BALANCE_RR = 0
 BOND_MODE_ACTIVE_BACKUP = 1
 BOND_MODE_BALANCE_XOR = 2
@@ -385,6 +455,74 @@ BOND_AD_SELECT_BANDWIDTH = 1
 BOND_AD_SELECT_COUNT = 2
 
 
+_BRIDGEVLANINFO_FLAGS = _descriptor.EnumDescriptor(
+  name='Flags',
+  full_name='nlaapi.BridgeVlanInfo.Flags',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='NOP', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='MASTER', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='PVID', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='UNTAGGED', index=3, number=4,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='RANGE_BEGIN', index=4, number=8,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='RANGE_END', index=5, number=16,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=1888,
+  serialized_end=1972,
+)
+_sym_db.RegisterEnumDescriptor(_BRIDGEVLANINFO_FLAGS)
+
+_BRIDGEVLANINFO_PORTTYPE = _descriptor.EnumDescriptor(
+  name='PortType',
+  full_name='nlaapi.BridgeVlanInfo.PortType',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='NONE_PORT', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ACCESS_PORT', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='TRUNK_PORT', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='MASTER_PORT', index=3, number=3,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=1974,
+  serialized_end=2049,
+)
+_sym_db.RegisterEnumDescriptor(_BRIDGEVLANINFO_PORTTYPE)
+
 
 _NLMSGHDR = _descriptor.Descriptor(
   name='NlMsghdr',
@@ -399,42 +537,42 @@ _NLMSGHDR = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='type', full_name='nlaapi.NlMsghdr.type', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='flags', full_name='nlaapi.NlMsghdr.flags', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='seq', full_name='nlaapi.NlMsghdr.seq', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='pid', full_name='nlaapi.NlMsghdr.pid', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -458,35 +596,35 @@ _NETLINKMESSAGE = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='data', full_name='nlaapi.NetlinkMessage.data', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='nlaapi.NetlinkMessage.n_id', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src', full_name='nlaapi.NetlinkMessage.src', index=3,
       number=4, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -510,7 +648,7 @@ _NETLINKMESSAGEREPLY = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -534,7 +672,7 @@ _MONNETLINKREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -558,49 +696,56 @@ _NLMSGUNI = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='addr', full_name='nlaapi.NlMsgUni.addr', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='neigh', full_name='nlaapi.NlMsgUni.neigh', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='route', full_name='nlaapi.NlMsgUni.route', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='node', full_name='nlaapi.NlMsgUni.node', index=4,
       number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vpn', full_name='nlaapi.NlMsgUni.vpn', index=5,
       number=6, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='br_vlan_info', full_name='nlaapi.NlMsgUni.br_vlan_info', index=6,
+      number=7, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -610,7 +755,7 @@ _NLMSGUNI = _descriptor.Descriptor(
       index=0, containing_type=None, fields=[]),
   ],
   serialized_start=260,
-  serialized_end=459,
+  serialized_end=507,
 )
 
 
@@ -627,42 +772,42 @@ _NETLINKMESSAGEUNION = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='msg', full_name='nlaapi.NetlinkMessageUnion.msg', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='nlaapi.NetlinkMessageUnion.n_id', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src', full_name='nlaapi.NetlinkMessageUnion.src', index=3,
       number=4, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=462,
-  serialized_end=593,
+  serialized_start=510,
+  serialized_end=641,
 )
 
 
@@ -679,28 +824,28 @@ _MODVPNREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vpn', full_name='nlaapi.ModVpnRequest.vpn', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=595,
-  serialized_end=650,
+  serialized_start=643,
+  serialized_end=698,
 )
 
 
@@ -717,14 +862,14 @@ _MODVPNREPLY = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=652,
-  serialized_end=665,
+  serialized_start=700,
+  serialized_end=713,
 )
 
 
@@ -741,14 +886,14 @@ _MODNETLINKREPLY = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=667,
-  serialized_end=684,
+  serialized_start=715,
+  serialized_end=732,
 )
 
 
@@ -765,21 +910,21 @@ _GETLINKSREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=686,
-  serialized_end=717,
+  serialized_start=734,
+  serialized_end=765,
 )
 
 
@@ -796,21 +941,21 @@ _GETADDRSREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=719,
-  serialized_end=750,
+  serialized_start=767,
+  serialized_end=798,
 )
 
 
@@ -827,21 +972,21 @@ _GETNEIGHSREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=752,
-  serialized_end=784,
+  serialized_start=800,
+  serialized_end=832,
 )
 
 
@@ -858,21 +1003,21 @@ _GETROUTESREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=786,
-  serialized_end=818,
+  serialized_start=834,
+  serialized_end=866,
 )
 
 
@@ -889,21 +1034,52 @@ _GETMPLSSREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=820,
-  serialized_end=851,
+  serialized_start=868,
+  serialized_end=899,
+)
+
+
+_GETBRIDGEVLANINFOSREQUEST = _descriptor.Descriptor(
+  name='GetBridgeVlanInfosRequest',
+  full_name='nlaapi.GetBridgeVlanInfosRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='n_id', full_name='nlaapi.GetBridgeVlanInfosRequest.n_id', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=901,
+  serialized_end=942,
 )
 
 
@@ -920,14 +1096,14 @@ _GETNODESREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=853,
-  serialized_end=870,
+  serialized_start=944,
+  serialized_end=961,
 )
 
 
@@ -944,14 +1120,14 @@ _GETVPNSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=872,
-  serialized_end=888,
+  serialized_start=963,
+  serialized_end=979,
 )
 
 
@@ -968,14 +1144,14 @@ _GETENCAPINFOSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=890,
-  serialized_end=912,
+  serialized_start=981,
+  serialized_end=1003,
 )
 
 
@@ -992,14 +1168,14 @@ _GETIPTUNSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=914,
-  serialized_end=932,
+  serialized_start=1005,
+  serialized_end=1023,
 )
 
 
@@ -1016,14 +1192,14 @@ _GETSTATSREQUEST = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=934,
-  serialized_end=951,
+  serialized_start=1025,
+  serialized_end=1042,
 )
 
 
@@ -1040,28 +1216,28 @@ _LINKKEY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='index', full_name='nlaapi.LinkKey.index', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=953,
-  serialized_end=991,
+  serialized_start=1044,
+  serialized_end=1082,
 )
 
 
@@ -1078,28 +1254,28 @@ _ADDRKEY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='addr', full_name='nlaapi.AddrKey.addr', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=993,
-  serialized_end=1030,
+  serialized_start=1084,
+  serialized_end=1121,
 )
 
 
@@ -1116,42 +1292,42 @@ _NEIGHKEY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='addr', full_name='nlaapi.NeighKey.addr', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ifindex', full_name='nlaapi.NeighKey.ifindex', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan_id', full_name='nlaapi.NeighKey.vlan_id', index=3,
       number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1032,
-  serialized_end=1104,
+  serialized_start=1123,
+  serialized_end=1195,
 )
 
 
@@ -1168,28 +1344,28 @@ _ROUTEKEY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='addr', full_name='nlaapi.RouteKey.addr', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1106,
-  serialized_end=1144,
+  serialized_start=1197,
+  serialized_end=1235,
 )
 
 
@@ -1206,28 +1382,28 @@ _MPLSKEY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='l_label', full_name='nlaapi.MplsKey.l_label', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1146,
-  serialized_end=1186,
+  serialized_start=1237,
+  serialized_end=1277,
 )
 
 
@@ -1244,21 +1420,21 @@ _NODEKEY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1188,
-  serialized_end=1211,
+  serialized_start=1279,
+  serialized_end=1302,
 )
 
 
@@ -1275,35 +1451,35 @@ _VPNKEY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst', full_name='nlaapi.VpnKey.dst', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='gw', full_name='nlaapi.VpnKey.gw', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1213,
-  serialized_end=1260,
+  serialized_start=1304,
+  serialized_end=1351,
 )
 
 
@@ -1320,28 +1496,73 @@ _IPTUNKEY = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='remote', full_name='nlaapi.IptunKey.remote', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1262,
-  serialized_end=1302,
+  serialized_start=1353,
+  serialized_end=1393,
+)
+
+
+_BRIDGEVLANINFOKEY = _descriptor.Descriptor(
+  name='BridgeVlanInfoKey',
+  full_name='nlaapi.BridgeVlanInfoKey',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='n_id', full_name='nlaapi.BridgeVlanInfoKey.n_id', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='index', full_name='nlaapi.BridgeVlanInfoKey.index', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='vid', full_name='nlaapi.BridgeVlanInfoKey.vid', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1395,
+  serialized_end=1456,
 )
 
 
@@ -1358,28 +1579,28 @@ _STAT = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='val', full_name='nlaapi.Stat.val', index=1,
       number=2, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1304,
-  serialized_end=1336,
+  serialized_start=1458,
+  serialized_end=1490,
 )
 
 
@@ -1396,28 +1617,28 @@ _NODE = _descriptor.Descriptor(
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='nlaapi.Node.n_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1338,
-  serialized_end=1370,
+  serialized_start=1492,
+  serialized_end=1524,
 )
 
 
@@ -1434,63 +1655,63 @@ _VPN = _descriptor.Descriptor(
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mask', full_name='nlaapi.Vpn.mask', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='gw', full_name='nlaapi.Vpn.gw', index=2,
       number=3, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='label', full_name='nlaapi.Vpn.label', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vpn_gw', full_name='nlaapi.Vpn.vpn_gw', index=4,
       number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='nlaapi.Vpn.n_id', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vpn_id', full_name='nlaapi.Vpn.vpn_id', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1372,
-  serialized_end=1476,
+  serialized_start=1526,
+  serialized_end=1630,
 )
 
 
@@ -1507,42 +1728,204 @@ _IPTUN = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='local_mac', full_name='nlaapi.Iptun.local_mac', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='nlaapi.Iptun.n_id', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='tnl_id', full_name='nlaapi.Iptun.tnl_id', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1478,
-  serialized_end=1562,
+  serialized_start=1632,
+  serialized_end=1716,
+)
+
+
+_BRIDGEVLANINFO = _descriptor.Descriptor(
+  name='BridgeVlanInfo',
+  full_name='nlaapi.BridgeVlanInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='flags', full_name='nlaapi.BridgeVlanInfo.flags', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='vid', full_name='nlaapi.BridgeVlanInfo.vid', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='index', full_name='nlaapi.BridgeVlanInfo.index', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='nlaapi.BridgeVlanInfo.name', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='master_index', full_name='nlaapi.BridgeVlanInfo.master_index', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='mtu', full_name='nlaapi.BridgeVlanInfo.mtu', index=5,
+      number=6, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='n_id', full_name='nlaapi.BridgeVlanInfo.n_id', index=6,
+      number=7, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='br_id', full_name='nlaapi.BridgeVlanInfo.br_id', index=7,
+      number=8, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _BRIDGEVLANINFO_FLAGS,
+    _BRIDGEVLANINFO_PORTTYPE,
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1719,
+  serialized_end=2049,
+)
+
+
+_BONDSLAVEINFO = _descriptor.Descriptor(
+  name='BondSlaveInfo',
+  full_name='nlaapi.BondSlaveInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='state', full_name='nlaapi.BondSlaveInfo.state', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='mii_status', full_name='nlaapi.BondSlaveInfo.mii_status', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='link_failure_count', full_name='nlaapi.BondSlaveInfo.link_failure_count', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='permanent_hw_addr', full_name='nlaapi.BondSlaveInfo.permanent_hw_addr', index=3,
+      number=4, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='queue_id', full_name='nlaapi.BondSlaveInfo.queue_id', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='aggregator_id', full_name='nlaapi.BondSlaveInfo.aggregator_id', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='actor_oper_port_state', full_name='nlaapi.BondSlaveInfo.actor_oper_port_state', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='ad_partner_oper_port_state', full_name='nlaapi.BondSlaveInfo.ad_partner_oper_port_state', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2052,
+  serialized_end=2307,
 )
 
 
@@ -1559,105 +1942,115 @@ _LINKATTRS = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mtu', full_name='nlaapi.LinkAttrs.mtu', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='tx_q_len', full_name='nlaapi.LinkAttrs.tx_q_len', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='name', full_name='nlaapi.LinkAttrs.name', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='hardware_addr', full_name='nlaapi.LinkAttrs.hardware_addr', index=4,
       number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='flags', full_name='nlaapi.LinkAttrs.flags', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='raw_flags', full_name='nlaapi.LinkAttrs.raw_flags', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='parent_index', full_name='nlaapi.LinkAttrs.parent_index', index=7,
       number=8, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='master_index', full_name='nlaapi.LinkAttrs.master_index', index=8,
       number=9, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='alias', full_name='nlaapi.LinkAttrs.alias', index=9,
       number=10, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='promisc', full_name='nlaapi.LinkAttrs.promisc', index=10,
       number=11, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='encap_type', full_name='nlaapi.LinkAttrs.encap_type', index=11,
       number=12, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='oper_state', full_name='nlaapi.LinkAttrs.oper_state', index=12,
       number=13, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='bond_slave_info', full_name='nlaapi.LinkAttrs.bond_slave_info', index=13,
+      number=14, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
+    _descriptor.OneofDescriptor(
+      name='slave_info', full_name='nlaapi.LinkAttrs.slave_info',
+      index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1565,
-  serialized_end=1832,
+  serialized_start=2310,
+  serialized_end=2641,
 )
 
 
@@ -1674,21 +2067,21 @@ _GENERICLINKATTRS = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1834,
-  serialized_end=1891,
+  serialized_start=2643,
+  serialized_end=2700,
 )
 
 
@@ -1705,21 +2098,21 @@ _DEVICELINKATTRS = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1893,
-  serialized_end=1949,
+  serialized_start=2702,
+  serialized_end=2758,
 )
 
 
@@ -1736,21 +2129,42 @@ _BRIDGELINKATTRS = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='multicast_snooping', full_name='nlaapi.BridgeLinkAttrs.multicast_snooping', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='hello_time', full_name='nlaapi.BridgeLinkAttrs.hello_time', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='vlan_filtering', full_name='nlaapi.BridgeLinkAttrs.vlan_filtering', index=3,
+      number=4, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1951,
-  serialized_end=2007,
+  serialized_start=2761,
+  serialized_end=2889,
 )
 
 
@@ -1767,28 +2181,28 @@ _VLANLINKATTRS = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan_id', full_name='nlaapi.VlanLinkAttrs.vlan_id', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2009,
-  serialized_end=2080,
+  serialized_start=2891,
+  serialized_end=2962,
 )
 
 
@@ -1805,154 +2219,154 @@ _VXLANLINKATTRS = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vxlan_id', full_name='nlaapi.VxlanLinkAttrs.vxlan_id', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vtep_dev_index', full_name='nlaapi.VxlanLinkAttrs.vtep_dev_index', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_addr', full_name='nlaapi.VxlanLinkAttrs.src_addr', index=3,
       number=4, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='group', full_name='nlaapi.VxlanLinkAttrs.group', index=4,
       number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ttl', full_name='nlaapi.VxlanLinkAttrs.ttl', index=5,
       number=6, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='tos', full_name='nlaapi.VxlanLinkAttrs.tos', index=6,
       number=7, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='learning', full_name='nlaapi.VxlanLinkAttrs.learning', index=7,
       number=8, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='proxy', full_name='nlaapi.VxlanLinkAttrs.proxy', index=8,
       number=9, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='rsc', full_name='nlaapi.VxlanLinkAttrs.rsc', index=9,
       number=10, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='l2miss', full_name='nlaapi.VxlanLinkAttrs.l2miss', index=10,
       number=11, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='l3miss', full_name='nlaapi.VxlanLinkAttrs.l3miss', index=11,
       number=12, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='udp_c_sum', full_name='nlaapi.VxlanLinkAttrs.udp_c_sum', index=12,
       number=13, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='no_age', full_name='nlaapi.VxlanLinkAttrs.no_age', index=13,
       number=14, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='gbp', full_name='nlaapi.VxlanLinkAttrs.gbp', index=14,
       number=15, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='age', full_name='nlaapi.VxlanLinkAttrs.age', index=15,
       number=16, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='limit', full_name='nlaapi.VxlanLinkAttrs.limit', index=16,
       number=17, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='port', full_name='nlaapi.VxlanLinkAttrs.port', index=17,
       number=18, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='port_low', full_name='nlaapi.VxlanLinkAttrs.port_low', index=18,
       number=19, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='port_high', full_name='nlaapi.VxlanLinkAttrs.port_high', index=19,
       number=20, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2083,
-  serialized_end=2444,
+  serialized_start=2965,
+  serialized_end=3326,
 )
 
 
@@ -1969,56 +2383,56 @@ _VTILINKATTRS = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='i_key', full_name='nlaapi.VtiLinkAttrs.i_key', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='o_key', full_name='nlaapi.VtiLinkAttrs.o_key', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='link', full_name='nlaapi.VtiLinkAttrs.link', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='local', full_name='nlaapi.VtiLinkAttrs.local', index=4,
       number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='remote', full_name='nlaapi.VtiLinkAttrs.remote', index=5,
       number=6, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2447,
-  serialized_end=2575,
+  serialized_start=3329,
+  serialized_end=3457,
 )
 
 
@@ -2035,28 +2449,28 @@ _VETHLINKATTRS = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='peer_name', full_name='nlaapi.VethLinkAttrs.peer_name', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2577,
-  serialized_end=2650,
+  serialized_start=3459,
+  serialized_end=3532,
 )
 
 
@@ -2073,49 +2487,49 @@ _BONDADINFO = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='num_ports', full_name='nlaapi.BondAdInfo.num_ports', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='actor_key', full_name='nlaapi.BondAdInfo.actor_key', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='partner_key', full_name='nlaapi.BondAdInfo.partner_key', index=3,
       number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='partner_mac', full_name='nlaapi.BondAdInfo.partner_mac', index=4,
       number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2652,
-  serialized_end=2767,
+  serialized_start=3534,
+  serialized_end=3649,
 )
 
 
@@ -2132,182 +2546,182 @@ _BONDLINKATTRS = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mode', full_name='nlaapi.BondLinkAttrs.mode', index=1,
       number=2, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='active_slave', full_name='nlaapi.BondLinkAttrs.active_slave', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='miimon', full_name='nlaapi.BondLinkAttrs.miimon', index=3,
       number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='up_delay', full_name='nlaapi.BondLinkAttrs.up_delay', index=4,
       number=5, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='down_delay', full_name='nlaapi.BondLinkAttrs.down_delay', index=5,
       number=6, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='use_carrier', full_name='nlaapi.BondLinkAttrs.use_carrier', index=6,
       number=7, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='arp_interval', full_name='nlaapi.BondLinkAttrs.arp_interval', index=7,
       number=8, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='arp_ip_targets', full_name='nlaapi.BondLinkAttrs.arp_ip_targets', index=8,
       number=9, type=12, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='arp_validate', full_name='nlaapi.BondLinkAttrs.arp_validate', index=9,
       number=10, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='arp_all_targets', full_name='nlaapi.BondLinkAttrs.arp_all_targets', index=10,
       number=11, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='primary', full_name='nlaapi.BondLinkAttrs.primary', index=11,
       number=12, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='primary_reselect', full_name='nlaapi.BondLinkAttrs.primary_reselect', index=12,
       number=13, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='fail_over_mac', full_name='nlaapi.BondLinkAttrs.fail_over_mac', index=13,
       number=14, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='xmit_hash_policy', full_name='nlaapi.BondLinkAttrs.xmit_hash_policy', index=14,
       number=15, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='resend_igmp', full_name='nlaapi.BondLinkAttrs.resend_igmp', index=15,
       number=16, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='num_peer_notif', full_name='nlaapi.BondLinkAttrs.num_peer_notif', index=16,
       number=17, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='all_slaves_active', full_name='nlaapi.BondLinkAttrs.all_slaves_active', index=17,
       number=18, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='min_links', full_name='nlaapi.BondLinkAttrs.min_links', index=18,
       number=19, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='lp_interval', full_name='nlaapi.BondLinkAttrs.lp_interval', index=19,
       number=20, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='packers_per_slave', full_name='nlaapi.BondLinkAttrs.packers_per_slave', index=20,
       number=21, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='lacp_rate', full_name='nlaapi.BondLinkAttrs.lacp_rate', index=21,
       number=22, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ad_select', full_name='nlaapi.BondLinkAttrs.ad_select', index=22,
       number=23, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ad_info', full_name='nlaapi.BondLinkAttrs.ad_info', index=23,
       number=24, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2770,
-  serialized_end=3530,
+  serialized_start=3652,
+  serialized_end=4412,
 )
 
 
@@ -2324,98 +2738,98 @@ _IPTUNLINKATTRS = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ttl', full_name='nlaapi.IptunLinkAttrs.ttl', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='tos', full_name='nlaapi.IptunLinkAttrs.tos', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='p_mtu_disc', full_name='nlaapi.IptunLinkAttrs.p_mtu_disc', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='link', full_name='nlaapi.IptunLinkAttrs.link', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='local', full_name='nlaapi.IptunLinkAttrs.local', index=5,
       number=6, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='remote', full_name='nlaapi.IptunLinkAttrs.remote', index=6,
       number=7, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='encap_sport', full_name='nlaapi.IptunLinkAttrs.encap_sport', index=7,
       number=8, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='encap_dport', full_name='nlaapi.IptunLinkAttrs.encap_dport', index=8,
       number=9, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='encap_type', full_name='nlaapi.IptunLinkAttrs.encap_type', index=9,
       number=10, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='encap_flags', full_name='nlaapi.IptunLinkAttrs.encap_flags', index=10,
       number=11, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='flow_based', full_name='nlaapi.IptunLinkAttrs.flow_based', index=11,
       number=12, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3533,
-  serialized_end=3782,
+  serialized_start=4415,
+  serialized_end=4664,
 )
 
 
@@ -2432,91 +2846,91 @@ _LINK = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='device', full_name='nlaapi.Link.device', index=1,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='bridge', full_name='nlaapi.Link.bridge', index=2,
       number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan', full_name='nlaapi.Link.vlan', index=3,
       number=6, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vxlan', full_name='nlaapi.Link.vxlan', index=4,
       number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vti', full_name='nlaapi.Link.vti', index=5,
       number=8, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='veth', full_name='nlaapi.Link.veth', index=6,
       number=9, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='bond', full_name='nlaapi.Link.bond', index=7,
       number=10, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='generic', full_name='nlaapi.Link.generic', index=8,
       number=11, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='iptun', full_name='nlaapi.Link.iptun', index=9,
       number=12, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='nlaapi.Link.n_id', index=10,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ln_id', full_name='nlaapi.Link.ln_id', index=11,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -2525,8 +2939,8 @@ _LINK = _descriptor.Descriptor(
       name='link_attrs', full_name='nlaapi.Link.link_attrs',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=3785,
-  serialized_end=4215,
+  serialized_start=4667,
+  serialized_end=5097,
 )
 
 
@@ -2543,98 +2957,98 @@ _ADDR = _descriptor.Descriptor(
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ip_mask', full_name='nlaapi.Addr.ip_mask', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='label', full_name='nlaapi.Addr.label', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='flags', full_name='nlaapi.Addr.flags', index=3,
       number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='scope', full_name='nlaapi.Addr.scope', index=4,
       number=5, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='peer', full_name='nlaapi.Addr.peer', index=5,
       number=6, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='peer_mask', full_name='nlaapi.Addr.peer_mask', index=6,
       number=7, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='broadcast', full_name='nlaapi.Addr.broadcast', index=7,
       number=8, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='index', full_name='nlaapi.Addr.index', index=8,
       number=9, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='family', full_name='nlaapi.Addr.family', index=9,
       number=10, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='nlaapi.Addr.n_id', index=10,
       number=11, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ad_id', full_name='nlaapi.Addr.ad_id', index=11,
       number=12, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4218,
-  serialized_end=4410,
+  serialized_start=5100,
+  serialized_end=5292,
 )
 
 
@@ -2651,14 +3065,14 @@ _NEIGHNOTUN = _descriptor.Descriptor(
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4412,
-  serialized_end=4424,
+  serialized_start=5294,
+  serialized_end=5306,
 )
 
 
@@ -2675,28 +3089,28 @@ _NEIGHIPTUN = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_ip', full_name='nlaapi.NeighIptun.src_ip', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4426,
-  serialized_end=4472,
+  serialized_start=5308,
+  serialized_end=5354,
 )
 
 
@@ -2713,112 +3127,112 @@ _NEIGH = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='family', full_name='nlaapi.Neigh.family', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='state', full_name='nlaapi.Neigh.state', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='type', full_name='nlaapi.Neigh.type', index=3,
       number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='flags', full_name='nlaapi.Neigh.flags', index=4,
       number=5, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ip', full_name='nlaapi.Neigh.ip', index=5,
       number=6, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='hardware_addr', full_name='nlaapi.Neigh.hardware_addr', index=6,
       number=7, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ll_ip_addr', full_name='nlaapi.Neigh.ll_ip_addr', index=7,
       number=8, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vlan_id', full_name='nlaapi.Neigh.vlan_id', index=8,
       number=9, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vni', full_name='nlaapi.Neigh.vni', index=9,
       number=10, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='nlaapi.Neigh.n_id', index=10,
       number=11, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ne_id', full_name='nlaapi.Neigh.ne_id', index=11,
       number=12, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='phy_link', full_name='nlaapi.Neigh.phy_link', index=12,
       number=13, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='notun', full_name='nlaapi.Neigh.notun', index=13,
       number=14, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='iptun', full_name='nlaapi.Neigh.iptun', index=14,
       number=15, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -2827,8 +3241,8 @@ _NEIGH = _descriptor.Descriptor(
       name='tunnel', full_name='nlaapi.Neigh.tunnel',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=4475,
-  serialized_end=4778,
+  serialized_start=5357,
+  serialized_end=5660,
 )
 
 
@@ -2845,56 +3259,56 @@ _NEXTHOPINFO = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='hops', full_name='nlaapi.NexthopInfo.hops', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='gw', full_name='nlaapi.NexthopInfo.gw', index=2,
       number=3, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='flags', full_name='nlaapi.NexthopInfo.flags', index=3,
       number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='new_dst', full_name='nlaapi.NexthopInfo.new_dst', index=4,
       number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='encap', full_name='nlaapi.NexthopInfo.encap', index=5,
       number=6, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4781,
-  serialized_end=4923,
+  serialized_start=5663,
+  serialized_end=5805,
 )
 
 
@@ -2911,21 +3325,21 @@ _MPLSDESTINATION = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4925,
-  serialized_end=4958,
+  serialized_start=5807,
+  serialized_end=5840,
 )
 
 
@@ -2942,21 +3356,21 @@ _DESTINATION = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mpls', full_name='nlaapi.Destination.mpls', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -2965,8 +3379,8 @@ _DESTINATION = _descriptor.Descriptor(
       name='dest', full_name='nlaapi.Destination.dest',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=4960,
-  serialized_end=5038,
+  serialized_start=5842,
+  serialized_end=5920,
 )
 
 
@@ -2983,21 +3397,21 @@ _MPLSENCAP = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5040,
-  serialized_end=5067,
+  serialized_start=5922,
+  serialized_end=5949,
 )
 
 
@@ -3014,21 +3428,21 @@ _ENCAP = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mpls', full_name='nlaapi.Encap.mpls', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -3037,8 +3451,8 @@ _ENCAP = _descriptor.Descriptor(
       name='encap', full_name='nlaapi.Encap.encap',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=5069,
-  serialized_end=5134,
+  serialized_start=5951,
+  serialized_end=6016,
 )
 
 
@@ -3055,28 +3469,28 @@ _ENCAPINFOKEY = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vrf', full_name='nlaapi.EncapInfoKey.vrf', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5136,
-  serialized_end=5176,
+  serialized_start=6018,
+  serialized_end=6058,
 )
 
 
@@ -3093,42 +3507,42 @@ _ENCAPINFO = _descriptor.Descriptor(
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mask', full_name='nlaapi.EncapInfo.mask', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vrf', full_name='nlaapi.EncapInfo.vrf', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='en_id', full_name='nlaapi.EncapInfo.en_id', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5178,
-  serialized_end=5243,
+  serialized_start=6060,
+  serialized_end=6125,
 )
 
 
@@ -3145,161 +3559,161 @@ _ROUTE = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='i_link_index', full_name='nlaapi.Route.i_link_index', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='scope', full_name='nlaapi.Route.scope', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst', full_name='nlaapi.Route.dst', index=3,
       number=4, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst_mask', full_name='nlaapi.Route.dst_mask', index=4,
       number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src', full_name='nlaapi.Route.src', index=5,
       number=6, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='gw', full_name='nlaapi.Route.gw', index=6,
       number=7, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='multi_path', full_name='nlaapi.Route.multi_path', index=7,
       number=8, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='protocol', full_name='nlaapi.Route.protocol', index=8,
       number=9, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='priority', full_name='nlaapi.Route.priority', index=9,
       number=10, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='table', full_name='nlaapi.Route.table', index=10,
       number=11, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='type', full_name='nlaapi.Route.type', index=11,
       number=12, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='tos', full_name='nlaapi.Route.tos', index=12,
       number=13, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='flags', full_name='nlaapi.Route.flags', index=13,
       number=14, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='mpls_dst', full_name='nlaapi.Route.mpls_dst', index=14,
       number=15, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='new_dst', full_name='nlaapi.Route.new_dst', index=15,
       number=16, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='encap', full_name='nlaapi.Route.encap', index=16,
       number=17, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='n_id', full_name='nlaapi.Route.n_id', index=17,
       number=18, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='rt_id', full_name='nlaapi.Route.rt_id', index=18,
       number=19, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='vpn_gw', full_name='nlaapi.Route.vpn_gw', index=19,
       number=20, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='en_ids', full_name='nlaapi.Route.en_ids', index=20,
       number=21, type=13, cpp_type=3, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5246,
-  serialized_end=5647,
+  serialized_start=6128,
+  serialized_end=6529,
 )
 
 _NETLINKMESSAGE.fields_by_name['header'].message_type = _NLMSGHDR
@@ -3310,6 +3724,7 @@ _NLMSGUNI.fields_by_name['neigh'].message_type = _NEIGH
 _NLMSGUNI.fields_by_name['route'].message_type = _ROUTE
 _NLMSGUNI.fields_by_name['node'].message_type = _NODE
 _NLMSGUNI.fields_by_name['vpn'].message_type = _VPN
+_NLMSGUNI.fields_by_name['br_vlan_info'].message_type = _BRIDGEVLANINFO
 _NLMSGUNI.oneofs_by_name['msg'].fields.append(
   _NLMSGUNI.fields_by_name['link'])
 _NLMSGUNI.fields_by_name['link'].containing_oneof = _NLMSGUNI.oneofs_by_name['msg']
@@ -3328,12 +3743,24 @@ _NLMSGUNI.fields_by_name['node'].containing_oneof = _NLMSGUNI.oneofs_by_name['ms
 _NLMSGUNI.oneofs_by_name['msg'].fields.append(
   _NLMSGUNI.fields_by_name['vpn'])
 _NLMSGUNI.fields_by_name['vpn'].containing_oneof = _NLMSGUNI.oneofs_by_name['msg']
+_NLMSGUNI.oneofs_by_name['msg'].fields.append(
+  _NLMSGUNI.fields_by_name['br_vlan_info'])
+_NLMSGUNI.fields_by_name['br_vlan_info'].containing_oneof = _NLMSGUNI.oneofs_by_name['msg']
 _NETLINKMESSAGEUNION.fields_by_name['header'].message_type = _NLMSGHDR
 _NETLINKMESSAGEUNION.fields_by_name['msg'].message_type = _NLMSGUNI
 _NETLINKMESSAGEUNION.fields_by_name['src'].enum_type = _NLMSGSRC
 _MODVPNREQUEST.fields_by_name['vpn'].message_type = _VPN
 _IPTUN.fields_by_name['link'].message_type = _LINK
+_BRIDGEVLANINFO.fields_by_name['flags'].enum_type = _BRIDGEVLANINFO_FLAGS
+_BRIDGEVLANINFO_FLAGS.containing_type = _BRIDGEVLANINFO
+_BRIDGEVLANINFO_PORTTYPE.containing_type = _BRIDGEVLANINFO
+_BONDSLAVEINFO.fields_by_name['state'].enum_type = _BONDSTATE
+_BONDSLAVEINFO.fields_by_name['mii_status'].enum_type = _BONDLINKSTATE
 _LINKATTRS.fields_by_name['oper_state'].enum_type = _LINKOPERSTATE
+_LINKATTRS.fields_by_name['bond_slave_info'].message_type = _BONDSLAVEINFO
+_LINKATTRS.oneofs_by_name['slave_info'].fields.append(
+  _LINKATTRS.fields_by_name['bond_slave_info'])
+_LINKATTRS.fields_by_name['bond_slave_info'].containing_oneof = _LINKATTRS.oneofs_by_name['slave_info']
 _GENERICLINKATTRS.fields_by_name['link_attrs'].message_type = _LINKATTRS
 _DEVICELINKATTRS.fields_by_name['link_attrs'].message_type = _LINKATTRS
 _BRIDGELINKATTRS.fields_by_name['link_attrs'].message_type = _LINKATTRS
@@ -3423,6 +3850,7 @@ DESCRIPTOR.message_types_by_name['GetAddrsRequest'] = _GETADDRSREQUEST
 DESCRIPTOR.message_types_by_name['GetNeighsRequest'] = _GETNEIGHSREQUEST
 DESCRIPTOR.message_types_by_name['GetRoutesRequest'] = _GETROUTESREQUEST
 DESCRIPTOR.message_types_by_name['GetMplssRequest'] = _GETMPLSSREQUEST
+DESCRIPTOR.message_types_by_name['GetBridgeVlanInfosRequest'] = _GETBRIDGEVLANINFOSREQUEST
 DESCRIPTOR.message_types_by_name['GetNodesRequest'] = _GETNODESREQUEST
 DESCRIPTOR.message_types_by_name['GetVpnsRequest'] = _GETVPNSREQUEST
 DESCRIPTOR.message_types_by_name['GetEncapInfosRequest'] = _GETENCAPINFOSREQUEST
@@ -3436,10 +3864,13 @@ DESCRIPTOR.message_types_by_name['MplsKey'] = _MPLSKEY
 DESCRIPTOR.message_types_by_name['NodeKey'] = _NODEKEY
 DESCRIPTOR.message_types_by_name['VpnKey'] = _VPNKEY
 DESCRIPTOR.message_types_by_name['IptunKey'] = _IPTUNKEY
+DESCRIPTOR.message_types_by_name['BridgeVlanInfoKey'] = _BRIDGEVLANINFOKEY
 DESCRIPTOR.message_types_by_name['Stat'] = _STAT
 DESCRIPTOR.message_types_by_name['Node'] = _NODE
 DESCRIPTOR.message_types_by_name['Vpn'] = _VPN
 DESCRIPTOR.message_types_by_name['Iptun'] = _IPTUN
+DESCRIPTOR.message_types_by_name['BridgeVlanInfo'] = _BRIDGEVLANINFO
+DESCRIPTOR.message_types_by_name['BondSlaveInfo'] = _BONDSLAVEINFO
 DESCRIPTOR.message_types_by_name['LinkAttrs'] = _LINKATTRS
 DESCRIPTOR.message_types_by_name['GenericLinkAttrs'] = _GENERICLINKATTRS
 DESCRIPTOR.message_types_by_name['DeviceLinkAttrs'] = _DEVICELINKATTRS
@@ -3466,6 +3897,8 @@ DESCRIPTOR.message_types_by_name['EncapInfo'] = _ENCAPINFO
 DESCRIPTOR.message_types_by_name['Route'] = _ROUTE
 DESCRIPTOR.enum_types_by_name['NlMsgSrc'] = _NLMSGSRC
 DESCRIPTOR.enum_types_by_name['LinkOperState'] = _LINKOPERSTATE
+DESCRIPTOR.enum_types_by_name['BondLinkState'] = _BONDLINKSTATE
+DESCRIPTOR.enum_types_by_name['BondState'] = _BONDSTATE
 DESCRIPTOR.enum_types_by_name['BondMode'] = _BONDMODE
 DESCRIPTOR.enum_types_by_name['BondArpValidate'] = _BONDARPVALIDATE
 DESCRIPTOR.enum_types_by_name['BondArpAllTargets'] = _BONDARPALLTARGETS
@@ -3574,6 +4007,13 @@ GetMplssRequest = _reflection.GeneratedProtocolMessageType('GetMplssRequest', (_
   ))
 _sym_db.RegisterMessage(GetMplssRequest)
 
+GetBridgeVlanInfosRequest = _reflection.GeneratedProtocolMessageType('GetBridgeVlanInfosRequest', (_message.Message,), dict(
+  DESCRIPTOR = _GETBRIDGEVLANINFOSREQUEST,
+  __module__ = 'nlaapi_pb2'
+  # @@protoc_insertion_point(class_scope:nlaapi.GetBridgeVlanInfosRequest)
+  ))
+_sym_db.RegisterMessage(GetBridgeVlanInfosRequest)
+
 GetNodesRequest = _reflection.GeneratedProtocolMessageType('GetNodesRequest', (_message.Message,), dict(
   DESCRIPTOR = _GETNODESREQUEST,
   __module__ = 'nlaapi_pb2'
@@ -3665,6 +4105,13 @@ IptunKey = _reflection.GeneratedProtocolMessageType('IptunKey', (_message.Messag
   ))
 _sym_db.RegisterMessage(IptunKey)
 
+BridgeVlanInfoKey = _reflection.GeneratedProtocolMessageType('BridgeVlanInfoKey', (_message.Message,), dict(
+  DESCRIPTOR = _BRIDGEVLANINFOKEY,
+  __module__ = 'nlaapi_pb2'
+  # @@protoc_insertion_point(class_scope:nlaapi.BridgeVlanInfoKey)
+  ))
+_sym_db.RegisterMessage(BridgeVlanInfoKey)
+
 Stat = _reflection.GeneratedProtocolMessageType('Stat', (_message.Message,), dict(
   DESCRIPTOR = _STAT,
   __module__ = 'nlaapi_pb2'
@@ -3692,6 +4139,20 @@ Iptun = _reflection.GeneratedProtocolMessageType('Iptun', (_message.Message,), d
   # @@protoc_insertion_point(class_scope:nlaapi.Iptun)
   ))
 _sym_db.RegisterMessage(Iptun)
+
+BridgeVlanInfo = _reflection.GeneratedProtocolMessageType('BridgeVlanInfo', (_message.Message,), dict(
+  DESCRIPTOR = _BRIDGEVLANINFO,
+  __module__ = 'nlaapi_pb2'
+  # @@protoc_insertion_point(class_scope:nlaapi.BridgeVlanInfo)
+  ))
+_sym_db.RegisterMessage(BridgeVlanInfo)
+
+BondSlaveInfo = _reflection.GeneratedProtocolMessageType('BondSlaveInfo', (_message.Message,), dict(
+  DESCRIPTOR = _BONDSLAVEINFO,
+  __module__ = 'nlaapi_pb2'
+  # @@protoc_insertion_point(class_scope:nlaapi.BondSlaveInfo)
+  ))
+_sym_db.RegisterMessage(BondSlaveInfo)
 
 LinkAttrs = _reflection.GeneratedProtocolMessageType('LinkAttrs', (_message.Message,), dict(
   DESCRIPTOR = _LINKATTRS,
@@ -3868,9 +4329,9 @@ _NLACOREAPI = _descriptor.ServiceDescriptor(
   full_name='nlaapi.NLACoreApi',
   file=DESCRIPTOR,
   index=0,
-  serialized_options=None,
-  serialized_start=6929,
-  serialized_end=7086,
+  options=None,
+  serialized_start=8030,
+  serialized_end=8187,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendNetlinkMessage',
@@ -3879,7 +4340,7 @@ _NLACOREAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_NETLINKMESSAGE,
     output_type=_NETLINKMESSAGEREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='MonNetlinkMessage',
@@ -3888,7 +4349,7 @@ _NLACOREAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_NODE,
     output_type=_NETLINKMESSAGEUNION,
-    serialized_options=None,
+    options=None,
   ),
 ])
 _sym_db.RegisterServiceDescriptor(_NLACOREAPI)
@@ -3901,9 +4362,9 @@ _NLAAPI = _descriptor.ServiceDescriptor(
   full_name='nlaapi.NLAApi',
   file=DESCRIPTOR,
   index=1,
-  serialized_options=None,
-  serialized_start=7089,
-  serialized_end=8287,
+  options=None,
+  serialized_start=8190,
+  serialized_end=9547,
   methods=[
   _descriptor.MethodDescriptor(
     name='ModVpn',
@@ -3912,7 +4373,7 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_MODVPNREQUEST,
     output_type=_MODVPNREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='ModNetlink',
@@ -3921,7 +4382,7 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_NETLINKMESSAGEUNION,
     output_type=_MODNETLINKREPLY,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='MonNetlink',
@@ -3930,7 +4391,7 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_MONNETLINKREQUEST,
     output_type=_NETLINKMESSAGEUNION,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetLink',
@@ -3939,7 +4400,7 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_LINKKEY,
     output_type=_LINK,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetAddr',
@@ -3948,7 +4409,7 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_ADDRKEY,
     output_type=_ADDR,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetNeigh',
@@ -3957,7 +4418,7 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_NEIGHKEY,
     output_type=_NEIGH,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetRoute',
@@ -3966,7 +4427,7 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_ROUTEKEY,
     output_type=_ROUTE,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetMpls',
@@ -3975,7 +4436,7 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_MPLSKEY,
     output_type=_ROUTE,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetNode',
@@ -3984,7 +4445,7 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_NODEKEY,
     output_type=_NODE,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetVpn',
@@ -3993,7 +4454,7 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_VPNKEY,
     output_type=_VPN,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetEncapInfo',
@@ -4002,7 +4463,7 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_ENCAPINFOKEY,
     output_type=_ENCAPINFO,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetIptun',
@@ -4011,97 +4472,115 @@ _NLAAPI = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_IPTUNKEY,
     output_type=_IPTUN,
-    serialized_options=None,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetBridgeVlanInfo',
+    full_name='nlaapi.NLAApi.GetBridgeVlanInfo',
+    index=12,
+    containing_service=None,
+    input_type=_BRIDGEVLANINFOKEY,
+    output_type=_BRIDGEVLANINFO,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetLinks',
     full_name='nlaapi.NLAApi.GetLinks',
-    index=12,
+    index=13,
     containing_service=None,
     input_type=_GETLINKSREQUEST,
     output_type=_LINK,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetAddrs',
     full_name='nlaapi.NLAApi.GetAddrs',
-    index=13,
+    index=14,
     containing_service=None,
     input_type=_GETADDRSREQUEST,
     output_type=_ADDR,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetNeighs',
     full_name='nlaapi.NLAApi.GetNeighs',
-    index=14,
+    index=15,
     containing_service=None,
     input_type=_GETNEIGHSREQUEST,
     output_type=_NEIGH,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetRoutes',
     full_name='nlaapi.NLAApi.GetRoutes',
-    index=15,
+    index=16,
     containing_service=None,
     input_type=_GETROUTESREQUEST,
     output_type=_ROUTE,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetMplss',
     full_name='nlaapi.NLAApi.GetMplss',
-    index=16,
+    index=17,
     containing_service=None,
     input_type=_GETMPLSSREQUEST,
     output_type=_ROUTE,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetNodes',
     full_name='nlaapi.NLAApi.GetNodes',
-    index=17,
+    index=18,
     containing_service=None,
     input_type=_GETNODESREQUEST,
     output_type=_NODE,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetVpns',
     full_name='nlaapi.NLAApi.GetVpns',
-    index=18,
+    index=19,
     containing_service=None,
     input_type=_GETVPNSREQUEST,
     output_type=_VPN,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetEncapInfos',
     full_name='nlaapi.NLAApi.GetEncapInfos',
-    index=19,
+    index=20,
     containing_service=None,
     input_type=_GETENCAPINFOSREQUEST,
     output_type=_ENCAPINFO,
-    serialized_options=None,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetIptuns',
     full_name='nlaapi.NLAApi.GetIptuns',
-    index=20,
+    index=21,
     containing_service=None,
     input_type=_GETIPTUNSREQUEST,
     output_type=_IPTUN,
-    serialized_options=None,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetBridgeVlanInfos',
+    full_name='nlaapi.NLAApi.GetBridgeVlanInfos',
+    index=22,
+    containing_service=None,
+    input_type=_GETBRIDGEVLANINFOSREQUEST,
+    output_type=_BRIDGEVLANINFO,
+    options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetStats',
     full_name='nlaapi.NLAApi.GetStats',
-    index=21,
+    index=23,
     containing_service=None,
     input_type=_GETSTATSREQUEST,
     output_type=_STAT,
-    serialized_options=None,
+    options=None,
   ),
 ])
 _sym_db.RegisterServiceDescriptor(_NLAAPI)

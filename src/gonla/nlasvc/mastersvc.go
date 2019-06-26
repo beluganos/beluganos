@@ -35,12 +35,14 @@ type NLAMasterService struct {
 	Service nlactl.NLAService
 	iptun   *NLAMasterIptun
 	NId     uint8
+	log     *log.Entry
 }
 
 func NewNLAMasterService(service nlactl.NLAService) *NLAMasterService {
 	s := &NLAMasterService{
 		Service: service,
 		NId:     0,
+		log:     NewLogger("NLAMasterService"),
 	}
 	s.iptun = NewNLAMasterIptun(s, TunnelUpdateInterval)
 	return s
@@ -56,21 +58,26 @@ func (n *NLAMasterService) Start(nid uint8, chans *nlactl.NLAChannels) error {
 	go n.iptun.Serve()
 	go SubscribeNetlinkResources(chans.NlMsg, 0)
 
-	log.Infof("MasterService: START")
+	n.log.Infof("START")
 	return nil
 }
 
 func (n *NLAMasterService) Stop() {
 	n.Service.Stop()
-	log.Infof("MasterService: STOP")
+	n.log.Infof("STOP")
 }
 
 func (n *NLAMasterService) NetlinkMessage(nlmsg *nlamsg.NetlinkMessage) {
-	//log.Debugf("MasterService: NlMsg")
+	//n.log.Debugf("NetlinkMessage %v", nlmsg)
 }
 
 func (n *NLAMasterService) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.Link) {
-	log.Debugf("MasterService: LINK")
+	if nlmsg.Src != nlamsg.SRC_KNL {
+		n.log.Debugf("LINK skip. %s", nlmsg)
+		return
+	}
+
+	n.log.Debugf("LINK")
 
 	switch nlmsg.Type() {
 	case syscall.RTM_NEWLINK:
@@ -87,6 +94,16 @@ func (n *NLAMasterService) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlams
 		}
 
 	case syscall.RTM_DELLINK:
+		if masterIndex := link.Attrs().MasterIndex; masterIndex != 0 {
+			master := nladbm.Links().Select(nladbm.NewLinkKey(link.NId, masterIndex))
+			if (master != nil) && (master.Type() == "bridge") {
+				// Reject DELLINK (link is deketed from bridge device)
+				n.log.Debugf("LINK: reject DELLINK (master is bridge) i=%d m=%d", link.Attrs().Index, masterIndex)
+				return
+			}
+
+		}
+
 		if iptun := link.Iptun(); iptun != nil {
 			// remote is treated as neigh.
 			// if route to remote exists, generate DELNEIGH.
@@ -100,17 +117,22 @@ func (n *NLAMasterService) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlams
 		nlamsg.DispatchLink(nlmsg, link, n.Service)
 
 	default:
-		log.Errorf("MasterService: LINK Invalid message. %v", nlmsg)
+		n.log.Errorf("LINK Invalid message. %v", nlmsg)
 	}
 }
 
 func (n *NLAMasterService) NetlinkAddr(nlmsg *nlamsg.NetlinkMessage, addr *nlamsg.Addr) {
-	log.Debugf("MasterService: ADDR")
+	if nlmsg.Src != nlamsg.SRC_KNL {
+		n.log.Debugf("ADDR skip. %s", nlmsg)
+		return
+	}
+
+	n.log.Debugf("ADDR")
 
 	switch nlmsg.Type() {
 	case syscall.RTM_NEWADDR:
 		if deladdr := nladbm.Addrs().Insert(addr); deladdr != nil {
-			log.Warnf("MasterService: ADDR duplicate. %v", addr)
+			n.log.Warnf("ADDR duplicate. %v", addr)
 			return
 		}
 
@@ -120,7 +142,7 @@ func (n *NLAMasterService) NetlinkAddr(nlmsg *nlamsg.NetlinkMessage, addr *nlams
 		}
 
 	default:
-		log.Errorf("MasterService: ADDR Invalid message. %v", nlmsg)
+		n.log.Errorf("ADDR Invalid message. %v", nlmsg)
 		return
 	}
 
@@ -128,7 +150,17 @@ func (n *NLAMasterService) NetlinkAddr(nlmsg *nlamsg.NetlinkMessage, addr *nlams
 }
 
 func (n *NLAMasterService) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nlamsg.Neigh) {
-	log.Debugf("MasterService: NEIG")
+	if nlmsg.Src != nlamsg.SRC_KNL {
+		n.log.Debugf("NEIG skip. %s", nlmsg)
+		return
+	}
+
+	if neigh.IsFdbEntry() {
+		n.log.Debugf("NEIG: skip. fdb")
+		return
+	}
+
+	n.log.Debugf("NEIG")
 
 	if nlalib.IsInvalidHardwareAddr(neigh.HardwareAddr) {
 		nlmsg.Header.Type = syscall.RTM_DELNEIGH
@@ -137,7 +169,7 @@ func (n *NLAMasterService) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nla
 	switch nlmsg.Type() {
 	case syscall.RTM_NEWNEIGH:
 		if delneigh := nladbm.Neighs().Insert(neigh); delneigh != nil {
-			log.Warnf("MasterService: NEIGH duplicate. %v", neigh)
+			n.log.Warnf("NEIGH duplicate. %v", neigh)
 			return
 		}
 
@@ -173,13 +205,13 @@ func (n *NLAMasterService) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nla
 		nlamsg.DispatchNeigh(nlmsg, neigh, n.Service)
 
 	default:
-		log.Errorf("MasterService: NEIGH Invalid message. %v", nlmsg)
+		n.log.Errorf("NEIGH Invalid message. %v", nlmsg)
 		return
 	}
 }
 
 func (n *NLAMasterService) NetlinkIPRouteOnMIC(nlmsg *nlamsg.NetlinkMessage, route *nlamsg.Route) {
-	log.Debugf("MasterService: ROUTE(IP/MIC) nid=%d", route.NId)
+	n.log.Debugf("ROUTE(IP/MIC) nid=%d", route.NId)
 
 	if route.GetEncap() != nil {
 		route.EnIds = []uint32{nladbm.Encaps().EncapId(route.Dst, 0)}
@@ -194,12 +226,12 @@ func (n *NLAMasterService) NetlinkIPRouteOnMIC(nlmsg *nlamsg.NetlinkMessage, rou
 
 			// if nexthop is used by vpns, create the vpns DELROUTE messages.
 			n.NewVpnRoutes(old, func(vpnRoute *nlamsg.Route) error {
-				log.Debugf("MasterService: RTM_DELROUTE(VPN/OLD) %v", vpnRoute)
+				n.log.Debugf("ROUTE(IP/MIC) RTM_DELROUTE(VPN/OLD) %v", vpnRoute)
 				nlamsg.DispatchRoute(&delNlMsg, vpnRoute, n.Service)
 				return nil
 			})
 
-			log.Debugf("MasterService: RTM_DELROUTE(IP/MIC/OLD) %v", old)
+			n.log.Debugf("ROUTE(IP/MIC) RTM_DELROUTE(OLD) %v", old)
 			nlamsg.DispatchRoute(&delNlMsg, old, n.Service)
 
 			// if dst is tunnel-remote, generate DELNEIGH
@@ -207,17 +239,17 @@ func (n *NLAMasterService) NetlinkIPRouteOnMIC(nlmsg *nlamsg.NetlinkMessage, rou
 
 			// if route is <dst> dev <tunnel>, generate NEWROUTE(<dst> via <remote>)
 			if iptunRoute := n.iptun.NewIptunRoute(old); iptunRoute != nil {
-				log.Debugf("MasterService: RTM_DELROUTE(IPTUN/MIC/OLD) %v", iptunRoute)
+				n.log.Debugf("ROUTE(IP/MIC) RTM_DELROUTE(IPTUN/OLD) %v", iptunRoute)
 				nlamsg.DispatchRoute(&delNlMsg, iptunRoute, n.Service)
 			}
 		}
 
-		log.Debugf("MasterService: RTM_NEWROUTE(IP/MIC) %v", route)
+		n.log.Debugf("ROUTE(IP/MIC) RTM_NEWROUTE %v", route)
 		nlamsg.DispatchRoute(nlmsg, route, n.Service)
 
 		// if nexthop is used by vpns, create the vpns NEWROUTE messages.
 		n.NewVpnRoutes(route, func(vpnRoute *nlamsg.Route) error {
-			log.Debugf("MasterService: RTM_NEWROUTE(VPN) %v", vpnRoute)
+			n.log.Debugf("ROUTE(IP/MIC) RTM_NEWROUTE(VPN) %v", vpnRoute)
 			nlamsg.DispatchRoute(nlmsg, vpnRoute, n.Service)
 			return nil
 		})
@@ -227,19 +259,19 @@ func (n *NLAMasterService) NetlinkIPRouteOnMIC(nlmsg *nlamsg.NetlinkMessage, rou
 
 		// if route is <dst> dev <tunnel>, generate NEWROUTE(<dst> via <remote>)
 		if iptunRoute := n.iptun.NewIptunRoute(route); iptunRoute != nil {
-			log.Debugf("MasterService: RTM_NEWROUTE(IPTUN) %v", iptunRoute)
+			n.log.Debugf("ROUTE(IP/MIC) RTM_NEWROUTE(IPTUN) %v", iptunRoute)
 			nlamsg.DispatchRoute(nlmsg, iptunRoute, n.Service)
 		}
 
 	case syscall.RTM_DELROUTE:
 		// if nexthop is used by vpns, create the vpns DELROUTE messages.
 		n.NewVpnRoutes(route, func(vpnRoute *nlamsg.Route) error {
-			log.Debugf("MasterService: RTM_DELROUTE(VPN)%v", vpnRoute)
+			n.log.Debugf("ROUTE(IP/MIC) RTM_DELROUTE(VPN)%v", vpnRoute)
 			nlamsg.DispatchRoute(nlmsg, vpnRoute, n.Service)
 			return nil
 		})
 
-		log.Debugf("MasterService: RTM_DELROUTE(IP/MIC) %v", route)
+		n.log.Debugf("ROUTE(IP/MIC) RTM_DELROUTE %v", route)
 		nlamsg.DispatchRoute(nlmsg, route, n.Service)
 
 		nladbm.Routes().Delete(nladbm.RouteToKey(route))
@@ -249,17 +281,17 @@ func (n *NLAMasterService) NetlinkIPRouteOnMIC(nlmsg *nlamsg.NetlinkMessage, rou
 
 		// if route is <dst> dev <tunnel>, generate NEWROUTE(<dst> via <remote>)
 		if iptunRoute := n.iptun.NewIptunRoute(route); iptunRoute != nil {
-			log.Debugf("MasterService: RTM_DELROUTE(IPTUN) %v", iptunRoute)
+			n.log.Debugf("ROUTE(IP/MIC) RTM_DELROUTE(IPTUN) %v", iptunRoute)
 			nlamsg.DispatchRoute(nlmsg, iptunRoute, n.Service)
 		}
 
 	default:
-		log.Errorf("MasterService: ROUTE(IP/MIC) Invalid message. %v %s", nlmsg, route)
+		n.log.Errorf("ROUTE(IP/MIC) Invalid message. %v %s", nlmsg, route)
 	}
 }
 
 func (n *NLAMasterService) NetlinkIPRouteOnRIC(nlmsg *nlamsg.NetlinkMessage, route *nlamsg.Route) {
-	log.Debugf("MasterService: ROUTE(IP/RIC) nid=%d", route.NId)
+	n.log.Debugf("ROUTE(IP/RIC) nid=%d", route.NId)
 
 	switch nlmsg.Type() {
 	case syscall.RTM_NEWROUTE:
@@ -272,7 +304,7 @@ func (n *NLAMasterService) NetlinkIPRouteOnRIC(nlmsg *nlamsg.NetlinkMessage, rou
 				old = vpnRoute
 			}
 
-			log.Debugf("MasterService: RTM_DELROUTE(IP/RIC/OLD) %v", route)
+			n.log.Debugf("ROUTE(IP/RIC) RTM_DELROUTE(OLD) %v", route)
 			nlamsg.DispatchRoute(&delNlMsg, old, n.Service)
 		}
 
@@ -280,7 +312,7 @@ func (n *NLAMasterService) NetlinkIPRouteOnRIC(nlmsg *nlamsg.NetlinkMessage, rou
 		nladbm.Routes().Delete(nladbm.RouteToKey(route))
 
 	default:
-		log.Errorf("MasterService: ROUTE(IP/RIC) Invalid message. %v", nlmsg)
+		n.log.Errorf("MROUTE(IP/RIC) Invalid message. %v", nlmsg)
 		return
 	}
 
@@ -289,17 +321,17 @@ func (n *NLAMasterService) NetlinkIPRouteOnRIC(nlmsg *nlamsg.NetlinkMessage, rou
 		route = vpnRoute
 	}
 
-	log.Debugf("MasterService: %s (IP/RIC) %v", nlamsg.NlMsgTypeStr(nlmsg.Type()), route)
+	n.log.Debugf("ROUTE(IP/RIC) %s %v", nlamsg.NlMsgTypeStr(nlmsg.Type()), route)
 	nlamsg.DispatchRoute(nlmsg, route, n.Service)
 }
 
 func (n *NLAMasterService) NetlinkMplsRoute(nlmsg *nlamsg.NetlinkMessage, route *nlamsg.Route) {
-	log.Debugf("MasterService: ROUTE(MPLS)")
+	n.log.Debugf("ROUTE(MPLS)")
 
 	switch nlmsg.Type() {
 	case syscall.RTM_NEWROUTE:
 		if nladbm.Mplss().Insert(route) != nil {
-			log.Warnf("MasterService: ROUTE(MPLS) duplicate. %v", route)
+			n.log.Warnf("ROUTE(MPLS) duplicate. %v", route)
 			return
 		}
 
@@ -307,17 +339,22 @@ func (n *NLAMasterService) NetlinkMplsRoute(nlmsg *nlamsg.NetlinkMessage, route 
 		nladbm.Mplss().Delete(nladbm.MplsToKey(route))
 
 	default:
-		log.Errorf("MasterService: ROUTE(MPLS) Invalid message. %v", nlmsg)
+		n.log.Errorf("ROUTE(MPLS) Invalid message. %v", nlmsg)
 		return
 	}
 
-	log.Debugf("MasterService: %s (MPLS) %v", nlamsg.NlMsgTypeStr(nlmsg.Type()), route)
+	n.log.Debugf("ROUTE(MPLS) %s %v", nlamsg.NlMsgTypeStr(nlmsg.Type()), route)
 	nlamsg.DispatchRoute(nlmsg, route, n.Service)
 }
 
 func (n *NLAMasterService) NetlinkRoute(nlmsg *nlamsg.NetlinkMessage, route *nlamsg.Route) {
+	if nlmsg.Src != nlamsg.SRC_KNL {
+		n.log.Debugf("ROUTE skip. %s", nlmsg)
+		return
+	}
+
 	if route.Table != 254 {
-		log.Debugf("MasterService: ROUTE(bad table) %v", route)
+		n.log.Debugf("ROUTE(bad table) %v", route)
 		return
 	}
 
@@ -333,11 +370,13 @@ func (n *NLAMasterService) NetlinkRoute(nlmsg *nlamsg.NetlinkMessage, route *nla
 		n.NetlinkMplsRoute(nlmsg, route)
 
 	default:
-		log.Errorf("MasterService: ROUTE Invalid Dst %v", route)
+		n.log.Errorf("ROUTE Invalid Dst %v", route)
 	}
 }
 
 func (n *NLAMasterService) NetlinkNode(nlmsg *nlamsg.NetlinkMessage, node *nlamsg.Node) {
+	n.log.Debugf("NODE")
+
 	if nlmsg.Type() == nlalink.RTM_DELNODE {
 
 		nid := nlmsg.NId
@@ -377,25 +416,56 @@ func (n *NLAMasterService) NetlinkNode(nlmsg *nlamsg.NetlinkMessage, node *nlams
 		nlmsg.Header.Type = nlalink.RTM_DELNODE
 	}
 
+	n.log.Debugf("NODE %s %v", nlamsg.NlMsgTypeStr(nlmsg.Type()), node)
 	nlamsg.DispatchNode(nlmsg, node, n.Service)
 }
 
 func (n *NLAMasterService) NetlinkVpn(nlmsg *nlamsg.NetlinkMessage, vpn *nlamsg.Vpn) {
-	log.Debugf("MasterService: VPN")
+	n.log.Debugf("VPN")
 
 	switch nlmsg.Type() {
 	case nlalink.RTM_NEWVPN:
 		if delvpn := nladbm.Vpns().Insert(vpn); delvpn != nil {
-			log.Warnf("MasterService VPN Updated. %v", vpn)
+			n.log.Warnf("VPN Updated. %v", vpn)
 		}
 
 	case nlalink.RTM_DELVPN:
 		nladbm.Vpns().Delete(nladbm.VpnToKey(vpn))
 
 	default:
-		log.Errorf("MasterService: VPN Invalid message. %v", nlmsg)
+		n.log.Errorf("VPN Invalid message. %v", nlmsg)
 		return
 	}
 
+	n.log.Debugf("VPN %s %v", nlamsg.NlMsgTypeStr(nlmsg.Type()), vpn)
 	nlamsg.DispatchVpn(nlmsg, vpn, n.Service)
+}
+
+func (n *NLAMasterService) NetlinkBridgeVlanInfo(nlmsg *nlamsg.NetlinkMessage, brvlan *nlamsg.BridgeVlanInfo) {
+	if nlmsg.Src != nlamsg.SRC_KNL {
+		n.log.Debugf("BrVlan skip. %s", nlmsg)
+		return
+	}
+
+	n.log.Debugf("BrVlan")
+
+	switch nlmsg.Type() {
+	case nlalink.RTM_NEWBRIDGE:
+		if old := nladbm.BrVlans().Insert(brvlan); old != nil {
+			nlmsg.Header.Type = nlalink.RTM_SETBRIDGE
+		}
+
+	case nlalink.RTM_DELBRIDGE:
+		if old := nladbm.BrVlans().Delete(nladbm.BridgeVlanInfoToKey(brvlan)); old != nil {
+			brvlan.BrId = old.BrId
+		}
+
+	default:
+		n.log.Errorf("BrVlan Invalid message. %v", nlmsg)
+		return
+	}
+
+	n.log.Debugf("BrVlan %s %v", nlamsg.NlMsgTypeStr(nlmsg.Type()), brvlan)
+	nlamsg.DispatchBridgeVlanInfo(nlmsg, brvlan, n.Service)
+
 }

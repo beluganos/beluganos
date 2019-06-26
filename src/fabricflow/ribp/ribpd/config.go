@@ -29,8 +29,9 @@ type NodeConfig struct {
 }
 
 type RibpConfig struct {
-	Api      string `toml:"api"`
-	Interval int    `tomi:"interval"`
+	Api      string   `toml:"api"`
+	Interval int      `tomi:"interval"`
+	Excludes []string `toml:"exclude_ifaces"`
 }
 
 type Config struct {

@@ -115,6 +115,36 @@ class TestConvFlow(unittest.TestCase):
         self.assertEqual(mod.term_mac.goto_table, pb.FlowMod.UNICAST_ROUTING)
 
 
+    def test_bridging(self):
+        flow = pb.BridgingFlow(
+            action=pb.BridgingFlow.Action(
+                name=pb.PolicyACLFlow.Action.OUTPUT,
+                value=1,
+            )
+        )
+        mod = pb.FlowMod(
+            cmd="ADD",
+            table=pb.FlowMod.BRIDGING,
+            re_id=_RE_ID,
+            bridging=flow,
+        )
+        p = fibcdbm.FIBCPortEntry.new(name=_IFNAME, port=2, dp_id=_DP_ID, re_id=_RE_ID)
+        portmap = Mock(spec=fibcdbm.FIBCDbPortMapTable)
+        portmap.find_by_vm.return_value = p
+        portmap.lower_port.return_value = p
+
+        # exec
+        fibccnv.conv_flow(mod, portmap)
+        # print mod
+
+        # check
+        self.assertEqual(mod.cmd, pb.FlowMod.ADD)
+        self.assertEqual(mod.table, pb.FlowMod.BRIDGING)
+        self.assertEqual(mod.re_id, _RE_ID)
+        self.assertEqual(mod.bridging.action.name, pb.PolicyACLFlow.Action.OUTPUT)
+        self.assertEqual(mod.bridging.action.value, 2)
+
+
 class TestConvGroup(unittest.TestCase):
     def setUp(self):
         pass

@@ -114,7 +114,6 @@ func NewPortConfig(cmd, reID, ifname string, portId uint32, status PortStatus_St
 		PortId: portId,
 		Status: status,
 		Link:   "",
-		Slaves: []string{},
 	}
 }
 
