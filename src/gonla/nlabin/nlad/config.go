@@ -89,8 +89,8 @@ type NLAConfig struct {
 	RecvChanSize    int    `toml:"recv_chan_size"`
 	RecvSockBufSize int    `toml:"recv_sock_buf"`
 
-	Iptun      []IptunConfig     `toml:"iptun"`
-	BridgeVlan *BridgeVlanConfig `toml:"bridge_vlan"`
+	Iptun      []IptunConfig    `toml:"iptun"`
+	BridgeVlan BridgeVlanConfig `toml:"bridge_vlan"`
 }
 
 func (c *NLAConfig) Adjust() {
@@ -112,7 +112,7 @@ func (c *NLAConfig) Adjust() {
 }
 
 func (c *NLAConfig) String() string {
-	return fmt.Sprintf("Core:'%s', Api:'%s', RecvChan:%d, RecvSock:%d, iptun:{%v}, brvlan:{%s}", c.Core, c.Api, c.RecvChanSize, c.RecvSockBufSize, &c.Iptun, c.BridgeVlan)
+	return fmt.Sprintf("Core:'%s', Api:'%s', RecvChan:%d, RecvSock:%d, iptun:{%v}, brvlan:{%s}", c.Core, c.Api, c.RecvChanSize, c.RecvSockBufSize, &c.Iptun, &c.BridgeVlan)
 }
 
 type LogConfig struct {

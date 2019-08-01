@@ -182,14 +182,14 @@ class FIBCPtmApp(app_manager.RyuApp):
 
         entry = _get_entry()
         if entry.update_vm(msg.port_id):
-            self.send_port_status_if_ready(entry, msg.status)
+            self.send_port_status_if_ready(entry, "UP")
 
         self._send_port_mod_event(entry, msg.status)
 
 
     def _on_port_config_del(self, msg):
         entry = fibcdbm.portmap().find_by_name(re_id=msg.re_id, name=msg.ifname)
-        self.send_port_status_if_ready(entry, msg.status)
+        self.send_port_status_if_ready(entry, "DOWN")
         entry.update_vm(0)
         if not entry.is_config():
             fibcdbm.portmap().delete_by_name(msg.re_id, msg.ifname)

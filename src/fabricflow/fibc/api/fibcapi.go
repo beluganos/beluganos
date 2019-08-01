@@ -350,3 +350,12 @@ func ParseLinkTypeFromNativeMust(s string, defaultType LinkType_Type) LinkType_T
 	}
 	return defaultType
 }
+
+func (t LinkType_Type) IsVirtual() bool {
+	switch t {
+	case LinkType_IPTUN, LinkType_BRIDGE, LinkType_BOND:
+		return true
+	default:
+		return false
+	}
+}

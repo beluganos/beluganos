@@ -108,9 +108,9 @@ func (r *RIBController) FIBCConnected() {
 func (r *RIBController) FIBCDpStatus(hdr *fibcnet.Header, msg *fibcapi.DpStatus) {
 	r.log.Debugf("DpStatus: %v", msg)
 
-	//if msg.Status == fibcapi.DpStatus_ENTER {
-	//	r.SendLoopbackFlows(fibcapi.FlowMod_ADD, r.nid, 0)
-	//}
+	if msg.Status == fibcapi.DpStatus_ENTER {
+		r.SendLoopbackFlows(fibcapi.FlowMod_ADD, r.nid, 0)
+	}
 }
 
 func (r *RIBController) FIBCPortStatus(hdr *fibcnet.Header, msg *fibcapi.PortStatus) {
@@ -129,6 +129,11 @@ func (r *RIBController) FIBCPortStatus(hdr *fibcnet.Header, msg *fibcapi.PortSta
 	nid := ifentry.NId
 
 	if msg.Status == fibcapi.PortStatus_UP {
+		if ifentry.LinkType == fibcapi.LinkType_BRIDGE {
+			r.log.Debugf("PortStatus: skip bridge device. %d %s", msg.PortId, ifentry.LinkType)
+			return
+		}
+
 		if ifentry.LinkType == fibcapi.LinkType_BRIDGE_SLAVE {
 			// Setuo L2 access/trunk port.
 			r.nla.GetBridgeVlanInfos(nid, ifentry.Index, func(brvlan *nlamsg.BridgeVlanInfo) {
@@ -170,15 +175,6 @@ func (r *RIBController) FIBCPortStatus(hdr *fibcnet.Header, msg *fibcapi.PortSta
 				if err := r.SendNeighFlows(fibcapi.FlowMod_ADD, neigh); err != nil {
 					r.log.Errorf("PortStatus: add NEIGH error. %s", err)
 					return err
-				}
-			}
-			return nil
-		})
-	} else {
-		r.nla.GetLinks(nid, func(link *nlamsg.Link) error {
-			if NewPortId(link) == msg.PortId {
-				if err := r.SendLinkFlows(fibcapi.FlowMod_DELETE, link); err != nil {
-					r.log.Errorf("PortStatus: del LINK error. %s", err)
 				}
 			}
 			return nil
@@ -274,21 +270,6 @@ func (r *RIBController) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.L
 
 	// device status changed.
 	if fields.Has(IfDBFieldStatus) {
-		cmd := GetFlowCmdByLinkStatus(link)
-
-		r.log.Debugf("LINK: Status changed %s %s %v", cmd, ifeNew.LinkType, link)
-
-		switch ifeNew.LinkType {
-		case fibcapi.LinkType_BRIDGE, fibcapi.LinkType_BRIDGE_SLAVE:
-			// pass (process on BRVLAN event)
-
-		default:
-			// DEVICE, IPTUN, BOND, BOND_SLAVE
-			if err := r.SendLinkFlows(cmd, link); err != nil {
-				r.log.Errorf("LINK: %s Link error. %v", cmd, link)
-			}
-		}
-
 		// send port condig to set up/down dp port.
 		if err := r.SendPortConfig("MODIFY", link); err != nil {
 			r.log.Errorf("LINK: Modify PortConfig error. %v %s", link, err)
@@ -304,6 +285,10 @@ func (r *RIBController) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.L
 			switch ifeNew.LinkType {
 			case fibcapi.LinkType_BRIDGE_SLAVE:
 				// DEVICE -> BRIDGE_SLAVE: pass
+				if err := r.SendLinkFlows(fibcapi.FlowMod_DELETE, link); err != nil {
+					r.log.Errorf("LINK: Delete LinkFlows error. %v %s", link, err)
+				}
+
 			case fibcapi.LinkType_BOND_SLAVE:
 				// DEVICE -> BOND_SLAVE
 				if err := r.SendBondSlaveFlows(cmd, link, &ifeNew); err != nil {
@@ -316,6 +301,9 @@ func (r *RIBController) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.L
 			switch ifeOld.LinkType {
 			case fibcapi.LinkType_BRIDGE_SLAVE:
 				// BRIDGE_SLAVE -> DEVICE: pass
+				if err := r.SendLinkFlows(fibcapi.FlowMod_ADD, link); err != nil {
+					r.log.Errorf("LINK: Add LinkFlows error. %v %s", link, err)
+				}
 			case fibcapi.LinkType_BOND_SLAVE:
 				// BOND_SLAVE -> DEVICE
 				if err := r.SendBondSlaveFlows(cmd, link, &ifeOld); err != nil {

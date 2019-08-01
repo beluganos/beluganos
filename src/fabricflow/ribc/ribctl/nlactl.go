@@ -117,15 +117,6 @@ func (n *NLAController) GetLink(nid uint8, index int) (*nlamsg.Link, error) {
 	return link.ToNative(), nil
 }
 
-func (n *NLAController) GetLink_GroupMod(cmd fibcapi.GroupMod_Cmd, nid uint8, index int) (*nlamsg.Link, error) {
-	link, err := n.GetLink(nid, index)
-	if cmd == fibcapi.GroupMod_DELETE {
-		err = nil
-	}
-
-	return link, err
-}
-
 func (n *NLAController) GetLinks(nid uint8, f func(*nlamsg.Link) error) error {
 	stream, err := n.client.GetLinks(context.Background(), nlaapi.NewGetLinksRequest(nid))
 	if err != nil {

@@ -21,6 +21,7 @@ import (
 	fibcapi "fabricflow/fibc/api"
 	"fmt"
 	"gonla/nlamsg"
+	"net"
 	"strings"
 	"sync"
 )
@@ -78,24 +79,28 @@ func NewIfDBKey(nid uint8, ifindex int) string {
 }
 
 type IfDBEntry struct {
-	NId         uint8
-	LnId        uint16
-	Index       int
-	MasterIndex int
-	PortStatus  fibcapi.PortStatus_Status
-	Associated  bool
-	LinkType    fibcapi.LinkType_Type
+	NId          uint8
+	LnId         uint16
+	Index        int
+	MasterIndex  int
+	Vid          uint16
+	HardwareAddr net.HardwareAddr
+	PortStatus   fibcapi.PortStatus_Status
+	Associated   bool
+	LinkType     fibcapi.LinkType_Type
 }
 
 func NewIfDBEntryFromLink(link *nlamsg.Link) *IfDBEntry {
 	return &IfDBEntry{
-		NId:         link.NId,
-		LnId:        link.LnId,
-		Index:       link.Attrs().Index,
-		MasterIndex: link.Attrs().MasterIndex,
-		PortStatus:  NewPortStatus(link),
-		Associated:  false,
-		LinkType:    LinkTypeFromLink(link),
+		NId:          link.NId,
+		LnId:         link.LnId,
+		Index:        link.Attrs().Index,
+		MasterIndex:  link.Attrs().MasterIndex,
+		Vid:          link.VlanId(),
+		HardwareAddr: link.Attrs().HardwareAddr,
+		PortStatus:   NewPortStatus(link),
+		Associated:   false,
+		LinkType:     LinkTypeFromLink(link),
 	}
 }
 

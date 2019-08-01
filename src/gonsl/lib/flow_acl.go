@@ -36,8 +36,7 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 
 	port, portType := fibcapi.ParseDPPortId(flow.Match.InPort)
 
-	switch portType {
-	case fibcapi.LinkType_BRIDGE, fibcapi.LinkType_BOND:
+	if portType.IsVirtual() {
 		log.Debugf("Server: FlowMod(ACL): %d %s skip.", port, portType)
 		return
 	}

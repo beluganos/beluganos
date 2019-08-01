@@ -33,7 +33,7 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 
 	neid := group.NeId
 	vid := group.GetAdjustedVlanVid()
-	port, portType := fibcapi.ParseDPPortId(group.PortId)
+	_, portType := fibcapi.ParseDPPortId(group.PortId)
 
 	var (
 		trunk   opennsl.Trunk
@@ -41,8 +41,8 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 	)
 
 	if portType == fibcapi.LinkType_BOND {
-		if trunk, isTrunk = s.idmaps.Trunks.Get(port, vid); !isTrunk {
-			log.Errorf("erver: GroupMod(L3-UC): Trunk(port:%d, vid:%d) not found.", port, vid)
+		if trunk, isTrunk = s.idmaps.Trunks.Get(group.PortId, vid); !isTrunk {
+			log.Errorf("erver: GroupMod(L3-UC): Trunk(port:%d, vid:%d) not found.", group.PortId, vid)
 			return
 		}
 	}
@@ -55,9 +55,9 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 			return
 		}
 
-		ifaceID, ok := s.idmaps.L3Ifaces.Get(port, vid)
+		ifaceID, ok := s.idmaps.L3Ifaces.Get(group.PortId, vid)
 		if !ok {
-			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", port, vid)
+			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", group.PortId, vid)
 			return
 		}
 
@@ -66,8 +66,8 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 			flags = opennsl.L3_REPLACE | opennsl.L3_WITH_ID
 		}
 
-		phyPort, _ := fibcapi.ParseDPPortId(group.PhyPortId)
-		pvid := s.vlanPorts.ConvVID(opennsl.Port(phyPort), opennsl.VlanDefaultMustGet(s.Unit()))
+		phyPort := opennsl.Port(group.PhyPortId)
+		pvid := s.vlanPorts.ConvVID(phyPort, opennsl.VlanDefaultMustGet(s.Unit()))
 
 		tunnelInitiatorAdd(s.Unit(), group, ifaceID, pvid)
 		tunnelTerminatorAdd(s.Unit(), group)
@@ -80,7 +80,7 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 			flags |= opennsl.L3_TGID
 			l3egr.SetTrunk(trunk)
 		} else {
-			l3egr.SetPort(opennsl.Port(phyPort))
+			l3egr.SetPort(phyPort)
 		}
 
 		l3egrID, err := l3egr.Create(s.Unit(), flags, oldL3egrID)
@@ -107,9 +107,9 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 		tunnelTerminatorDelete(s.Unit(), group)
 
 		vid := group.GetAdjustedVlanVid()
-		ifaceID, ok := s.idmaps.L3Ifaces.Get(port, vid)
+		ifaceID, ok := s.idmaps.L3Ifaces.Get(group.PortId, vid)
 		if !ok {
-			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", port, vid)
+			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", group.PortId, vid)
 			return
 		}
 

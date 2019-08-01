@@ -212,7 +212,13 @@ func (s *Server) FIBCFFMultipartPortDescRequest(hdr *fibcnet.Header, mp *fibcapi
 func (s *Server) FIBCFFPortMod(hdr *fibcnet.Header, mod *fibcapi.FFPortMod) {
 	log.Debugf("Server: PortMod: %v %v", hdr, mod)
 
-	port := opennsl.Port(mod.PortNo)
+	portId, portType := fibcapi.ParseDPPortId(mod.PortNo)
+	if portType.IsVirtual() {
+		log.Debugf("Server: PortMod: skip virtual device. port=%x", mod.PortNo)
+		return
+	}
+
+	port := opennsl.Port(portId)
 
 	switch mod.Status {
 	case fibcapi.PortStatus_UP:

@@ -18,6 +18,7 @@
 package gonslib
 
 import (
+	fibcapi "fabricflow/fibc/api"
 	"fmt"
 	"sync"
 
@@ -122,6 +123,10 @@ func (t *VlanPortTable) ConvVID(port opennsl.Port, vid opennsl.Vlan) opennsl.Vla
 
 	if key.Vid != t.defaultVid {
 		return key.Vid
+	}
+
+	if _, linkType := fibcapi.ParseDPPortId(uint32(port)); linkType.IsVirtual() {
+		return t.defaultVid
 	}
 
 	if port := key.Port; (port >= t.minPort) && (port <= t.maxPort) {

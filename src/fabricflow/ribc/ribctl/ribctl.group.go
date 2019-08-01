@@ -19,6 +19,7 @@ package ribctl
 
 import (
 	fibcapi "fabricflow/fibc/api"
+	"fmt"
 	"gonla/nlamsg"
 	"net"
 )
@@ -52,27 +53,14 @@ func (r *RIBController) SendL2InterfaceGroup(cmd fibcapi.GroupMod_Cmd, link *nla
 //
 // L3 Unicast Group
 //
-func NewL3UnicastGroup(link, phyLink *nlamsg.Link, neigh *nlamsg.Neigh) *fibcapi.L3UnicastGroup {
-	vid := func() uint16 {
-		if link == nil {
-			return 0
-		}
-		return link.VlanId()
-	}()
-	srcMAC := func() net.HardwareAddr {
-		if phyLink == nil {
-			return fibcapi.HardwareAddrNone
-		}
-		return phyLink.Attrs().HardwareAddr
-	}()
-
+func NewL3UnicastGroup(link, phyLink *IfDBEntry, neigh *nlamsg.Neigh) *fibcapi.L3UnicastGroup {
 	g := fibcapi.NewL3UnicastGroup(
 		NewNeighId(neigh),
-		NewPortId(link),
-		NewPortId(phyLink),
-		vid,
+		link.PortId(),
+		phyLink.PortId(),
+		phyLink.Vid,
 		neigh.HardwareAddr,
-		srcMAC,
+		phyLink.HardwareAddr,
 	)
 
 	if iptun := neigh.GetIptun(); iptun != nil {
@@ -96,47 +84,38 @@ func (r *RIBController) SendL3UnicastGroup(cmd fibcapi.GroupMod_Cmd, neigh *nlam
 		return nil
 	}
 
-	link, err := r.nla.GetLink_GroupMod(cmd, neigh.NId, neigh.LinkIndex)
-	if err != nil {
-		return err
+	var (
+		link    IfDBEntry
+		phyLink IfDBEntry
+	)
+
+	if ok := r.ifdb.SelectBy(&link, neigh.NId, neigh.LinkIndex); !ok {
+		return fmt.Errorf("link not found. nid:%d ifindex:%d", neigh.NId, neigh.LinkIndex)
 	}
 
-	phyLink, err := func() (*nlamsg.Link, error) {
-		if neigh.IsTunnelRemote() {
-			return r.nla.GetLink_GroupMod(cmd, neigh.NId, neigh.PhyLink)
+	if neigh.IsTunnelRemote() && cmd != fibcapi.GroupMod_DELETE {
+		if ok := r.ifdb.SelectBy(&phyLink, neigh.NId, neigh.PhyLink); !ok {
+			return fmt.Errorf("phy link not found. nid:%d ifindex:%d", neigh.NId, neigh.PhyLink)
 		}
-		return link, nil
-	}()
-	if err != nil {
-		return err
+	} else {
+		phyLink = link
 	}
 
-	g := NewL3UnicastGroup(link, phyLink, neigh)
+	g := NewL3UnicastGroup(&link, &phyLink, neigh)
 	return r.fib.Send(g.ToMod(cmd, r.reId), 0)
 }
 
 //
 // MPLS Interface Group
 //
-func NewMPLSInterfaceGroup(link *nlamsg.Link, neigh *nlamsg.Neigh) *fibcapi.MPLSInterfaceGroup {
-	if link == nil {
-		// when DELNEIGH, only neigh-id needed,
-		return fibcapi.NewMPLSInterfaceGroup(
-			NewNeighId(neigh),
-			NewPortId(nil),
-			0,
-			neigh.HardwareAddr,
-			neigh.HardwareAddr, // dummy
-		)
-	} else {
-		return fibcapi.NewMPLSInterfaceGroup(
-			NewNeighId(neigh),
-			NewPortId(link),
-			link.VlanId(),
-			neigh.HardwareAddr,
-			link.Attrs().HardwareAddr,
-		)
-	}
+func NewMPLSInterfaceGroup(link *IfDBEntry, neigh *nlamsg.Neigh) *fibcapi.MPLSInterfaceGroup {
+	return fibcapi.NewMPLSInterfaceGroup(
+		NewNeighId(neigh),
+		link.PortId(),
+		link.Vid,
+		neigh.HardwareAddr,
+		link.HardwareAddr,
+	)
 }
 
 func (r *RIBController) SendMPLSInterfaceGroup(cmd fibcapi.GroupMod_Cmd, neigh *nlamsg.Neigh) error {
@@ -157,12 +136,12 @@ func (r *RIBController) SendMPLSInterfaceGroup(cmd fibcapi.GroupMod_Cmd, neigh *
 		return nil
 	}
 
-	link, err := r.nla.GetLink_GroupMod(cmd, neigh.NId, neigh.LinkIndex)
-	if err != nil {
-		return err
+	var link IfDBEntry
+	if ok := r.ifdb.SelectBy(&link, neigh.NId, neigh.LinkIndex); !ok {
+		return fmt.Errorf("link not found. nid:%d ifindex:%d", neigh.NId, neigh.LinkIndex)
 	}
 
-	g := NewMPLSInterfaceGroup(link, neigh)
+	g := NewMPLSInterfaceGroup(&link, neigh)
 	return r.fib.Send(g.ToMod(cmd, r.reId), 0)
 }
 

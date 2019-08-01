@@ -41,8 +41,7 @@ func (s *Server) fibcVLANFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow
 	log.Debugf("Server: FlowMod(VLAN): %v %v %v", hdr, mod, flow)
 
 	port, portType := fibcapi.ParseDPPortId(flow.Match.InPort)
-	switch portType {
-	case fibcapi.LinkType_BRIDGE, fibcapi.LinkType_BOND:
+	if portType.IsVirtual() {
 		log.Debugf("Server: FlowMod(VLAN): %d %s skip.", port, portType)
 		return
 	}

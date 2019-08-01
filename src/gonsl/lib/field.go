@@ -28,7 +28,10 @@ import (
 )
 
 const (
-	fieldCosDefault = 1
+	fieldCosDefault  = 1
+	fieldPortMask    = 0xff
+	fieldEthTypeMask = 0xffff
+	fieldIPProtoMask = 0xff
 )
 
 //
@@ -148,7 +151,13 @@ func (f *FieldGroup) AddEntry(e FieldEntry) error {
 	}
 
 	e.setTo(f.unit, f.cos, entry)
-	return f.installEntry(e.key(), entry)
+	if err := f.installEntry(e.key(), entry); err != nil {
+		entry.Destroy(f.unit)
+		log.Errorf("EntryInstall error. %s", err)
+		return err
+	}
+
+	return nil
 }
 
 //
@@ -215,7 +224,7 @@ func (e *FieldEntryEthDst) String() string {
 
 func (e *FieldEntryEthDst) setTo(unit int, cos uint32, entry opennsl.FieldEntry) {
 	entry.Qualify().DstMAC(unit, e.Dest, e.Mask)
-	entry.Qualify().InPort(unit, e.InPort, 0)
+	entry.Qualify().InPort(unit, e.InPort, fieldPortMask)
 	entry.Action().AddP(unit, opennsl.NewFieldActionCosQCpuNew(cos))
 	entry.Action().AddP(unit, opennsl.NewFieldActionCopyToCpu())
 }
@@ -276,8 +285,8 @@ func (e *FieldEntryEthType) String() string {
 }
 
 func (e *FieldEntryEthType) setTo(unit int, cos uint32, entry opennsl.FieldEntry) {
-	entry.Qualify().InPort(unit, e.InPort, 0)
-	entry.Qualify().EtherType(unit, opennsl.Ethertype(e.EthType), 0xffff)
+	entry.Qualify().InPort(unit, e.InPort, fieldPortMask)
+	entry.Qualify().EtherType(unit, opennsl.Ethertype(e.EthType), fieldEthTypeMask)
 	entry.Action().AddP(unit, opennsl.NewFieldActionCosQCpuNew(cos))
 	entry.Action().AddP(unit, opennsl.NewFieldActionCopyToCpu())
 }
@@ -366,8 +375,8 @@ func (e *FieldEntryDstIP) String() string {
 }
 
 func (e *FieldEntryDstIP) setTo(unit int, cos uint32, entry opennsl.FieldEntry) {
-	entry.Qualify().InPort(unit, e.InPort, 0)
-	entry.Qualify().EtherType(unit, e.EthType, 0xffff)
+	entry.Qualify().InPort(unit, e.InPort, fieldPortMask)
+	entry.Qualify().EtherType(unit, e.EthType, fieldEthTypeMask)
 	if e.EthType == unix.ETH_P_IP {
 		entry.Qualify().DstIp(unit, e.Dest.IP, e.Dest.Mask)
 	} else {
@@ -446,9 +455,9 @@ func (e *FieldEntryIPProto) String() string {
 }
 
 func (e *FieldEntryIPProto) setTo(unit int, cos uint32, entry opennsl.FieldEntry) {
-	entry.Qualify().InPort(unit, e.InPort, 0)
-	entry.Qualify().EtherType(unit, opennsl.Ethertype(e.EthType), 0xffff)
-	entry.Qualify().IpProtocol(unit, e.IPProto, 0xff)
+	entry.Qualify().InPort(unit, e.InPort, fieldPortMask)
+	entry.Qualify().EtherType(unit, opennsl.Ethertype(e.EthType), fieldEthTypeMask)
+	entry.Qualify().IpProtocol(unit, e.IPProto, fieldIPProtoMask)
 	entry.Action().AddP(unit, opennsl.NewFieldActionCosQCpuNew(cos))
 	entry.Action().AddP(unit, opennsl.NewFieldActionCopyToCpu())
 }
