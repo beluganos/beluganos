@@ -1,3 +1,15 @@
+diff --git a/builds/any/rootfs/jessie/common/all-base-packages.yml b/builds/any/rootfs/jessie/common/all-base-packages.yml
+index c33d5e8e..095606aa 100644
+--- a/builds/any/rootfs/jessie/common/all-base-packages.yml
++++ b/builds/any/rootfs/jessie/common/all-base-packages.yml
+@@ -78,3 +78,7 @@
+ - tcpdump
+ - strace
+ - sysstat
++- libvirt-bin
++- ebtables
++- dnsmasq
++- qemu-kvm
 diff --git a/packages/base/any/kernels/3.16-lts/configs/x86_64-all/x86_64-all.config b/packages/base/any/kernels/3.16-lts/configs/x86_64-all/x86_64-all.config
 index 24d29cee..5366893b 100644
 --- a/packages/base/any/kernels/3.16-lts/configs/x86_64-all/x86_64-all.config

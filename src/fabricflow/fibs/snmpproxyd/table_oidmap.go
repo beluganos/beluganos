@@ -50,6 +50,18 @@ func NewOidMapEntry(name, gOid, lOid string) *OidMapEntry {
 	}
 }
 
+func oidHasPrefix(oid string, prefix string) bool {
+	if ok := strings.HasSuffix(oid, "."); !ok {
+		oid = fmt.Sprintf("%s.", oid)
+	}
+
+	if ok := strings.HasSuffix(prefix, "."); !ok {
+		prefix = fmt.Sprintf("%s.", prefix)
+	}
+
+	return strings.HasPrefix(oid, prefix)
+}
+
 //
 // String returns reable contenf.
 //
@@ -61,14 +73,14 @@ func (e *OidMapEntry) String() string {
 // MatchGlobal compares with global oid.
 //
 func (e *OidMapEntry) MatchGlobal(oid string) bool {
-	return strings.HasPrefix(oid, e.Global)
+	return oidHasPrefix(oid, e.Global)
 }
 
 //
 // MatchLocal compares with local oid.
 //
 func (e *OidMapEntry) MatchLocal(oid string) bool {
-	return strings.HasPrefix(oid, e.Local)
+	return oidHasPrefix(oid, e.Local)
 }
 
 //
