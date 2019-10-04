@@ -75,17 +75,17 @@ func (ln *Link) Bridge() *netlink.Bridge {
 	return nil
 }
 
-func (ln *Link) GetSlaveInfo() netlink.LinkSlaveInfo {
+func (ln *Link) GetSlaveInfo() netlink.LinkSlave {
 	if ln.Attrs().MasterIndex == 0 {
 		return nil
 	}
 
-	if ln.Attrs().SlaveInfo == nil {
+	if ln.Attrs().Slave == nil {
 		// Bridge slave
 		return &BridgeSlaveInfo{}
 	}
 
-	return ln.Attrs().SlaveInfo
+	return ln.Attrs().Slave
 }
 
 func (ln *Link) Copy() *Link {

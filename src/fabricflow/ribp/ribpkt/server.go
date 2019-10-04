@@ -97,10 +97,10 @@ func (s *Server) Serve(done <-chan struct{}) {
 		select {
 		case link := <-s.linkCh:
 			if link.Header.Type == syscall.RTM_NEWLINK {
-				s.AddLink(link)
+				s.AddLink(link.Link)
 				log.Infof("Add: %v %v", link.Header, link.Link)
 			} else {
-				s.DelLink(link)
+				s.DelLink(link.Link)
 				log.Infof("Del: %v %v", link.Header, link.Link)
 			}
 		case <-s.ctrlCh:

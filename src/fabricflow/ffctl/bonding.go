@@ -439,16 +439,16 @@ func (c *BondCmd) showSlaves(bond string) error {
 	for _, slave := range slaves {
 		fmt.Printf("%s : %s %s\n", slave.Attrs().Name, slave.Type(), stringLinkAttrs(slave.Attrs()))
 		if c.ShowDetail {
-			if slaveInfo := slave.Attrs().SlaveInfo; slaveInfo != nil {
+			if slaveInfo := slave.Attrs().Slave; slaveInfo != nil {
 				switch si := slaveInfo.(type) {
-				case *netlink.BondSlaveInfo:
+				case *netlink.BondSlave:
 					fmt.Printf("bond-slave.state             : %s\n", si.State)
 					fmt.Printf("bond-slave.mii-status        : %d\n", si.MiiStatus)
 					fmt.Printf("bond-slave.link-failure-count: %d\n", si.LinkFailureCount)
-					fmt.Printf("bond-slave.parmanent-mac     : %s\n", si.PermanentHwAddr)
+					fmt.Printf("bond-slave.parmanent-mac     : %s\n", si.PermHardwareAddr)
 					fmt.Printf("bond-slave.queue-id          : %d\n", si.QueueId)
 					fmt.Printf("bond-slave.aggregator-id     : %d\n", si.AggregatorId)
-					fmt.Printf("bond-slave.actor-oper-oprt-state     : %d\n", si.ActorOperPortState)
+					fmt.Printf("bond-slave.actor-oper-oprt-state     : %d\n", si.AdActorOperPortState)
 					fmt.Printf("bond-slave.ad-partner-oper-port-state: %d\n", si.AdPartnerOperPortState)
 				default:
 					fmt.Printf("slave-info        : %s %v\n", si.SlaveType(), si)

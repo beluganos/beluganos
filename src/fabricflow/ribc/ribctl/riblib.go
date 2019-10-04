@@ -176,7 +176,7 @@ func LinkTypeFromLink(link *nlamsg.Link) fibcapi.LinkType_Type {
 		case *nlamsg.BridgeSlaveInfo:
 			return fibcapi.LinkType_BRIDGE_SLAVE
 
-		case *netlink.BondSlaveInfo:
+		case *netlink.BondSlave:
 			return fibcapi.LinkType_BOND_SLAVE
 		}
 	}

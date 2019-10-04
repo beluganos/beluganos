@@ -189,9 +189,9 @@ func strLinkArgs(link netlink.Link) string {
 }
 
 func strLinkSlaveInfo(attrs *netlink.LinkAttrs) string {
-	switch si := attrs.SlaveInfo.(type) {
-	case *netlink.BondSlaveInfo:
-		return fmt.Sprintf("slave:bond %s ag:%d %s", si.State, si.AggregatorId, si.PermanentHwAddr)
+	switch si := attrs.Slave.(type) {
+	case *netlink.BondSlave:
+		return fmt.Sprintf("slave:bond %s ag:%d %s", si.State, si.AggregatorId, si.PermHardwareAddr)
 	default:
 		return ""
 	}

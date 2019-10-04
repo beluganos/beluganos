@@ -73,7 +73,7 @@ func LinkAttrsToNative(a *LinkAttrs, n *netlink.LinkAttrs) {
 	n.Promisc = int(a.Promisc)
 	n.EncapType = a.EncapType
 	n.OperState = netlink.LinkOperState(a.OperState)
-	n.SlaveInfo = SlaveInfoToNative(a.GetSlaveInfo())
+	n.Slave = SlaveInfoToNative(a.GetSlaveInfo())
 }
 
 func LinkAttrsFromNative(a *LinkAttrs, n *netlink.LinkAttrs) {
@@ -90,7 +90,7 @@ func LinkAttrsFromNative(a *LinkAttrs, n *netlink.LinkAttrs) {
 	a.Promisc = int32(n.Promisc)
 	a.EncapType = n.EncapType
 	a.OperState = LinkOperState(n.OperState)
-	a.SlaveInfo = NewSlaveInfoFromNative(n.SlaveInfo)
+	a.SlaveInfo = NewSlaveInfoFromNative(n.Slave)
 }
 
 // Link (Generic)

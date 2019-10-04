@@ -31,33 +31,33 @@ func NewBondSlaveInfo() *BondSlaveInfo {
 	return &BondSlaveInfo{}
 }
 
-func NewBondSlaveInfoFromNative(n *netlink.BondSlaveInfo) *BondSlaveInfo {
+func NewBondSlaveInfoFromNative(n *netlink.BondSlave) *BondSlaveInfo {
 	return &BondSlaveInfo{
 		State:                  BondState(n.State),
 		MiiStatus:              BondLinkState(n.MiiStatus),
 		LinkFailureCount:       n.LinkFailureCount,
-		PermanentHwAddr:        net.HardwareAddr(n.PermanentHwAddr),
+		PermanentHwAddr:        net.HardwareAddr(n.PermHardwareAddr),
 		QueueId:                int32(n.QueueId),
 		AggregatorId:           int32(n.AggregatorId),
-		ActorOperPortState:     int32(n.ActorOperPortState),
+		ActorOperPortState:     int32(n.AdActorOperPortState),
 		AdPartnerOperPortState: int32(n.AdPartnerOperPortState),
 	}
 }
 
-func (b *BondSlaveInfo) ToNative() *netlink.BondSlaveInfo {
-	return &netlink.BondSlaveInfo{
-		State:                  netlink.BondState(b.State),
-		MiiStatus:              netlink.BondLinkStatus(b.MiiStatus),
+func (b *BondSlaveInfo) ToNative() *netlink.BondSlave {
+	return &netlink.BondSlave{
+		State:                  netlink.BondSlaveState(b.State),
+		MiiStatus:              netlink.BondSlaveMiiStatus(b.MiiStatus),
 		LinkFailureCount:       b.LinkFailureCount,
-		PermanentHwAddr:        b.PermanentHwAddr,
-		QueueId:                int(b.QueueId),
-		AggregatorId:           int(b.AggregatorId),
-		ActorOperPortState:     int(b.ActorOperPortState),
-		AdPartnerOperPortState: int(b.AdPartnerOperPortState),
+		PermHardwareAddr:       b.PermanentHwAddr,
+		QueueId:                uint16(b.QueueId),
+		AggregatorId:           uint16(b.AggregatorId),
+		AdActorOperPortState:   uint8(b.ActorOperPortState),
+		AdPartnerOperPortState: uint16(b.AdPartnerOperPortState),
 	}
 }
 
-func SlaveInfoToNative(s isLinkAttrs_SlaveInfo) netlink.LinkSlaveInfo {
+func SlaveInfoToNative(s isLinkAttrs_SlaveInfo) netlink.LinkSlave {
 	switch slaveInfo := s.(type) {
 	case *LinkAttrs_BondSlaveInfo:
 		return slaveInfo.BondSlaveInfo.ToNative()
@@ -67,9 +67,9 @@ func SlaveInfoToNative(s isLinkAttrs_SlaveInfo) netlink.LinkSlaveInfo {
 	}
 }
 
-func NewSlaveInfoFromNative(n netlink.LinkSlaveInfo) isLinkAttrs_SlaveInfo {
+func NewSlaveInfoFromNative(n netlink.LinkSlave) isLinkAttrs_SlaveInfo {
 	switch slaveInfo := n.(type) {
-	case *netlink.BondSlaveInfo:
+	case *netlink.BondSlave:
 		return &LinkAttrs_BondSlaveInfo{
 			BondSlaveInfo: NewBondSlaveInfoFromNative(slaveInfo),
 		}
