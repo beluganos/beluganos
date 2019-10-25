@@ -321,7 +321,7 @@ class FIBCRestController(ControllerBase):
         """
         dp_id = msg["dp_id"]
         for arg in msg["args"]:
-            evt = fibcevt.EventFIBCDpPortConfig(msg, dp_id, arg["port"], arg["enter"])
+            evt = fibcevt.EventFIBCDpPortConfig(msg, dp_id, arg["port"], arg["enter"], 0)
             self.app.send_event_to_observers(evt)
 
 

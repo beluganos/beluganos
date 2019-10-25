@@ -298,14 +298,14 @@ def policy_acl_flow(dpath, mod, ofctl, use_metadata=True):
     """
     _LOG.debug("ACL FLow: %d %s", dpath.id, mod)
 
+    entry = mod.acl
     if entry.match.in_port:
-        # omoeflow mode:
+        # openflow mode:
         # send no flows for a port.
         # flows for a port are send by setup_flow().
         return
 
     cmd = fibcapi.flow_mod_cmd(mod.cmd, dpath.ofproto)
-    entry = mod.acl
     match = ofmatch.Match().ip_dst(entry.match.ip_dst).vrf(entry.match.vrf, use_metadata)
     def _actions():
         if not offlow.is_action_needed(dpath, cmd):

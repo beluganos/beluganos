@@ -18,7 +18,7 @@
 package gonslib
 
 import (
-	"fabricflow/fibc/api"
+	fibcapi "fabricflow/fibc/api"
 
 	"github.com/beluganos/go-opennsl/opennsl"
 
@@ -33,7 +33,7 @@ const (
 // LinkInfo is opennsl port_info and port_no.
 //
 type LinkInfo struct {
-	*opennsl.PortInfo
+	opennsl.PortInfo
 	Port opennsl.Port
 }
 
@@ -43,7 +43,7 @@ type LinkInfo struct {
 func NewLinkInfo(port opennsl.Port, info *opennsl.PortInfo) *LinkInfo {
 	return &LinkInfo{
 		Port:     port,
-		PortInfo: info,
+		PortInfo: *info,
 	}
 }
 

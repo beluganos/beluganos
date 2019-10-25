@@ -147,7 +147,7 @@ func containerCmd() *cobra.Command {
 
 	var bridge string
 	var excludeIfnames []string
-	rootCmd.PersistentFlags().StringArrayVarP(&excludeIfnames, "exclude", "", []string{"eth0", "root"}, "Exclude devices.")
+	rootCmd.PersistentFlags().StringArrayVarP(&excludeIfnames, "exclude", "", []string{"eth0", "root", "logdir"}, "Exclude devices.")
 	rootCmd.PersistentFlags().StringVarP(&bridge, "bridge", "", ovsBridgeDefault, "ovs-bridge name.")
 
 	addCmd := &cobra.Command{

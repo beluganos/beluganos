@@ -92,15 +92,15 @@ class FIBCOfcApp(app_manager.RyuApp):
         """
         Send DpPortConfig event.
         """
-        if enter:
-            # if port is down, change enter to False
-            ofp = dpath.ofproto
-            enter = (port.state & ofp.OFPPS_LINK_DOWN) == 0
+        #if enter:
+        #    # if port is down, change enter to False
+        #    ofp = dpath.ofproto
+        #    enter = (port.state & ofp.OFPPS_LINK_DOWN) == 0
 
         _LOG.info("DpPortConfig: dp_id=%d, port_id=%d, enter=%s",
                   dpath.id, port.port_no, enter)
 
-        evt = fibcevt.EventFIBCDpPortConfig(port, dpath.id, port.port_no, enter)
+        evt = fibcevt.EventFIBCDpPortConfig(port, dpath.id, port.port_no, enter, port.state)
         self.send_event_to_observers(evt)
 
 
@@ -114,7 +114,46 @@ class FIBCOfcApp(app_manager.RyuApp):
         _LOG.info("DpPortConfig: dp_id=%d, port_id=%d, enter=%s",
                   dpath.id, port["dp"].port, enter)
 
-        evt = fibcevt.EventFIBCDpPortConfig(port, dpath.id, port["dp"].port, enter)
+        evt = fibcevt.EventFIBCDpPortConfig(port, dpath.id, port["dp"].port, enter, 0)
+        self.send_event_to_observers(evt)
+
+
+    # pylint: disable=no-member
+    @handler.set_ev_cls(fibcevt.EventFIBCFFL2AddrStatus, handler.MAIN_DISPATCHER)
+    def _on_ff_l2addr_status(self, evt):
+        """
+        process ff_l2addr_status  message.
+        """
+        msg = evt.msg # pb.FFL2AddrStatus
+        dpath = evt.datapath
+        dp_id = evt.datapath.id
+
+        _LOG.debug("FFL2AddrStatus: %s %s", dp_id, msg)
+
+        try:
+            re_id = fibcdbm.idmap().find_by_dp_id(dp_id)["re_id"]
+
+        except Exception as ex:
+            _LOG.exception(ex)
+
+        new_addrs = []
+        for addr in msg.addrs:
+            try:
+                port = fibcdbm.portmap().find_by_dp(dp_id, addr.port_id)
+                vm_port = port["vm"]
+                addr.ifname = port["name"].name
+                addr.port_id = vm_port.port
+
+                new_addrs.append(addr)
+
+            except Exception as ex:
+                _LOG.exception(ex)
+
+
+        _LOG.debug("FFL2AddrStatus: %s %s", re_id, new_addrs)
+
+        msg = fibcapi.new_l2addr_status(re_id, new_addrs)
+        evt = fibcevt.EventFIBCL2AddrStatus(msg)
         self.send_event_to_observers(evt)
 
 

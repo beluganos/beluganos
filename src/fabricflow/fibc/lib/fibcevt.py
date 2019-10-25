@@ -49,11 +49,12 @@ class EventFIBCDpPortConfig(EventFIBCBase):
     FIBC DP PortConfig event.
     msg: ryu,ofproto.OFPPort
     """
-    def __init__(self, msg, dp_id, port_id, enter):
+    def __init__(self, msg, dp_id, port_id, enter, state):
         super(EventFIBCDpPortConfig, self).__init__(msg)
         self.dp_id = dp_id
         self.port_id = port_id
         self.enter = enter
+        self.state = state
 
 
 class EventFIBCVsPortConfig(EventFIBCBase):

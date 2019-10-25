@@ -467,8 +467,12 @@ func (r *RIBController) SendAddrFlows(cmd fibcapi.FlowMod_Cmd, addr *nlamsg.Addr
 		// pass
 
 	default:
+		if err := r.SendACLFlowByAddr(cmd, addr, 0); err != nil {
+			// for openflow mode.
+			r.log.Errorf("PortStatus: add ACL(Addr) error. port:0 %s", err)
+		}
 		if err := r.SendACLFlowByAddr(cmd, addr, ife.PortId()); err != nil {
-			r.log.Errorf("PortStatus: add ACL(Addr) error. %s", err)
+			r.log.Errorf("PortStatus: add ACL(Addr) error. port:%d %s", ife.PortId(), err)
 			return err
 		}
 	}

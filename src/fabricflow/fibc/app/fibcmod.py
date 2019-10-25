@@ -144,6 +144,7 @@ class FIBCModApp(app_manager.RyuApp):
 
         dp_id = evt.dp_id
         port_id = evt.port_id
+        link_up = (evt.state & 0x01) == 0 # 0x01:ofp.OFPPS_LINK_DOWN
 
         try:
             port = fibcdbm.portmap().find_by_dp(dp_id, port_id)
@@ -151,7 +152,7 @@ class FIBCModApp(app_manager.RyuApp):
             vs_dp, mode = fibcdbm.dps().find_by_id(vs_port.id)
             func = ofc.port_mod(mode)
 
-            status = pb.PortStatus.UP if evt.enter else pb.PortStatus.DOWN
+            status = pb.PortStatus.UP if link_up else pb.PortStatus.DOWN
             mod = pb.FFPortMod(
                 dp_id=vs_port.id,
                 port_no=vs_port.port,

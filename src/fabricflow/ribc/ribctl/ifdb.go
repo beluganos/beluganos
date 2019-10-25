@@ -269,6 +269,10 @@ func (db *IfDB) Update(portId uint32, f func(e *IfDBEntry) IfDBField) IfDBField 
 }
 
 func (db *IfDB) Associated(nid uint8, ifindex int) bool {
+	if ifindex <= 0 {
+		return ifindex == 0
+	}
+
 	db.lock.RLock()
 	defer db.lock.RUnlock()
 
