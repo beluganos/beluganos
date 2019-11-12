@@ -47,6 +47,14 @@ func NewHelloFromBytes(data []byte) (*Hello, error) {
 	return hello, nil
 }
 
+//func NewHelloRequest(reId string) *HelloRequest {
+//	hello := NewHello(reId)
+//	return &HelloRequest{
+//		Header: NewHeader(hello.Type(), 0, 0),
+//		Hello:  hello,
+//	}
+//}
+
 //
 // FFHello
 //

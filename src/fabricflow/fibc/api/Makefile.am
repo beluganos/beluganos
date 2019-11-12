@@ -1,5 +1,5 @@
 
-PROTOS = fibcapi.proto
+PROTOS = fibcapi.proto fibcapis.proto
 PYLIST = fibcapi.py
 
 .PHONY: proto go-test py-test
@@ -12,8 +12,10 @@ py-test:
 	./suite.py
 
 proto:
-	protoc -I=. --go_out=plugins=grpc:. ${PROTOS}
-	protoc -I=. --python_out=. ${PROTOS}
+	@for PROTO in $(PROTOS); do \
+		protoc -I=. --go_out=plugins=grpc:. $$PROTO; \
+		python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. $$PROTO; \
+	done
 
 all-local: proto
 

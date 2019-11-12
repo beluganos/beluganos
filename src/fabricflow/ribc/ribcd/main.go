@@ -83,6 +83,7 @@ func dumpConfig(c *Config) {
 	log.Infof("CONFIG: Node.Dup-ifname : %t", c.Node.DupIfname)
 	log.Infof("CONFIG: NLA.Api         : '%s'", c.NLA.Api)
 	log.Infof("CONFIG: RIBC.FIBC       : '%s'", c.Ribc.Fibc)
+	log.Infof("CONFIG: RIBC.Type       : '%s'", c.Ribc.GetFibcType())
 	log.Infof("CONFIG: RIBC.Disable    : %t", c.Ribc.Disable)
 }
 
@@ -120,7 +121,7 @@ func main() {
 	}
 
 	nla := ribctl.NewNLAController(config.NLA.Api)
-	fib := ribctl.NewFIBController(config.Ribc.Fibc)
+	fib := ribctl.NewFIBController(config.Ribc.GetFibcType(), config.Ribc.Fibc, config.Node.ReId)
 	rib := ribctl.NewRIBController(nid, config.Node.ReId, config.Node.Label, config.Node.DupIfname, nla, fib, flowcfg)
 
 	if err := nla.Start(); err != nil {

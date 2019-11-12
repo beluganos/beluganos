@@ -20,12 +20,15 @@ package fibcnet
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"net"
 	"syscall"
 )
 
 const (
 	FFPACKET_ETHTYPE uint16 = 0x0a0a
+
+	FFPACKET_DATA_SIZE = 6 + 6 + 2 + 2 + 24 + 24
 )
 
 type EthHdr struct {
@@ -39,6 +42,36 @@ type FFPacket struct {
 	_      uint16
 	ReId   [24]byte
 	Ifname [24]byte
+}
+
+func ffpkBytesToString(b []byte) string {
+	if index := bytes.IndexByte(b, 0); index >= 0 {
+		return string(b[0:index])
+	}
+
+	return string(b)
+}
+
+func (d *FFPacket) GetReId() string {
+	return ffpkBytesToString(d.ReId[:])
+}
+
+func (d *FFPacket) GetIfname() string {
+	return ffpkBytesToString(d.Ifname[:])
+}
+
+func ParseFFPacket(data []byte, ffpkt *FFPacket) error {
+	if l := len(data); l < FFPACKET_DATA_SIZE {
+		return fmt.Errorf("Invalid length. len=%d", l)
+	}
+
+	copy(ffpkt.EthDst[:], data[0:6])
+	copy(ffpkt.EthSrc[:], data[6:12])
+	ffpkt.EthType = uint16(data[13])<<8 + uint16(data[12])
+	copy(ffpkt.ReId[:], data[16:40])
+	copy(ffpkt.Ifname[:], data[40:64])
+
+	return nil
 }
 
 func (p *FFPacket) Bytes() ([]byte, error) {

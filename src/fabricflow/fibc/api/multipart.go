@@ -139,3 +139,47 @@ func NewMultipart_Reply_PortDesc(dpId uint64, ports []*FFPort, internal bool) *F
 		Body:   newMultipart_Reply_PortDesc(ports, internal),
 	}
 }
+
+func NewFFMultipartRequest(dpId uint64) *FFMultipart_Request {
+	return &FFMultipart_Request{
+		DpId: dpId,
+	}
+}
+
+func (r *FFMultipart_Request) SetPort(port *FFMultipart_PortRequest) *FFMultipart_Request {
+	r.MpType = FFMultipart_PORT
+	r.Body = &FFMultipart_Request_Port{
+		Port: port,
+	}
+
+	return r
+}
+
+func (r *FFMultipart_Request) SetPortDesc(portDesc *FFMultipart_PortDescRequest) *FFMultipart_Request {
+	r.MpType = FFMultipart_PORT_DESC
+	r.Body = &FFMultipart_Request_PortDesc{
+		PortDesc: portDesc,
+	}
+
+	return r
+}
+
+func NewFFMultipartPortRequest(portNo uint32, names []string) *FFMultipart_PortRequest {
+	return &FFMultipart_PortRequest{
+		PortNo: portNo,
+		Names:  names,
+	}
+}
+
+func NewFFMultipartPortDescRequest(internal bool) *FFMultipart_PortDescRequest {
+	return &FFMultipart_PortDescRequest{
+		Internal: internal,
+	}
+}
+
+func NewDpMultipartRequest(xid uint32, request *FFMultipart_Request) *DpMultipartRequest {
+	return &DpMultipartRequest{
+		Xid:     xid,
+		Request: request,
+	}
+}

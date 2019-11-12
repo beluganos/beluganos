@@ -15,10 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package fibclib
+package fibcapi
 
 import (
-	fibcapi "fabricflow/fibc/api"
 	fibcnet "fabricflow/fibc/net"
 	"fmt"
 )
@@ -33,7 +32,7 @@ func notifyMessage(header *fibcnet.Header, m fibcnet.Message, handler interface{
 
 func notifyhHello(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(HelloHandler); ok {
-		m, err := fibcapi.NewHelloFromBytes(data)
+		m, err := NewHelloFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -50,7 +49,7 @@ func notifyhHello(header *fibcnet.Header, data []byte, handler interface{}) erro
 
 func notifyPortStatus(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(PortStatusHandler); ok {
-		m, err := fibcapi.NewPortStatusFromBytes(data)
+		m, err := NewPortStatusFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -67,7 +66,7 @@ func notifyPortStatus(header *fibcnet.Header, data []byte, handler interface{}) 
 
 func notifyPortConfig(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(PortConfigHandler); ok {
-		m, err := fibcapi.NewPortConfigFromBytes(data)
+		m, err := NewPortConfigFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -84,7 +83,7 @@ func notifyPortConfig(header *fibcnet.Header, data []byte, handler interface{}) 
 
 func notifyFlowMod(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(FlowModHandler); ok {
-		m, err := fibcapi.NewFlowModFromBytes(data)
+		m, err := NewFlowModFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -101,7 +100,7 @@ func notifyFlowMod(header *fibcnet.Header, data []byte, handler interface{}) err
 
 func notifyGroupMod(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(GroupModHandler); ok {
-		m, err := fibcapi.NewGroupModFromBytes(data)
+		m, err := NewGroupModFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -118,7 +117,7 @@ func notifyGroupMod(header *fibcnet.Header, data []byte, handler interface{}) er
 
 func nodifyDpStatus(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(DpStatusHandler); ok {
-		m, err := fibcapi.NewDpStatusFromBytes(data)
+		m, err := NewDpStatusFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -135,7 +134,7 @@ func nodifyDpStatus(header *fibcnet.Header, data []byte, handler interface{}) er
 
 func notifyFFHello(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(FFHelloHandler); ok {
-		m, err := fibcapi.NewFFHelloFromBytes(data)
+		m, err := NewFFHelloFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -151,7 +150,7 @@ func notifyFFHello(header *fibcnet.Header, data []byte, handler interface{}) err
 }
 
 func notifyMultipartRequest(header *fibcnet.Header, data []byte, handler interface{}) error {
-	m, err := fibcapi.NewFFMultipart_RequestFromBytes(data)
+	m, err := NewFFMultipart_RequestFromBytes(data)
 	if err != nil {
 		return err
 	}
@@ -166,11 +165,11 @@ func notifyMultipartRequest(header *fibcnet.Header, data []byte, handler interfa
 	}
 
 	switch m.MpType {
-	case fibcapi.FFMultipart_PORT:
+	case FFMultipart_PORT:
 		if h, ok := handler.(FFMultipartPortRequestHandler); ok {
 			h.FIBCFFMultipartPortRequest(header, m, m.GetPort())
 		}
-	case fibcapi.FFMultipart_PORT_DESC:
+	case FFMultipart_PORT_DESC:
 		if h, ok := handler.(FFMultipartPortDescRequestHandler); ok {
 			h.FIBCFFMultipartPortDescRequest(header, m, m.GetPortDesc())
 		}
@@ -182,7 +181,7 @@ func notifyMultipartRequest(header *fibcnet.Header, data []byte, handler interfa
 }
 
 func notifyMultipartReply(header *fibcnet.Header, data []byte, handler interface{}) error {
-	m, err := fibcapi.NewFFMultipart_ReplyFromBytes(data)
+	m, err := NewFFMultipart_ReplyFromBytes(data)
 	if err != nil {
 		return err
 	}
@@ -198,11 +197,11 @@ func notifyMultipartReply(header *fibcnet.Header, data []byte, handler interface
 	}
 
 	switch m.MpType {
-	case fibcapi.FFMultipart_PORT:
+	case FFMultipart_PORT:
 		if h, ok := handler.(FFMultipartPortReplyHandler); ok {
 			h.FIBCFFMultipartPortReply(header, m, m.GetPort())
 		}
-	case fibcapi.FFMultipart_PORT_DESC:
+	case FFMultipart_PORT_DESC:
 		if h, ok := handler.(FFMultipartPortDescReplyHandler); ok {
 			h.FIBCFFMultipartPortDescReply(header, m, m.GetPortDesc())
 		}
@@ -215,7 +214,7 @@ func notifyMultipartReply(header *fibcnet.Header, data []byte, handler interface
 
 func notifyFFPacketIn(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(FFPacketInHandler); ok {
-		m, err := fibcapi.NewFFPacketInFromBytes(data)
+		m, err := NewFFPacketInFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -232,7 +231,7 @@ func notifyFFPacketIn(header *fibcnet.Header, data []byte, handler interface{}) 
 
 func notifyFFPacketOut(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(FFPacketOutHandler); ok {
-		m, err := fibcapi.NewFFPacketOutFromBytes(data)
+		m, err := NewFFPacketOutFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -249,7 +248,7 @@ func notifyFFPacketOut(header *fibcnet.Header, data []byte, handler interface{})
 
 func notifyFFPortStatus(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(FFPortStatusHandler); ok {
-		m, err := fibcapi.NewFFPortStatusFromBytes(data)
+		m, err := NewFFPortStatusFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -266,7 +265,7 @@ func notifyFFPortStatus(header *fibcnet.Header, data []byte, handler interface{}
 
 func notifyFFPortMod(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(FFPortModHandler); ok {
-		m, err := fibcapi.NewFFPortModFromBytes(data)
+		m, err := NewFFPortModFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -283,7 +282,7 @@ func notifyFFPortMod(header *fibcnet.Header, data []byte, handler interface{}) e
 
 func notifyL2AddrStatus(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(L2AddrStatusHandler); ok {
-		m, err := fibcapi.NewL2AddrStatusFromBytes(data)
+		m, err := NewL2AddrStatusFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -300,7 +299,7 @@ func notifyL2AddrStatus(header *fibcnet.Header, data []byte, handler interface{}
 
 func notifyFFL2AddrStatus(header *fibcnet.Header, data []byte, handler interface{}) error {
 	if h, ok := handler.(FFL2AddrStatusHandler); ok {
-		m, err := fibcapi.NewFFL2AddrStatusFromBytes(data)
+		m, err := NewFFL2AddrStatusFromBytes(data)
 		if err != nil {
 			return err
 		}
@@ -317,36 +316,36 @@ func notifyFFL2AddrStatus(header *fibcnet.Header, data []byte, handler interface
 
 func Dispatch(h *fibcnet.Header, data []byte, handler interface{}) error {
 
-	switch fibcapi.FFM(h.Type) {
-	case fibcapi.FFM_HELLO:
+	switch FFM(h.Type) {
+	case FFM_HELLO:
 		return notifyhHello(h, data, handler)
-	case fibcapi.FFM_PORT_STATUS:
+	case FFM_PORT_STATUS:
 		return notifyPortStatus(h, data, handler)
-	case fibcapi.FFM_PORT_CONFIG:
+	case FFM_PORT_CONFIG:
 		return notifyPortConfig(h, data, handler)
-	case fibcapi.FFM_FLOW_MOD:
+	case FFM_FLOW_MOD:
 		return notifyFlowMod(h, data, handler)
-	case fibcapi.FFM_GROUP_MOD:
+	case FFM_GROUP_MOD:
 		return notifyGroupMod(h, data, handler)
-	case fibcapi.FFM_DP_STATUS:
+	case FFM_DP_STATUS:
 		return nodifyDpStatus(h, data, handler)
-	case fibcapi.FFM_FF_HELLO:
+	case FFM_FF_HELLO:
 		return notifyFFHello(h, data, handler)
-	case fibcapi.FFM_FF_MULTIPART_REQUEST:
+	case FFM_FF_MULTIPART_REQUEST:
 		return notifyMultipartRequest(h, data, handler)
-	case fibcapi.FFM_FF_MULTIPART_REPLY:
+	case FFM_FF_MULTIPART_REPLY:
 		return notifyMultipartReply(h, data, handler)
-	case fibcapi.FFM_FF_PACKET_IN:
+	case FFM_FF_PACKET_IN:
 		return notifyFFPacketIn(h, data, handler)
-	case fibcapi.FFM_FF_PACKET_OUT:
+	case FFM_FF_PACKET_OUT:
 		return notifyFFPacketOut(h, data, handler)
-	case fibcapi.FFM_FF_PORT_STATUS:
+	case FFM_FF_PORT_STATUS:
 		return notifyFFPortStatus(h, data, handler)
-	case fibcapi.FFM_FF_PORT_MOD:
+	case FFM_FF_PORT_MOD:
 		return notifyFFPortMod(h, data, handler)
-	case fibcapi.FFM_L2ADDR_STATUS:
+	case FFM_L2ADDR_STATUS:
 		return notifyL2AddrStatus(h, data, handler)
-	case fibcapi.FFM_FF_L2ADDR_STATUS:
+	case FFM_FF_L2ADDR_STATUS:
 		return notifyFFL2AddrStatus(h, data, handler)
 	default:
 		return fmt.Errorf("Invalid Message Type. %d", h.Type)
@@ -358,66 +357,66 @@ func DispatchMsg(header *fibcnet.Header, m fibcnet.Message, handler interface{})
 		return err
 	}
 
-	switch fibcapi.FFM(header.Type) {
-	case fibcapi.FFM_HELLO:
+	switch FFM(header.Type) {
+	case FFM_HELLO:
 		if h, ok := handler.(HelloHandler); ok {
-			h.FIBCHello(header, m.(*fibcapi.Hello))
+			h.FIBCHello(header, m.(*Hello))
 		}
-	case fibcapi.FFM_PORT_STATUS:
+	case FFM_PORT_STATUS:
 		if h, ok := handler.(PortStatusHandler); ok {
-			h.FIBCPortStatus(header, m.(*fibcapi.PortStatus))
+			h.FIBCPortStatus(header, m.(*PortStatus))
 		}
-	case fibcapi.FFM_PORT_CONFIG:
+	case FFM_PORT_CONFIG:
 		if h, ok := handler.(PortConfigHandler); ok {
-			h.FIBCPortConfig(header, m.(*fibcapi.PortConfig))
+			h.FIBCPortConfig(header, m.(*PortConfig))
 		}
-	case fibcapi.FFM_FLOW_MOD:
+	case FFM_FLOW_MOD:
 		if h, ok := handler.(FlowModHandler); ok {
-			h.FIBCFlowMod(header, m.(*fibcapi.FlowMod))
+			h.FIBCFlowMod(header, m.(*FlowMod))
 		}
-	case fibcapi.FFM_GROUP_MOD:
+	case FFM_GROUP_MOD:
 		if h, ok := handler.(GroupModHandler); ok {
-			h.FIBCGroupMod(header, m.(*fibcapi.GroupMod))
+			h.FIBCGroupMod(header, m.(*GroupMod))
 		}
-	case fibcapi.FFM_DP_STATUS:
+	case FFM_DP_STATUS:
 		if h, ok := handler.(DpStatusHandler); ok {
-			h.FIBCDpStatus(header, m.(*fibcapi.DpStatus))
+			h.FIBCDpStatus(header, m.(*DpStatus))
 		}
-	case fibcapi.FFM_FF_HELLO:
+	case FFM_FF_HELLO:
 		if h, ok := handler.(FFHelloHandler); ok {
-			h.FIBCFFHello(header, m.(*fibcapi.FFHello))
+			h.FIBCFFHello(header, m.(*FFHello))
 		}
-	case fibcapi.FFM_FF_MULTIPART_REQUEST:
+	case FFM_FF_MULTIPART_REQUEST:
 		if h, ok := handler.(FFMultipartRequestHandler); ok {
-			return h.FIBCFFMultipartRequest(header, m.(*fibcapi.FFMultipart_Request))
+			return h.FIBCFFMultipartRequest(header, m.(*FFMultipart_Request))
 		}
-	case fibcapi.FFM_FF_MULTIPART_REPLY:
+	case FFM_FF_MULTIPART_REPLY:
 		if h, ok := handler.(FFMultipartReplyHandler); ok {
-			return h.FIBCFFMultipartReply(header, m.(*fibcapi.FFMultipart_Reply))
+			return h.FIBCFFMultipartReply(header, m.(*FFMultipart_Reply))
 		}
-	case fibcapi.FFM_FF_PACKET_IN:
+	case FFM_FF_PACKET_IN:
 		if h, ok := handler.(FFPacketInHandler); ok {
-			h.FIBCFFPacketIn(header, m.(*fibcapi.FFPacketIn))
+			h.FIBCFFPacketIn(header, m.(*FFPacketIn))
 		}
-	case fibcapi.FFM_FF_PACKET_OUT:
+	case FFM_FF_PACKET_OUT:
 		if h, ok := handler.(FFPacketOutHandler); ok {
-			h.FIBCFFPacketOut(header, m.(*fibcapi.FFPacketOut))
+			h.FIBCFFPacketOut(header, m.(*FFPacketOut))
 		}
-	case fibcapi.FFM_FF_PORT_STATUS:
+	case FFM_FF_PORT_STATUS:
 		if h, ok := handler.(FFPortStatusHandler); ok {
-			h.FIBCFFPortStatus(header, m.(*fibcapi.FFPortStatus))
+			h.FIBCFFPortStatus(header, m.(*FFPortStatus))
 		}
-	case fibcapi.FFM_FF_PORT_MOD:
+	case FFM_FF_PORT_MOD:
 		if h, ok := handler.(FFPortModHandler); ok {
-			h.FIBCFFPortMod(header, m.(*fibcapi.FFPortMod))
+			h.FIBCFFPortMod(header, m.(*FFPortMod))
 		}
-	case fibcapi.FFM_L2ADDR_STATUS:
+	case FFM_L2ADDR_STATUS:
 		if h, ok := handler.(L2AddrStatusHandler); ok {
-			h.FIBCL2AddrStatus(header, m.(*fibcapi.L2AddrStatus))
+			h.FIBCL2AddrStatus(header, m.(*L2AddrStatus))
 		}
-	case fibcapi.FFM_FF_L2ADDR_STATUS:
+	case FFM_FF_L2ADDR_STATUS:
 		if h, ok := handler.(FFL2AddrStatusHandler); ok {
-			h.FIBCFFL2AddrStatus(header, m.(*fibcapi.FFL2AddrStatus))
+			h.FIBCFFL2AddrStatus(header, m.(*FFL2AddrStatus))
 		}
 	default:
 		return fmt.Errorf("Invalid Message Type. %d", header.Type)

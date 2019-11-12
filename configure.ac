@@ -82,5 +82,10 @@ AC_CONFIG_FILES([Makefile
 		 src/gonla/nlaapi/Makefile
 		 src/gonla/nladbm/Makefile
 		 src/gonla/nlasvc/Makefile
+		 src/govsw/Makefile
+		 src/govsw/api/Makefile
+		 src/govsw/api/vswapi/Makefile
+		 src/govsw/pkgs/Makefile
+		 src/govsw/pkgs/govsw/Makefile
 	])
 AC_OUTPUT

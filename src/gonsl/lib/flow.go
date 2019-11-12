@@ -19,7 +19,6 @@ package gonslib
 
 import (
 	fibcapi "fabricflow/fibc/api"
-	fibclib "fabricflow/fibc/lib"
 	fibcnet "fabricflow/fibc/net"
 
 	log "github.com/sirupsen/logrus"
@@ -29,13 +28,14 @@ import (
 // FIBCFlowMod process any FlowMod.
 //
 func (s *Server) FIBCFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod) {
-	// log.Debugf("Server: FlowMod: %v %v", hdr, mod)
-	fibclib.DispatchFlowMod(hdr, mod, s)
+	// s.log.Debugf("FlowMod: %v %v", hdr, mod)
+	fibcapi.DispatchFlowMod(hdr, mod, s)
 }
 
 //
 // FIBCMPLSFlowMod process FlowMod (MPLS)
 //
 func (s *Server) FIBCMPLSFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow *fibcapi.MPLSFlow) {
-	log.Debugf("Server: FlowMod(MPLS): %v %v %v", hdr, mod, flow)
+	s.log.Debugf("FlowMod(MPLS): %v", hdr)
+	fibcapi.LogFlowMod(s.log, log.DebugLevel, mod)
 }

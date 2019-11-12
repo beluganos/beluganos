@@ -359,3 +359,14 @@ func (t LinkType_Type) IsVirtual() bool {
 		return false
 	}
 }
+
+//
+// FFHello DpType
+//
+func ParseDpType(s string) (FFHello_DpType, error) {
+	if v, ok := FFHello_DpType_value[s]; ok {
+		return FFHello_DpType(v), nil
+	}
+
+	return FFHello_NOP, fmt.Errorf("Invalid DpType. %s", s)
+}

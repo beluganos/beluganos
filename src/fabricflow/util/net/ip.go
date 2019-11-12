@@ -34,6 +34,30 @@ func IncIP(ip net.IP) {
 	}
 }
 
+func IncIPNet(ipnet *net.IPNet) {
+	ones, _ := ipnet.Mask.Size()
+
+	if ones == 0 {
+		return
+	}
+
+	index := uint32((ones - 1) / 8)
+	byteShift := (index+1)*8 - uint32(ones)
+	byteDiff := byte(1 << byteShift)
+
+	ip := ipnet.IP
+
+	for {
+		ip[index] += byteDiff
+		if ip[index] > 0 || index == 0 {
+			break
+		}
+
+		index--
+		byteDiff = 1
+	}
+}
+
 func ToBroadcast(nw *net.IPNet) net.IP {
 	bc := nw.IP
 	for pos, mask := range nw.Mask {

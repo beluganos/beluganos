@@ -1,0 +1,14 @@
+[Unit]
+Description=fibc(golang) service
+After=network.target
+ConditionPathExists=/etc/beluganos/fibcd-go.conf
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/beluganos/fibcd-go.conf
+ExecStart=/usr/bin/fibcd --config-dir ${CONFIG_DIR} --listen-addr ${API_ADDR} --listen-port ${API_PORT} ${OPTS}
+Restart=on-abort
+User=beluganos
+
+[Install]
+WantedBy=network.target

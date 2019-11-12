@@ -19,7 +19,6 @@ package ribctl
 
 import (
 	fibcapi "fabricflow/fibc/api"
-	fibclib "fabricflow/fibc/lib"
 	fibcnet "fabricflow/fibc/net"
 	"fmt"
 	"gonla/nlamsg"
@@ -36,13 +35,13 @@ type RIBController struct {
 	label  uint32
 	ifdb   *IfDB
 	nla    *NLAController
-	fib    *FIBController
+	fib    FIBController
 	flowdb *FlowConfig
 	useNId bool
 	log    *log.Entry
 }
 
-func NewRIBController(nid uint8, reId string, label uint32, useNId bool, nla *NLAController, fib *FIBController, flowdb *FlowConfig) *RIBController {
+func NewRIBController(nid uint8, reId string, label uint32, useNId bool, nla *NLAController, fib FIBController, flowdb *FlowConfig) *RIBController {
 	return &RIBController{
 		nid:    nid,
 		reId:   reId,
@@ -77,8 +76,8 @@ func (r *RIBController) Serve(done <-chan struct{}) {
 			nlamsg.DispatchUnion(msg, r)
 
 		case msg := <-r.fib.Recv():
-			if err := fibclib.Dispatch(msg.Hdr, msg.Data, r); err != nil {
-				r.log.Errorf("Serve: Dispatch error. %v %s", msg.Hdr, err)
+			if err := msg.Dispatch(r); err != nil {
+				r.log.Errorf("Serve: Dispatch error. %v %s", r, err)
 			}
 
 		case <-done:
@@ -106,15 +105,19 @@ func (r *RIBController) FIBCConnected() {
 }
 
 func (r *RIBController) FIBCDpStatus(hdr *fibcnet.Header, msg *fibcapi.DpStatus) {
-	r.log.Debugf("DpStatus: %v", msg)
+	r.log.Debugf("DpStatus:")
+	fibcapi.LogDpStatus(r.log, log.DebugLevel, msg)
 
-	if msg.Status == fibcapi.DpStatus_ENTER {
-		r.SendLoopbackFlows(fibcapi.FlowMod_ADD, r.nid, 0)
+	if r.fib.FIBCType() == FIBCTypeGrpc {
+		if msg.Status == fibcapi.DpStatus_ENTER {
+			r.SendLoopbackFlows(fibcapi.FlowMod_ADD, r.nid, 0)
+		}
 	}
 }
 
 func (r *RIBController) FIBCPortStatus(hdr *fibcnet.Header, msg *fibcapi.PortStatus) {
-	r.log.Debugf("PortStatus: %v", msg)
+	r.log.Debugf("PortStatus:")
+	fibcapi.LogPortStatus(r.log, log.DebugLevel, msg)
 
 	var ifentry IfDBEntry
 	if f := r.ifdb.Update(msg.PortId, func(e *IfDBEntry) IfDBField {
@@ -183,26 +186,25 @@ func (r *RIBController) FIBCPortStatus(hdr *fibcnet.Header, msg *fibcapi.PortSta
 }
 
 func (r *RIBController) FIBCL2AddrStatus(hdr *fibcnet.Header, msg *fibcapi.L2AddrStatus) {
-	r.log.Debugf("L2AddrStatus: %v", msg)
+	r.log.Debugf("L2AddrStatus:")
+	fibcapi.LogL2AddrStatus(r.log, log.DebugLevel, msg)
 
 	for _, addr := range msg.Addrs {
 		var ifentry IfDBEntry
 		if ok := r.ifdb.Select(&ifentry, addr.PortId); !ok {
-			r.log.Errorf("L2AddrStatus: ifentry not found. %s", addr)
+			r.log.Errorf("L2AddrStatus: ifentry not found. port:%d", addr.PortId)
 			continue
 		}
 
 		if ifentry.LinkType != fibcapi.LinkType_BRIDGE_SLAVE {
-			r.log.Debugf("L2AddrStatus: not bridge slave. %s", addr)
+			r.log.Debugf("L2AddrStatus: not bridge slave. %s", addr.HwAddr)
 			continue
 		}
 
 		if err := r.SetFdb(addr, ifentry.Index); err != nil {
-			r.log.Errorf("L2AddrStatus: set fdb error. %s %s", addr, err)
+			r.log.Errorf("L2AddrStatus: set fdb error. %s %s", addr.HwAddr, err)
 			continue
 		}
-
-		r.log.Debugf("L2AddrStatus: set fdb %s", addr)
 	}
 }
 
@@ -467,13 +469,16 @@ func (r *RIBController) SendAddrFlows(cmd fibcapi.FlowMod_Cmd, addr *nlamsg.Addr
 		// pass
 
 	default:
-		if err := r.SendACLFlowByAddr(cmd, addr, 0); err != nil {
-			// for openflow mode.
-			r.log.Errorf("PortStatus: add ACL(Addr) error. port:0 %s", err)
-		}
-		if err := r.SendACLFlowByAddr(cmd, addr, ife.PortId()); err != nil {
-			r.log.Errorf("PortStatus: add ACL(Addr) error. port:%d %s", ife.PortId(), err)
-			return err
+		if r.fib.FIBCType() == FIBCTypeTCP {
+			if err := r.SendACLFlowByAddr(cmd, addr, 0); err != nil {
+				// for openflow mode.
+				r.log.Errorf("PortStatus: add ACL(Addr) error. port:0 %s", err)
+			}
+		} else {
+			if err := r.SendACLFlowByAddr(cmd, addr, ife.PortId()); err != nil {
+				r.log.Errorf("PortStatus: add ACL(Addr) error. port:%d %s", ife.PortId(), err)
+				return err
+			}
 		}
 	}
 
@@ -509,6 +514,11 @@ func (r *RIBController) SendNeighFlows(cmd fibcapi.FlowMod_Cmd, neigh *nlamsg.Ne
 	}
 
 	r.log.Debugf("NeighFlows: %s %s", cmd, neigh)
+
+	if neigh.NeId == 0 {
+		r.log.Debugf("NeighFlows: ignore %s %s", cmd, neigh)
+		return nil
+	}
 
 	grpCmd := FlowCmdToGroupCmd(cmd)
 

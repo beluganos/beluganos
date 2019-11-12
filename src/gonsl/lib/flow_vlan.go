@@ -38,11 +38,12 @@ func (s *Server) FIBCVLANFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow
 }
 
 func (s *Server) fibcVLANFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow *fibcapi.VLANFlow) {
-	log.Debugf("Server: FlowMod(VLAN): %v %v %v", hdr, mod, flow)
+	s.log.Debugf("FlowMod(VLAN): %v", hdr)
+	fibcapi.LogFlowMod(s.log, log.DebugLevel, mod)
 
 	port, portType := fibcapi.ParseDPPortId(flow.Match.InPort)
 	if portType.IsVirtual() {
-		log.Debugf("Server: FlowMod(VLAN): %d %s skip.", port, portType)
+		s.log.Debugf("FlowMod(VLAN): %d %s skip.", port, portType)
 		return
 	}
 
@@ -52,24 +53,25 @@ func (s *Server) fibcVLANFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow
 
 	switch mod.Cmd {
 	case fibcapi.FlowMod_ADD:
-		log.Infof("Server: FlowMod(VLAN): ADD Port. %s", vlan)
+		s.log.Infof("FlowMod(VLAN): ADD Port. %s", vlan)
 		if err := vlan.Create(s.Unit()); err != nil {
-			log.Errorf("Server: FlowMod(VLAN): ADD Port error. %s", err)
+			s.log.Errorf("FlowMod(VLAN): ADD Port error. %s", err)
 		}
 
 	case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
-		log.Infof("Server: FlowMod(VLAN): DEL port. %s", vlan)
+		s.log.Infof("FlowMod(VLAN): DEL port. %s", vlan)
 		if err := vlan.Delete(s.Unit()); err != nil {
-			log.Errorf("Server: FlowMod(VLAN): DEL Port error. %s", err)
+			s.log.Errorf("FlowMod(VLAN): DEL Port error. %s", err)
 		}
 
 	default:
-		log.Warnf("Server: FlowMod(VLAN): Invalid cmd. %s %s", mod.Cmd, vlan)
+		s.log.Warnf("FlowMod(VLAN): Invalid cmd. %s %s", mod.Cmd, vlan)
 	}
 }
 
 func (s *Server) fibcVLANFlowModBrVlan(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow *fibcapi.VLANFlow, flags fibcapi.BridgeVlanInfo_Flags) {
-	log.Debugf("Server: FlowMod(BrVLAN): %v %v %v", hdr, mod, flow)
+	s.log.Debugf("FlowMod(BrVLAN): %v", hdr)
+	fibcapi.LogFlowMod(s.log, log.DebugLevel, mod)
 
 	port, _ := fibcapi.ParseDPPortId(flow.Match.InPort)
 	vid := opennsl.Vlan(flow.Match.Vid)
@@ -88,22 +90,22 @@ func (s *Server) fibcVLANFlowModBrVlan(hdr *fibcnet.Header, mod *fibcapi.FlowMod
 
 	switch mod.Cmd {
 	case fibcapi.FlowMod_ADD:
-		log.Infof("Server: FlowMod(BrVLAN): ADD Port. %s", vlan)
+		s.log.Infof("FlowMod(BrVLAN): ADD Port. %s", vlan)
 		if err := vlan.Create(s.Unit()); err != nil {
-			log.Errorf("Server: FlowMod(BrVLAN): ADD Port error. %s", err)
+			s.log.Errorf("FlowMod(BrVLAN): ADD Port error. %s", err)
 			return
 		}
 
 		if err := s.notifyL2Addrs(opennsl.Port(port), vid); err != nil {
-			log.Errorf("Server: FlowMod(BrVLAN): Notify L2Addrs error. %s", err)
+			s.log.Errorf("FlowMod(BrVLAN): Notify L2Addrs error. %s", err)
 		}
 
 	case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
-		log.Infof("Server: FlowMod(BrVLAN): DEL Port. %s", vlan)
+		s.log.Infof("FlowMod(BrVLAN): DEL Port. %s", vlan)
 		vlan.Delete(s.Unit())
 
 	default:
-		log.Errorf("Server: FlowMod(BrVLAN): Invalid cmd. %s %s", mod.Cmd, vlan)
+		s.log.Errorf("FlowMod(BrVLAN): Invalid cmd. %s %s", mod.Cmd, vlan)
 	}
 }
 
@@ -118,7 +120,6 @@ func (s *Server) notifyL2Addrs(portId opennsl.Port, vid opennsl.Vlan) error {
 		return opennsl.E_NONE
 
 	}); err != nil {
-		log.Errorf("Server: notifyL2Addrs: L2Traverse error. %s", err)
 		return err
 	}
 

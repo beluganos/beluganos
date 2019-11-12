@@ -22,6 +22,10 @@ enum FFM {
     FF_PORT_MOD   = 13;
     L2ADDR_STATUS    = 14;
     FF_L2ADDR_STATUS = 15;
+    AP_MON_REPLY  = 17;
+    VM_MON_REPLT  = 18;
+    DP_MON_REPLY  = 19;
+    VS_MON_REPLY  = 20;
 }
 
 message Hello {
@@ -97,8 +101,9 @@ message PortConfig {
     string ifname    = 3;
     uint32 port_id   = 4;
     string link      = 5;
-    PortStatus.Status status = 6;
+    string master    = 6;
     uint32 dp_port   = 7; // 0:UNSPEC, iptun:TnlId, bond:LnId
+    PortStatus.Status status = 8;
 }
 
 message FlowMod {
@@ -396,6 +401,7 @@ message FFHello {
   enum DpType {
     NOP     = 0; // unused
     OPENNSL = 1;
+    FFVS    = 2;
   }
   uint64 dp_id   = 1;
   DpType dp_type = 2;
@@ -418,6 +424,7 @@ message FFPort {
 message FFPortStats {
   uint32 port_no = 1;
   map<string, uint64> values = 2;
+  map<string, string> s_values = 3;
 }
 
 // Multipart
@@ -486,6 +493,13 @@ message FFPacketOut {
   uint64 dp_id     = 1;
   uint32 port_no   = 2;
   bytes  data      = 3;
+}
+
+message FFPacket {
+  uint64 dp_id     = 1;
+  uint32 port_no   = 2;
+  string re_id     = 3;
+  string ifname    = 4;
 }
 
 // Port Status

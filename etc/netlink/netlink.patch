@@ -14,7 +14,7 @@ index 0000000..f76e094
 +	return parseAddr(m)
 +}
 diff --git a/link.go b/link.go
-index 886d88d..860b921 100644
+index 4c0f605..215dd21 100644
 --- a/link.go
 +++ b/link.go
 @@ -868,6 +868,9 @@ func (iptun *Iptun) Attrs() *LinkAttrs {
@@ -28,10 +28,10 @@ index 886d88d..860b921 100644
  }
  
 diff --git a/link_linux.go b/link_linux.go
-index 665c482..2cb1035 100644
+index f9e50b8..57c041b 100644
 --- a/link_linux.go
 +++ b/link_linux.go
-@@ -1521,6 +1521,7 @@ func LinkDeserialize(hdr *unix.NlMsghdr, m []byte) (Link, error) {
+@@ -1483,6 +1483,7 @@ func LinkDeserialize(hdr *unix.NlMsghdr, m []byte) (Link, error) {
  		linkSlave LinkSlave
  		slaveType string
  	)
@@ -39,7 +39,8 @@ index 665c482..2cb1035 100644
  	for _, attr := range attrs {
  		switch attr.Attr.Type {
  		case unix.IFLA_LINKINFO:
-@@ -1560,7 +1561,7 @@ func LinkDeserialize(hdr *unix.NlMsghdr, m []byte) (Link, error) {
+@@ -1521,8 +1522,8 @@ func LinkDeserialize(hdr *unix.NlMsghdr, m []byte) (Link, error) {
+ 						link = &Gretap{}
  					case "ipip":
  						link = &Iptun{}
  					case "ip6tnl":
@@ -48,7 +49,8 @@ index 665c482..2cb1035 100644
  					case "sit":
  						link = &Sittun{}
  					case "gre":
-@@ -1607,7 +1608,7 @@ func LinkDeserialize(hdr *unix.NlMsghdr, m []byte) (Link, error) {
+@@ -1566,8 +1569,8 @@ func LinkDeserialize(hdr *unix.NlMsghdr, m []byte) (Link, error) {
+ 						parseGretapData(link, data)
  					case "ipip":
  						parseIptunData(link, data)
  					case "ip6tnl":
@@ -57,7 +59,7 @@ index 665c482..2cb1035 100644
  					case "sit":
  						parseSittunData(link, data)
  					case "gre":
-@@ -2178,7 +2179,9 @@ func parseBondData(link Link, data []syscall.NetlinkRouteAttr) {
+@@ -2136,7 +2141,9 @@ func parseBondData(link Link, data []syscall.NetlinkRouteAttr) {
  		case nl.IFLA_BOND_AD_SELECT:
  			bond.AdSelect = BondAdSelect(data[i].Value[0])
  		case nl.IFLA_BOND_AD_INFO:
@@ -68,7 +70,7 @@ index 665c482..2cb1035 100644
  		case nl.IFLA_BOND_AD_ACTOR_SYS_PRIO:
  			bond.AdActorSysPrio = int(native.Uint16(data[i].Value[0:2]))
  		case nl.IFLA_BOND_AD_USER_PORT_KEY:
-@@ -2534,13 +2537,17 @@ func addIptunAttrs(iptun *Iptun, linkInfo *nl.RtAttr) {
+@@ -2471,13 +2478,17 @@ func addIptunAttrs(iptun *Iptun, linkInfo *nl.RtAttr) {
  
  	data := linkInfo.AddRtAttr(nl.IFLA_INFO_DATA, nil)
  
@@ -90,7 +92,7 @@ index 665c482..2cb1035 100644
  		data.AddRtAttr(nl.IFLA_IPTUN_REMOTE, []byte(ip))
  	}
  
-@@ -2561,9 +2568,9 @@ func parseIptunData(link Link, data []syscall.NetlinkRouteAttr) {
+@@ -2498,9 +2509,9 @@ func parseIptunData(link Link, data []syscall.NetlinkRouteAttr) {
  	for _, datum := range data {
  		switch datum.Attr.Type {
  		case nl.IFLA_IPTUN_LOCAL:

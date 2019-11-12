@@ -30,7 +30,15 @@ import (
 // FIBCTerminationMacFlowMod process FlowMod(Termination MAC)
 //
 func (s *Server) FIBCTerminationMacFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow *fibcapi.TerminationMacFlow) {
-	log.Debugf("Server: FlowMod(TermMAC): %v %v %v", hdr, mod, flow)
+	s.log.Debugf("FlowMod(TermMAC): %v", hdr)
+	fibcapi.LogFlowMod(s.log, log.DebugLevel, mod)
+
+	port, portType := fibcapi.ParseDPPortId(flow.Match.InPort)
+	switch portType {
+	case fibcapi.LinkType_BRIDGE, fibcapi.LinkType_BOND:
+		s.log.Debugf("FlowMod(TermMAC): %d %s skip", port, portType)
+		return
+	}
 
 	port, portType := fibcapi.ParseDPPortId(flow.Match.InPort)
 	switch portType {
@@ -41,17 +49,17 @@ func (s *Server) FIBCTerminationMacFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 
 	mac, mask, err := fibcapi.ParseMaskedMAC(flow.Match.EthDst)
 	if err != nil {
-		log.Errorf("Server: FlowMod(TermMAC): Invalid MAC. %s", err)
+		s.log.Errorf("FlowMod(TermMAC): Invalid MAC. %s", err)
 		return
 	}
 
 	if mask.String() != fibcapi.HWADDR_EXACT_MASK {
-		log.Debugf("Server: FlowMod(TermMAC): MAC is masked. %s '%s'", flow.Match.EthDst, mask)
+		s.log.Debugf("FlowMod(TermMAC): MAC is masked. %s '%s'", flow.Match.EthDst, mask)
 		return
 	}
 
 	if ethType := flow.Match.EthType; ethType != fibcapi.ETHTYPE_IPV4 && ethType != fibcapi.ETHTYPE_IPV6 {
-		log.Debugf("Server: FlowMod(TermMAC): Not IPv4/6. %d %s", ethType, flow.Match.EthDst)
+		s.log.Debugf("FlowMod(TermMAC): Not IPv4/6. %d %s", ethType, flow.Match.EthDst)
 		return
 	}
 
@@ -68,18 +76,18 @@ func (s *Server) FIBCTerminationMacFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 
 	switch mod.Cmd {
 	case fibcapi.FlowMod_ADD:
-		log.Debugf("Server: FlowMod(TermMAC): L2Addr add. %s/%s port:%d vid:%d", mac, mask, flow.Match.InPort, vlan)
+		s.log.Debugf("FlowMod(TermMAC): L2Addr add. %s/%s port:%d vid:%d", mac, mask, flow.Match.InPort, vlan)
 		if err := l2addr.Add(s.Unit()); err != nil {
-			log.Errorf("L2 Addr Add error. %v %s", l2addr, err)
+			s.log.Errorf("FlowMod(TermMAC): L2 Addr Add error. %v %s", l2addr, err)
 		}
 
 	case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
-		log.Debugf("Server: FlowMod(TermMAC): L2Addr del. %s/%s port:%d vid:%d", mac, mask, flow.Match.InPort, vlan)
+		s.log.Debugf("FlowMod(TermMAC): L2Addr del. %s/%s port:%d vid:%d", mac, mask, flow.Match.InPort, vlan)
 		if err := l2addr.Delete(s.Unit()); err != nil {
-			log.Errorf("L2 Addr Delete error. %v %s", l2addr, err)
+			s.log.Errorf("FlowMod(TermMAC): L2 Addr Delete error. %v %s", l2addr, err)
 		}
 
 	default:
-		log.Warnf("Server: FlowMod(TermMAC): Ignored. %s %s", mod.Cmd, flow)
+		s.log.Warnf("FlowMod(TermMAC): Ignored. %s %s", mod.Cmd, flow)
 	}
 }

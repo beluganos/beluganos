@@ -20,18 +20,18 @@ package ribctl
 import (
 	"testing"
 
-	"fabricflow/fibc/lib"
+	fibcapi "fabricflow/fibc/api"
 	"gonla/nlamsg"
 )
 
 func TestRIBController_HandlerImpl(t *testing.T) {
 	var c interface{} = &RIBController{}
 
-	if _, ok := c.(fibclib.DpStatusHandler); !ok {
+	if _, ok := c.(fibcapi.DpStatusHandler); !ok {
 		t.Errorf("RIBController has no handler. (DpStatus)")
 	}
 
-	if _, ok := c.(fibclib.PortStatusHandler); !ok {
+	if _, ok := c.(fibcapi.PortStatusHandler); !ok {
 		t.Errorf("RIBController has no handler. (PortStatus)")
 	}
 

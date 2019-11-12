@@ -586,10 +586,13 @@ def port_mod(dpath, mod, ofctl):
     parser = dpath.ofproto_parser
     ofp = dpath.ofproto
 
+    hw_addr = mod.hw_addr if mod.hw_addr else "00:00:00:00:00:00"
+
     config = 0 if mod.status == pb.PortStatus.UP else ofp.OFPPC_PORT_DOWN
     msg = parser.OFPPortMod(
+        dpath,
         port_no=mod.port_no,
-        hw_addr=mod.hw_addr,
+        hw_addr=hw_addr,
         config=config,
         mask=ofp.OFPPC_PORT_DOWN,
         advertise=0,

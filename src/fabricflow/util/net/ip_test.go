@@ -18,6 +18,7 @@
 package fflibnet
 
 import (
+	"fmt"
 	"net"
 	"testing"
 )
@@ -39,6 +40,81 @@ func TestIncIP(t *testing.T) {
 	IncIP(ip)
 	if s := ip.String(); s != "0.0.0.0" {
 		t.Errorf("IncIP unmatch. %v", ip)
+	}
+}
+
+func TestIncIPNet(t *testing.T) {
+	runTest := func(s string, results []string) error {
+		_, ipnet, err := net.ParseCIDR(s)
+		if err != nil {
+			return err
+		}
+
+		for _, result := range results {
+			IncIPNet(ipnet)
+			if v := ipnet.String(); v != result {
+				return fmt.Errorf("IncIPNet unmatch. %s %s", v, result)
+			}
+		}
+		return nil
+	}
+
+	var err error
+
+	if err = runTest(
+		"10.0.1.0/32",
+		[]string{
+			"10.0.1.1/32",
+			"10.0.1.2/32",
+			"10.0.1.3/32",
+		},
+	); err != nil {
+		t.Errorf("IncIPNet unmatch. %s", err)
+	}
+
+	if err = runTest(
+		"10.0.1.253/32",
+		[]string{
+			"10.0.1.254/32",
+			"10.0.1.255/32",
+			"10.0.2.0/32",
+			"10.0.2.1/32",
+		},
+	); err != nil {
+		t.Errorf("IncIPNet unmatch. %s", err)
+	}
+
+	if err = runTest(
+		"10.0.1.0/31",
+		[]string{
+			"10.0.1.2/31",
+			"10.0.1.4/31",
+			"10.0.1.6/31",
+		},
+	); err != nil {
+		t.Errorf("IncIPNet unmatch. %s", err)
+	}
+
+	if err = runTest(
+		"10.0.1.252/31",
+		[]string{
+			"10.0.1.254/31",
+			"10.0.2.0/31",
+			"10.0.2.2/31",
+		},
+	); err != nil {
+		t.Errorf("IncIPNet unmatch. %s", err)
+	}
+
+	if err = runTest(
+		"10.0.0.0/24",
+		[]string{
+			"10.0.1.0/24",
+			"10.0.2.0/24",
+			"10.0.3.0/24",
+		},
+	); err != nil {
+		t.Errorf("IncIPNet unmatch. %s", err)
 	}
 }
 

@@ -18,7 +18,7 @@
 package gonslib
 
 import (
-	"fabricflow/fibc/lib"
+	fibcapi "fabricflow/fibc/api"
 	"testing"
 )
 
@@ -26,32 +26,32 @@ func TestFlowHandlers(t *testing.T) {
 	var s interface{} = &Server{}
 
 	// VLANFlow
-	if _, ok := s.(fibclib.FIBCVLANFlowModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCVLANFlowModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCVLANFlowModHandler)")
 	}
 
 	// TerminationMacFlow
-	if _, ok := s.(fibclib.FIBCTerminationMacFlowModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCTerminationMacFlowModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCTerminationMacFlowModHandler)")
 	}
 
 	// MPLSFlow
-	if _, ok := s.(fibclib.FIBCMPLSFlowModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCMPLSFlowModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCMPLSFlowModHandler)")
 	}
 
 	// UnicastRoutingFlow
-	if _, ok := s.(fibclib.FIBCUnicastRoutingFlowModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCUnicastRoutingFlowModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCUnicastRoutingFlowModHandler)")
 	}
 
 	// BridgingFlow
-	if _, ok := s.(fibclib.FIBCBridgingFlowModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCBridgingFlowModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCBridgingFlowModHandler)")
 	}
 
 	// PolicyACLFlow
-	if _, ok := s.(fibclib.FIBCPolicyACLFlowModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCPolicyACLFlowModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCPolicyACLFlowModHandler)")
 	}
 }
@@ -60,38 +60,38 @@ func TestGroupHandlers(t *testing.T) {
 	var s interface{} = &Server{}
 
 	// L2InterfaceGroup
-	if _, ok := s.(fibclib.FIBCL2InterfaceGroupModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCL2InterfaceGroupModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCL2InterfaceGroupModHandler)")
 	}
 
 	// L3UnicastGroup
-	if _, ok := s.(fibclib.FIBCL3UnicastGroupModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCL3UnicastGroupModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCL3UnicastGroupModHandler)")
 	}
 
 	// MPLSInterfaceGroup
-	if _, ok := s.(fibclib.FIBCMPLSInterfaceGroupModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCMPLSInterfaceGroupModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCMPLSInterfaceGroupModHandler)")
 	}
 
 	// MPLSLabelGroup
-	if _, ok := s.(fibclib.FIBCMPLSLabelL2VpnGroupModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCMPLSLabelL2VpnGroupModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCMPLSLabelL2VpnGroupModHandler)")
 	}
 
-	if _, ok := s.(fibclib.FIBCMPLSLabelL3VpnGroupModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCMPLSLabelL3VpnGroupModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCMPLSLabelL3VpnGroupModHandler)")
 	}
 
-	if _, ok := s.(fibclib.FIBCMPLSLabelTun1GroupModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCMPLSLabelTun1GroupModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCMPLSLabelTun1GroupModHandler)")
 	}
 
-	if _, ok := s.(fibclib.FIBCMPLSLabelTun2GroupModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCMPLSLabelTun2GroupModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCMPLSLabelTun2GroupModHandler)")
 	}
 
-	if _, ok := s.(fibclib.FIBCMPLSLabelSwapGroupModHandler); !ok {
+	if _, ok := s.(fibcapi.FIBCMPLSLabelSwapGroupModHandler); !ok {
 		t.Errorf("Server not implement handler(FIBCMPLSLabelSwapGroupModHandler)")
 	}
 }
@@ -99,15 +99,15 @@ func TestGroupHandlers(t *testing.T) {
 func TestHandlers(t *testing.T) {
 	var s interface{} = &Server{}
 
-	if _, ok := s.(fibclib.FFPacketOutHandler); !ok {
+	if _, ok := s.(fibcapi.FFPacketOutHandler); !ok {
 		t.Errorf("erver not implement handler(FFPacketOutHandler)")
 	}
 
-	if _, ok := s.(fibclib.FFMultipartPortRequestHandler); !ok {
+	if _, ok := s.(fibcapi.FFMultipartPortRequestHandler); !ok {
 		t.Errorf("erver not implement handler(FFMultipartPortRequestHandler)")
 	}
 
-	if _, ok := s.(fibclib.FFMultipartPortDescRequestHandler); !ok {
+	if _, ok := s.(fibcapi.FFMultipartPortDescRequestHandler); !ok {
 		t.Errorf("erver not implement handler(FFMultipartPortDescRequestHandler)")
 	}
 }

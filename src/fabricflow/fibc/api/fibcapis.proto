@@ -1,0 +1,197 @@
+// -*- coding: utf-8 -*-
+
+syntax = "proto3";
+
+import "fibcapi.proto";
+
+package fibcapi;
+
+//
+// Common
+//
+message HelloReply{}
+message PortConfigReply{}
+message L2AddrReply{}
+message FlowModReply{}
+message GroupModReply{}
+message L2AddrStatusReply{}
+message FFHelloReply{}
+message FFPacketReply{}
+message FFPacketInReply{}
+message FFPortStatusReply{}
+
+//
+// FIBCApApi
+//
+message ApMonitorRequest {}
+message ApMonitorReplyLog {
+  string line  = 1;
+  uint32 level = 2;
+  int64  time  = 3;
+}
+message ApMonitorReply {
+  oneof body {
+    ApMonitorReplyLog log = 1;
+  }
+}
+message ApGetPortEntriesRequest {}
+message ApGetIdEntriesRequest{}
+message ApGetDpEntriesRequest {
+  DbDpEntry.Type type = 1;
+}
+message ApAddPortEntryReply{}
+message ApAddIdEntryReply{}
+message ApDelPortEntryReply{}
+message ApDelIdEntryReply{}
+message ApGetPortStatsRequest{
+  uint64          dp_id   = 1;
+  uint32          port_no = 2;
+  repeated string names   = 3;
+}
+
+//
+// FIBCVmApi
+//
+message VmMonitorRequest{
+  string re_id = 1;
+}
+message VmMonitorReply{
+  oneof  body {
+    PortStatus   port_status    = 1;
+    DpStatus     dp_status      = 2;
+    L2AddrStatus l2_addr_status = 3;
+  }
+}
+
+//
+// FIBCVsApi
+//
+message VsMonitorRequest{
+  uint64 vs_id = 1;
+  FFHello.DpType dp_type = 2;
+}
+message VsMonitorReply {
+  oneof body {
+    FFPacketOut    packet_out = 1;
+    FFPortMod      port_mod   = 2;
+  }
+}
+
+//
+// FIBCDpApi
+//
+message DpMultipartRequest {
+  uint32 xid                  = 1;
+  FFMultipart.Request request = 2;
+}
+
+message DpMultipartReply {
+  uint32 xid              = 1;
+  FFMultipart.Reply reply = 2;
+}
+
+message DpMultipartReplyAck {}
+
+message DpMonitorRequest{
+  uint64         dp_id   = 1;
+  FFHello.DpType dp_type = 2;
+}
+message DpMonitorReply {
+  oneof body {
+    FFPacketOut    packet_out = 1;
+    FFPortMod      port_mod   = 2;
+    FlowMod        flow_mod   = 3;
+    GroupMod       group_mod  = 4;
+    DpMultipartRequest multipart = 5;
+  }
+}
+
+//
+// Database
+//
+message DbPortKey {
+  string re_id  = 1;
+  string ifname = 2;
+}
+
+message DbPortValue {
+  uint64 dp_id   = 1;
+  string re_id   = 2;
+  uint32 port_id = 3;
+  bool   enter   = 4;
+}
+
+message DbPortEntry {
+  DbPortKey key        = 1;
+  DbPortKey parent_key = 2;
+  DbPortKey master_key = 3;
+
+  DbPortValue vm_port  = 4;
+  DbPortValue dp_port  = 5;
+  DbPortValue vs_port  = 6;
+}
+
+message DbIdEntry {
+  string re_id   = 1;
+  uint64 dp_id   = 2;
+}
+
+message DbDpEntry {
+  enum Type {
+    NOP   = 0; // unused
+    APMON = 1;
+    VMMON = 2;
+    DPMON = 3;
+    VSMON = 4;
+  }
+
+  Type   type = 1;
+  string id   = 2;
+}
+
+message StatsEntry {
+  string group = 1;
+  string name  = 2;
+  uint64 value = 3;
+}
+
+message ApGetStatsRequest{
+
+}
+
+service FIBCApApi {
+  rpc Monitor          (ApMonitorRequest)        returns (stream ApMonitorReply) {}
+  rpc GetPortStats     (ApGetPortStatsRequest)   returns (stream FFPortStats)    {}
+  rpc GetPortEntries   (ApGetPortEntriesRequest) returns (stream DbPortEntry)    {}
+  rpc GetIDEntries     (ApGetIdEntriesRequest)   returns (stream DbIdEntry)      {}
+  rpc GetDpEntries     (ApGetDpEntriesRequest)   returns (stream DbDpEntry)      {}
+  rpc AddPortEntry     (DbPortEntry)             returns (ApAddPortEntryReply)   {}
+  rpc AddIDEntry       (DbIdEntry)               returns (ApAddIdEntryReply)     {}
+  rpc DelPortEntry     (DbPortKey)               returns (ApDelPortEntryReply)   {}
+  rpc DelIDEntry       (DbIdEntry)               returns (ApDelIdEntryReply)     {}
+  rpc GetStats         (ApGetStatsRequest)       returns (stream StatsEntry)     {}
+}
+
+service FIBCVmApi {
+  rpc SendHello        (Hello)            returns (HelloReply)            {}
+  rpc SendPortConfig   (PortConfig)       returns (PortConfigReply)       {}
+  rpc SendFlowMod      (FlowMod)          returns (FlowModReply)          {}
+  rpc SendGroupMod     (GroupMod)         returns (GroupModReply)         {}
+  rpc Monitor          (VmMonitorRequest) returns (stream VmMonitorReply) {}
+}
+
+service FIBCVsApi {
+  rpc SendHello        (FFHello)          returns (FFHelloReply)          {}
+  rpc SendFFPacket     (FFPacket)         returns (FFPacketReply)         {}
+  rpc SendPacketIn     (FFPacketIn)       returns (FFPacketInReply)       {}
+  rpc Monitor          (VsMonitorRequest) returns (stream VsMonitorReply) {}
+}
+
+service FIBCDpApi {
+  rpc SendHello        (FFHello)          returns (FFHelloReply)          {}
+  rpc SendPacketIn     (FFPacketIn)       returns (FFPacketInReply)       {}
+  rpc SendPortStatus   (FFPortStatus)     returns (FFPortStatusReply)     {}
+  rpc SendL2AddrStatus (FFL2AddrStatus)   returns (L2AddrStatusReply)     {}
+  rpc SendMultipartReply (DpMultipartReply) returns (DpMultipartReplyAck) {}
+  rpc Monitor          (DpMonitorRequest) returns (stream DpMonitorReply) {}
+}

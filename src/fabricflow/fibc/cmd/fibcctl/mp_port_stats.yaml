@@ -1,0 +1,10 @@
+---
+
+multipart:
+  portstats:
+    - port_no: 1
+      pkt_num: 100
+      err_num: 10
+    - port_no: 2
+      pkt_num: 200
+      err_num: 20

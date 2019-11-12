@@ -124,7 +124,8 @@ func PortInfoGet(unit int, port opennsl.Port) (*opennsl.PortInfo, error) {
 // FIBCFFMultipartPortRequest process multipart-request(port stats) from fibcd.
 //
 func (s *Server) FIBCFFMultipartPortRequest(hdr *fibcnet.Header, mp *fibcapi.FFMultipart_Request, req *fibcapi.FFMultipart_PortRequest) {
-	log.Debugf("Server: Multipart(Port): %v %v", hdr, req)
+	s.log.Debugf("Multipart(Port): %v", hdr)
+	fibcapi.LogFFMultipartRequest(s.log, log.DebugLevel, mp, hdr.Xid)
 
 	ports, err := func() ([]opennsl.Port, error) {
 		if req.PortNo != 0xffffffff {
@@ -133,7 +134,7 @@ func (s *Server) FIBCFFMultipartPortRequest(hdr *fibcnet.Header, mp *fibcapi.FFM
 
 		pbmp, err := PortBmpGet(s.Unit())
 		if err != nil {
-			log.Errorf("Server: Multipart(Port): PortBmpGet error. %s", err)
+			s.log.Errorf("Multipart(Port): PortBmpGet error. %s", err)
 			return nil, err
 		}
 
@@ -145,7 +146,7 @@ func (s *Server) FIBCFFMultipartPortRequest(hdr *fibcnet.Header, mp *fibcapi.FFM
 
 	statsList, err := NewPortStats(req.Names).GetAll(s.Unit(), ports)
 	if err != nil {
-		log.Errorf("Server: Multipart(Port): PortStatsGetAll error. %s", err)
+		s.log.Errorf("Multipart(Port): PortStatsGetAll error. %s", err)
 		return
 	}
 
@@ -155,23 +156,24 @@ func (s *Server) FIBCFFMultipartPortRequest(hdr *fibcnet.Header, mp *fibcapi.FFM
 	}
 
 	reply := fibcapi.NewFFMultipart_Reply_Port(s.DpID(), ffstats)
-	if err := s.client.Write(reply, hdr.Xid); err != nil {
-		log.Errorf("Server: Multipart(Port): Write error. %s", err)
+	if err := s.client.MultipartReply(reply, hdr.Xid); err != nil {
+		s.log.Errorf("Multipart(Port): Write error. %s", err)
 		return
 	}
 
-	log.Debugf("Server: Multipart(Port): end.")
+	s.log.Debugf("Multipart(Port): end.")
 }
 
 //
 // FIBCFFMultipartPortDescRequest process multipart-request(port desc) from fibcd.
 //
 func (s *Server) FIBCFFMultipartPortDescRequest(hdr *fibcnet.Header, mp *fibcapi.FFMultipart_Request, pd *fibcapi.FFMultipart_PortDescRequest) {
-	log.Debugf("Server: Multipart(PortDesc): %v %v", hdr, pd)
+	s.log.Debugf("Multipart(PortDesc): %v", hdr)
+	fibcapi.LogFFMultipartRequest(s.log, log.DebugLevel, mp, hdr.Xid)
 
 	pbmp, err := PortBmpGet(s.Unit())
 	if err != nil {
-		log.Errorf("Server: Multipart(PortDesc): PortBmpGet error. %s", err)
+		s.log.Errorf("Multipart(PortDesc): PortBmpGet error. %s", err)
 		return
 	}
 
@@ -201,20 +203,20 @@ func (s *Server) FIBCFFMultipartPortDescRequest(hdr *fibcnet.Header, mp *fibcapi
 	}
 
 	reply := fibcapi.NewMultipart_Reply_PortDesc(s.DpID(), ffports, pd.Internal)
-	if err := s.client.Write(reply, hdr.Xid); err != nil {
-		log.Errorf("Server: Multipart(PortDesc): Write error. %s", err)
+	if err := s.client.MultipartReply(reply, hdr.Xid); err != nil {
+		s.log.Errorf("Multipart(PortDesc): Write error. %s", err)
 		return
 	}
 
-	log.Debugf("Server: Multipart(PortDesc): end.")
+	s.log.Debugf("Multipart(PortDesc): end.")
 }
 
 func (s *Server) FIBCFFPortMod(hdr *fibcnet.Header, mod *fibcapi.FFPortMod) {
-	log.Debugf("Server: PortMod: %v %v", hdr, mod)
+	s.log.Debugf("PortMod: %v %v", hdr, mod)
 
 	portId, portType := fibcapi.ParseDPPortId(mod.PortNo)
 	if portType.IsVirtual() {
-		log.Debugf("Server: PortMod: skip virtual device. port=%x", mod.PortNo)
+		s.log.Debugf("PortMod: skip virtual device. port=%x", mod.PortNo)
 		return
 	}
 
@@ -223,12 +225,12 @@ func (s *Server) FIBCFFPortMod(hdr *fibcnet.Header, mod *fibcapi.FFPortMod) {
 	switch mod.Status {
 	case fibcapi.PortStatus_UP:
 		if err := port.EnableSet(s.Unit(), opennsl.PORT_ENABLE_TRUE); err != nil {
-			log.Errorf("Server: PortMod: PortEnableSet(TRUE) error. port %d. %s", port, err)
+			s.log.Errorf("PortMod: PortEnableSet(TRUE) error. port %d. %s", port, err)
 		}
 
 	case fibcapi.PortStatus_DOWN:
 		if err := port.EnableSet(s.Unit(), opennsl.PORT_ENABLE_FALSE); err != nil {
-			log.Errorf("Server: PortMod: PortEnableSet(FALSE) error. port %d. %s", port, err)
+			s.log.Errorf("PortMod: PortEnableSet(FALSE) error. port %d. %s", port, err)
 		}
 
 	default:

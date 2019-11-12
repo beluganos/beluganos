@@ -20,8 +20,6 @@ package gonslib
 import (
 	"bytes"
 	fibcapi "fabricflow/fibc/api"
-	fibclib "fabricflow/fibc/lib"
-	fibcnet "fabricflow/fibc/net"
 
 	"github.com/beluganos/go-opennsl/opennsl"
 	log "github.com/sirupsen/logrus"
@@ -31,13 +29,15 @@ import (
 // Server is main service of gonsld.
 //
 type Server struct {
-	client    *fibcnet.Client
+	client    FIBController
 	dpCfg     *DpConfig
 	logCfg    *LogConfig
 	fields    *FieldGroups
 	idmaps    *IDMaps
 	vlanPorts *VlanPortTable
 	l2addrCh  chan []*L2addrmonEntry
+
+	log *log.Entry
 }
 
 //
@@ -45,13 +45,15 @@ type Server struct {
 //
 func NewServer(dpCfg *DpConfig, logCfg *LogConfig) *Server {
 	return &Server{
-		client:    fibcnet.NewClient(dpCfg.GetHost()),
+		client:    NewFIBController(dpCfg.GetFIBCType(), dpCfg.GetHost(), dpCfg.DpID),
 		dpCfg:     dpCfg,
 		logCfg:    logCfg,
 		fields:    NewFieldGroups(dpCfg.Unit),
 		idmaps:    NewIDMaps(),
 		vlanPorts: NewVlanPortTableFromConfig(&dpCfg.BlockBcast),
 		l2addrCh:  make(chan []*L2addrmonEntry),
+
+		log: log.WithFields(log.Fields{"module": "server"}),
 	}
 }
 
@@ -75,34 +77,26 @@ func (s *Server) VlanPorts() *VlanPortTable {
 	return s.vlanPorts
 }
 
-//
-// RecvMain reveives and dispatch messages from fibcd.
-//
-func (s *Server) RecvMain() {
-	log.Debugf("Server: RecvMain started.")
+func (s *Server) recvMessages(done <-chan struct{}) {
+	s.log.Debugf("Receiver: started")
 
-	s.client.Start(func(client *fibcnet.Client) {
-		for {
-			hdr, data, err := s.client.Read()
-			if err != nil {
-				log.Errorf("Server: Client EXIT. Read error. %s", err)
-				return
+FOR_LOOP:
+	for {
+		select {
+		case msg := <-s.client.Recv():
+			if err := msg.Dispatch(s); err != nil {
+				s.log.Warnf("Serve: Dispatch error. %s", err)
 			}
 
-			log.Debugf("Server: Recv %v", hdr)
-
-			if err := fibclib.Dispatch(hdr, data, s); err != nil {
-				log.Errorf("Dispatch error. %s", err)
-			}
+		case <-done:
+			s.log.Debugf("Receiver: exit.")
+			break FOR_LOOP
 		}
-	})
+	}
 }
 
-//
-// Serve is main loop of Service.
-//
-func (s *Server) Serve(done <-chan struct{}) {
-	log.Debugf("Server: Serve started.")
+func (s *Server) sendMessages(done <-chan struct{}) {
+	s.log.Debugf("Sender: started")
 
 	var rxBuf bytes.Buffer
 
@@ -111,19 +105,20 @@ func (s *Server) Serve(done <-chan struct{}) {
 	linkCh := s.LinkmonStart(done)
 	s.L2AddrMonStart(done)
 
+FOR_LOOP:
 	for {
 		select {
 		case connected := <-s.client.Conn():
 			if connected {
-				log.Infof("Server: connected.")
+				s.log.Infof("Sender: connected.")
 
 				hello := fibcapi.NewFFHello(s.DpID())
-				if err := s.client.Write(hello, 0); err != nil {
-					log.Errorf("Server: Write error. %s", err)
+				if err := s.client.Hello(hello); err != nil {
+					s.log.Errorf("Sender: Write error. %s", err)
 				}
 
 			} else {
-				log.Infof("Server: connection closed.")
+				s.log.Infof("Sender: connection closed.")
 			}
 
 		case pkt := <-rxCh:
@@ -131,26 +126,26 @@ func (s *Server) Serve(done <-chan struct{}) {
 
 			rxBuf.Reset()
 			if _, err := pkt.WriteTo(&rxBuf); err != nil {
-				log.Errorf("Server: pkt.WriteTo error. %s", err)
+				s.log.Errorf("Sender: pkt.WriteTo error. %s", err)
 			} else {
 				pktIn := fibcapi.NewFFPacketIn(s.DpID(), uint32(pkt.SrcPort()), rxBuf.Bytes())
-				if err := s.client.Write(pktIn, 0); err != nil {
-					log.Errorf("Server: client.Write error. %s", err)
+				if err := s.client.PacketIn(pktIn); err != nil {
+					s.log.Errorf("Sender: client.Write error. %s", err)
 				}
 			}
 
 		case linkInfo := <-linkCh:
-			log.Debugf("Server: LinkInfo: %v", linkInfo)
+			s.log.Debugf("Sender: LinkInfo: %v", linkInfo)
 
 			port := fibcapi.NewFFPort(linkInfo.PortNo())
 			port.State = linkInfo.PortState()
 			portStatus := fibcapi.NewFFPortStatus(s.DpID(), port, fibcapi.FFPortStatus_MODIFY)
-			if err := s.client.Write(portStatus, 0); err != nil {
-				log.Errorf("Server: client.Write error. %s", err)
+			if err := s.client.PortStatus(portStatus); err != nil {
+				s.log.Errorf("Sender: client.Write error. %s", err)
 			}
 
 		case entries := <-s.l2addrCh:
-			log.Debugf("Server: L2AddrEntry %d", len(entries))
+			s.log.Debugf("Sender: L2AddrEntry %d", len(entries))
 
 			reason := func(oper opennsl.L2CallbackOper) fibcapi.L2Addr_Reason {
 				switch oper {
@@ -176,13 +171,13 @@ func (s *Server) Serve(done <-chan struct{}) {
 			}
 
 			status := fibcapi.NewFFL2AddrStatus(s.DpID(), addrs)
-			if err := s.client.Write(status, 0); err != nil {
-				log.Errorf("Server: client.Write error. %s", err)
+			if err := s.client.L2AddrStatus(status); err != nil {
+				s.log.Errorf("Sender: client.Write error. %s", err)
 			}
 
 		case <-done:
-			log.Infof("Server: Exit.")
-			return
+			s.log.Infof("Sender: Exit.")
+			break FOR_LOOP
 		}
 	}
 }
@@ -191,18 +186,22 @@ func (s *Server) Serve(done <-chan struct{}) {
 // Start starts submodules.
 //
 func (s *Server) Start(done <-chan struct{}) error {
+	s.log.Infof("Start:")
+
 	if block := s.dpCfg.BlockBcast.Block(); !block {
 		if err := PortDefaultVlanConfig(s.Unit()); err != nil {
-			log.Errorf("Server: PortDefaultVlanConfig error. %s", err)
+			s.log.Errorf("Start: PortDefaultVlanConfig error. %s", err)
 			return err
 		}
 
-		log.Infof("Server: PortDefaultVlanConfig ok.")
+		s.log.Infof("Start: PortDefaultVlanConfig ok.")
 	}
 
-	go s.RecvMain()
-	go s.Serve(done)
+	s.log.Infof("FIBCConroller: %s", s.client)
 
-	log.Infof("Server: started.")
+	go s.client.Start()
+	go s.sendMessages(done)
+	go s.recvMessages(done)
+
 	return nil
 }

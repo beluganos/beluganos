@@ -21,7 +21,6 @@ import (
 	fibcapi "fabricflow/fibc/api"
 
 	"github.com/beluganos/go-opennsl/opennsl"
-
 	log "github.com/sirupsen/logrus"
 )
 
@@ -85,15 +84,15 @@ func LinkmonServe(unit int, linkCh chan<- *LinkInfo, done <-chan struct{}) {
 	if err := opennsl.LinkscanRegister(unit, linkmonRegisterName, func(unit int, key string, port opennsl.Port, portInfo *opennsl.PortInfo) {
 		linkCh <- NewLinkInfo(port, portInfo)
 	}); err != nil {
-		log.Errorf("LinkscanRegister error. %s", err)
+		log.Errorf("LinkMon: LinkscanRegister error. %s", err)
 		return
 	}
 
 	defer opennsl.LinkscanUnregister(unit, linkmonRegisterName)
 
-	log.Infof("Server: LinkMon: Started.")
+	log.Infof("LinkMon: Started.")
 
 	<-done
 
-	log.Infof("Server: LinkMon: Exit")
+	log.Infof("LinkMon: Exit")
 }

@@ -115,6 +115,7 @@ type DpConfig struct {
 	Addr       string           `mapstructure:"addr"`
 	Port       uint16           `mapstructure:"port"`
 	Unit       int              `mapstructure:"unit"`
+	FIBCType   string           `mapstructure:"fibc_type"`
 	BlockBcast BlockBcastConfig `mapstructure:"block_bcast"`
 	OpenNSL    *ONSLConfig      `mapstructure:"opennsl"`
 	L2SW       L2SWConfig       `mapstructure:"l2sw"`
@@ -172,6 +173,9 @@ func (c *DpConfig) GetL2AgingTimer() int {
 	return int(c.L2SW.AgingSec)
 }
 
+//
+// GetL2NotifyLimit returns l2 addr entry limit.
+//
 func (c *DpConfig) GetL2NotifyLimit() uint32 {
 	if c.L2SW.NotifyLimit == 0 {
 		return 128
@@ -180,18 +184,40 @@ func (c *DpConfig) GetL2NotifyLimit() uint32 {
 }
 
 //
+//
+//
+func (c *DpConfig) GetFIBCType() string {
+	if len(c.FIBCType) == 0 {
+		return FIBCTypeDefault
+	}
+
+	return c.FIBCType
+}
+
+//
 // LogConfig is logging config.
 //
 type LogConfig struct {
 	RxDetail bool `mapstructure:"rx_detail"`
 	RxDump   bool `mapstructure:"rx_dump"`
+	RxSilent bool `mapstructure:"rx_silent"`
+	TxDetail bool `mapstructure:"tx_detail"`
+	TxDump   bool `mapstructure:"tx_dump"`
+	TxSilent bool `mapstructure:"tx_silent"`
 }
 
 //
 // String retuns config information.
 //
 func (c *LogConfig) String() string {
-	return fmt.Sprintf("rx_dump=%t", c.RxDump)
+	return fmt.Sprintf("rx:dmp=%t detail=%t silent=%t tx:dmp=%t detail=%t silent=%t",
+		c.RxDump,
+		c.RxDetail,
+		c.RxSilent,
+		c.TxDump,
+		c.TxDetail,
+		c.TxSilent,
+	)
 }
 
 //

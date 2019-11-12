@@ -19,9 +19,9 @@ SNMPD_AGENT_PORT=8161
 # services
 #
 .PHONY: install-service uninstall-service
-install-service: install-beluganos install-fibc install-fibs
+install-service: install-beluganos install-fibc install-fibs install-govsw
 
-uninstall-service: uninstall-beluganos uninstall-fibc uninstall-fibs
+uninstall-service: uninstall-beluganos uninstall-fibc uninstall-fibs uninstall-govsw
 
 
 #
@@ -138,13 +138,11 @@ unset-snmpd-port:
 # fibc
 #
 .PHONY: install-fibc uninstall-fibc
-install-fibc: install-fibcd
-
-uninstall-fibc: uninstall-fibcd
-
+install-fibc: install-fibcd install-fibcd-go
+uninstall-fibc: uninstall-fibcd uninstall-fibcd-go
 
 #
-# fibcd
+# fibcd (python)
 #
 .PHONY: install-fibcd uninstall-fibcd
 install-fibcd:
@@ -157,4 +155,54 @@ uninstall-fibcd:
 	@echo "uninstall fibcd..."
 	@$(UNINSTALL) /etc/systemd/system/fibcd.service
 	@$(UNINSTALL) ${CNFDIR}/fibcd.conf
+	@sudo systemctl daemon-reload
+
+#
+# fibcd (golang)
+#
+.PHONY: install-fibcd-go uninstall-fibcd-go
+install-fibcd-go:
+	@echo "install fibcd(go)..."
+	@$(INSTALL) -pm 755 ${BEL_BINDIR}/fibcd            ${BINDIR}/
+	@$(INSTALL) -pm 755 ${BEL_BINDIR}/fibcctl          ${BINDIR}/
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/fibcd-go.conf    ${CNFDIR}/
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/fibcd-go.service /etc/systemd/system/
+	@sudo systemctl daemon-reload
+
+uninstall-fibcd-go:
+	@echo "ubinstall fibcd(go)..."
+	@$(UNINSTALL) /etc/systemd/system/fibcd-go.service
+	@$(UNINSTALL) ${CNFDIR}/fibcd-go.conf
+	@$(UNINSTALL) ${BINDIR}/fibcctl
+	@$(UNINSTALL) ${BINDIR}/fibcd
+	@sudo systemctl daemon-reload
+
+
+#
+# govsw
+#
+.PHONY: install-govsw uninstall-govsw
+install-govsw: install-govswd
+uninstall-govsw: uninstall-govswd
+
+#
+# govswd
+#
+.PHONY: install-govswd uninstall-govswd
+install-govswd:
+	@echo "install govswd"
+	@$(INSTALL) -pm 755 ${BEL_BINDIR}/govswd         ${BINDIR}/
+	@$(INSTALL) -pm 755 ${BEL_BINDIR}/govswc         ${BINDIR}/
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/govswd.conf    ${CNFDIR}/
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/govswd.yaml    ${CNFDIR}/
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/govswd.service /etc/systemd/system/
+	@sudo systemctl daemon-reload
+
+uninstall-govswd:
+	@echo "uninstall govswd"
+	@$(UNINSTALL) /etc/systemd/system/govswd.service
+	@$(UNINSTALL) ${CNFDIR}/govswd.yaml
+	@$(UNINSTALL) ${CNFDIR}/govswd.conf
+	@$(UNINSTALL) ${BINDIR}/govswd
+	@$(UNINSTALL) ${BINDIR}/govswc
 	@sudo systemctl daemon-reload

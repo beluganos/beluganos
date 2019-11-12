@@ -91,13 +91,13 @@ func NewVLANUntagFlow(link *nlamsg.Link) *fibcapi.VLANFlow {
 
 func (r *RIBController) SendVLANFlow(cmd fibcapi.FlowMod_Cmd, link *nlamsg.Link) error {
 	f := NewVLANFilterFlow(link)
-	if err := r.fib.Send(f.ToMod(cmd, r.reId), 0); err != nil {
+	if err := r.fib.FlowMod(f.ToMod(cmd, r.reId)); err != nil {
 		return err
 	}
 
 	if link.VlanId() == fibcapi.OFPVID_NONE {
 		f := NewVLANUntagFlow(link)
-		return r.fib.Send(f.ToMod(cmd, r.reId), 0)
+		return r.fib.FlowMod(f.ToMod(cmd, r.reId))
 	}
 
 	return nil
@@ -121,7 +121,7 @@ func NewVLANBridgeVlanFlow(brvlan *nlamsg.BridgeVlanInfo, portId uint32) *fibcap
 
 func (r *RIBController) SendVLANBridgeVlanFlow(cmd fibcapi.FlowMod_Cmd, brvlan *nlamsg.BridgeVlanInfo, portId uint32) error {
 	f := NewVLANBridgeVlanFlow(brvlan, portId)
-	if err := r.fib.Send(f.ToMod(cmd, r.reId), 0); err != nil {
+	if err := r.fib.FlowMod(f.ToMod(cmd, r.reId)); err != nil {
 		return err
 	}
 
@@ -176,7 +176,7 @@ func (r *RIBController) SendTermMACFlow(cmd fibcapi.FlowMod_Cmd, link *nlamsg.Li
 		NewTermMACFlowMPLS(link),
 	}
 	for _, f := range flows {
-		if err := r.fib.Send(f.ToMod(cmd, r.reId), 0); err != nil {
+		if err := r.fib.FlowMod(f.ToMod(cmd, r.reId)); err != nil {
 			return err
 		}
 	}
@@ -199,7 +199,7 @@ func NewMPLSFlowVRF(label uint32, nid uint8) *fibcapi.MPLSFlow {
 func (r *RIBController) SendMPLSFlowVRF(cmd fibcapi.FlowMod_Cmd, nid uint8) error {
 	label := NewVRFLabel(r.label, nid)
 	f := NewMPLSFlowVRF(label, nid)
-	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
+	return r.fib.FlowMod(f.ToMod(cmd, r.reId))
 }
 
 //
@@ -211,7 +211,7 @@ func NewMPLSFlowPop1(route *nlamsg.Route) *fibcapi.MPLSFlow {
 
 func (r *RIBController) SendMPLSFlowPop1(cmd fibcapi.FlowMod_Cmd, route *nlamsg.Route) error {
 	f := NewMPLSFlowPop1(route)
-	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
+	return r.fib.FlowMod(f.ToMod(cmd, r.reId))
 }
 
 //
@@ -233,7 +233,7 @@ func (r *RIBController) SendMPLSFlowPop2(cmd fibcapi.FlowMod_Cmd, route *nlamsg.
 	}
 
 	f := NewMPLSFlowPop2(neigh, route)
-	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
+	return r.fib.FlowMod(f.ToMod(cmd, r.reId))
 }
 
 //
@@ -248,7 +248,7 @@ func NewMPLSFlowSwap(route *nlamsg.Route, bos bool) *fibcapi.MPLSFlow {
 
 func (r *RIBController) SendMPLSFlowSwap(cmd fibcapi.FlowMod_Cmd, route *nlamsg.Route, bos bool) error {
 	f := NewMPLSFlowSwap(route, bos)
-	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
+	return r.fib.FlowMod(f.ToMod(cmd, r.reId))
 }
 
 //
@@ -270,7 +270,7 @@ func (r *RIBController) SendUnicastRoutingFlowNeigh(cmd fibcapi.FlowMod_Cmd, nei
 	}
 
 	f := NewUnicastRoutingFlowNeigh(neigh)
-	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
+	return r.fib.FlowMod(f.ToMod(cmd, r.reId))
 }
 
 //
@@ -297,7 +297,7 @@ func (r *RIBController) SendUnicastRoutingFlow(cmd fibcapi.FlowMod_Cmd, route *n
 	}
 
 	f := NewUnicastRoutingFlow(neigh, route)
-	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
+	return r.fib.FlowMod(f.ToMod(cmd, r.reId))
 }
 
 //
@@ -311,7 +311,7 @@ func NewUnicastRoutingFlowMPLS(route *nlamsg.Route) *fibcapi.UnicastRoutingFlow 
 
 func (r *RIBController) SendUnicastRoutingFlowMPLS(cmd fibcapi.FlowMod_Cmd, route *nlamsg.Route) error {
 	f := NewUnicastRoutingFlowMPLS(route)
-	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
+	return r.fib.FlowMod(f.ToMod(cmd, r.reId))
 }
 
 //
@@ -327,7 +327,7 @@ func (r *RIBController) SendACLFlowByAddr(cmd fibcapi.FlowMod_Cmd, addr *nlamsg.
 	}
 
 	f := NewACLFlowByAddr(addr, inPort)
-	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
+	return r.fib.FlowMod(f.ToMod(cmd, r.reId))
 }
 
 //
@@ -340,7 +340,7 @@ func (r *RIBController) SendACLFlowByLink(cmd fibcapi.FlowMod_Cmd, link *nlamsg.
 			continue
 		}
 
-		if err := r.fib.Send(f.ToMod(cmd, r.reId), 0); err != nil {
+		if err := r.fib.FlowMod(f.ToMod(cmd, r.reId)); err != nil {
 			return err
 		}
 	}
@@ -359,5 +359,5 @@ func NewBridgingFlow(neigh *nlamsg.Neigh, portId uint32) *fibcapi.BridgingFlow {
 
 func (r *RIBController) SendBridgingFlow(cmd fibcapi.FlowMod_Cmd, neigh *nlamsg.Neigh, portId uint32) error {
 	f := NewBridgingFlow(neigh, portId)
-	return r.fib.Send(f.ToMod(cmd, r.reId), 0)
+	return r.fib.FlowMod(f.ToMod(cmd, r.reId))
 }

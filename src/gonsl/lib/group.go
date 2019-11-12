@@ -18,9 +18,8 @@
 package gonslib
 
 import (
-	"fabricflow/fibc/api"
-	"fabricflow/fibc/lib"
-	"fabricflow/fibc/net"
+	fibcapi "fabricflow/fibc/api"
+	fibcnet "fabricflow/fibc/net"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -29,48 +28,54 @@ import (
 // FIBCGroupMod process any GroupMod.
 //
 func (s *Server) FIBCGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMod) {
-	// log.Debugf("Server: GroupMod: %v %v", hdr, mod)
-	fibclib.DispatchGroupMod(hdr, mod, s)
+	// s.log.Debugf("GroupMod: %v %v", hdr, mod)
+	fibcapi.DispatchGroupMod(hdr, mod, s)
 }
 
 //
 // FIBCMPLSInterfaceGroupMod process GroupMod(MPLS Interface)
 //
 func (s *Server) FIBCMPLSInterfaceGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMod, group *fibcapi.MPLSInterfaceGroup) {
-	log.Debugf("Server: GroupMod(MPLS-IF): %v %v %v", hdr, mod, group)
+	s.log.Debugf("GroupMod(MPLS-IF): %v", hdr)
+	fibcapi.LogGroupMod(s.log, log.DebugLevel, mod)
 }
 
 //
 // FIBCMPLSLabelL2VpnGroupMod process GroupMod(MPLS Label(L2 VPN))
 //
 func (s *Server) FIBCMPLSLabelL2VpnGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMod, group *fibcapi.MPLSLabelGroup) {
-	log.Debugf("Server: GroupMod(MPLS-L2VPN): %v %v %v", hdr, mod, group)
+	s.log.Debugf("GroupMod(MPLS-L2VPN): %v", hdr)
+	fibcapi.LogGroupMod(s.log, log.DebugLevel, mod)
 }
 
 //
 // FIBCMPLSLabelL3VpnGroupMod process GroupMod(MPLS Label(L3 VPN))
 //
 func (s *Server) FIBCMPLSLabelL3VpnGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMod, group *fibcapi.MPLSLabelGroup) {
-	log.Debugf("Server: GroupMod(MPLS-L3VPN): %v %v %v", hdr, mod, group)
+	s.log.Debugf("GroupMod(MPLS-L3VPN): %v", hdr)
+	fibcapi.LogGroupMod(s.log, log.DebugLevel, mod)
 }
 
 //
 // FIBCMPLSLabelTun1GroupMod process GroupMod(MPLS Label(Tunnel1))
 //
 func (s *Server) FIBCMPLSLabelTun1GroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMod, group *fibcapi.MPLSLabelGroup) {
-	log.Debugf("Server: GroupMod(MPLS-Tun1): %v %v %v", hdr, mod, group)
+	s.log.Debugf("GroupMod(MPLS-Tun1): %v", hdr)
+	fibcapi.LogGroupMod(s.log, log.DebugLevel, mod)
 }
 
 //
 // FIBCMPLSLabelTun2GroupMod process GroupMod(MPLS Label(Tunnel2))
 //
 func (s *Server) FIBCMPLSLabelTun2GroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMod, group *fibcapi.MPLSLabelGroup) {
-	log.Debugf("Server: GroupMod(MPLS-Tun2): %v %v %v", hdr, mod, group)
+	s.log.Debugf("GroupMod(MPLS-Tun2): %v", hdr)
+	fibcapi.LogGroupMod(s.log, log.DebugLevel, mod)
 }
 
 //
 // FIBCMPLSLabelSwapGroupMod process GroupMod(MPLS Label(Swap))
 //
 func (s *Server) FIBCMPLSLabelSwapGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMod, group *fibcapi.MPLSLabelGroup) {
-	log.Debugf("Server: GroupMod(MPLS-Swap): %v %v %v", hdr, mod, group)
+	s.log.Debugf("GroupMod(MPLS-Swap): %v", hdr)
+	fibcapi.LogGroupMod(s.log, log.DebugLevel, mod)
 }

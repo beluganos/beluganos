@@ -30,23 +30,24 @@ import (
 // FIBCBridgingFlowMod process FlowMod (Bridging)
 //
 func (s *Server) FIBCBridgingFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow *fibcapi.BridgingFlow) {
-	log.Debugf("Server: FlowMod(Bridge): %v %v %v", hdr, mod, flow)
+	s.log.Debugf("FlowMod(Bridge): %v", hdr)
+	fibcapi.LogFlowMod(s.log, log.DebugLevel, mod)
 
 	ethDst, err := net.ParseMAC(flow.Match.EthDst)
 	if err != nil {
-		log.Errorf("Server: FlowMod(Bridge): Bad eth_dst. %s", err)
+		s.log.Errorf("FlowMod(Bridge): Bad eth_dst. %s", err)
 		return
 	}
 
 	if name := flow.Action.Name; name != fibcapi.BridgingFlow_Action_OUTPUT {
-		log.Warnf("Server: FlowMod(Bridge): Bad action. %d %s", name, err)
+		s.log.Warnf("FlowMod(Bridge): Bad action. %d %s", name, err)
 		return
 	}
 
 	port, portType := fibcapi.ParseDPPortId(flow.Action.Value)
 	switch portType {
 	case fibcapi.LinkType_BRIDGE, fibcapi.LinkType_BOND:
-		log.Debugf("Server: FlowMod(Bridge): %d %s skip.", port, portType)
+		s.log.Debugf("FlowMod(Bridge): %d %s skip.", port, portType)
 		return
 	}
 
@@ -59,18 +60,18 @@ func (s *Server) FIBCBridgingFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, 
 
 	switch mod.Cmd {
 	case fibcapi.FlowMod_ADD, fibcapi.FlowMod_MODIFY:
-		log.Debugf("Server: FlowMod(Bridge): l2addr add. %s", l2addr)
+		s.log.Debugf("FlowMod(Bridge): l2addr add. %s", l2addr)
 		if err := l2addr.Add(s.Unit()); err != nil {
-			log.Errorf("Server: FlowMod(Bridge): l2addr add error. %s", err)
+			s.log.Errorf("FlowMod(Bridge): l2addr add error. %s", err)
 		}
 
 	case fibcapi.FlowMod_DELETE:
-		log.Debugf("Server: FlowMod(Bridge): l2addr delete. %s", l2addr)
+		s.log.Debugf("FlowMod(Bridge): l2addr delete. %s", l2addr)
 		if err := l2addr.Delete(s.Unit()); err != nil {
-			log.Errorf("Server: FlowMod(Bridge): l2addr delete error. %s", err)
+			s.log.Errorf("FlowMod(Bridge): l2addr delete error. %s", err)
 		}
 
 	default:
-		log.Errorf("Server: FlowMod(Bridge): Bad  flow cmd. %d", mod.Cmd)
+		s.log.Errorf("FlowMod(Bridge): Bad  flow cmd. %d", mod.Cmd)
 	}
 }

@@ -70,7 +70,9 @@ func main() {
 		defer ctx.Release()
 	}
 
-	if args.Verbose {
+	if args.Trace {
+		log.SetLevel(log.TraceLevel)
+	} else if args.Verbose {
 		log.SetLevel(log.DebugLevel)
 	}
 

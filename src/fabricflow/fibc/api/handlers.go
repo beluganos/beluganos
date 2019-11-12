@@ -15,10 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package fibclib
+package fibcapi
 
 import (
-	fibcapi "fabricflow/fibc/api"
 	fibcnet "fabricflow/fibc/net"
 )
 
@@ -34,116 +33,126 @@ type MessageHandler interface {
 // Hello
 //
 type HelloHandler interface {
-	FIBCHello(*fibcnet.Header, *fibcapi.Hello)
+	FIBCHello(*fibcnet.Header, *Hello)
 }
 
 //
 // PortStatus
 //
 type PortStatusHandler interface {
-	FIBCPortStatus(*fibcnet.Header, *fibcapi.PortStatus)
+	FIBCPortStatus(*fibcnet.Header, *PortStatus)
 }
 
 //
 // PortConfig
 //
 type PortConfigHandler interface {
-	FIBCPortConfig(*fibcnet.Header, *fibcapi.PortConfig)
+	FIBCPortConfig(*fibcnet.Header, *PortConfig)
 }
 
 //
 // FlowMod
 //
 type FlowModHandler interface {
-	FIBCFlowMod(*fibcnet.Header, *fibcapi.FlowMod)
+	FIBCFlowMod(*fibcnet.Header, *FlowMod)
 }
 
 //
 // GroupMod
 //
 type GroupModHandler interface {
-	FIBCGroupMod(*fibcnet.Header, *fibcapi.GroupMod)
+	FIBCGroupMod(*fibcnet.Header, *GroupMod)
 }
 
 //
 // DpStatus
 //
 type DpStatusHandler interface {
-	FIBCDpStatus(*fibcnet.Header, *fibcapi.DpStatus)
+	FIBCDpStatus(*fibcnet.Header, *DpStatus)
 }
 
 //
 // FFHello
 //
 type FFHelloHandler interface {
-	FIBCFFHello(*fibcnet.Header, *fibcapi.FFHello)
+	FIBCFFHello(*fibcnet.Header, *FFHello)
 }
 
 //
 // Multipart
 //
 type FFMultipartRequestHandler interface {
-	FIBCFFMultipartRequest(*fibcnet.Header, *fibcapi.FFMultipart_Request) error
+	FIBCFFMultipartRequest(*fibcnet.Header, *FFMultipart_Request) error
 }
 
 type FFMultipartReplyHandler interface {
-	FIBCFFMultipartReply(*fibcnet.Header, *fibcapi.FFMultipart_Reply) error
+	FIBCFFMultipartReply(*fibcnet.Header, *FFMultipart_Reply) error
 }
 
 //
 // Multipart.Port
 //
 type FFMultipartPortRequestHandler interface {
-	FIBCFFMultipartPortRequest(*fibcnet.Header, *fibcapi.FFMultipart_Request, *fibcapi.FFMultipart_PortRequest)
+	FIBCFFMultipartPortRequest(*fibcnet.Header, *FFMultipart_Request, *FFMultipart_PortRequest)
 }
 
 type FFMultipartPortReplyHandler interface {
-	FIBCFFMultipartPortReply(*fibcnet.Header, *fibcapi.FFMultipart_Reply, *fibcapi.FFMultipart_PortReply)
+	FIBCFFMultipartPortReply(*fibcnet.Header, *FFMultipart_Reply, *FFMultipart_PortReply)
 }
 
 //
 // Multipart.PortDesc
 //
 type FFMultipartPortDescRequestHandler interface {
-	FIBCFFMultipartPortDescRequest(*fibcnet.Header, *fibcapi.FFMultipart_Request, *fibcapi.FFMultipart_PortDescRequest)
+	FIBCFFMultipartPortDescRequest(*fibcnet.Header, *FFMultipart_Request, *FFMultipart_PortDescRequest)
 }
 
 type FFMultipartPortDescReplyHandler interface {
-	FIBCFFMultipartPortDescReply(*fibcnet.Header, *fibcapi.FFMultipart_Reply, *fibcapi.FFMultipart_PortDescReply)
+	FIBCFFMultipartPortDescReply(*fibcnet.Header, *FFMultipart_Reply, *FFMultipart_PortDescReply)
 }
 
 //
 // PacketIn/Out
 //
 type FFPacketInHandler interface {
-	FIBCFFPacketIn(*fibcnet.Header, *fibcapi.FFPacketIn)
+	FIBCFFPacketIn(*fibcnet.Header, *FFPacketIn)
 }
 
 type FFPacketOutHandler interface {
-	FIBCFFPacketOut(*fibcnet.Header, *fibcapi.FFPacketOut)
+	FIBCFFPacketOut(*fibcnet.Header, *FFPacketOut)
 }
 
 //
 // PortStatus
 //
 type FFPortStatusHandler interface {
-	FIBCFFPortStatus(*fibcnet.Header, *fibcapi.FFPortStatus)
+	FIBCFFPortStatus(*fibcnet.Header, *FFPortStatus)
 }
 
 //
 // PortMod
 //
 type FFPortModHandler interface {
-	FIBCFFPortMod(*fibcnet.Header, *fibcapi.FFPortMod)
+	FIBCFFPortMod(*fibcnet.Header, *FFPortMod)
 }
 
 //
 // L2AddrStatus
 //
 type L2AddrStatusHandler interface {
-	FIBCL2AddrStatus(*fibcnet.Header, *fibcapi.L2AddrStatus)
+	FIBCL2AddrStatus(*fibcnet.Header, *L2AddrStatus)
 }
 
+//
+// FFL2AddrStatus
+//
 type FFL2AddrStatusHandler interface {
-	FIBCFFL2AddrStatus(*fibcnet.Header, *fibcapi.FFL2AddrStatus)
+	FIBCFFL2AddrStatus(*fibcnet.Header, *FFL2AddrStatus)
+}
+
+//
+// ApMonitorReplyLog
+//
+type ApMonitorReplyLogHandler interface {
+	FIBCApMonitorReplyLog(*fibcnet.Header, *ApMonitorReplyLog)
 }

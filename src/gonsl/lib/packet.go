@@ -18,11 +18,10 @@
 package gonslib
 
 import (
-	"fabricflow/fibc/api"
-	"fabricflow/fibc/net"
+	fibcapi "fabricflow/fibc/api"
+	fibcnet "fabricflow/fibc/net"
 
 	"github.com/beluganos/go-opennsl/opennsl"
-
 	log "github.com/sirupsen/logrus"
 )
 
@@ -41,7 +40,7 @@ const (
 func RxInit(unit int) error {
 	pcfg, err := opennsl.PortConfigGet(unit)
 	if err != nil {
-		log.Errorf("Server: RxInit: PortConfigGet error. %s", err)
+		log.Errorf("RxInit: PortConfigGet error. %s", err)
 		return err
 	}
 
@@ -75,7 +74,7 @@ func RxServe(unit int, rxCh chan<- *opennsl.Pkt, done <-chan struct{}) {
 		rxCh <- pkt
 	})
 	if err != nil {
-		log.Errorf("Server: RxPacket: RxRegister error. %s", err)
+		log.Errorf("RxPacket: RxRegister error. %s", err)
 		return
 	}
 
@@ -90,46 +89,50 @@ func RxServe(unit int, rxCh chan<- *opennsl.Pkt, done <-chan struct{}) {
 		// cfg.ChanCfg(1).SetCosBmp(0xffffffff)
 
 		if err := opennsl.RxStart(unit, cfg); err != nil {
-			log.Errorf("Server: RxPacket: RxStart error. %s", err)
+			log.Errorf("RxPacket: RxStart error. %s", err)
 			return
 		}
 
 		defer cfg.Stop(unit)
 
-		log.Infof("Server: RxPacket: activated.")
+		log.Infof("RxPacket: activated.")
 	}
 
-	log.Infof("Server: RxPacket: Started.")
+	log.Infof("RxPacket: Started.")
 
 	<-done
 
-	log.Infof("Server: RxPacket: Exit")
+	log.Infof("RxPacket: Exit")
 }
 
 //
 // FIBCFFPacketOut process FFPacketOUT message from fibcd.
 //
 func (s *Server) FIBCFFPacketOut(hdr *fibcnet.Header, pktout *fibcapi.FFPacketOut) {
-	log.Debugf("Server: PacketOUT: %v %d %d", hdr, pktout.GetPortNo(), len(pktout.Data))
+	if !s.LogConfig().TxSilent {
+		s.log.Debugf("PacketOUT: %v %d %d", hdr, pktout.GetPortNo(), len(pktout.Data))
+	}
 
 	pkt, err := opennsl.PktAlloc(s.Unit(), len(pktout.Data)+packetTxPadsize, opennsl.PKT_F_NONE)
 	if err != nil {
-		log.Errorf("Server: PacketOut: PktAlloc error. %s", err)
+		s.log.Errorf("PacketOut: PktAlloc error. %s", err)
 		return
 	}
 
 	defer pkt.Free(s.Unit())
 
 	if err := pkt.Memcpy(0, pktout.GetData()); err != nil {
-		log.Errorf("Server: PacketOut: Memcpy error. %s", err)
+		s.log.Errorf("PacketOut: Memcpy error. %s", err)
 		return
 	}
 
 	pkt.TxPBmp().Clear()
 	pkt.TxPBmp().Add(opennsl.Port(pktout.GetPortNo()))
 
+	s.dumpTxPkt(pkt)
+
 	if err := pkt.Tx(s.Unit()); err != nil {
-		log.Errorf("Server: PacketOut: Send error. %s", err)
+		s.log.Errorf("PacketOut: Send error. %s", err)
 		return
 	}
 }

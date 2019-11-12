@@ -1,0 +1,65 @@
+// -*- coding: utf-8 -*-
+
+syntax = "proto3";
+
+package vswapi;
+
+message ModIfnameRequest {
+  enum Cmd{
+    NOP    = 0;
+    ADD    = 1;
+    REG    = 2;
+    DELETE = 3;
+    SYNC   = 4;
+  }
+
+  Cmd    cmd    = 1;
+  string ifname = 2;
+}
+
+message ModIfnameReply {}
+
+message GetIfnamesRequest {}
+
+message GetIfnamesReply {
+  string ifname = 1;
+  string kind   = 2;
+}
+
+message ModLinkRequest {
+  enum Cmd {
+    NOP  = 0;
+    UP   = 1;
+    DOWN = 2;
+  }
+
+  Cmd    cmd    = 1;
+  string ifname = 2;
+}
+
+message ModLinkReply {}
+
+message GetLinksRequest {}
+
+message GetLinksReply {
+  int32  index = 1;
+  string name  = 2;
+}
+
+message GetStatsRequest {}
+message GetStatsReply {
+  string group = 1;
+  map<string, uint64> values = 2;
+}
+
+message SaveConfigRequest {}
+message SaveConfigReply {}
+
+service VswApi {
+  rpc ModIfname  (ModIfnameRequest)  returns (ModIfnameReply)         {}
+  rpc GetIfnames (GetIfnamesRequest) returns (stream GetIfnamesReply) {}
+  rpc ModLink    (ModLinkRequest)    returns (ModLinkReply)           {}
+  rpc GetLinks   (GetLinksRequest)   returns (stream GetLinksReply)   {}
+  rpc GetStats   (GetStatsRequest)   returns (stream GetStatsReply)   {}
+  rpc SaveConfig (SaveConfigRequest) returns (SaveConfigReply)        {}
+}

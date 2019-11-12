@@ -1,6 +1,6 @@
 // -*- coding: utf-8 -*-
 
-// Copyright (C) 2017 Nippon Telegraph and Telephone Corporation.
+// Copyright (C) 2019 Nippon Telegraph and Telephone Corporation.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,58 +17,33 @@
 
 package ribctl
 
-import (
-	fibcnet "fabricflow/fibc/net"
+import fibcapi "fabricflow/fibc/api"
 
-	log "github.com/sirupsen/logrus"
+const (
+	FIBCTypeTCP     = "tcp"
+	FIBCTypeGrpc    = "grpc"
+	FIBCTypeDefault = FIBCTypeGrpc
 )
 
-type FIBCData struct {
-	Hdr  *fibcnet.Header
-	Data []byte
+type FIBController interface {
+	Start() error
+	Stop()
+	Conn() <-chan bool
+	Recv() <-chan *fibcapi.VmMonitorReply
+	Hello(*fibcapi.Hello) error
+	PortConfig(*fibcapi.PortConfig) error
+	FlowMod(*fibcapi.FlowMod) error
+	GroupMod(*fibcapi.GroupMod) error
+	FIBCType() string
 }
 
-func NewFIBCData(h *fibcnet.Header, data []byte) *FIBCData {
-	return &FIBCData{
-		Hdr:  h,
-		Data: data,
+func NewFIBController(fibcType, addr, reId string) FIBController {
+	switch fibcType {
+	case FIBCTypeTCP:
+		return NewFIBTcpController(addr)
+
+	default:
+		return NewFIBGrpcController(addr, reId)
+
 	}
-}
-
-type FIBController struct {
-	*fibcnet.Client
-	recvCh chan *FIBCData
-	log    *log.Entry
-}
-
-func NewFIBController(addr string) *FIBController {
-	return &FIBController{
-		Client: fibcnet.NewClient(addr),
-		recvCh: make(chan *FIBCData),
-		log:    log.WithFields(log.Fields{"module": "FIBCController"}),
-	}
-}
-
-func (f *FIBController) Send(msg fibcnet.Message, xid uint32) error {
-	return f.Client.Write(msg, xid)
-}
-
-func (f *FIBController) Recv() <-chan *FIBCData {
-	return f.recvCh
-}
-
-func (f *FIBController) Start() {
-	go f.Client.Start(func(client *fibcnet.Client) {
-		f.log.Infof("Monitor: START.")
-
-		for {
-			hdr, data, err := client.Read()
-			if err != nil {
-				f.log.Errorf("Monitor: EXIT. Read error. %s", err)
-				return
-			}
-
-			f.recvCh <- NewFIBCData(hdr, data)
-		}
-	})
 }

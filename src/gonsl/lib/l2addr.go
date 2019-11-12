@@ -23,20 +23,19 @@ import (
 	"time"
 
 	"github.com/beluganos/go-opennsl/opennsl"
-	log "github.com/sirupsen/logrus"
 )
 
 func (s *Server) L2AddrInit() {
 	agingTime := s.dpCfg.GetL2AgingTimer()
 	if agingTime > 0 {
 		if err := opennsl.L2AddrAgeTimerSet(s.Unit(), agingTime); err != nil {
-			log.Warnf("Server: L2AddrInit AgeTimeSet error. %s", err)
+			s.log.Warnf("L2AddrInit AgeTimeSet error. %s", err)
 		}
 
-		log.Infof("Server: L2AddrInit AgeTime %d", agingTime)
+		s.log.Infof("L2AddrInit AgeTime %d", agingTime)
 	}
 
-	log.Infof("Server: L2AddrInit ok.")
+	s.log.Infof("L2AddrInit ok.")
 }
 
 type L2addrmonEntry struct {
@@ -203,18 +202,18 @@ func (s *Server) L2AddrMonServe(unit int, sweepTime time.Duration, done <-chan s
 	if err := opennsl.L2AddrRegister(unit, func(unitCb int, l2addr *opennsl.L2Addr, oper opennsl.L2CallbackOper) {
 		ch <- NewL2addrmonEntry(l2addr, oper)
 	}); err != nil {
-		log.Errorf("L2AddrMon: L2AddrRegister error. %s", err)
+		s.log.Errorf("L2AddrMon: L2AddrRegister error. %s", err)
 		return
 	}
 
 	defer opennsl.L2AddrUnregister(unit)
 
-	log.Infof("L2AddrMon: Started.")
+	s.log.Infof("L2AddrMon: Started.")
 
 	tbl := NewL2addrmonTable(s.dpCfg.GetL2NotifyLimit())
 	doNotify := func(force bool) {
 		if entries := tbl.Reset(force); len(entries) > 0 {
-			log.Debugf("Server: notify #%d force:%t", len(entries), force)
+			s.log.Debugf("L2AddrMon: notify #%d force:%t", len(entries), force)
 			s.l2addrCh <- entries
 		}
 	}
@@ -226,16 +225,16 @@ FOR_LABEL:
 	for {
 		select {
 		case e := <-ch:
-			log.Debugf("L2AddrMon: entry %s", e)
+			s.log.Debugf("L2AddrMon: entry %s", e)
 			tbl.Put(e)
 			doNotify(false)
 
 		case <-tick.C:
-			// log.Debugf("L2AddrMon: all")
+			// s.log.Debugf("L2AddrMon: all")
 			doNotify(true)
 
 		case <-done:
-			log.Infof("L2AddrMon: Exit.")
+			s.log.Infof("L2AddrMon: Exit.")
 			break FOR_LABEL
 		}
 	}

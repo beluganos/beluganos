@@ -28,60 +28,60 @@ import (
 )
 
 func (s *Server) fibcL2InterfaceGroupTrunkAdd(port uint32, vid uint16) error {
-	log.Debugf("Server: L2-IF group: add Trunk. port:%x vid:%d", port, vid)
+	s.log.Debugf("GroupMod(L2-IF): add Trunk. port:%x vid:%d", port, vid)
 
 	if _, ok := s.idmaps.Trunks.Get(port, vid); ok {
-		log.Warnf("Server: L2-IF group: Trunk already exists. port:%x vid:%d", port, vid)
+		s.log.Warnf("GroupMod(L2-IF): Trunk already exists. port:%x vid:%d", port, vid)
 		return nil
 	}
 
 	trunk, err := opennsl.TrunkCreate(s.Unit(), opennsl.TRUNK_FLAG_NONE)
 	if err != nil {
-		log.Errorf("Server: L2-IF group: create Trunk error. %s", err)
+		s.log.Errorf("GroupMod(L2-IF): create Trunk error. %s", err)
 		return err
 	}
 
 	s.idmaps.Trunks.Register(port, vid, trunk)
 
-	log.Debugf("Server: L2-IF group: add Trunk. id:%x port:%x vid:%d", trunk, port, vid)
+	s.log.Debugf("GroupMod(L2-IF): add Trunk. id:%x port:%x vid:%d", trunk, port, vid)
 
 	return nil
 }
 
 func (s *Server) fibcL2InterfaceGroupTrunkDel(port uint32, vid uint16) error {
-	log.Debugf("Server: L2-IF group: del Trunk. port:%x vid:%d", port, vid)
+	s.log.Debugf("GroupMod(L2-IF): del Trunk. port:%x vid:%d", port, vid)
 
 	trunk, ok := s.idmaps.Trunks.Get(port, vid)
 	if !ok {
-		log.Warnf("Server: L2-IF group: Trunk not exists. port:%x vid:%d", port, vid)
+		s.log.Warnf("GroupMod(L2-IF): Trunk not exists. port:%x vid:%d", port, vid)
 		return nil
 	}
 
 	if err := trunk.Destroy(s.Unit()); err != nil {
-		log.Errorf("Server: L2-IF group: Trunk destroy error. %d %e", trunk, err)
+		s.log.Errorf("GroupMod(L2-IF): Trunk destroy error. %d %e", trunk, err)
 		return err
 	}
 
 	s.idmaps.Trunks.Unregister(port, vid)
 
-	log.Debugf("Server: L2-IF group: del Trunk. id:%x port:%x vid:%d", trunk, port, vid)
+	s.log.Debugf("GroupMod(L2-IF): del Trunk. id:%x port:%x vid:%d", trunk, port, vid)
 
 	return nil
 }
 
 func (s *Server) fibcL2InterfaceGroupTrunkMemberAdd(master, slave uint32, vid uint16) error {
-	log.Debugf("Server: L2-IF group: add Trunk member. master:%x slave:%x vid:%d", master, slave, vid)
+	s.log.Debugf("GroupMod(L2-IF): add Trunk member. master:%x slave:%x vid:%d", master, slave, vid)
 
 	trunk, ok := s.idmaps.Trunks.Get(master, vid)
 	if !ok {
-		log.Errorf("Server: L2-IF group: Trunk not exists. master:%x vid:%d", master, vid)
+		s.log.Errorf("GroupMod(L2-IF): Trunk not exists. master:%x vid:%d", master, vid)
 		return fmt.Errorf("Trunk not exists. master:%x vid:%d", master, vid)
 	}
 
 	port, _ := fibcapi.ParseDPPortId(slave)
 	gport, err := opennsl.Port(port).GPortGet(s.Unit())
 	if err != nil {
-		log.Errorf("server: L2-IF group: Trunk member gport error. port:%d vid:%d %s",
+		s.log.Errorf("GroupMod(L2-IF): Trunk member gport error. port:%d vid:%d %s",
 			port, vid, err)
 		return err
 	}
@@ -90,30 +90,30 @@ func (s *Server) fibcL2InterfaceGroupTrunkMemberAdd(master, slave uint32, vid ui
 	member.SetGPort(gport)
 
 	if err := trunk.MemberAdd(s.Unit(), member); err != nil {
-		log.Errorf("server: L2-IF group: Trunk member add error. id:%x port:%d vid:%d %s",
+		s.log.Errorf("GroupMod(L2-IF): Trunk member add error. id:%x port:%d vid:%d %s",
 			trunk, port, vid, err)
 		return err
 	}
 
-	log.Debugf("Server: L2-IF group: add Trunk member. id:%x port:%d vid:%d",
+	s.log.Debugf("GroupMod(L2-IF): add Trunk member. id:%x port:%d vid:%d",
 		trunk, port, vid)
 
 	return nil
 }
 
 func (s *Server) fibcL2InterfaceGroupTrunkMemberDel(master, slave uint32, vid uint16) error {
-	log.Debugf("Server: L2-IF group: del Trunk member. master:%x slave:%x vid:%d", master, slave, vid)
+	s.log.Debugf("GroupMod(L2-IF): del Trunk member. master:%x slave:%x vid:%d", master, slave, vid)
 
 	trunk, ok := s.idmaps.Trunks.Get(master, vid)
 	if !ok {
-		log.Warnf("Server: L2-IF group: Trunk not exists. master:%x vid:%d", master, vid)
+		s.log.Warnf("GroupMod(L2-IF): Trunk not exists. master:%x vid:%d", master, vid)
 		return nil
 	}
 
 	port, _ := fibcapi.ParseDPPortId(slave)
 	gport, err := opennsl.Port(port).GPortGet(s.Unit())
 	if err != nil {
-		log.Errorf("server: L2-IF group: Trunk member gport error. port:%d vid:%d %s",
+		s.log.Errorf("GroupMod(L2-IF): Trunk member gport error. port:%d vid:%d %s",
 			port, vid, err)
 		return err
 	}
@@ -122,12 +122,12 @@ func (s *Server) fibcL2InterfaceGroupTrunkMemberDel(master, slave uint32, vid ui
 	member.SetGPort(gport)
 
 	if err := trunk.MemberDelete(s.Unit(), member); err != nil {
-		log.Errorf("server: L2-IF group: Trunk member del error. id:%x port:%d vid:%d %s",
+		s.log.Errorf("GroupMod(L2-IF): Trunk member del error. id:%x port:%d vid:%d %s",
 			trunk, port, vid, err)
 		return err
 	}
 
-	log.Debugf("Server: L2-IF group: del Trunk member. id:%x port:%d vid:%d",
+	s.log.Debugf("GroupMod(L2-IF): del Trunk member. id:%x port:%d vid:%d",
 		trunk, port, vid)
 
 	return nil
@@ -135,13 +135,13 @@ func (s *Server) fibcL2InterfaceGroupTrunkMemberDel(master, slave uint32, vid ui
 
 func (s *Server) fibcL2InterfaceGroupAdd(port uint32, vid uint16, mac string, vrf uint32) error {
 	if _, ok := s.idmaps.L3Ifaces.Get(port, vid); ok {
-		log.Warnf("Server: L2-IF group: L2-IF already exists. port:%x vid:%d", port, vid)
+		s.log.Warnf("GroupMod(L2-IF): L2-IF already exists. port:%x vid:%d", port, vid)
 		return nil
 	}
 
 	hwaddr, err := net.ParseMAC(mac)
 	if err != nil {
-		log.Errorf("Server: L2-IF group: Invalid MAC. '%s'", mac)
+		s.log.Errorf("GroupMod(L2-IF): Invalid MAC. '%s'", mac)
 		return err
 	}
 
@@ -155,13 +155,13 @@ func (s *Server) fibcL2InterfaceGroupAdd(port uint32, vid uint16, mac string, vr
 	}
 
 	if err := l3iface.Create(s.Unit()); err != nil {
-		log.Errorf("Server: L2-IF group: L3Iface create error. %s", err)
+		s.log.Errorf("GroupMod(L2-IF): L3Iface create error. %s", err)
 		return err
 	}
 
 	s.idmaps.L3Ifaces.Register(port, vid, l3iface.IfaceID())
 
-	log.Debugf("Server: L2-IF group: add L3Iface. id:%x port:%x vid:%d/%d.",
+	s.log.Debugf("GroupMod(L2-IF): add L3Iface. id:%x port:%x vid:%d/%d.",
 		l3iface.IfaceID(), port, vid, pvid)
 
 	return nil
@@ -170,7 +170,7 @@ func (s *Server) fibcL2InterfaceGroupAdd(port uint32, vid uint16, mac string, vr
 func (s *Server) fibcL2InterfaceGroupDel(port uint32, vid uint16) error {
 	ifaceID, ok := s.idmaps.L3Ifaces.Get(port, vid)
 	if !ok {
-		log.Warnf("Server: L2-IF group: L2-IF not found. port:%x vid:%d", port, vid)
+		s.log.Warnf("GroupMod(L2-IF): L2-IF not found. port:%x vid:%d", port, vid)
 		return nil
 	}
 
@@ -179,11 +179,11 @@ func (s *Server) fibcL2InterfaceGroupDel(port uint32, vid uint16) error {
 	l3iface := opennsl.NewL3Iface()
 	l3iface.SetIfaceID(ifaceID)
 	if err := l3iface.Delete(s.Unit()); err != nil {
-		log.Errorf("Server: L2-IF group: L3Iface delete error. port:%x vid:%d %s", port, vid, err)
+		s.log.Errorf("GroupMod(L2-IF): L3Iface delete error. port:%x vid:%d %s", port, vid, err)
 		return err
 	}
 
-	log.Debugf("Server: L2-IF group: del L3Iface. id:%x port:%x vid:%d.",
+	s.log.Debugf("GroupMod(L2-IF): del L3Iface. id:%x port:%x vid:%d.",
 		ifaceID, port, vid)
 
 	return nil
@@ -192,13 +192,13 @@ func (s *Server) fibcL2InterfaceGroupDel(port uint32, vid uint16) error {
 func (s *Server) fibcL2InterfaceGroupUpd(port uint32, vid uint16, mac string, vrf uint32) error {
 	ifaceID, ok := s.idmaps.L3Ifaces.Get(port, vid)
 	if !ok {
-		log.Warnf("Server: L2-IF group: L2-IF(port:%x vid:%d) not exists. ", port, vid)
-		return fmt.Errorf("L2-IF(port:%x vid:%d)  not exist.", port, vid)
+		s.log.Warnf("GroupMod(L2-IF): L2-IF(port:%x vid:%d) not exists. ", port, vid)
+		return fmt.Errorf("L2-IF(port:%x vid:%d) not exist.", port, vid)
 	}
 
 	hwaddr, err := net.ParseMAC(mac)
 	if err != nil {
-		log.Errorf("Server: L2-IF group: Invalid MAC. '%s'", mac)
+		s.log.Errorf("GroupMod(L2-IF): Invalid MAC. '%s'", mac)
 		return err
 	}
 
@@ -214,11 +214,11 @@ func (s *Server) fibcL2InterfaceGroupUpd(port uint32, vid uint16, mac string, vr
 	}
 
 	if err := l3iface.Create(s.Unit()); err != nil {
-		log.Errorf("Server: L2-IF group: L3Iface create error. %s", err)
+		s.log.Errorf("GroupMod(L2-IF): L3Iface create error. %s", err)
 		return err
 	}
 
-	log.Debugf("Server: L2-IF group: upd L3Iface. id:%x port:%x vid:%d/%d.",
+	s.log.Debugf("GroupMod(L2-IF): upd L3Iface. id:%x port:%x vid:%d/%d.",
 		ifaceID, port, vid, pvid)
 
 	return nil
@@ -228,13 +228,14 @@ func (s *Server) fibcL2InterfaceGroupUpd(port uint32, vid uint16, mac string, vr
 // FIBCL2InterfaceGroupMod process GroupMod(L2 Interface)
 //
 func (s *Server) FIBCL2InterfaceGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMod, group *fibcapi.L2InterfaceGroup) {
-	log.Debugf("Server: L2-IF group: %v %v %v", hdr, mod, group)
+	s.log.Debugf("GroupMod(L2-IF): %v", hdr)
+	fibcapi.LogGroupMod(s.log, log.DebugLevel, mod)
 
 	vid := group.GetAdjustedVlanVid()
 	_, portType := fibcapi.ParseDPPortId(group.PortId)
 	_, masterType := fibcapi.ParseDPPortId(group.Master)
 
-	log.Debugf("Server: L2-IF group: port:%d %s master:%d %s vid:%d",
+	s.log.Debugf("GroupMod(L2-IF): port:%d %s master:%d %s vid:%d",
 		group.PortId, portType, group.Master, masterType, vid)
 
 	switch mod.Cmd {
@@ -262,6 +263,6 @@ func (s *Server) FIBCL2InterfaceGroupMod(hdr *fibcnet.Header, mod *fibcapi.Group
 		s.fibcL2InterfaceGroupUpd(group.PortId, vid, group.HwAddr, group.Vrf)
 
 	default:
-		log.Errorf("Server: L2-IF group: Invalid command. %d", mod.Cmd)
+		s.log.Errorf("GroupMod(L2-IF): Invalid command. %d", mod.Cmd)
 	}
 }

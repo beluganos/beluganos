@@ -18,6 +18,7 @@
 package main
 
 import (
+	"fabricflow/ribc/ribctl"
 	"fmt"
 
 	"github.com/BurntSushi/toml"
@@ -47,12 +48,20 @@ func (c *NlaConfig) String() string {
 }
 
 type RibcConfig struct {
-	Fibc    string `toml:"fibc"`
-	Disable bool   `toml:"disable"`
+	Fibc     string `toml:"fibc"`
+	FibcType string `toml:"fibc_type"`
+	Disable  bool   `toml:"disable"`
 }
 
 func (c *RibcConfig) String() string {
-	return fmt.Sprintf("fibc:'%s' disable:%t", c.Fibc, c.Disable)
+	return fmt.Sprintf("fibc:'%s' type:'%s' disable:%t", c.Fibc, c.FibcType, c.Disable)
+}
+
+func (c *RibcConfig) GetFibcType() string {
+	if len(c.FibcType) == 0 {
+		return ribctl.FIBCTypeDefault
+	}
+	return c.FibcType
 }
 
 type Config struct {

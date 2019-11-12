@@ -26,14 +26,16 @@ import (
 )
 
 type NLALogService struct {
-	dump uint32
-	log  *log.Entry
+	dump  uint32
+	log   *log.Entry
+	level log.Level
 }
 
 func NewNLALogService(dump uint32) *NLALogService {
 	return &NLALogService{
-		dump: dump,
-		log:  NewLogger("NLALogService"),
+		dump:  dump,
+		log:   NewLogger("NLALogService"),
+		level: log.DebugLevel,
 	}
 }
 
@@ -47,7 +49,7 @@ func (n *NLALogService) Stop() {
 }
 
 func (n *NLALogService) NetlinkMessage(nlmsg *nlamsg.NetlinkMessage) {
-	n.log.Debugf("NLM : %s %v", nlmsg.Src, nlmsg)
+	n.log.Debugf("NLM : %v", nlmsg)
 	if n.dump != 0 {
 		for _, line := range nlalib.HexSlice(nlmsg.Data) {
 			n.log.Debugf("NLM : %s", line)
@@ -56,29 +58,29 @@ func (n *NLALogService) NetlinkMessage(nlmsg *nlamsg.NetlinkMessage) {
 }
 
 func (n *NLALogService) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.Link) {
-	n.log.Debugf("LINK: %s %v %v", nlmsg.Src, &nlmsg.Header, link)
+	nlamsg.LogLink(n.log, n.level, link)
 }
 
 func (n *NLALogService) NetlinkAddr(nlmsg *nlamsg.NetlinkMessage, addr *nlamsg.Addr) {
-	n.log.Debugf("ADDR: %s %v %v", nlmsg.Src, &nlmsg.Header, addr)
+	nlamsg.LogAddr(n.log, n.level, addr)
 }
 
 func (n *NLALogService) NetlinkNeigh(nlmsg *nlamsg.NetlinkMessage, neigh *nlamsg.Neigh) {
-	n.log.Debugf("NEIG: %s %v %v", nlmsg.Src, &nlmsg.Header, neigh)
+	nlamsg.LogNeigh(n.log, n.level, neigh)
 }
 
 func (n *NLALogService) NetlinkRoute(nlmsg *nlamsg.NetlinkMessage, route *nlamsg.Route) {
-	n.log.Debugf("ROUT: %s %v %v", nlmsg.Src, &nlmsg.Header, route)
+	nlamsg.LogRoute(n.log, n.level, route)
 }
 
 func (n *NLALogService) NetlinkNode(nlmsg *nlamsg.NetlinkMessage, node *nlamsg.Node) {
-	n.log.Debugf("NODE: %s %v %v", nlmsg.Src, &nlmsg.Header, node.IP())
+	nlamsg.LogNode(n.log, n.level, node)
 }
 
 func (n *NLALogService) NetlinkVpn(nlmsg *nlamsg.NetlinkMessage, vpn *nlamsg.Vpn) {
-	n.log.Debugf("VPN : %s %v %v", nlmsg.Src, &nlmsg.Header, vpn)
+	nlamsg.LogVpn(n.log, n.level, vpn)
 }
 
 func (n *NLALogService) NetlinkBridgeVlanInfo(nlmsg *nlamsg.NetlinkMessage, brvlan *nlamsg.BridgeVlanInfo) {
-	n.log.Debugf("BRVI: %s %v %v", nlmsg.Src, &nlmsg.Header, brvlan)
+	nlamsg.LogBridgeVlanInfo(n.log, n.level, brvlan)
 }

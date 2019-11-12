@@ -15,75 +15,74 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package fibclib
+package fibcapi
 
 import (
-	"fabricflow/fibc/api"
-	"fabricflow/fibc/net"
+	fibcnet "fabricflow/fibc/net"
 )
 
 // VLANFlow
 type FIBCVLANFlowModHandler interface {
-	FIBCVLANFlowMod(*fibcnet.Header, *fibcapi.FlowMod, *fibcapi.VLANFlow)
+	FIBCVLANFlowMod(*fibcnet.Header, *FlowMod, *VLANFlow)
 }
 
 // TerminationMacFlow
 type FIBCTerminationMacFlowModHandler interface {
-	FIBCTerminationMacFlowMod(*fibcnet.Header, *fibcapi.FlowMod, *fibcapi.TerminationMacFlow)
+	FIBCTerminationMacFlowMod(*fibcnet.Header, *FlowMod, *TerminationMacFlow)
 }
 
 // MPLSFlow
 type FIBCMPLSFlowModHandler interface {
-	FIBCMPLSFlowMod(*fibcnet.Header, *fibcapi.FlowMod, *fibcapi.MPLSFlow)
+	FIBCMPLSFlowMod(*fibcnet.Header, *FlowMod, *MPLSFlow)
 }
 
 // UnicastRoutingFlow
 type FIBCUnicastRoutingFlowModHandler interface {
-	FIBCUnicastRoutingFlowMod(*fibcnet.Header, *fibcapi.FlowMod, *fibcapi.UnicastRoutingFlow)
+	FIBCUnicastRoutingFlowMod(*fibcnet.Header, *FlowMod, *UnicastRoutingFlow)
 }
 
 // BridgingFlow
 type FIBCBridgingFlowModHandler interface {
-	FIBCBridgingFlowMod(*fibcnet.Header, *fibcapi.FlowMod, *fibcapi.BridgingFlow)
+	FIBCBridgingFlowMod(*fibcnet.Header, *FlowMod, *BridgingFlow)
 }
 
 // PolicyACLFlow
 type FIBCPolicyACLFlowModHandler interface {
-	FIBCPolicyACLFlowMod(*fibcnet.Header, *fibcapi.FlowMod, *fibcapi.PolicyACLFlow)
+	FIBCPolicyACLFlowMod(*fibcnet.Header, *FlowMod, *PolicyACLFlow)
 }
 
 // L2InterfaceGroup
 type FIBCL2InterfaceGroupModHandler interface {
-	FIBCL2InterfaceGroupMod(*fibcnet.Header, *fibcapi.GroupMod, *fibcapi.L2InterfaceGroup)
+	FIBCL2InterfaceGroupMod(*fibcnet.Header, *GroupMod, *L2InterfaceGroup)
 }
 
 // L3UnicastGroup
 type FIBCL3UnicastGroupModHandler interface {
-	FIBCL3UnicastGroupMod(*fibcnet.Header, *fibcapi.GroupMod, *fibcapi.L3UnicastGroup)
+	FIBCL3UnicastGroupMod(*fibcnet.Header, *GroupMod, *L3UnicastGroup)
 }
 
 // MPLSInterfaceGroup
 type FIBCMPLSInterfaceGroupModHandler interface {
-	FIBCMPLSInterfaceGroupMod(*fibcnet.Header, *fibcapi.GroupMod, *fibcapi.MPLSInterfaceGroup)
+	FIBCMPLSInterfaceGroupMod(*fibcnet.Header, *GroupMod, *MPLSInterfaceGroup)
 }
 
 // MPLSLabelGroup
 type FIBCMPLSLabelL2VpnGroupModHandler interface {
-	FIBCMPLSLabelL2VpnGroupMod(*fibcnet.Header, *fibcapi.GroupMod, *fibcapi.MPLSLabelGroup)
+	FIBCMPLSLabelL2VpnGroupMod(*fibcnet.Header, *GroupMod, *MPLSLabelGroup)
 }
 
 type FIBCMPLSLabelL3VpnGroupModHandler interface {
-	FIBCMPLSLabelL3VpnGroupMod(*fibcnet.Header, *fibcapi.GroupMod, *fibcapi.MPLSLabelGroup)
+	FIBCMPLSLabelL3VpnGroupMod(*fibcnet.Header, *GroupMod, *MPLSLabelGroup)
 }
 
 type FIBCMPLSLabelTun1GroupModHandler interface {
-	FIBCMPLSLabelTun1GroupMod(*fibcnet.Header, *fibcapi.GroupMod, *fibcapi.MPLSLabelGroup)
+	FIBCMPLSLabelTun1GroupMod(*fibcnet.Header, *GroupMod, *MPLSLabelGroup)
 }
 
 type FIBCMPLSLabelTun2GroupModHandler interface {
-	FIBCMPLSLabelTun2GroupMod(*fibcnet.Header, *fibcapi.GroupMod, *fibcapi.MPLSLabelGroup)
+	FIBCMPLSLabelTun2GroupMod(*fibcnet.Header, *GroupMod, *MPLSLabelGroup)
 }
 
 type FIBCMPLSLabelSwapGroupModHandler interface {
-	FIBCMPLSLabelSwapGroupMod(*fibcnet.Header, *fibcapi.GroupMod, *fibcapi.MPLSLabelGroup)
+	FIBCMPLSLabelSwapGroupMod(*fibcnet.Header, *GroupMod, *MPLSLabelGroup)
 }

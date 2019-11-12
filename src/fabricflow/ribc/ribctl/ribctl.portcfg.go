@@ -59,5 +59,5 @@ func (r *RIBController) SendPortConfig(cmd string, link *nlamsg.Link) error {
 	r.log.Debugf("PortConfig: %s %v", cmd, link)
 
 	p := r.NewPortConfig(cmd, r.reId, link)
-	return r.fib.Send(p, 0)
+	return r.fib.PortConfig(p)
 }

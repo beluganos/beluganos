@@ -29,7 +29,8 @@ import (
 // FIBCL3UnicastGroupMod process GroupMod(L3 Unicst)
 //
 func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMod, group *fibcapi.L3UnicastGroup) {
-	log.Debugf("Server: GroupMod(L3-UC): %v %v %v", hdr, mod, group)
+	s.log.Debugf("GroupMod(L3-UC): %v", hdr)
+	fibcapi.LogGroupMod(s.log, log.DebugLevel, mod)
 
 	neid := group.NeId
 	vid := group.GetAdjustedVlanVid()
@@ -42,7 +43,7 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 
 	if portType == fibcapi.LinkType_BOND {
 		if trunk, isTrunk = s.idmaps.Trunks.Get(group.PortId, vid); !isTrunk {
-			log.Errorf("erver: GroupMod(L3-UC): Trunk(port:%d, vid:%d) not found.", group.PortId, vid)
+			s.log.Errorf("GroupMod(L3-UC): Trunk(port:%d, vid:%d) not found.", group.PortId, vid)
 			return
 		}
 	}
@@ -51,13 +52,13 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 	case fibcapi.GroupMod_ADD, fibcapi.GroupMod_MODIFY:
 		oldL3egrID, ok := s.idmaps.L3Egress.Get(neid)
 		if ok && (mod.Cmd != fibcapi.GroupMod_MODIFY) {
-			log.Errorf("Server: L3-UC group: L3-UC(neid:%d) already exists. ", neid)
+			s.log.Errorf("GroupMod(L3-UC): L3-UC(neid:%d) already exists. ", neid)
 			return
 		}
 
 		ifaceID, ok := s.idmaps.L3Ifaces.Get(group.PortId, vid)
 		if !ok {
-			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", group.PortId, vid)
+			s.log.Errorf("GroupMod(L3-UC): L2-IF(port:%d, vid:%d) not found. ", group.PortId, vid)
 			return
 		}
 
@@ -85,7 +86,7 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 
 		l3egrID, err := l3egr.Create(s.Unit(), flags, oldL3egrID)
 		if err != nil {
-			log.Errorf("Server: L3-UC group: L3 Egress create error. %s", err)
+			s.log.Errorf("GroupMod(L3-UC): L3 Egress create error. %s", err)
 			return
 		}
 
@@ -94,14 +95,14 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 	case fibcapi.GroupMod_DELETE:
 		l3egrID, ok := s.idmaps.L3Egress.Get(neid)
 		if !ok {
-			log.Errorf("Server: L3-UC group: L3-UC(%08x) not found. ", neid)
+			s.log.Errorf("GroupMod(L3-UC): L3-UC(%08x) not found. ", neid)
 			return
 		}
 
 		s.idmaps.L3Egress.Unregister(neid)
 
 		if err := l3egrID.Destroy(s.Unit()); err != nil {
-			log.Errorf("Server: L3-UC group: L3 Egress delete error. %s", err)
+			s.log.Errorf("GroupMod(L3-UC): L3 Egress delete error. %s", err)
 		}
 
 		tunnelTerminatorDelete(s.Unit(), group)
@@ -109,13 +110,13 @@ func (s *Server) FIBCL3UnicastGroupMod(hdr *fibcnet.Header, mod *fibcapi.GroupMo
 		vid := group.GetAdjustedVlanVid()
 		ifaceID, ok := s.idmaps.L3Ifaces.Get(group.PortId, vid)
 		if !ok {
-			log.Errorf("Server: L3-UC group: L2-IF(port:%d, vid:%d) not found. ", group.PortId, vid)
+			s.log.Errorf("GroupMod(L3-UC): L2-IF(port:%d, vid:%d) not found. ", group.PortId, vid)
 			return
 		}
 
 		tunnelInitiatorDelete(s.Unit(), group, ifaceID)
 
 	default:
-		log.Errorf("Server: L3-UC group: Invalid Cmd. %d", mod.Cmd)
+		s.log.Errorf("GroupMod(L3-UC): Invalid Cmd. %d", mod.Cmd)
 	}
 }

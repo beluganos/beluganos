@@ -34,6 +34,7 @@ type Args struct {
 	PidFile    string
 	LogFile    string
 	Verbose    bool
+	Trace      bool
 }
 
 //
@@ -58,5 +59,6 @@ func (a *Args) Parse() {
 	flag.StringVar(&a.PidFile, "pid", "/var/run/gonsld.pid", "PID file.")
 	flag.StringVar(&a.LogFile, "log-file", "/var/log/gonsld.log", "log file.")
 	flag.BoolVarP(&a.Verbose, "verboce", "v", false, "show detail messages.")
+	flag.BoolVarP(&a.Trace, "trace", "", false, "show more detail messages.")
 	flag.Parse()
 }

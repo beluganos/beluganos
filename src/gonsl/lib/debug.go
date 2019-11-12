@@ -25,32 +25,81 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func dumpPktDesc(pkt *opennsl.Pkt) {
+	log.Debugf("rx: cos:%d port:%d vid:%d len:%d tot:%d",
+		pkt.Cos(), pkt.RxPort(), pkt.VID(), pkt.PktLen(), pkt.TotLen())
+}
+
+func dumpPktDetail(pkt *opennsl.Pkt) {
+	log.Debugf("pkt  : %p len:%d tot:%d", pkt, pkt.PktLen(), pkt.TotLen())
+	log.Debugf("unit : %d", pkt.Unit())
+	log.Debugf("flags: %d", pkt.Flags())
+	log.Debugf("cos  : %d", pkt.Cos())
+	log.Debugf("vid  : %d", pkt.VID())
+	log.Debugf("port : src:%d dst:%d", pkt.SrcPort(), pkt.DstPort())
+	log.Debugf("rx   : port    : %d", pkt.RxPort())
+	log.Debugf("rx   : untagged: %d", pkt.RxUntagged())
+	log.Debugf("rx   : matched : %d", pkt.RxMatched())
+	log.Debugf("rx   : reasons : %d", pkt.RxReasons())
+	log.Debugf("blk  : #%d", pkt.BlkCount())
+}
+
+func dumpPktData(pkt *opennsl.Pkt) {
+	total := int(pkt.PktLen())
+	if total > 256 {
+		total = 256
+	}
+
+	for index, blk := range pkt.Blks() {
+		dumpLen := func() int {
+			if blkLen := blk.Len(); blkLen < total {
+				return blkLen
+			}
+			return total
+		}()
+
+		total -= dumpLen
+
+		log.Debugf("blk[%d] len=%d", index, dumpLen)
+		b := blk.Data()
+		log.Debugf("\n%s", hex.Dump(b[:dumpLen]))
+	}
+}
+
 //
 // dumpRxPkt output packet.
 //
 func (s *Server) dumpRxPkt(pkt *opennsl.Pkt) {
+	if s.LogConfig().RxSilent {
+		return
+	}
+
 	if s.LogConfig().RxDetail {
-		log.Debugf("pkt  : %p len:%d tot:%d", pkt, pkt.PktLen(), pkt.TotLen())
-		log.Debugf("unit : %d", pkt.Unit())
-		log.Debugf("flags: %d", pkt.Flags())
-		log.Debugf("cos  : %d", pkt.Cos())
-		log.Debugf("vid  : %d", pkt.VID())
-		log.Debugf("port : src:%d dst:%d", pkt.SrcPort(), pkt.DstPort())
-		log.Debugf("rx   : port    : %d", pkt.RxPort())
-		log.Debugf("rx   : untagged: %d", pkt.RxUntagged())
-		log.Debugf("rx   : matched : %d", pkt.RxMatched())
-		log.Debugf("rx   : reasons : %d", pkt.RxReasons())
-		log.Debugf("blk  : #%d", pkt.BlkCount())
+		dumpPktDetail(pkt)
 	} else {
-		log.Debugf("rx: cos:%d port:%d vid:%d len:%d tot:%d",
-			pkt.Cos(), pkt.RxPort(), pkt.VID(), pkt.PktLen(), pkt.TotLen())
+		dumpPktDesc(pkt)
 	}
 
 	if s.LogConfig().RxDump {
-		for index, blk := range pkt.Blks() {
-			log.Debugf("blk[%d] len=%d", index, blk.Len())
-			b := blk.Data()
-			log.Debugf("\n%s", hex.Dump(b[:128]))
-		}
+		dumpPktData(pkt)
+	}
+}
+
+//
+// dumpTxPkt output packet.
+//
+func (s *Server) dumpTxPkt(pkt *opennsl.Pkt) {
+	if s.LogConfig().TxSilent {
+		return
+	}
+
+	if s.LogConfig().TxDetail {
+		dumpPktDetail(pkt)
+	} else {
+		dumpPktDesc(pkt)
+	}
+
+	if s.LogConfig().TxDump {
+		dumpPktData(pkt)
 	}
 }

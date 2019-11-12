@@ -1,0 +1,15 @@
+[Unit]
+Description=govsw service
+After=network.target
+Conflicts=openvswitch-switch.service
+ConditionPathExists=/etc/beluganos/govswd.conf
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/beluganos/govswd.conf
+ExecStart=/usr/bin/govswd --config-file ${CONFIG_FILE} --fibc-addr ${FIBC_ADDR} --fibc-port ${FIBC_PORT}
+Restart=on-abort
+User=root
+
+[Install]
+WantedBy=network.target

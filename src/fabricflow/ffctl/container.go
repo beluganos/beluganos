@@ -27,23 +27,41 @@ const (
 	containerImageName = "base"
 )
 
-func doDeviceContainer(name string, excludeIfaces []string, bridge string, cmd string, force bool) error {
-	devices, err := containerDevices(name, excludeIfaces)
+type containerCommand struct {
+	excludeIfnames []string
+	bridge         string
+
+	log *log.Entry
+}
+
+func (c *containerCommand) setFlags(cmd *cobra.Command) *cobra.Command {
+	c.log = log.WithFields(log.Fields{
+		"module": "container",
+	})
+	return cmd
+}
+
+func (c *containerCommand) setIfaceFlags(cmd *cobra.Command) *cobra.Command {
+	cmd.Flags().StringArrayVarP(&c.excludeIfnames, "exclude", "", []string{"eth0", "root", "logdir"}, "Exclude devices.")
+	cmd.Flags().StringVarP(&c.bridge, "bridge", "", ovsBridgeDefault, "ovs-bridge name.")
+	return c.setFlags(cmd)
+}
+
+func (c *containerCommand) modOvsPort(name, cmd string, force bool) error {
+	c.log.Debugf("modOvsPort: name:%s cmd:%s", name, cmd)
+
+	devices, err := containerDevices(name, c.excludeIfnames)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"func": "doDeviceContainer",
-			"call": "containerDevices",
-		}).Errorf("%s", err)
+		c.log.Errorf("modOvsPort: name:%s cmd:%s %s", name, cmd, err)
 		return err
 	}
 
 	for _, device := range devices {
+		c.log.Debugf("modOvsPort: name:%s cmd:%s device:%s", name, cmd, device)
+
 		nictype, err := containerDeviceProperty(name, device, "nictype")
 		if err != nil {
-			log.WithFields(log.Fields{
-				"func": "doDeviceContainer",
-				"call": "containerDeviceProperty",
-			}).Errorf("%s", err)
+			c.log.Errorf("modOvsPort: name:%s cmd:%s device:%s %s", name, cmd, device, err)
 			return err
 		}
 
@@ -53,165 +71,145 @@ func doDeviceContainer(name string, excludeIfaces []string, bridge string, cmd s
 
 		ifname, err := containerDeviceProperty(name, device, "host_name")
 		if err != nil {
-			log.WithFields(log.Fields{
-				"func": "doDeviceContainer",
-				"call": "containerDeviceProperty",
-			}).Errorf("%s", err)
+			c.log.Errorf("modOvsPort: name:%s cmd:%s device:%s %s", name, cmd, device, err)
 			return err
 		}
 
-		if err := execAndOutput("sudo", "ovs-vsctl", cmd, bridge, ifname); err != nil {
-			log.WithFields(log.Fields{
-				"func": "doDeviceContainer",
-				"call": "execAndOutput",
-			}).Errorf("%s", err)
-
+		if err := execAndOutput("sudo", "ovs-vsctl", cmd, c.bridge, ifname); err != nil {
 			if force {
+				c.log.Warnf("modOvsPort: name:%s cmd:%s device:%s %s", name, cmd, device, err)
 				continue
 			}
 
+			c.log.Errorf("modOvsPort: name:%s cmd:%s device:%s %s", name, cmd, device, err)
 			return err
 		}
-
-		log.WithFields(log.Fields{
-			"container": name,
-			"device":    ifname,
-		}).Debugf("%s success.", cmd)
 	}
 
 	return nil
 }
 
-func doAddContainer(name string, excludeIfaces []string, bridge string) error {
-	if err := doDeviceContainer(name, excludeIfaces, bridge, "add-port", false); err != nil {
-		log.WithFields(log.Fields{
-			"container":  name,
-			"ovs-bridge": bridge,
-		}).Errorf("add container error. %s", err)
+func (c *containerCommand) addOvsPort(name string) error {
+	c.log.Debugf("addOvsPort: name:%s", name)
+
+	if err := c.modOvsPort(name, "add-port", false); err != nil {
+		c.log.Errorf("addOvsPort: %s", err)
 		return err
 	}
 
-	log.WithFields(log.Fields{
-		"container":  name,
-		"ovs-bridge": bridge,
-	}).Infof("add container ok.")
-
 	return nil
 }
 
-func doDeleteContainer(name string, excludeIfaces []string, bridge string) error {
-	if err := doDeviceContainer(name, excludeIfaces, bridge, "del-port", true); err != nil {
-		log.WithFields(log.Fields{
-			"container":  name,
-			"ovs-bridge": bridge,
-		}).Errorf("delete container error. %s", err)
+func (c *containerCommand) deleteOvsPort(name string) error {
+	c.log.Debugf("deleteOvsPort: name:%s", name)
+
+	if err := c.modOvsPort(name, "del-port", true); err != nil {
+		c.log.Errorf("deleteOvsPort: %s", err)
 		return err
 	}
 
-	log.WithFields(log.Fields{
-		"container":  name,
-		"ovs-bridge": bridge,
-	}).Infof("delete container ok.")
-
 	return nil
 }
 
-func doShowContainer(name string) error {
+func (c *containerCommand) showInfo(name string) error {
 	return execAndOutput("lxc", "info", name)
 }
 
-func doListContainer() error {
+func (c *containerCommand) showList() error {
 	return execAndOutput("lxc", "list")
 }
 
-func doStartContainer(name string) error {
+func (c *containerCommand) start(name string) error {
 	return execAndOutput("lxc", "start", name)
 }
 
-func doStopContainer(name string) error {
+func (c *containerCommand) stop(name string) error {
 	return execAndOutput("lxc", "stop", name)
 }
 
-func doConContainer(name string) error {
+func (c *containerCommand) console(name string) error {
 	return execAndWait("lxc", "exec", name, "bash")
 }
 
 func containerCmd() *cobra.Command {
+	c := containerCommand{}
+
 	rootCmd := &cobra.Command{
 		Use:   "container",
 		Short: "Container commands.",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return doListContainer()
+			return c.showList()
 		},
 	}
 
-	var bridge string
-	var excludeIfnames []string
-	rootCmd.PersistentFlags().StringArrayVarP(&excludeIfnames, "exclude", "", []string{"eth0", "root", "logdir"}, "Exclude devices.")
-	rootCmd.PersistentFlags().StringVarP(&bridge, "bridge", "", ovsBridgeDefault, "ovs-bridge name.")
-
-	addCmd := &cobra.Command{
-		Use:   "add <container name>",
-		Short: "Add container",
-		Args:  cobra.MinimumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return doAddContainer(args[0], excludeIfnames, bridge)
+	rootCmd.AddCommand(c.setIfaceFlags(
+		&cobra.Command{
+			Use:   "add <container name>",
+			Short: "Add container",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return c.addOvsPort(args[0])
+			},
 		},
-	}
-	rootCmd.AddCommand(addCmd)
+	))
 
-	delCmd := &cobra.Command{
-		Use:     "delete <container name>",
-		Aliases: []string{"del"},
-		Short:   "Delete container",
-		Args:    cobra.MinimumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return doDeleteContainer(args[0], excludeIfnames, bridge)
+	rootCmd.AddCommand(c.setIfaceFlags(
+		&cobra.Command{
+			Use:     "delete <container name>",
+			Aliases: []string{"del"},
+			Short:   "Delete container",
+			Args:    cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return c.deleteOvsPort(args[0])
+			},
 		},
-	}
-	rootCmd.AddCommand(delCmd)
+	))
 
-	showCmd := &cobra.Command{
-		Use:   "show <container name>",
-		Short: "Show container",
-		Args:  cobra.MinimumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return doShowContainer(args[0])
+	rootCmd.AddCommand(c.setFlags(
+		&cobra.Command{
+			Use:   "show <container name>",
+			Short: "Show container",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return c.showInfo(args[0])
+			},
 		},
-	}
-	rootCmd.AddCommand(showCmd)
+	))
 
-	startCmd := &cobra.Command{
-		Use:     "start <container name>",
-		Aliases: []string{"sta"},
-		Short:   "Start container",
-		Args:    cobra.MinimumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return doStartContainer(args[0])
+	rootCmd.AddCommand(c.setFlags(
+		&cobra.Command{
+			Use:     "start <container name>",
+			Aliases: []string{"sta"},
+			Short:   "Start container",
+			Args:    cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return c.start(args[0])
+			},
 		},
-	}
-	rootCmd.AddCommand(startCmd)
+	))
 
-	stopCmd := &cobra.Command{
-		Use:   "stop <container name>",
-		Short: "Stop container",
-		Args:  cobra.MinimumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return doStopContainer(args[0])
+	rootCmd.AddCommand(c.setFlags(
+		&cobra.Command{
+			Use:   "stop <container name>",
+			Short: "Stop container",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return c.stop(args[0])
+			},
 		},
-	}
-	rootCmd.AddCommand(stopCmd)
+	))
 
-	conCmd := &cobra.Command{
-		Use:     "console <container name>",
-		Aliases: []string{"con"},
-		Short:   "Run  container console",
-		Args:    cobra.MinimumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return doConContainer(args[0])
+	rootCmd.AddCommand(c.setFlags(
+		&cobra.Command{
+			Use:     "console <container name>",
+			Aliases: []string{"con"},
+			Short:   "Run container console",
+			Args:    cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return c.console(args[0])
+			},
 		},
-	}
-	rootCmd.AddCommand(conCmd)
+	))
 
 	return rootCmd
 }

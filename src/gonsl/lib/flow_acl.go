@@ -32,12 +32,13 @@ import (
 // FIBCPolicyACLFlowMod process FlowMod(ACL Policy)
 //
 func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow *fibcapi.PolicyACLFlow) {
-	log.Debugf("Server: FlowMod(ACL): %v %v", hdr, mod)
+	s.log.Debugf("FlowMod(ACL): %v", hdr)
+	fibcapi.LogFlowMod(s.log, log.DebugLevel, mod)
 
 	port, portType := fibcapi.ParseDPPortId(flow.Match.InPort)
 
 	if portType.IsVirtual() {
-		log.Debugf("Server: FlowMod(ACL): %d %s skip.", port, portType)
+		s.log.Debugf("FlowMod(ACL): %d %s skip.", port, portType)
 		return
 	}
 
@@ -45,13 +46,13 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 
 	switch {
 	case len(flow.Match.IpDst) != 0:
-		log.Debugf("Server: FlowMod(ACL): ip_dst. %s", flow)
+		s.log.Debugf("FlowMod(ACL): ip_dst")
 
 		_, dstIP, err := net.ParseCIDR(flow.Match.IpDst)
 		if err != nil {
 			ip := net.ParseIP(flow.Match.IpDst)
 			if ip == nil {
-				log.Errorf("Server: FlowMod(ACL): Invalid IP. %s", flow.Match.IpDst)
+				s.log.Errorf("FlowMod(ACL): Invalid IP. %s", flow.Match.IpDst)
 				return
 			}
 
@@ -76,7 +77,7 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 				}
 			}()
 			if err != nil {
-				log.Errorf("Server: FlowMod(ACL): AddEntry error. %s %s", dstIP, err)
+				s.log.Errorf("FlowMod(ACL): AddEntry error. %s %s", dstIP, err)
 			}
 
 		case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
@@ -86,36 +87,36 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 			case unix.ETH_P_IPV6:
 				s.Fields().DstIPv6.DeleteEntry(NewFieldEntryDstIPv6(dstIP, inPort))
 			default:
-				log.Warnf("Server: FlowMod(ACL): DeleteEntry error. %s", dstIP)
+				s.log.Warnf("FlowMod(ACL): DeleteEntry error. %s", dstIP)
 			}
 
 		default:
-			log.Warnf("Server: FlowMod(ACL): Invalid cmd. %s", mod.Cmd)
+			s.log.Warnf("FlowMod(ACL): Invalid cmd. %s", mod.Cmd)
 		}
 
 	case flow.Match.EthType != 0:
-		log.Debugf("Server: FlowMod(ACL): eth_type. %s", flow)
+		s.log.Debugf("FlowMod(ACL): eth_type")
 
 		e := NewFieldEntryEthType(uint16(flow.Match.EthType), inPort)
 		switch mod.Cmd {
 		case fibcapi.FlowMod_ADD:
 			if err := s.Fields().EthType.AddEntry(e); err != nil {
-				log.Errorf("Server: FlowMod(ACL): AddEntry error. %d %s", e, err)
+				s.log.Errorf("FlowMod(ACL): AddEntry error. %d %s", e, err)
 			}
 
 		case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
 			s.Fields().EthType.DeleteEntry(e)
 
 		default:
-			log.Warnf("Server: FlowMod(ACL): Invalid cmd. %s", mod.Cmd)
+			s.log.Warnf("FlowMod(ACL): Invalid cmd. %s", mod.Cmd)
 		}
 
 	case len(flow.Match.EthDst) > 0:
-		log.Debugf("Server:  FlowMod(ACL): eth_dst. %s", flow)
+		s.log.Debugf("FlowMod(ACL): eth_dst")
 
 		dstMAC, err := net.ParseMAC(flow.Match.EthDst)
 		if err != nil {
-			log.Errorf("Server: FlowMod(ACL): Invalid MAC. %s", flow.Match.EthDst)
+			s.log.Errorf("FlowMod(ACL): Invalid MAC. %s", flow.Match.EthDst)
 			return
 		}
 
@@ -123,17 +124,17 @@ func (s *Server) FIBCPolicyACLFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod,
 		switch mod.Cmd {
 		case fibcapi.FlowMod_ADD:
 			if err := s.Fields().EthDst.AddEntry(entry); err != nil {
-				log.Errorf("Server:  FlowMod(ACL): AddEntry error. %s %s", entry, err)
+				s.log.Errorf("FlowMod(ACL): AddEntry error. %s %s", entry, err)
 			}
 
 		case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
 			s.Fields().EthDst.DeleteEntry(entry)
 
 		default:
-			log.Warnf("Server: FlowMod(ACL): Invalid cmd. %s", mod.Cmd)
+			s.log.Warnf("FlowMod(ACL): Invalid cmd. %s", mod.Cmd)
 		}
 
 	default:
-		log.Warnf("Server: FlowMod(ACL): Ignored. %s", flow)
+		s.log.Warnf("FlowMod(ACL): Ignored. %s", flow)
 	}
 }

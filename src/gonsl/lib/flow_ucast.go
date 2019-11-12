@@ -18,25 +18,25 @@
 package gonslib
 
 import (
-	"fabricflow/fibc/api"
-	"fabricflow/fibc/net"
+	fibcapi "fabricflow/fibc/api"
+	fibcnet "fabricflow/fibc/net"
 	"net"
 
 	"github.com/beluganos/go-opennsl/opennsl"
-	"golang.org/x/sys/unix"
-
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/sys/unix"
 )
 
 //
 // FIBCUnicastRoutingFlowMod process FlowMod(Unicast Routing)
 //
 func (s *Server) FIBCUnicastRoutingFlowMod(hdr *fibcnet.Header, mod *fibcapi.FlowMod, flow *fibcapi.UnicastRoutingFlow) {
-	log.Debugf("Server: UC-RoutingFlow: %v %v %v", hdr, mod, flow)
+	s.log.Debugf("FlowMod(U.C.): %v", hdr)
+	fibcapi.LogFlowMod(s.log, log.DebugLevel, mod)
 
 	ip, ipnet, err := net.ParseCIDR(flow.Match.IpDst)
 	if err != nil {
-		log.Errorf("Server: UC-RoutingFlow: Invalid IP address. %s %s", flow.Match.IpDst, err)
+		s.log.Errorf("FlowMod(U.C.): Invalid IP address. %s %s", flow.Match.IpDst, err)
 		return
 	}
 
@@ -47,7 +47,7 @@ func (s *Server) FIBCUnicastRoutingFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 	case fibcapi.GroupMod_L3_UNICAST:
 		switch flow.Match.Origin {
 		case fibcapi.UnicastRoutingFlow_NEIGH:
-			log.Debugf("Server: UC-RoutingFlow(Neigh): %s neid:%08x", ip, neid)
+			s.log.Debugf("FlowMod(U.C.): Neigh %s neid:%08x", ip, neid)
 
 			l3host := opennsl.NewL3Host()
 
@@ -66,32 +66,32 @@ func (s *Server) FIBCUnicastRoutingFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 			case fibcapi.FlowMod_ADD:
 				l3egrID, ok := s.idmaps.L3Egress.Get(neid)
 				if !ok {
-					log.Errorf("Server: UC-RoutingFlow(Neigh): L3Egress(neid:%08x) not found.", neid)
+					s.log.Errorf("FlowMod(U.C.): Neigh L3Egress(neid:%08x) not found.", neid)
 					return
 				}
 
-				log.Debugf("Server: UC-RoutingFlow(Neigh): %s l3eg:%d", ip, l3egrID)
+				s.log.Debugf("FlowMod(U.C.): Neigh %s l3eg:%d", ip, l3egrID)
 
 				l3host.SetEgressID(l3egrID)
 
 				if err := l3host.Add(s.Unit()); err != nil {
-					log.Errorf("Server: UC-RoutingFlow: L3Host add error. %s", err)
+					s.log.Errorf("FlowMod(U.C.): Neigh L3Host add error. %s", err)
 				}
 
 			case fibcapi.FlowMod_MODIFY, fibcapi.FlowMod_MODIFY_STRICT:
-				log.Errorf("Server: UC-RoutingFlow: L3Host modify unsupported.")
+				s.log.Warnf("FlowMod(U.C.): Neigh L3Host modify unsupported.")
 
 			case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
 				if err := l3host.Delete(s.Unit()); err != nil {
-					log.Errorf("Server: UC-RoutingFlow: L3Host delete error. %s", err)
+					s.log.Errorf("FlowMod(U.C.): Neigh L3Host delete error. %s", err)
 				}
 
 			default:
-				log.Errorf("Server: UC-RoutingFlow(Neigh): Invalid Command. %d", mod.Cmd)
+				s.log.Errorf("FlowMod(U.C.): Neigh Invalid Command. %d", mod.Cmd)
 			}
 
 		case fibcapi.UnicastRoutingFlow_ROUTE:
-			log.Debugf("Server: UC-RoutingFlow(Route): %s neid:%08x", ipnet, neid)
+			s.log.Debugf("FlowMod(U.C.): Route %s neid:%08x", ipnet, neid)
 
 			l3route := opennsl.NewL3Route()
 
@@ -110,41 +110,41 @@ func (s *Server) FIBCUnicastRoutingFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 			case fibcapi.FlowMod_ADD:
 				l3egrID, ok := s.idmaps.L3Egress.Get(neid)
 				if !ok {
-					log.Errorf("Server: UC-RoutingFlow(Route): L3Egress(neid:%08x) not found.", neid)
+					s.log.Errorf("FlowMod(U.C.): Route L3Egress(neid:%08x) not found.", neid)
 					return
 				}
 
-				log.Debugf("Server: UC-RoutingFlow(Route): %s l3eg:%d", ipnet, l3egrID)
+				s.log.Debugf("FlowMod(U.C.): Route %s l3eg:%d", ipnet, l3egrID)
 
 				l3route.SetEgressID(l3egrID)
 
 				if err := l3route.Add(s.Unit()); err != nil {
-					log.Errorf("Server: UC-RoutingFlow: L3Route add error. %s", err)
+					s.log.Errorf("FlowMod(U.C.): Route L3Route add error. %s", err)
 				}
 
 			case fibcapi.FlowMod_MODIFY, fibcapi.FlowMod_MODIFY_STRICT:
-				log.Errorf("Server: UC-RoutingFlow: L3Route modify unsupported.")
+				s.log.Warnf("FlowMod(U.C.): Route L3Route modify unsupported.")
 
 			case fibcapi.FlowMod_DELETE, fibcapi.FlowMod_DELETE_STRICT:
 				if err := l3route.Delete(s.Unit()); err != nil {
-					log.Errorf("Server: UC-RoutingFlow: L3Route delete error. %s", err)
+					s.log.Errorf("FlowMod(U.C.): Route L3Route delete error. %s", err)
 				}
 
 			default:
-				log.Errorf("Server: UC-RoutingFlow(Route): Invalid Command. %d", mod.Cmd)
+				s.log.Errorf("FlowMod(U.C.): Route Invalid Command. %d", mod.Cmd)
 			}
 
 		default:
-			log.Errorf("Server: UC-RoutingFlow: Invalid Origin %d", flow.Match.Origin)
+			s.log.Errorf("FlowMod(U.C.): Route Invalid Origin %d", flow.Match.Origin)
 		}
 
 	case fibcapi.GroupMod_L3_ECMP:
-		log.Warnf("Server: UC-RoutingFlow(L3_ECMP): %s", ipnet)
+		s.log.Warnf("FlowMod(U.C.): ECMP %s", ipnet)
 
 	case fibcapi.GroupMod_MPLS_L3_VPN:
-		log.Warnf("Server: UC-RoutingFlow(MPLS_L3_VPN): %s", ipnet)
+		s.log.Warnf("FlowMod(U.C.): MPLS_L3_VPN  %s", ipnet)
 
 	default:
-		log.Errorf("Server: UC-RoutingFlow: Invalid Group type. %d", flow.GType)
+		s.log.Errorf("FlowMod(U.C.): Invalid Group type. %d", flow.GType)
 	}
 }

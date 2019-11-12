@@ -18,6 +18,8 @@
 package fibcapi
 
 import (
+	"fmt"
+
 	"github.com/golang/protobuf/proto"
 )
 
@@ -48,6 +50,13 @@ func NewPortStatusFromBytes(data []byte) (*PortStatus, error) {
 	}
 
 	return ps, nil
+}
+
+func ParsePortStatus(s string) (PortStatus_Status, error) {
+	if v, ok := PortStatus_Status_value[s]; ok {
+		return PortStatus_Status(v), nil
+	}
+	return PortStatus_NOP, fmt.Errorf("Invalid PortStatus_Status. '%s'", s)
 }
 
 //

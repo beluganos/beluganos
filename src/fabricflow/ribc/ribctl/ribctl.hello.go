@@ -23,7 +23,7 @@ import (
 
 func (r *RIBController) SendHello() {
 	hello := fibcapi.NewHello(r.reId)
-	if err := r.fib.Send(hello, 0); err != nil {
+	if err := r.fib.Hello(hello); err != nil {
 		r.log.Errorf("Hello: error. %s", err)
 		return
 	}

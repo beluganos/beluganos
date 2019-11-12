@@ -18,11 +18,6 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"io"
-	"io/ioutil"
-	"os"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -32,20 +27,28 @@ import (
 // Server is main server.
 //
 type Server struct {
-	URL     string
+	fibc    FIBController
 	Path    string
 	UpdTime time.Duration
+
+	StatsNames []string
 }
 
 //
 // NewServer returns new instance.
 //
-func NewServer(addr string, path string, updTime time.Duration) *Server {
+func NewServer(fibc FIBController, path string, updTime time.Duration) *Server {
 	return &Server{
-		URL:     fmt.Sprintf("http://%s", addr),
+		fibc:    fibc,
 		Path:    path,
 		UpdTime: updTime,
+
+		StatsNames: []string{},
 	}
+}
+
+func (s *Server) SetStatsNames(names []string) {
+	s.StatsNames = names
 }
 
 //
@@ -69,98 +72,43 @@ func (s *Server) Serve(done <-chan struct{}) {
 	}
 }
 
-func (s *Server) WritePortStats(ps PortStats) (string, error) {
-	file, err := ioutil.TempFile("", "fibs_stats")
-	if err != nil {
-		log.Errorf("%s", err)
-		return "", err
-	}
-
-	defer file.Close()
-
-	if level := log.GetLevel(); level == log.DebugLevel {
-		ps.WriteTo(log.StandardLogger().Writer())
-	}
-
-	os.Chmod(file.Name(), 0644)
-
-	w := bufio.NewWriter(file)
-	ps.WriteTo(w)
-	w.Flush()
-
-	return file.Name(), nil
-}
-
 //
 // Update gets port stats by http and update port stat file.
 //
 func (s *Server) Update() {
-	dps := DpsMsg{}
-	if err := dps.HTTPGet(s.URL); err != nil {
-		log.Errorf("%s", err)
-		return
-	}
-
-	log.Debugf("%v", dps)
-
-	if len(dps.DpIds) == 0 {
-		log.Errorf("DpId not found.")
-		return
-	}
-
-	dpid := dps.DpIds[0]
-
-	log.Debugf("dpid = %d", dpid)
-
-	psmsg := PortStatsMsg{}
-	if err := psmsg.HTTPGet(s.URL, dpid); err != nil {
-		log.Errorf("%s", err)
-		return
-	}
-
-	ps, _ := psmsg.PortStats(dpid)
-	tempPath, err := s.WritePortStats(ps)
+	dpIds, err := s.fibc.Dps()
 	if err != nil {
-		log.Errorf("%s", err)
+		log.Errorf("Update: Dps error. %s", err)
 		return
 	}
 
-	log.Debugf("temp:%s -> %s", tempPath, s.Path)
+	log.Debugf("Update: %v", dpIds)
+
+	if len(dpIds) == 0 {
+		log.Errorf("Update: DpId not found.")
+		return
+	}
+
+	dpid := dpIds[0]
+
+	log.Debugf("Update: dpid = %d", dpid)
+
+	ps, err := s.fibc.PortStats(dpid, s.StatsNames)
+	if err != nil {
+		log.Errorf("Update: PortStats error. %s", err)
+		return
+	}
+
+	tempPath, err := writeToTemp(ps)
+	if err != nil {
+		log.Errorf("Update: write to temp error. %s", err)
+		return
+	}
+
+	log.Debugf("Update: temp:%s -> %s", tempPath, s.Path)
 
 	if err := moveFile(tempPath, s.Path); err != nil {
-		log.Errorf("%s", err)
+		log.Errorf("Update: move file error. %s", err)
 		return
 	}
-}
-
-func copyFile(srcPath, dstPath string) error {
-	src, err := os.Open(srcPath)
-	if err != nil {
-		return err
-	}
-	defer src.Close()
-
-	dst, err := os.Create(dstPath)
-	if err != nil {
-		return err
-	}
-	defer dst.Close()
-
-	if _, err := io.Copy(dst, src); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func moveFile(srcPath, dstPath string) error {
-	if err := os.Rename(srcPath, dstPath); err == nil {
-		return nil
-	}
-
-	if err := copyFile(srcPath, dstPath); err != nil {
-		return err
-	}
-
-	return os.Remove(srcPath)
 }

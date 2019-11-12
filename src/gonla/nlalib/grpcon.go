@@ -18,22 +18,36 @@
 package nlalib
 
 import (
+	"net"
+	"strconv"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/stats"
-	"net"
 )
 
 type ConnInfo struct {
 	LocalAddr  net.IP
+	LocalPort  uint16
 	RemoteAddr net.IP
+	RemotePort uint16
 }
 
-func NewConnInfo(local net.IP, remote net.IP) *ConnInfo {
+func NewConnInfo(local, remote net.IP, lport, rport uint16) *ConnInfo {
 	return &ConnInfo{
 		LocalAddr:  local,
 		RemoteAddr: remote,
+		LocalPort:  lport,
+		RemotePort: rport,
 	}
+}
+
+func NewConnInfoFromAddrs(localAddr, remoteAddr net.Addr) *ConnInfo {
+	lip, lport, _ := net.SplitHostPort(localAddr.String())
+	rip, rport, _ := net.SplitHostPort(remoteAddr.String())
+	localPort, _ := strconv.ParseUint(lport, 10, 16)
+	remotePort, _ := strconv.ParseUint(rport, 10, 16)
+	return NewConnInfo(net.ParseIP(lip), net.ParseIP(rip), uint16(localPort), uint16(remotePort))
 }
 
 type ConnStatsHandler struct {
@@ -55,10 +69,7 @@ func (h *ConnStatsHandler) HandleRPC(ctxt context.Context, st stats.RPCStats) {
 }
 
 func (h *ConnStatsHandler) TagConn(ctxt context.Context, info *stats.ConnTagInfo) context.Context {
-	local, _, _ := net.SplitHostPort(info.LocalAddr.String())
-	remote, _, _ := net.SplitHostPort(info.RemoteAddr.String())
-	h.ch <- NewConnInfo(net.ParseIP(local), net.ParseIP(remote))
-
+	h.ch <- NewConnInfoFromAddrs(info.LocalAddr, info.RemoteAddr)
 	return ctxt
 }
 
