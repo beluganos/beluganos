@@ -40,13 +40,6 @@ func (s *Server) FIBCTerminationMacFlowMod(hdr *fibcnet.Header, mod *fibcapi.Flo
 		return
 	}
 
-	port, portType := fibcapi.ParseDPPortId(flow.Match.InPort)
-	switch portType {
-	case fibcapi.LinkType_BRIDGE, fibcapi.LinkType_BOND:
-		log.Debugf("Server: FlowMod(TermMAC): %d %s skip", port, portType)
-		return
-	}
-
 	mac, mask, err := fibcapi.ParseMaskedMAC(flow.Match.EthDst)
 	if err != nil {
 		s.log.Errorf("FlowMod(TermMAC): Invalid MAC. %s", err)
