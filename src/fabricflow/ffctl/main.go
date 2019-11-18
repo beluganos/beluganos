@@ -62,6 +62,7 @@ func rootCmd(name string) *cobra.Command {
 		vlanCmd(),
 		bridgeCmd(),
 		bondCmd(),
+		MonitorCmd(),
 	)
 
 	return rootCmd

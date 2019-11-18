@@ -34,6 +34,10 @@ const (
 	APStatsGetPortStats = "getportstats"
 	// APStatsGetPortStatsErr is get port stats error.
 	APStatsGetPortStatsErr = "getportstats/err"
+	// APStatsModPortStats is mod port stats message.
+	APStatsModPortStats = "modportstats"
+	// APStatsModPortStatsErr is mod port stats error.
+	APStatsModPortStatsErr = "modportstats/err"
 	// APStatsGetStats is get stats message.
 	APStatsGetStats = "getstats"
 	// APStatsGetStatsErr is get stats error.
@@ -48,7 +52,10 @@ var apStatsNames = []string{
 	APStatsGetDPSet,
 	APStatsGetPortStats,
 	APStatsGetPortStatsErr,
+	APStatsModPortStats,
+	APStatsModPortStatsErr,
 	APStatsGetStats,
+	APStatsGetStatsErr,
 }
 
 //

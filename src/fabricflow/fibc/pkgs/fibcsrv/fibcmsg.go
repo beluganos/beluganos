@@ -95,14 +95,15 @@ func NewVMMonitorReplyL2AddrStatus(reID string, addrs []*fibcapi.L2Addr) *fibcap
 // PortRequest {
 //   uint32 portId
 //   repeated string names
+//   FFPortStats.Cmd cmd
 // }
 //
-func NewDPMonitorReplyMpPort(dpID uint64, portID uint32, names []string, xid uint32) *fibcapi.DpMonitorReply {
+func NewDPMonitorReplyMpPort(dpID uint64, portID uint32, names []string, cmd fibcapi.FFPortStats_Cmd, xid uint32) *fibcapi.DpMonitorReply {
 	return fibcapi.NewDpMonitorReply().SetMultipart(
 		fibcapi.NewDpMultipartRequest(
 			xid,
 			fibcapi.NewFFMultipartRequest(dpID).SetPort(
-				fibcapi.NewFFMultipartPortRequest(portID, names),
+				fibcapi.NewFFMultipartPortRequest(portID, names, cmd),
 			),
 		),
 	)

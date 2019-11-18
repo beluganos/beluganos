@@ -422,6 +422,12 @@ message FFPort {
 
 // Port Stats
 message FFPortStats {
+  enum Cmd {
+    GET   = 0;
+    START = 1;
+    STOP  = 2;
+    RESET = 3;
+  }
   uint32 port_no = 1;
   map<string, uint64> values = 2;
   map<string, string> s_values = 3;
@@ -449,6 +455,7 @@ message FFMultipart {
   message PortRequest {
     uint32 port_no = 1;
     repeated string names = 2;
+    FFPortStats.Cmd cmd   = 3;
   }
   message PortReply {
     repeated FFPortStats stats = 1;

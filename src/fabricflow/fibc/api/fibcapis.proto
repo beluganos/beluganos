@@ -49,6 +49,15 @@ message ApGetPortStatsRequest{
   repeated string names   = 3;
 }
 
+message ApModPortStatsRequest{
+  uint64          dp_id   = 1;
+  uint32          port_no = 2;
+  FFPortStats.Cmd cmd     = 3;
+  repeated string names   = 4;
+}
+
+message ApModPortStatsReply{}
+
 //
 // FIBCVmApi
 //
@@ -162,6 +171,7 @@ message ApGetStatsRequest{
 service FIBCApApi {
   rpc Monitor          (ApMonitorRequest)        returns (stream ApMonitorReply) {}
   rpc GetPortStats     (ApGetPortStatsRequest)   returns (stream FFPortStats)    {}
+  rpc ModPortStats     (ApModPortStatsRequest)   returns (ApModPortStatsReply)   {}
   rpc GetPortEntries   (ApGetPortEntriesRequest) returns (stream DbPortEntry)    {}
   rpc GetIDEntries     (ApGetIdEntriesRequest)   returns (stream DbIdEntry)      {}
   rpc GetDpEntries     (ApGetDpEntriesRequest)   returns (stream DbDpEntry)      {}

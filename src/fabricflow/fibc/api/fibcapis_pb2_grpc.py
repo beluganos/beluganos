@@ -25,6 +25,11 @@ class FIBCApApiStub(object):
         request_serializer=fibcapis__pb2.ApGetPortStatsRequest.SerializeToString,
         response_deserializer=fibcapi__pb2.FFPortStats.FromString,
         )
+    self.ModPortStats = channel.unary_unary(
+        '/fibcapi.FIBCApApi/ModPortStats',
+        request_serializer=fibcapis__pb2.ApModPortStatsRequest.SerializeToString,
+        response_deserializer=fibcapis__pb2.ApModPortStatsReply.FromString,
+        )
     self.GetPortEntries = channel.unary_stream(
         '/fibcapi.FIBCApApi/GetPortEntries',
         request_serializer=fibcapis__pb2.ApGetPortEntriesRequest.SerializeToString,
@@ -79,6 +84,13 @@ class FIBCApApiServicer(object):
     raise NotImplementedError('Method not implemented!')
 
   def GetPortStats(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def ModPortStats(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -153,6 +165,11 @@ def add_FIBCApApiServicer_to_server(servicer, server):
           servicer.GetPortStats,
           request_deserializer=fibcapis__pb2.ApGetPortStatsRequest.FromString,
           response_serializer=fibcapi__pb2.FFPortStats.SerializeToString,
+      ),
+      'ModPortStats': grpc.unary_unary_rpc_method_handler(
+          servicer.ModPortStats,
+          request_deserializer=fibcapis__pb2.ApModPortStatsRequest.FromString,
+          response_serializer=fibcapis__pb2.ApModPortStatsReply.SerializeToString,
       ),
       'GetPortEntries': grpc.unary_stream_rpc_method_handler(
           servicer.GetPortEntries,

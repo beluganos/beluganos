@@ -28,6 +28,7 @@ func LogFFMultipartPortRequest(logger LogLogger, level log.Level, m *FFMultipart
 		return
 	}
 
+	logger.Logf(level, "MP.PortRequest: cmd : %s", m.Cmd)
 	logger.Logf(level, "MP.PortRequest: port: %d", m.PortNo)
 	if names := m.Names; names != nil {
 		for _, name := range names {

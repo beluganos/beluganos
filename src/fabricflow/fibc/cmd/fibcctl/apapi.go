@@ -118,7 +118,25 @@ func (c *APAPICommand) getPortStats(dpID uint64, portID uint32) error {
 			for k, v := range stats.Values {
 				fmt.Printf("%s: %v\n", k, v)
 			}
+			for k, v := range stats.SValues {
+				fmt.Printf("%s: %s\n", k, v)
+			}
 		}
+		return nil
+	})
+}
+
+func (c *APAPICommand) modPortStats(dpID uint64, portID uint32, cmd fibcapi.FFPortStats_Cmd) error {
+	return c.connect(func(client fibcapi.FIBCApApiClient) error {
+		req := fibcapi.ApModPortStatsRequest{
+			DpId:   dpID,
+			PortNo: portID,
+			Cmd:    cmd,
+		}
+		if _, err := client.ModPortStats(context.Background(), &req); err != nil {
+			return err
+		}
+
 		return nil
 	})
 }
@@ -144,31 +162,74 @@ func apAPICmd() *cobra.Command {
 		},
 	))
 
+	rootCmd.AddCommand(
+		apAPIPortStatsCmd(),
+	)
+
+	return rootCmd
+}
+
+func apAPIPortStatsArgs(args []string) (uint64, uint32, error) {
+	dpID, err := strconv.ParseUint(args[0], 0, 64)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	portID := uint32(0xffffffff)
+	if len(args) == 2 {
+		v, err := strconv.ParseUint(args[1], 0, 32)
+		if err != nil {
+			return 0, 0, err
+		}
+
+		portID = uint32(v)
+	}
+
+	return dpID, portID, nil
+}
+
+func apAPIPortStatsCmd() *cobra.Command {
+	rootCmd := &cobra.Command{
+		Use:     "port-stats",
+		Aliases: []string{"ps"},
+		Short:   "port stats command.",
+	}
+
+	apapi := APAPICommand{}
+
 	rootCmd.AddCommand(apapi.setFlags(
 		&cobra.Command{
-			Use:     "port-stats <dp-id> [port-id]",
-			Aliases: []string{"ps"},
-			Short:   "show port status",
+			Use:     "show <dp-id> [port-id]",
+			Aliases: []string{"get", "dump"},
+			Short:   "show port stats",
 			Args:    cobra.RangeArgs(1, 2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				dpID, err := strconv.ParseUint(args[0], 0, 64)
+				dpID, portID, err := apAPIPortStatsArgs(args)
 				if err != nil {
 					return err
-				}
-
-				portID := uint32(0xffffffff)
-				if len(args) == 2 {
-					v, err := strconv.ParseUint(args[1], 0, 32)
-					if err != nil {
-						return err
-					}
-
-					portID = uint32(v)
 				}
 
 				return apapi.getPortStats(dpID, portID)
 			},
 		},
 	))
+
+	rootCmd.AddCommand(apapi.setFlags(
+		&cobra.Command{
+			Use:     "clear <dp-id> [port-id]",
+			Aliases: []string{"reset", "cls"},
+			Short:   "clear port stats",
+			Args:    cobra.RangeArgs(1, 2),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				dpID, portID, err := apAPIPortStatsArgs(args)
+				if err != nil {
+					return err
+				}
+
+				return apapi.modPortStats(dpID, portID, fibcapi.FFPortStats_RESET)
+			},
+		},
+	))
+
 	return rootCmd
 }

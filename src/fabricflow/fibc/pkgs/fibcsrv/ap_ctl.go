@@ -264,6 +264,23 @@ func (c *APCtl) DelIDEntry(entry *fibcapi.DbIdEntry) error {
 	return fmt.Errorf("Invalid entry. %s", entry)
 }
 
+func (c *APCtl) ModPortStats(dpID uint64, portID uint32, names []string, cmd fibcapi.FFPortStats_Cmd) error {
+
+	c.stats.Inc(APStatsModPortStats)
+
+	c.log.Debugf("ModPortStats: dpid:%d port:%d names:%v cmd:%s", dpID, portID, names, cmd)
+
+	msg := NewDPMonitorReplyMpPort(dpID, portID, names, cmd, 0)
+	if err := c.db.SendDPMonitorReply(dpID, msg); err != nil {
+		c.stats.Inc(APStatsModPortStatsErr)
+
+		c.log.Errorf("ModPortStats: send monitor reply error. %s", err)
+		return err
+	}
+
+	return nil
+}
+
 //
 // GetPortStats process get port stats.
 //
@@ -282,7 +299,8 @@ func (c *APCtl) GetPortStats(dpID uint64, portID uint32, names []string, stream 
 	xid := c.db.Waiters().Register(w)
 	defer c.db.Waiters().Unregister(xid)
 
-	msg := NewDPMonitorReplyMpPort(dpID, portID, names, xid)
+	cmd := fibcapi.FFPortStats_GET
+	msg := NewDPMonitorReplyMpPort(dpID, portID, names, cmd, xid)
 	if err := c.db.SendDPMonitorReply(dpID, msg); err != nil {
 		c.stats.Inc(APStatsGetPortStatsErr)
 

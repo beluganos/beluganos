@@ -122,6 +122,17 @@ func (s *APAPIServer) GetPortStats(req *fibcapi.ApGetPortStatsRequest, stream fi
 }
 
 //
+// ModPortStats process mod port stats request.
+//
+func (s *APAPIServer) ModPortStats(ctxt context.Context, req *fibcapi.ApModPortStatsRequest) (*fibcapi.ApModPortStatsReply, error) {
+	if err := s.ctl.ModPortStats(req.DpId, req.PortNo, req.Names, req.Cmd); err != nil {
+		return nil, err
+	}
+
+	return &fibcapi.ApModPortStatsReply{}, nil
+}
+
+//
 // GetStats process get stats request.
 //
 func (s *APAPIServer) GetStats(req *fibcapi.ApGetStatsRequest, stream fibcapi.FIBCApApi_GetStatsServer) error {

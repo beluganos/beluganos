@@ -164,10 +164,11 @@ func (r *FFMultipart_Request) SetPortDesc(portDesc *FFMultipart_PortDescRequest)
 	return r
 }
 
-func NewFFMultipartPortRequest(portNo uint32, names []string) *FFMultipart_PortRequest {
+func NewFFMultipartPortRequest(portNo uint32, names []string, cmd FFPortStats_Cmd) *FFMultipart_PortRequest {
 	return &FFMultipart_PortRequest{
 		PortNo: portNo,
 		Names:  names,
+		Cmd:    cmd,
 	}
 }
 

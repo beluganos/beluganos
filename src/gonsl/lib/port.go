@@ -120,26 +120,22 @@ func PortInfoGet(unit int, port opennsl.Port) (*opennsl.PortInfo, error) {
 	return info, nil
 }
 
-//
-// FIBCFFMultipartPortRequest process multipart-request(port stats) from fibcd.
-//
-func (s *Server) FIBCFFMultipartPortRequest(hdr *fibcnet.Header, mp *fibcapi.FFMultipart_Request, req *fibcapi.FFMultipart_PortRequest) {
-	s.log.Debugf("Multipart(Port): %v", hdr)
-	fibcapi.LogFFMultipartRequest(s.log, log.DebugLevel, mp, hdr.Xid)
+func (s *Server) fibcFFMultipartPortList(portNo uint32) ([]opennsl.Port, error) {
+	if portNo != 0xffffffff {
+		return []opennsl.Port{opennsl.Port(portNo)}, nil
+	}
 
-	ports, err := func() ([]opennsl.Port, error) {
-		if req.PortNo != 0xffffffff {
-			return []opennsl.Port{opennsl.Port(req.PortNo)}, nil
-		}
+	pbmp, err := PortBmpGet(s.Unit())
+	if err != nil {
+		s.log.Errorf("Multipart(Port): PortBmpGet error. %s", err)
+		return nil, err
+	}
 
-		pbmp, err := PortBmpGet(s.Unit())
-		if err != nil {
-			s.log.Errorf("Multipart(Port): PortBmpGet error. %s", err)
-			return nil, err
-		}
+	return pbmp.PortList(), nil
+}
 
-		return pbmp.PortList(), nil
-	}()
+func (s *Server) fibcFFMultipartPortRequestGet(hdr *fibcnet.Header, req *fibcapi.FFMultipart_PortRequest) {
+	ports, err := s.fibcFFMultipartPortList(req.PortNo)
 	if err != nil {
 		return
 	}
@@ -159,6 +155,40 @@ func (s *Server) FIBCFFMultipartPortRequest(hdr *fibcnet.Header, mp *fibcapi.FFM
 	if err := s.client.MultipartReply(reply, hdr.Xid); err != nil {
 		s.log.Errorf("Multipart(Port): Write error. %s", err)
 		return
+	}
+}
+
+func (s *Server) fibcFFMultipartPortRequestReset(hdr *fibcnet.Header, req *fibcapi.FFMultipart_PortRequest) {
+	ports, err := s.fibcFFMultipartPortList(req.PortNo)
+	if err != nil {
+		return
+	}
+
+	for _, portID := range ports {
+		s.log.Debugf("Multipart(Port): StatClear port=%d", portID)
+
+		if err := opennsl.StatClear(s.Unit(), portID); err != nil {
+			s.log.Errorf("Multipart(Port): StatClear error. port=%d %s", portID, err)
+		}
+	}
+}
+
+//
+// FIBCFFMultipartPortRequest process multipart-request(port stats) from fibcd.
+//
+func (s *Server) FIBCFFMultipartPortRequest(hdr *fibcnet.Header, mp *fibcapi.FFMultipart_Request, req *fibcapi.FFMultipart_PortRequest) {
+	s.log.Debugf("Multipart(Port): %v", hdr)
+	fibcapi.LogFFMultipartRequest(s.log, log.DebugLevel, mp, hdr.Xid)
+
+	switch req.Cmd {
+	case fibcapi.FFPortStats_GET:
+		s.fibcFFMultipartPortRequestGet(hdr, req)
+
+	case fibcapi.FFPortStats_RESET:
+		s.fibcFFMultipartPortRequestReset(hdr, req)
+
+	default:
+		s.log.Errorf("Multipart(Port): unsupported cmd. %s", req.Cmd)
 	}
 
 	s.log.Debugf("Multipart(Port): end.")
