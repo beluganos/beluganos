@@ -25,48 +25,77 @@ import (
 	flag "github.com/spf13/pflag"
 )
 
-type Args struct {
+const (
+	appConfigPath = "/etc/beluganos/ribnd.yaml"
+	appConfigType = "yaml"
+	appConfigName = "default"
+)
+
+type App struct {
+	ConfigPath string
+	ConfigType string
+	ConfigName string
+
 	NSInterval time.Duration
-	Verbose    bool
+
+	Verbose bool
+	Trace   bool
+
+	log *log.Entry
 }
 
-func NewArgs() (*Args, error) {
-	args := &Args{}
-	if err := args.Parse(); err != nil {
-		return nil, err
+func newApp() *App {
+	app := &App{
+		log: log.WithFields(log.Fields{"module": "app"}),
 	}
-
-	return args, nil
+	app.parse()
+	return app
 }
 
-func (a *Args) Parse() error {
+func (a *App) parse() {
+	flag.StringVarP(&a.ConfigPath, "config-path", "c", appConfigPath, "config file path.")
+	flag.StringVarP(&a.ConfigType, "config-type", "", appConfigType, "config file type.")
+	flag.StringVarP(&a.ConfigName, "config-name", "", appConfigName, "config name.")
 	flag.DurationVarP(&a.NSInterval, "ns-interval", "", 15*time.Minute, "sending NS interval.")
 	flag.BoolVarP(&a.Verbose, "verbose", "v", false, "show detail messages.")
+	flag.BoolVarP(&a.Trace, "trace", "", false, "show more detail messages.")
+
 	flag.Parse()
+}
+
+func (a *App) run() error {
+	if a.Trace {
+		log.SetLevel(log.TraceLevel)
+	} else if a.Verbose {
+		log.SetLevel(log.DebugLevel)
+	}
+
+	a.log.Infof("START")
+
+	done := make(chan struct{})
+	defer close(done)
+
+	s := NewServer()
+	s.SetNSInterval(a.NSInterval)
+	if err := s.SetConfig(a.ConfigPath, a.ConfigType, a.ConfigName); err != nil {
+		a.log.Errorf("Config read error. %s", err)
+		return err
+	}
+
+	if err := s.Start(done); err != nil {
+		log.Errorf("Server start error. %s", err)
+		return err
+	}
+
+	<-done
+
 	return nil
 }
 
 func main() {
-
-	args, err := NewArgs()
-	if err != nil {
-		log.Errorf("%s", err)
+	if err := newApp().run(); err != nil {
 		os.Exit(1)
 	}
 
-	if args.Verbose {
-		log.SetLevel(log.DebugLevel)
-	}
-
-	log.Infof("Hello")
-
-	done := make(chan struct{})
-	s := NewServer()
-	s.SetNSInterval(args.NSInterval)
-	if err := s.Start(done); err != nil {
-		log.Errorf("%s", err)
-		os.Exit(1)
-	}
-
-	<-done
+	os.Exit(0)
 }

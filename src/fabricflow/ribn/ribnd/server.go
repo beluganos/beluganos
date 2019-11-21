@@ -18,6 +18,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -32,17 +33,45 @@ const (
 type Server struct {
 	nsInterval time.Duration
 	workers    map[string]Worker
-}
+	linkCh     chan netlink.LinkUpdate
+	confDB     *ConfigDB
 
-func (s *Server) SetNSInterval(t time.Duration) {
-	s.nsInterval = t
+	log *log.Entry
 }
 
 func NewServer() *Server {
 	return &Server{
 		nsInterval: NSIntervalDefault,
 		workers:    map[string]Worker{},
+		linkCh:     make(chan netlink.LinkUpdate),
+		confDB:     NewConfigDB(),
+
+		log: log.WithFields(log.Fields{"module": "server"}),
 	}
+}
+
+func (s *Server) SetNSInterval(t time.Duration) {
+	s.nsInterval = t
+}
+
+func (s *Server) SetConfig(path, typ, name string) error {
+	cfg := NewConfig()
+	cfg.SetConfigFile(path, typ)
+	if err := cfg.Load(); err != nil {
+		return err
+	}
+
+	c := cfg.Get(name)
+	if c == nil {
+		return fmt.Errorf("Config not found. name='%s'", name)
+	}
+
+	s.confDB.Update(c)
+	for key, val := range s.confDB.Features() {
+		s.log.Infof("feature: %s = %t", key, val)
+	}
+
+	return nil
 }
 
 func (s *Server) Start(done chan struct{}) error {
@@ -51,48 +80,35 @@ func (s *Server) Start(done chan struct{}) error {
 		return err
 	}
 
-	ch := make(chan *LinkUpdate)
-
-	if err := MonitorLink(ch, done); err != nil {
+	if err := netlink.LinkSubscribe(s.linkCh, done); err != nil {
 		return err
 	}
 
-	go s.Serve(ch, done)
+	go s.Serve(done)
 	return nil
 }
 
-func (s *Server) Serve(ch <-chan *LinkUpdate, done chan struct{}) {
-	log.Debugf("Serve: start")
+func (s *Server) Serve(done chan struct{}) {
+	s.log.Debugf("Serve: start")
 
 	for {
 		select {
-		case m := <-ch:
-			if ok := checkLinkType(m.Link); ok {
-				switch m.Type {
+		case m := <-s.linkCh:
+			if ok := s.confDB.Has(m.Attrs().Name); ok {
+				switch m.Header.Type {
 				case unix.RTM_NEWLINK:
-					s.startWorker(m)
+					s.startWorker(m.Link)
 
 				case unix.RTM_DELLINK:
-					s.stopWorker(m)
+					s.stopWorker(m.Link)
 				}
 			}
 
 		case <-done:
-			log.Debugf("Serve: exit")
+			s.log.Debugf("Serve: exit")
 			return
 		}
 	}
-}
-
-func (s *Server) newWorker(ifname string) {
-	w := NewWorker(ifname, s.nsInterval)
-	if err := w.Start(); err != nil {
-		log.Errorf("Serve: Worker.Start error. %s %s", ifname, err)
-		return
-	}
-
-	s.workers[ifname] = w
-	log.Debugf("Serve: Worker added. %s", ifname)
 }
 
 func (s *Server) subscribeLinks() error {
@@ -102,7 +118,7 @@ func (s *Server) subscribeLinks() error {
 	}
 
 	for _, link := range links {
-		if ok := checkLinkType(link); ok {
+		if ok := s.confDB.Has(link.Attrs().Name); ok {
 			s.newWorker(link.Attrs().Name)
 		}
 	}
@@ -110,28 +126,33 @@ func (s *Server) subscribeLinks() error {
 	return nil
 }
 
-func (s *Server) startWorker(m *LinkUpdate) {
-	ifname := m.Link.Attrs().Name
+func (s *Server) newWorker(ifname string) {
+	w := NewWorker(ifname, s.nsInterval, s.confDB.Features())
+	s.workers[ifname] = w
+	w.Start()
+	s.log.Debugf("Serve: Worker added. %s", ifname)
+}
+
+func (s *Server) startWorker(link netlink.Link) {
+	ifname := link.Attrs().Name
 	if _, ok := s.workers[ifname]; ok {
-		log.Debugf("Serve: Worker already exist. %s", ifname)
+		s.log.Debugf("startWorker: Worker already exist. %s", ifname)
 		return
 	}
 
-	time.AfterFunc(3*time.Second, func() {
-		s.newWorker(ifname)
-	})
+	s.newWorker(ifname)
 }
 
-func (s *Server) stopWorker(m *LinkUpdate) {
-	ifname := m.Link.Attrs().Name
+func (s *Server) stopWorker(link netlink.Link) {
+	ifname := link.Attrs().Name
 	w, ok := s.workers[ifname]
 	if !ok {
-		log.Warnf("Serve: Worker not found. %s", ifname)
+		s.log.Warnf("stopWorker: Worker not found. %s", ifname)
 		return
 	}
 
 	w.Stop()
 
 	delete(s.workers, ifname)
-	log.Debugf("Serve: Worker deleted. %s", ifname)
+	s.log.Debugf("stopWorker: Worker deleted. %s", ifname)
 }

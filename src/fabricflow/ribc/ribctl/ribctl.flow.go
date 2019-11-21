@@ -23,14 +23,14 @@ import (
 	"net"
 )
 
-func checkIPNet(ip *net.IPNet) bool {
+func checkIfaceIPNet(ip *net.IPNet) bool {
 	if ip == nil {
 		return false
 	}
-	return checkIP(ip.IP)
+	return checkNeighIP(ip.IP)
 }
 
-func checkIP(ip net.IP) bool {
+func checkNeighIP(ip net.IP) bool {
 	switch {
 	case ip == nil:
 		return false
@@ -45,6 +45,32 @@ func checkIP(ip net.IP) bool {
 	case ip.IsMulticast():
 		return false
 	case ip.IsUnspecified():
+		return false
+	default:
+		return true
+	}
+}
+
+func checkRouteIPNet(ip *net.IPNet) bool {
+	if ip == nil {
+		return false
+	}
+	return checkRouteIP(ip.IP)
+}
+
+func checkRouteIP(ip net.IP) bool {
+	switch {
+	case ip == nil:
+		return false
+	case ip.IsLinkLocalUnicast():
+		return false
+	case ip.IsInterfaceLocalMulticast():
+		return false
+	case ip.IsLinkLocalMulticast():
+		return false
+	case ip.IsLoopback():
+		return false
+	case ip.IsMulticast():
 		return false
 	default:
 		return true
@@ -260,7 +286,7 @@ func NewUnicastRoutingFlowNeigh(neigh *nlamsg.Neigh) *fibcapi.UnicastRoutingFlow
 }
 
 func (r *RIBController) SendUnicastRoutingFlowNeigh(cmd fibcapi.FlowMod_Cmd, neigh *nlamsg.Neigh) error {
-	if !checkIP(neigh.IP) {
+	if !checkNeighIP(neigh.IP) {
 		return nil
 	}
 
@@ -282,7 +308,7 @@ func NewUnicastRoutingFlow(neigh *nlamsg.Neigh, route *nlamsg.Route) *fibcapi.Un
 }
 
 func (r *RIBController) SendUnicastRoutingFlow(cmd fibcapi.FlowMod_Cmd, route *nlamsg.Route) error {
-	if !checkIPNet(route.GetDst()) {
+	if !checkRouteIPNet(route.GetDst()) {
 		return nil
 	}
 
@@ -322,7 +348,7 @@ func NewACLFlowByAddr(addr *nlamsg.Addr, inPort uint32) *fibcapi.PolicyACLFlow {
 }
 
 func (r *RIBController) SendACLFlowByAddr(cmd fibcapi.FlowMod_Cmd, addr *nlamsg.Addr, inPort uint32) error {
-	if !checkIP(addr.IP) {
+	if !checkIfaceIPNet(addr.IPNet) {
 		return nil
 	}
 

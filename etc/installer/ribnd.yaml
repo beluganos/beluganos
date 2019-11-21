@@ -1,0 +1,11 @@
+---
+
+ribn:
+  default:
+    ifnames: []
+    patterns:
+    - "eth[0-9]+$"
+    blacklist:
+    - eth0
+    features:
+      tx-checksum-ip-generic: false

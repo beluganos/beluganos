@@ -20,12 +20,25 @@ package nlasvc
 import (
 	"gonla/nlalib"
 	"gonla/nlamsg"
+	"net"
 	"syscall"
 
 	log "github.com/sirupsen/logrus"
 )
 
 const DEFAULT_VLAN_VID = 1
+
+var (
+	defaultRouteIPv4 = &net.IPNet{
+		IP:   net.IPv4zero,
+		Mask: net.CIDRMask(0, 32),
+	}
+
+	defaultRouteIPv6 = &net.IPNet{
+		IP:   net.IPv6zero,
+		Mask: net.CIDRMask(0, 128),
+	}
+)
 
 func DatasToNetlnkMessages(nid uint8, mtype uint16, datas [][]byte) []*nlamsg.NetlinkMessage {
 	msgs := []*nlamsg.NetlinkMessage{}

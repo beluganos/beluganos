@@ -22,6 +22,7 @@ import (
 	"time"
 
 	"github.com/mdlayher/ndp"
+	"github.com/safchain/ethtool"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -35,14 +36,18 @@ type worker struct {
 	conn       *ndp.Conn
 	nsInterval time.Duration
 	naTable    map[string]*ndp.NeighborAdvertisement
-	log        *log.Entry
+	features   map[string]bool
+
+	log *log.Entry
 }
 
-func NewWorker(ifname string, nsInterval time.Duration) Worker {
+func NewWorker(ifname string, nsInterval time.Duration, features map[string]bool) Worker {
 	return &worker{
 		ifname:     ifname,
 		nsInterval: nsInterval,
 		naTable:    map[string]*ndp.NeighborAdvertisement{},
+		features:   features,
+
 		log: log.WithFields(log.Fields{
 			"ifname": ifname,
 		}),
@@ -54,14 +59,38 @@ func (w *worker) cleanTable() {
 }
 
 func (w *worker) Start() error {
+	go w.Serve()
+
+	return nil
+}
+
+func (w *worker) Serve() {
+	// wait a seconds...
+	time.Sleep(3 * time.Second)
+
+	if et, err := ethtool.NewEthtool(); err == nil {
+		func() {
+			defer et.Close()
+			if err := et.Change(w.ifname, w.features); err != nil {
+				w.log.Warnf("Serve: ethtool change error. %s", err)
+			} else {
+				w.log.Infof("Serve: ethtool change success.")
+			}
+		}()
+	} else {
+		w.log.Warnf("Serve: ethtool error. %s", err)
+	}
+
 	ifi, err := net.InterfaceByName(w.ifname)
 	if err != nil {
-		return err
+		w.log.Errorf("Serve: InterfaceByName error. %s", err)
+		return
 	}
 
 	conn, ip, err := ndp.Dial(ifi, ndp.LinkLocal)
 	if err != nil {
-		return err
+		w.log.Errorf("Serve: Dial error, %s", err)
+		return
 	}
 
 	w.log.Debugf("Dial %v -> %s", ifi, ip)
@@ -70,12 +99,10 @@ func (w *worker) Start() error {
 
 	ch := make(chan *ndp.NeighborAdvertisement)
 	go w.Recv(ch)
-	go w.Serve(ch)
-
-	return nil
+	w.process(ch)
 }
 
-func (w *worker) Serve(ch <-chan *ndp.NeighborAdvertisement) {
+func (w *worker) process(ch <-chan *ndp.NeighborAdvertisement) {
 
 	w.log.Debugf("Serve start. %s", w.ifname)
 

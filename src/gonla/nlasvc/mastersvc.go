@@ -358,6 +358,18 @@ func (n *NLAMasterService) NetlinkRoute(nlmsg *nlamsg.NetlinkMessage, route *nla
 		return
 	}
 
+	if route.Dst == nil && route.MPLSDst == nil {
+		if gw := route.GetGw(); gw != nil {
+			// "route" is default route.
+			// set defaultRouteIPv{4,6} to route.Dst.
+			if gw.To4() != nil {
+				route.Dst = defaultRouteIPv4
+			} else {
+				route.Dst = defaultRouteIPv6
+			}
+		}
+	}
+
 	switch {
 	case route.Dst != nil:
 		if route.NId == n.NId {

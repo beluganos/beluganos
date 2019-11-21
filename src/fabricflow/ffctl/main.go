@@ -63,6 +63,7 @@ func rootCmd(name string) *cobra.Command {
 		bridgeCmd(),
 		bondCmd(),
 		MonitorCmd(),
+		ethtoolCmd(),
 	)
 
 	return rootCmd
