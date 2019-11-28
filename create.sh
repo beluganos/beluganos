@@ -31,29 +31,6 @@ INST_HOME=`pwd`/etc/installer
 . $INST_HOME/opennsl.sh
 . $INST_HOME/beluganos.sh
 
-set_proxy() {
-    if [ "${PROXY}"x != ""x ]; then
-        APT_PROXY="--env http_proxy=${PROXY}"
-        HTTP_PROXY="http_proxy=${PROXY} https_proxy=${PROXY}"
-        export http_proxy=${PROXY}
-        export https_proxy=${PROXY}
-        export HTTPS_PROXY=${PROXY}
-        lxc config set core.proxy_http ${PROXY}
-        lxc config set core.proxy_https ${PROXY}
-
-        echo "--- Proxy settings ---"
-        echo "APT_PROXY=${APT_PROXY}"
-        echo "HTTP_PROXY=${HTTP_PROXY}"
-    fi
-}
-
-set_sudo() {
-    if [ "${ENABLE_VIRTUALENV}" != "yes" ]; then
-        PIP="sudo -E $PIP"
-        PATCH="sudo $PATCH"
-    fi
-}
-
 do_all() {
     confirm "Install ALL" || exit 1
 
@@ -122,7 +99,8 @@ do_usage() {
     echo "  help  : show this message"
 }
 
-set_proxy
+set_proxy_env
+set_proxy_lxd
 set_sudo
 case $1 in
     pkg)

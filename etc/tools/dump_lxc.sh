@@ -139,8 +139,8 @@ do_cmds_ribx() {
     ech "nlac"
     nlac
 
-    ech "ribsdmp -a 127.0.0.1:50073"
-    ribsdmp
+    ech "ribsc -a 127.0.0.1:50073"
+    ribsc
 
     ech "journalctl -t ribcd"
     journalctl -t ribcd

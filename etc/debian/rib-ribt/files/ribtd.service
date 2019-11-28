@@ -1,0 +1,15 @@
+[Unit]
+Description=Beluganos RIB tunnel service
+After=syslog.target network.target
+ConditionPathExists=/etc/beluganos/ribtd.conf
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/beluganos/ribtd.conf
+ExecStart=/usr/bin/ribtd --dump-table ${DUMP_TABLE_TIME} --gobgpd-api ${API_LISTEN_ADDR} --route-family ${ROUTE_FAMILY} --tunnel-local-nw4 ${TUNNEL_LOCAL4} --tunnel-local-nw6 ${TUNNEL_LOCAL6} --tunnel-type-ipv6 ${TUNNEL_TYPE_IPV6} --tunnel-type-force ${TUNNEL_TYPE_FORCE} --tunnel-type-default ${TUNNEL_TYPE_DEFAULT} ${DEBUG}
+# User=root
+# Group=root
+Restart=on-abort
+
+[Install]
+WantedBy=network.target

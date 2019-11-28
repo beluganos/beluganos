@@ -1,0 +1,6 @@
+Package: beluganos-rib-ribn
+Maintainer: beluganos admin <admin@example.net>
+Architecture: amd64
+Version: 1.0.0-1
+Description: Beluganos RIB neighbor service
+Depends: beluganos-rib-common

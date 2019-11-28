@@ -1,0 +1,59 @@
+// -*- coding: utf-8 -*-
+
+syntax = "proto3";
+
+package ribsapi;
+
+service RIBSCoreApi {
+  rpc ModRib      (RibUpdate)         returns (ModRibReply) {}
+  rpc MonitorRib  (MonitorRibRequest) returns (stream RibUpdate) {}
+  rpc SyncRib     (SyncRibRequest)    returns (SyncRibReply) {}
+}
+
+service RIBSApi {
+  rpc GetNexthops (GetNexthopsRequest) returns (stream Nexthop)    {}
+  rpc GetRics     (GetRicsRequest)     returns (stream RicEntry)   {}
+  rpc GetNexthopMap (GetIPMapRequest)    returns (stream IPMapEntry) {}
+}
+
+message RibUpdate {
+  string rt   = 1;
+  bytes  path = 2;
+}
+
+message ModRibReply{}
+
+message MonitorRibRequest {
+    string rt   = 1;
+    uint32 n_id = 2;
+}
+
+message SyncRibRequest{
+    string rt = 1;
+}
+
+message SyncRibReply{}
+
+message GetNexthopsRequest {}
+
+message Nexthop {
+  string key  = 1;
+  string rt   = 2;
+  string addr = 3;
+  string source_id = 4;
+}
+
+message GetRicsRequest {}
+
+message RicEntry {
+  string key  = 1;
+  uint32 n_id = 2;
+  string rt   = 3;
+}
+
+message GetIPMapRequest {}
+
+message IPMapEntry {
+  string key = 1;
+  string value = 2;
+}

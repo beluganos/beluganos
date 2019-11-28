@@ -1,0 +1,5 @@
+# -*- coding: utf-8; mode: toml -*-
+
+[global.config]
+  as = 1
+  router-id = "10.0.0.5"

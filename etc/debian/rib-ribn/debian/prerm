@@ -1,0 +1,4 @@
+#! /bin/sh -e
+# -*- coding: utf-8; mode: shell-script -*-
+
+systemctl stop ribnd || true

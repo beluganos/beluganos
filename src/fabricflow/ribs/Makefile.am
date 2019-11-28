@@ -1,4 +1,4 @@
-SUBDIRS = ribsapi ribsmsg ribsyn
+SUBDIRS = api pkgs
 
 PACKAGES = fabricflow/ribs/...
 

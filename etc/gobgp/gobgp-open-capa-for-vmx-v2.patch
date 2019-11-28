@@ -1,0 +1,24 @@
+diff --git a/pkg/server/fsm.go b/pkg/server/fsm.go
+index 35172bd2..5b7faaf6 100644
+--- a/pkg/server/fsm.go
++++ b/pkg/server/fsm.go
+@@ -781,14 +781,16 @@ func capabilitiesFromConfig(pConf *config.Neighbor) []bgp.ParameterCapabilityInt
+ 
+ func buildopen(gConf *config.Global, pConf *config.Neighbor) *bgp.BGPMessage {
+ 	caps := capabilitiesFromConfig(pConf)
+-	opt := bgp.NewOptionParameterCapability(caps)
++	opts := make([]bgp.OptionParameterInterface, len(caps))
++	for index, cap := range caps {
++		opts[index] = bgp.NewOptionParameterCapability([]bgp.ParameterCapabilityInterface{cap})
++	}
+ 	holdTime := uint16(pConf.Timers.Config.HoldTime)
+ 	as := pConf.Config.LocalAs
+ 	if as > (1<<16)-1 {
+ 		as = bgp.AS_TRANS
+ 	}
+-	return bgp.NewBGPOpenMessage(uint16(as), holdTime, gConf.Config.RouterId,
+-		[]bgp.OptionParameterInterface{opt})
++	return bgp.NewBGPOpenMessage(uint16(as), holdTime, gConf.Config.RouterId, opts)
+ }
+ 
+ func readAll(conn net.Conn, length int) ([]byte, error) {

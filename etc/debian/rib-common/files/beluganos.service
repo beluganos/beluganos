@@ -1,0 +1,16 @@
+[Unit]
+Description=Beluganos rib initializer
+After=syslog.target network.target
+ConditionPathExists=/etc/beluganos/beluganos.conf
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/beluganos/beluganos.conf
+
+ExecStartPre=-/sbin/ip link add ${FF_BRIDGE} type bridge
+ExecStartPre=-/sbin/ip link set ${FF_BRIDGE} up
+ExecStartPre=-/sbin/sysctl -p ${FF_SYSCTL_CONF}
+ExecStart=/bin/echo "beluganos started"
+
+[Install]
+WantedBy=network.target

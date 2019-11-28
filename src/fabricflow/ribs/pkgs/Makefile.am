@@ -1,0 +1,2 @@
+SUBDIRS=ribscfg ribsdbm ribssrv
+

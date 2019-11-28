@@ -1,0 +1,10 @@
+---
+
+dpaths:
+  default:
+    dpid: 1234
+    ifaces:
+      names: []
+      patterns: []
+        # - "ens.*"
+      blacklist: []

@@ -1,0 +1,14 @@
+[Unit]
+Description=Beluanos virtual switch service.
+After=syslog.target network.target
+Conflicts=openvswitch-switch.service
+ConditionPathExists=/etc/beluganos/govswd.conf
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/beluganos/govswd.conf
+ExecStart=/usr/bin/govswd -c ${CONFIG} --fibc-addr ${FIBC_HOST} --fibc-port ${FIBC_PORT} ${DEBUG_OPT}
+Restart=on-abort
+
+[Install]
+WantedBy=network.target

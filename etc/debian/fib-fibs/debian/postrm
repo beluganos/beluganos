@@ -1,0 +1,5 @@
+#! /bin/sh -e
+# -*- coding: utf-8; mode: shell-script -*-
+
+systemctl daemon-reload
+systemctl restart snmpd

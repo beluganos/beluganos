@@ -1,0 +1,15 @@
+[Unit]
+Description=Beluganos RIB sync service
+Wants=nlad.service beluganos.service
+After=syslog.target network.target nlad.service
+ConditionPathExists=/etc/beluganos/ribxd.conf
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ribsd -config /etc/beluganos/ribxd.conf
+User=beluganos
+Group=beluganos
+Restart=on-abort
+
+[Install]
+WantedBy=network.target

@@ -1,0 +1,43 @@
+diff --git a/cmd/gobgp/global.go b/cmd/gobgp/global.go
+index 024654ac..ec718e4c 100644
+--- a/cmd/gobgp/global.go
++++ b/cmd/gobgp/global.go
+@@ -206,6 +206,8 @@ func encapParser(args []string) ([]bgp.ExtendedCommunityInterface, error) {
+ 		typ = bgp.TUNNEL_TYPE_MPLS_IN_UDP
+ 	case "vxlan-gre":
+ 		typ = bgp.TUNNEL_TYPE_VXLAN_GRE
++	case "ipv6":
++		typ = bgp.TUNNEL_TYPE_IPV6
+ 	default:
+ 		return nil, fmt.Errorf("invalid encap type")
+ 	}
+diff --git a/pkg/packet/bgp/bgp.go b/pkg/packet/bgp/bgp.go
+index a6e0fd15..6a68ae29 100644
+--- a/pkg/packet/bgp/bgp.go
++++ b/pkg/packet/bgp/bgp.go
+@@ -170,6 +170,7 @@ const (
+ 	TUNNEL_TYPE_MPLS_IN_GRE TunnelType = 11
+ 	TUNNEL_TYPE_VXLAN_GRE   TunnelType = 12
+ 	TUNNEL_TYPE_MPLS_IN_UDP TunnelType = 13
++	TUNNEL_TYPE_IPV6        TunnelType = 14
+ )
+ 
+ func (p TunnelType) String() string {
+@@ -192,6 +193,8 @@ func (p TunnelType) String() string {
+ 		return "vxlan-gre"
+ 	case TUNNEL_TYPE_MPLS_IN_UDP:
+ 		return "mpls-in-udp"
++	case TUNNEL_TYPE_IPV6:
++		return "ipv6"
+ 	default:
+ 		return fmt.Sprintf("TunnelType(%d)", uint8(p))
+ 	}
+@@ -10182,6 +10185,8 @@ func (e *EncapExtended) String() string {
+ 		return "VXLAN GRE"
+ 	case TUNNEL_TYPE_MPLS_IN_UDP:
+ 		return "MPLS in UDP"
++	case TUNNEL_TYPE_IPV6:
++		return "IPv6"
+ 	default:
+ 		return fmt.Sprintf("tunnel: %d", e.TunnelType)
+ 	}

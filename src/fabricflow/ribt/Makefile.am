@@ -1,3 +1,5 @@
+SUBDIRS=api
+
 PACKAGES = fabricflow/ribt/...
 
 go-fmt:

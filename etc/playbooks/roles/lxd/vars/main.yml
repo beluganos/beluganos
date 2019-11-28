@@ -51,7 +51,7 @@ binfiles:
   - ribcd
   - ribpd
   - ribsd
-  - ribsdmp
+  - ribsc
   - ribtd
   - gobgpd
   - gobgp

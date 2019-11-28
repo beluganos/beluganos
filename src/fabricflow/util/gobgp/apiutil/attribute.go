@@ -1,4 +1,5 @@
-// +build gobgpv2
+// -*- coding: utf-8 -*-
+// +build !gobgpv1
 
 // Copyright (C) 2018 Nippon Telegraph and Telephone Corporation.
 //

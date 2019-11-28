@@ -1,0 +1,28 @@
+// -*- coding: utf-8 -*-
+
+syntax = "proto3";
+
+package ribtapi;
+
+service RIBTApi {
+  rpc GetTunnels (GetTunnelsRequest)  returns (stream GetTunnelsReply) {}
+}
+
+message TunnelRoute {
+  string prefix  = 1;
+  string nexthop = 2;
+  uint32 family  = 3;
+  int32  tunnel_type = 4;
+}
+
+message GetTunnelsRequest {
+  string key_type = 1; // remote, ifname, prefix
+}
+
+message GetTunnelsReply {
+  uint32   id     = 1;
+  int32    type   = 2;
+  string   remote = 3;
+  string   local  = 4;
+  map<string, TunnelRoute> routes = 5;
+}

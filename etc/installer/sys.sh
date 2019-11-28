@@ -30,6 +30,39 @@ confirm() {
     esac
 }
 
+set_proxy_env() {
+    if [ "${PROXY}"x != ""x ]; then
+        APT_PROXY="--env http_proxy=${PROXY}"
+        HTTP_PROXY="http_proxy=${PROXY} https_proxy=${PROXY}"
+        export http_proxy=${PROXY}
+        export https_proxy=${PROXY}
+        export HTTP_PROXY=${PROXY}
+        export HTTPS_PROXY=${PROXY}
+
+        echo "--- Proxy settings ---"
+        echo "APT_PROXY=${APT_PROXY}"
+        echo "HTTP_PROXY=${HTTP_PROXY}"
+    fi
+}
+
+set_proxy_lxd() {
+    if [ "${PROXY}"x != ""x ]; then
+        lxc config set core.proxy_http ${PROXY}
+        lxc config set core.proxy_https ${PROXY}
+
+        echo "--- Proxy settings ---"
+	echo "lxc proxy ${PROXY}"
+    fi
+}
+
+set_sudo() {
+    if [ "${ENABLE_VIRTUALENV}" != "yes" ]; then
+        PIP="sudo -E $PIP"
+        PATCH="sudo $PATCH"
+    fi
+}
+
+
 #
 # install deb packages
 #

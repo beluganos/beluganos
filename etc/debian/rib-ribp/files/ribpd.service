@@ -1,0 +1,14 @@
+[Unit]
+Description=Beluganos RIB ffpacket sender
+After=syslog.target network.target
+ConditionPathExists=/etc/beluganos/ribxd.conf
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ribpd -config /etc/beluganos/ribxd.conf
+# User=root
+# Group=root
+Restart=on-abort
+
+[Install]
+WantedBy=network.target

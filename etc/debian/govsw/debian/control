@@ -1,0 +1,5 @@
+Package: beluganos-govsw
+Maintainer: beluganos admin <admin@example.net>
+Architecture: amd64
+Version: 1.0.0-1
+Description: Beluganos virtual switch service

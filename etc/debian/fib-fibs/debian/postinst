@@ -1,0 +1,7 @@
+#! /bin/sh -e
+# -*- coding: utf-8; mode: shell-script -*-
+
+systemctl daemon-reload
+chmod +x /usr/bin/beluganos_fibs_snmp.sh
+/usr/bin/beluganos_fibs_snmp.sh replace
+systemctl restart snmpd

@@ -1,0 +1,16 @@
+[Unit]
+Description=gobgp daemon
+After=syslog.target network.target frr.service
+ConditionPathExists=/etc/frr/gobgpd.conf
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/frr/gobgpd.conf
+ExecStart=/usr/bin/gobgpd --config-file=${CONF_PATH} --config-type=${CONF_TYPE} --log-level=${LOG_LEVEL} --api-hosts=${API_HOSTS} ${PPROF_OPT}
+ExecStop=/usr/bin/pkill -9 gobgpd
+# User=frr
+# Group=frr
+Restart=on-abort
+
+[Install]
+WantedBy=network.target

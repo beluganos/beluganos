@@ -18,6 +18,7 @@ pkg/
 autom4te.cache/
 build/
 dist/
+RELEASE/
 *.egg-info/
 .DS_Store
 

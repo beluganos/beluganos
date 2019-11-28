@@ -1,0 +1,6 @@
+Package: beluganos-fib-fibs
+Maintainer: beluganos admin <admin@example.net>
+Architecture: amd64
+Version: 1.0.0-1
+Description: Beluganos FIBS services
+Depends: beluganos-fib-common

@@ -69,7 +69,7 @@ netlink_patch() {
 #
 # Upgrade GoBGP
 #
-gobgp_upgrade() {
+gobgpv1_upgrade() {
     # prepare
     cp ./etc/gobgp/gobgp-zapi-ver5-v1.33.patch /tmp/gobgp-zapi-ver5-v1.33.patch
     cp ./etc/gobgp/gobgp-encap-ipv6-v1.33.patch /tmp/gobgp-encap-ipv6-v1.33.patch
@@ -94,6 +94,25 @@ gobgp_upgrade() {
     # reinstall
     go install ./gobgpd || { echo "gobgp_checkout error."; exit 1; }
     go install ./gobgp || { echo "gobgp_checkout error."; exit 1; }
+
+    popd
+}
+
+gobgp_upgrade() {
+    # prepare
+    cp ./etc/gobgp/gobgp-encap-ipv6-v2.patch /tmp/
+    cp ./etc/gobgp/gobgp-mp-nexthop-v2.patch /tmp/
+    cp ./etc/gobgp/gobgp-open-capa-for-vmx-v2.patch /tmp/
+
+    pushd ~/go/src/github.com/osrg/gobgp
+
+    # patch
+    patch -p1 < /tmp/gobgp-encap-ipv6-v2.patch
+    patch -p1 < /tmp/gobgp-mp-nexthop-v2.patch
+    patch -p1 < /tmp/gobgp-open-capa-for-vmx-v2.patch
+
+    # reinstall
+    GO111MODULE=off go install ./cmd/...
 
     popd
 }

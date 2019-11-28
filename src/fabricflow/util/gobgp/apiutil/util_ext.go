@@ -18,7 +18,7 @@
 package apiutil
 
 import (
-	"github.com/osrg/gobgp/packet/bgp"
+	"github.com/osrg/gobgp/pkg/packet/bgp"
 )
 
 func GetExtendedCommunity(communities *bgp.PathAttributeExtendedCommunities, typ bgp.ExtendedCommunityAttrSubType) (bgp.ExtendedCommunityInterface, bool) {

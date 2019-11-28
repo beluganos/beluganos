@@ -21,6 +21,7 @@ import (
 	"container/list"
 	"fmt"
 	"net"
+	"sync"
 )
 
 //
@@ -37,6 +38,8 @@ type IPMapGenerator interface {
 type IPMap struct {
 	values    map[string]net.IP
 	generator IPMapGenerator
+
+	mutex sync.RWMutex
 }
 
 func NewIPMap(generator IPMapGenerator) *IPMap {
@@ -51,6 +54,9 @@ func NewIPMap(generator IPMapGenerator) *IPMap {
 }
 
 func (m *IPMap) Value(key net.IP) (net.IP, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
 	if v, ok := m.values[key.String()]; ok {
 		return v, nil
 	}
@@ -65,6 +71,9 @@ func (m *IPMap) Value(key net.IP) (net.IP, error) {
 }
 
 func (m *IPMap) Free(key net.IP) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
 	val, ok := m.values[key.String()]
 	if !ok {
 		return
@@ -75,11 +84,17 @@ func (m *IPMap) Free(key net.IP) {
 }
 
 func (m *IPMap) Contains(key net.IP) bool {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+
 	_, ok := m.values[key.String()]
 	return ok
 }
 
 func (m *IPMap) Walk(f func(string, net.IP) bool) {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+
 	for k, v := range m.values {
 		if ok := f(k, v); !ok {
 			break

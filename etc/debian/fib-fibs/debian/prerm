@@ -1,0 +1,6 @@
+#! /bin/sh -e
+# -*- coding: utf-8; mode: shell-script -*-
+
+systemctl stop snmpd || true
+chmod +x /usr/bin/beluganos_fibs_snmp.sh || true
+/usr/bin/beluganos_fibs_snmp.sh unregister || true

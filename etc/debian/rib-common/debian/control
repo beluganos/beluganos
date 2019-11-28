@@ -1,0 +1,5 @@
+Package: beluganos-rib-common
+Maintainer: beluganos admin <admin@example.net>
+Architecture: amd64
+Version: 1.0.0-1
+Description: Beluganos rib common modules

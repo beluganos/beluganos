@@ -1,0 +1,20 @@
+[Unit]
+Description=Beluganos fib initializer
+After=syslog.target network.target
+ConditionPathExists=/etc/beluganos/beluganos.conf
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/beluganos/beluganos.conf
+
+ExecStartPre=/bin/mkdir -p /var/log/beluganos
+ExecStartPre=/bin/chown beluganos.beluganos /var/log/beluganos
+
+ExecStartPre=/bin/mkdir -p /var/run/beluganos
+ExecStartPre=/bin/chown beluganos.beluganos /var/run/beluganos
+ExecStartPre=/bin/chmod 755 /var/run/beluganos
+
+ExecStart=-/sbin/sysctl -p ${FF_SYSCTL_CONF}
+
+[Install]
+WantedBy=network.target

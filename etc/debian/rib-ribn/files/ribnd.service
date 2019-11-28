@@ -1,0 +1,14 @@
+[Unit]
+Description=rib neighbor service
+After=network.target
+ConditionPathExists=/etc/beluganos/ribnd.conf
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/beluganos/ribnd.conf
+ExecStart=/usr/bin/ribnd --ns-interval ${NS_SEND_TIME} --config-path ${CONFIG} ${DEBUG}
+Restart=on-abort
+# User=root
+
+[Install]
+WantedBy=network.target

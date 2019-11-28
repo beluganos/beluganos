@@ -68,10 +68,15 @@ AC_CONFIG_FILES([Makefile
 		 src/fabricflow/ribp/api/Makefile
 		 src/fabricflow/ribp/ribpkt/Makefile
 		 src/fabricflow/ribs/Makefile
-		 src/fabricflow/ribs/ribsapi/Makefile
-		 src/fabricflow/ribs/ribsmsg/Makefile
-		 src/fabricflow/ribs/ribsyn/Makefile
+		 src/fabricflow/ribs/api/Makefile
+		 src/fabricflow/ribs/api/ribsapi/Makefile
+		 src/fabricflow/ribs/pkgs/Makefile
+		 src/fabricflow/ribs/pkgs/ribscfg/Makefile
+		 src/fabricflow/ribs/pkgs/ribsdbm/Makefile
+		 src/fabricflow/ribs/pkgs/ribssrv/Makefile
 		 src/fabricflow/ribt/Makefile
+		 src/fabricflow/ribt/api/Makefile
+		 src/fabricflow/ribt/api/ribtapi/Makefile
 		 src/fabricflow/ribn/Makefile
 		 src/fabricflow/ffctl/Makefile
 		 src/gonla/Makefile

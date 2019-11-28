@@ -1,0 +1,5 @@
+#! /bin/sh -e
+# -*- coding: utf-8; mode: shell-script -*-
+
+groupadd -r beluganos || true
+useradd -g beluganos -s /sbin/nologin --system beluganos || true

@@ -7,7 +7,7 @@ ConditionPathExists=/etc/beluganos/ribxd.conf
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/ribsd -config /etc/beluganos/ribxd.conf -verbose
+ExecStart=/usr/bin/ribsd --config-file /etc/beluganos/ribxd.conf --verbose
 Restart=on-abort
 
 [Install]

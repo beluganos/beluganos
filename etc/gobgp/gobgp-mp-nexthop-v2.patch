@@ -1,0 +1,16 @@
+diff --git a/internal/pkg/table/path.go b/internal/pkg/table/path.go
+index 805fa63c..73d91800 100644
+--- a/internal/pkg/table/path.go
++++ b/internal/pkg/table/path.go
+@@ -451,6 +451,11 @@ func (path *Path) SetNexthop(nexthop net.IP) {
+ 		path.setPathAttr(mpreach)
+ 		return
+ 	}
++	if path.GetRouteFamily() == bgp.RF_IPv4_UC && nexthop.To4() != nil {
++		path.delPathAttr(bgp.BGP_ATTR_TYPE_MP_REACH_NLRI)
++		path.setPathAttr(bgp.NewPathAttributeNextHop(nexthop.String()))
++		return
++	}
+ 	attr := path.getPathAttr(bgp.BGP_ATTR_TYPE_NEXT_HOP)
+ 	if attr != nil {
+ 		path.setPathAttr(bgp.NewPathAttributeNextHop(nexthop.String()))

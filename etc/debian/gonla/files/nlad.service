@@ -1,0 +1,13 @@
+[Unit]
+Description=Beluanos NLA service.
+Wants=beluganos.service
+After=syslog.target network.target zebra.service beluganos.service
+ConditionPathExists=/etc/beluganos/ribxd.conf
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/nlad -config /etc/beluganos/ribxd.conf
+Restart=on-abort
+
+[Install]
+WantedBy=network.target
