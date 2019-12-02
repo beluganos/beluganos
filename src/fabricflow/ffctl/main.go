@@ -55,8 +55,6 @@ func rootCmd(name string) *cobra.Command {
 
 	rootCmd.AddCommand(
 		containerCmd(),
-		statusCmd(),
-		fibcCmd(),
 		ovsCmd(),
 		playbookCmd(),
 		vlanCmd(),
@@ -64,6 +62,7 @@ func rootCmd(name string) *cobra.Command {
 		bondCmd(),
 		MonitorCmd(),
 		ethtoolCmd(),
+		serviceCmd(),
 	)
 
 	return rootCmd

@@ -84,6 +84,15 @@ func (s *Server) SetConfig(cfg *fibccfg.Config) {
 }
 
 //
+// SetNetconfConfig set path, type of netconf config file
+//
+func (s *Server) SetNetconfConfig(configPath, configType string) {
+	if err := s.dbctl.NetconfConfig().SetConfig(configPath, configType); err != nil {
+		s.log.Errorf("netconf config initialize error. %s", err)
+	}
+}
+
+//
 // Serve creates servrs.
 //
 func (s *Server) Serve(lis net.Listener) {

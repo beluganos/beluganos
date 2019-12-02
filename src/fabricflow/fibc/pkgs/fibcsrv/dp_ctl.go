@@ -128,6 +128,8 @@ func (c *DPCtl) MultipartReply(xid uint32, reply *fibcapi.FFMultipart_Reply) err
 			for _, port := range ptdesc.PortDesc.Port {
 				c.enterPort(reply.DpId, port)
 			}
+
+			c.db.UpdateNetconfConfig(reply.DpId, ptdesc.PortDesc.Port)
 		}
 	}
 

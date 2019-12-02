@@ -2,6 +2,7 @@
 Description=fibc(golang) service
 After=network.target
 ConditionPathExists=/etc/beluganos/fibcd-go.conf
+Conflicts=fibcd.service
 
 [Service]
 Type=simple

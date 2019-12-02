@@ -2,6 +2,7 @@
 Description=fib controller service
 After=network.target
 ConditionPathExists=/etc/beluganos/fibcd.conf
+Conflicts=fibcd-go.service
 
 [Service]
 Type=simple

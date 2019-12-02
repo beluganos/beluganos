@@ -24,6 +24,7 @@ import (
 	"strings"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/sys/unix"
 )
 
@@ -107,4 +108,35 @@ func createFile(path string, overwrite bool, f func(string)) (*os.File, error) {
 	}
 
 	return os.Create(path)
+}
+
+func containerHostIfnames(name string, excludeDevices []string) ([]string, error) {
+	devices, err := containerDevices(name, excludeDevices)
+	if err != nil {
+		log.Errorf("containerDevices error. %s %s", name, err)
+		return nil, err
+	}
+
+	ifnames := []string{}
+	for _, device := range devices {
+		nictype, err := containerDeviceProperty(name, device, "nictype")
+		if err != nil {
+			log.Errorf("containerDeviceProperty error. %s %s %s", name, device, err)
+			return nil, err
+		}
+
+		if nictype != "p2p" {
+			continue
+		}
+
+		ifname, err := containerDeviceProperty(name, device, "host_name")
+		if err != nil {
+			log.Errorf("containerDeviceProperty error. %s %s %s", name, device, err)
+			return nil, err
+		}
+
+		ifnames = append(ifnames, ifname)
+	}
+
+	return ifnames, nil
 }

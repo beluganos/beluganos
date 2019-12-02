@@ -35,6 +35,8 @@ const (
 	argsListenNW     = "tcp"
 	argsListenIP     = "localhost"
 	argsListenPort   = 50061
+	argNcConfigPath  = "/tmp/ncmi.yaml"
+	argNcConfigType  = "yaml"
 )
 
 //
@@ -47,6 +49,8 @@ type App struct {
 	ListenNW     string
 	ListenIP     string
 	ListenPort   uint16
+	NcConfigPath string
+	NcConfigType string
 
 	Verbose bool
 	Trace   bool
@@ -61,6 +65,8 @@ func (a *App) parseArgs() {
 	flag.StringVarP(&a.ListenNW, "listen-network", "", argsListenNW, "listen network.")
 	flag.StringVarP(&a.ListenIP, "listen-addr", "a", argsListenIP, "listen address.")
 	flag.Uint16VarP(&a.ListenPort, "listen-port", "p", argsListenPort, "listen port.")
+	flag.StringVarP(&a.NcConfigPath, "netconf-config-file", "", argNcConfigPath, "netconf config path.")
+	flag.StringVarP(&a.NcConfigType, "netconf-config-type", "", argNcConfigType, "netconf config type.")
 	flag.BoolVarP(&a.Verbose, "verbose", "v", false, "show deail messages.")
 	flag.BoolVarP(&a.Trace, "trace", "", false, "show more deail messages.")
 	flag.Parse()
@@ -73,6 +79,8 @@ func (a *App) dumpArgs() {
 	a.log.Infof("listen-network : '%s'", a.ListenNW)
 	a.log.Infof("listen-address : '%s'", a.ListenIP)
 	a.log.Infof("listen-port    : %d", a.ListenPort)
+	a.log.Infof("nc-config-file : '%s'", a.NcConfigPath)
+	a.log.Infof("nc-config-type : '%s'", a.NcConfigType)
 	a.log.Infof("verbose        : %t", a.Verbose)
 	a.log.Infof("trace          : %t", a.Trace)
 }
@@ -125,6 +133,7 @@ func (a *App) run() error {
 
 	s := fibcsrv.NewServer()
 	s.SetConfig(cfg)
+	s.SetNetconfConfig(a.NcConfigPath, a.NcConfigType)
 	s.Serve(lis)
 
 	return nil

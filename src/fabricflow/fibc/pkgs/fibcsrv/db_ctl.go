@@ -69,6 +69,8 @@ type DBCtl struct {
 
 	waits *fibcdbm.WaiterTable
 
+	nccfg *fibcdbm.NetconfConfig
+
 	log *log.Entry
 }
 
@@ -85,6 +87,7 @@ func NewDBCtl() *DBCtl {
 		ptmap: fibcdbm.NewPortMap(),
 		stats: fibcdbm.NewStatsTable(),
 		waits: fibcdbm.NewWaiterTable(),
+		nccfg: fibcdbm.NewNetconfConfig(),
 
 		log: log.WithFields(log.Fields{"module": "dbctl"}),
 	}
@@ -144,6 +147,13 @@ func (c *DBCtl) Stats() *fibcdbm.StatsTable {
 //
 func (c *DBCtl) Waiters() *fibcdbm.WaiterTable {
 	return c.waits
+}
+
+//
+// NetconfConfig returns netconf config table.
+//
+func (c *DBCtl) NetconfConfig() *fibcdbm.NetconfConfig {
+	return c.nccfg
 }
 
 //
@@ -299,4 +309,36 @@ func (c *DBCtl) NewPortEntryFromPortConfig(pc *fibcapi.PortConfig) (*fibcdbm.Por
 	}
 
 	return entry, nil
+}
+
+func (c *DBCtl) UpdateNetconfConfig(dpID uint64, ports []*fibcapi.FFPort) {
+	c.log.Debugf("UpdateNetconfConfig: dpID=%d", dpID)
+
+	if err := c.nccfg.Load(); err != nil {
+		c.log.Errorf("UpdateNetconfConfig: load error. %s", err)
+		return
+	}
+
+	dpCfg := fibcdbm.NewNetconfDpConfig()
+	for _, port := range ports {
+		ifname := port.Name
+		if len(ifname) == 0 {
+			c.PortMap().SelectByDP(dpID, port.PortNo, func(e *fibcdbm.PortEntry) {
+				ifname = e.Key.Ifname
+			})
+		}
+
+		portCfg := fibcdbm.NewNetconfPortConfig(ifname, port.HwAddr, port.PortNo)
+		dpCfg.AddPort(portCfg)
+
+		c.log.Debugf("UpdateNetconfConfig: add %s", portCfg)
+	}
+
+	c.nccfg.Dps[dpID] = dpCfg
+	if err := c.nccfg.Save(); err != nil {
+		c.log.Errorf("UpdateNetconfConfig: save error. %s", err)
+		return
+	}
+
+	c.log.Debugf("UpdateNetconfConfig: success. dpID=%d", dpID)
 }
