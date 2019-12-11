@@ -1,0 +1,12 @@
+# -*- coding: utf-8 -*-
+
+option beluganos-kvm-url code 250 = text;
+option beluganos-ztp-url code 251 = text;
+
+subnet 172.30.0.0 netmask 255.255.255.0 {
+  range 172.30.0.129 172.30.0.250;
+  option routers 172.30.0.1;
+  option default-url = "http://172.30.0.1/onie-installer";
+  option beluganos-kvm-url = "http://172.30.0.1/beluganos-kvm-installer";
+  option beluganos-ztp-url = "http://172.30.0.1/beluganos-ztp-installer";
+}

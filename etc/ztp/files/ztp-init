@@ -1,0 +1,55 @@
+#! /bin/bash
+# -*- coding: utf-8 -*-
+
+FFCTL=/usr/bin/ffctl-ztp
+CONF=/etc/ztp-init.conf
+
+if [ -e "${CONF}" ]; then
+    . ${CONF}
+fi
+
+exit_err() {
+    local MSG=$1
+    echo ${MSG}
+    exit 1
+}
+
+do_ztp_install() {
+    local ZTPURL=`${FFCTL} dhcp option get -n ${DHCP_OPT}`
+    # local ZTPURL=http://`${FFCTL} dhcp option get -n router`:8080/ztp-install.sh
+
+    TEMPFILE=`tempfile -p ztp- -s .sh`
+
+    echo "ztp-init: exec ${ZTPURL}  [${TEMPFILE}]"
+
+    wget ${ZTPURL} -O ${TEMPFILE} || exit_err "wget ${ZTPURL} error."
+    chmod +x ${TEMPFILE}
+    ${TEMPFILE} ${ZTPURL} || exit_err "ztp install error."
+}
+
+do_init() {
+    if [ -z "${RELEASE}" ]; then
+        do_ztp_install
+        echo "RELEASE=yes" >> ${CONF}
+    fi
+}
+
+do_reset() {
+    sed -i -e "/^RELEASE=/d" ${CONF}
+}
+
+do_usage() {
+    echo "$0 <option>"
+}
+
+case $1 in
+    init)
+        do_init
+        ;;
+    reset)
+        do_reset
+        ;;
+    *)
+        do_usage
+        ;;
+esac

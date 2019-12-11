@@ -1,0 +1,70 @@
+#! /bin/bash -e
+# -*- coding: utf-8; mode: shell-script -*-
+
+ZTPURL="${1}.d"
+
+INSTDIR=/mnt/onl/data/beluganos
+
+KVM_NW=default
+KVM_DOM=ubuntu-wbsw
+KVM_IMAGE="ubuntu-wbsw.qcow2"
+OPENNSL_DEB="opennsl-accton_3.5.0.3+accton4.0-2_amd64.deb"
+GONSLD_DEB="gonsl_1.0.0-1_amd64.deb"
+
+exit_err() {
+    local MSG=$1
+
+    echo "${MSG}"
+    exit 1
+}
+
+download_files() {
+    # KVM
+    wget ${ZTPURL}/domain.xml        || exit_err "downlaod error."
+    wget ${ZTPURL}/network.xml       || exit_err "downlaod error."
+    wget ${ZTPURL}/${KVM_IMAGE}      || exit_err "downlaod error."
+    # OpenNSL agent
+    wget ${ZTPURL}/${OPENNSL_DEB}    || exit_err "downlaod error."
+    wget ${ZTPURL}/${GONSLD_DEB}     || exit_err "downlaod error."
+    wget ${ZTPURL}/gonsld.yaml       || exit_err "downlaod error."
+    # check flles
+    wget ${ZTPURL}/md5sum.txt        || exit_err "downlaod error."
+    md5sum -c md5sum.txt             || exit_err "checksum error."
+}
+
+install_vm() {
+    # remove default network
+    virsh net-destroy   ${KVM_NW} || true
+    virsh net-undefine  ${KVM_NW} || true
+    # create default network
+    virsh net-define    ./network.xml
+    virsh net-autostart ${KVM_NW}
+    virsh net-start     ${KVM_NW}
+    # create doamin
+    virsh define        ./domain.xml
+    virsh autostart     ${KVM_DOM}
+    virsh start         ${KVM_DOM}
+    # show info
+    virsh list --all
+    cat /var/lib/libvirt/dnsmasq/default.leases
+}
+
+install_gonsl() {
+    dpkg -i ./${OPENNSL_DEB}
+    dpkg -i ./${GONSLD_DEB}
+    install -pm 644 ./gonsld.yaml /etc/beluganos/
+}
+
+do_all() {
+    mkdir -p ${INSTDIR}
+    pushd ${INSTDIR}
+
+    download_files
+    install_vm
+    install_gonsl
+
+    popd
+}
+
+do_all
+exit 0

@@ -215,7 +215,7 @@ func (s *ProxyWorker) processGetRequest(msg *snmp.Message, pdu snmp.GetRequestPd
 	s.log.Debugf("ProxyWorker.GetRequest Request(Global)")
 	dumpSnmpPdu((*snmp.Pdu)(&pdu))
 
-	pdu.Variables = s.convVarsToLocal(pdu.Variables)
+	pdu.Variables = s.convVarsToLocal(pdu.Variables, NotTrapProxy)
 
 	s.log.Debugf("ProxyWorker.GetRequest Request(Local)")
 	dumpSnmpPdu((*snmp.Pdu)(&pdu))
@@ -232,7 +232,7 @@ func (s *ProxyWorker) processGetRequest(msg *snmp.Message, pdu snmp.GetRequestPd
 	s.log.Debugf("ProxyWorker.GetRequest Response(Local)")
 	dumpSnmpPdu((*snmp.Pdu)(&resPdu))
 
-	resPdu.Variables = s.convVarsToGlobal(resPdu.Variables)
+	resPdu.Variables = s.convVarsToGlobal(resPdu.Variables, NotTrapProxy)
 
 	s.log.Debugf("ProxyWorker.GetRequest Response(Global)")
 	dumpSnmpPdu((*snmp.Pdu)(&resPdu))
@@ -252,7 +252,7 @@ func (s *ProxyWorker) processGetNextRequest(msg *snmp.Message, pdu snmp.GetNextR
 	s.log.Debugf("ProxyWorker.GetNextRequest Request(Global)")
 	dumpSnmpPdu((*snmp.Pdu)(&pdu))
 
-	pdu.Variables = s.convVarsToLocal(pdu.Variables)
+	pdu.Variables = s.convVarsToLocal(pdu.Variables, NotTrapProxy)
 
 	s.log.Debugf("ProxyWorker.GetNextRequest Request(Local)")
 	dumpSnmpPdu((*snmp.Pdu)(&pdu))
@@ -269,7 +269,7 @@ func (s *ProxyWorker) processGetNextRequest(msg *snmp.Message, pdu snmp.GetNextR
 	s.log.Debugf("ProxyWorker.GetNextRequest Response(Local)")
 	dumpSnmpPdu((*snmp.Pdu)(&resPdu))
 
-	resPdu.Variables = s.convVarsToGlobal(resPdu.Variables)
+	resPdu.Variables = s.convVarsToGlobal(resPdu.Variables, NotTrapProxy)
 
 	s.log.Debugf("ProxyWorker.GetNextRequest Response(Global)")
 	dumpSnmpPdu((*snmp.Pdu)(&resPdu))
@@ -289,7 +289,7 @@ func (s *ProxyWorker) processGetBulkRequest(msg *snmp.Message, pdu snmp.GetBulkR
 	s.log.Debugf("ProxyWorker.GetBulkRequest Request(Global)")
 	dumpSnmpBulkPdu((*snmp.BulkPdu)(&pdu))
 
-	pdu.Variables = s.convVarsToLocal(pdu.Variables)
+	pdu.Variables = s.convVarsToLocal(pdu.Variables, NotTrapProxy)
 
 	s.log.Debugf("ProxyWorker.GetBulkRequest Request(Local)")
 	dumpSnmpBulkPdu((*snmp.BulkPdu)(&pdu))
@@ -306,7 +306,7 @@ func (s *ProxyWorker) processGetBulkRequest(msg *snmp.Message, pdu snmp.GetBulkR
 	s.log.Debugf("ProxyWorker.GetBulkRequest Response(Local)")
 	dumpSnmpPdu((*snmp.Pdu)(&resPdu))
 
-	resPdu.Variables = s.convVarsToGlobal(resPdu.Variables)
+	resPdu.Variables = s.convVarsToGlobal(resPdu.Variables, NotTrapProxy)
 
 	s.log.Debugf("ProxyWorker.GetBulkRequest Response(Global)")
 	dumpSnmpPdu((*snmp.Pdu)(&resPdu))
@@ -344,13 +344,24 @@ func (s *ProxyWorker) processV2Trap(msg *snmp.Message, pdu snmp.V2TrapPdu) {
 	if s.IsPrivateCommunity(msg.Community) {
 		s.updateIfindexMapTable(pdu)
 	} else {
-		s.log.Debugf("ProxyWorker.V2Trap (Local)")
-		dumpSnmpPdu((*snmp.Pdu)(&pdu))
+		if srcAddr := s.clientAddr.IP.String(); s.OidMapTable().HasProxy(srcAddr) {
+			s.log.Debugf("ProxyWorker.V2Trap (Local/Proxy)")
+			dumpSnmpPdu((*snmp.Pdu)(&pdu))
 
-		pdu.Variables = s.convVarsTrap(pdu.Variables)
+			pdu.Variables = s.convVarsToGlobal(pdu.Variables, srcAddr)
 
-		s.log.Debugf("ProxyWorker.V2Trap Request(Global)")
-		dumpSnmpPdu((*snmp.Pdu)(&pdu))
+			s.log.Debugf("ProxyWorker.V2Trap (Global/Proxy)")
+			dumpSnmpPdu((*snmp.Pdu)(&pdu))
+
+		} else {
+			s.log.Debugf("ProxyWorker.V2Trap (Local)")
+			dumpSnmpPdu((*snmp.Pdu)(&pdu))
+
+			pdu.Variables = s.convVarsTrap(pdu.Variables, NotTrapProxy)
+
+			s.log.Debugf("ProxyWorker.V2Trap (Global)")
+			dumpSnmpPdu((*snmp.Pdu)(&pdu))
+		}
 
 		msg.Pdu = pdu
 		s.SendTrap(msg)

@@ -33,6 +33,7 @@ type OidMapEntry struct {
 	Name      string
 	Global    string
 	Local     string
+	Proxy     string
 	GlobalOid []uint
 	LocalOid  []uint
 }
@@ -40,11 +41,12 @@ type OidMapEntry struct {
 //
 // NewOidMapEntry creates new entry.
 //
-func NewOidMapEntry(name, gOid, lOid string) *OidMapEntry {
+func NewOidMapEntry(name string, gOid string, lOid string, proxy string) *OidMapEntry {
 	return &OidMapEntry{
 		Name:      name,
 		Global:    gOid,
 		Local:     lOid,
+		Proxy:     proxy,
 		GlobalOid: lib.ParseOID(gOid),
 		LocalOid:  lib.ParseOID(lOid),
 	}
@@ -66,7 +68,7 @@ func oidHasPrefix(oid string, prefix string) bool {
 // String returns reable contenf.
 //
 func (e *OidMapEntry) String() string {
-	return fmt.Sprintf("%s global:'%s', local:'%s'", e.Name, e.Global, e.Local)
+	return fmt.Sprintf("%s global:'%s', local:'%s', proxy:'%s'", e.Name, e.Global, e.Local, e.Proxy)
 }
 
 //
@@ -88,6 +90,7 @@ func (e *OidMapEntry) MatchLocal(oid string) bool {
 //
 type OidMapTable struct {
 	entries []*OidMapEntry
+	proxies map[string]struct{}
 	mutex   sync.Mutex
 }
 
@@ -97,6 +100,7 @@ type OidMapTable struct {
 func NewOidMapTable() *OidMapTable {
 	return &OidMapTable{
 		entries: []*OidMapEntry{},
+		proxies: map[string]struct{}{},
 	}
 }
 
@@ -118,9 +122,9 @@ func (t *OidMapTable) WriteTo(w io.Writer) (sum int64, err error) {
 //
 // matchByGlobal finds entry(global oid).
 //
-func (t *OidMapTable) matchByGlobal(oid string) (*OidMapEntry, bool) {
+func (t *OidMapTable) matchByGlobal(oid string, proxy string) (*OidMapEntry, bool) {
 	for _, e := range t.entries {
-		if e.MatchGlobal(oid) {
+		if e.MatchGlobal(oid) && e.Proxy == proxy {
 			return e, true
 		}
 	}
@@ -130,18 +134,18 @@ func (t *OidMapTable) matchByGlobal(oid string) (*OidMapEntry, bool) {
 //
 // MatchByGlobal finds entry(global oid).
 //
-func (t *OidMapTable) MatchByGlobal(oid string) (*OidMapEntry, bool) {
+func (t *OidMapTable) MatchByGlobal(oid string, proxy string) (*OidMapEntry, bool) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
-	return t.matchByGlobal(oid)
+	return t.matchByGlobal(oid, proxy)
 }
 
 //
 // matchByGlobal finds entry(local oid)
 //
-func (t *OidMapTable) matchByLocal(oid string) (*OidMapEntry, bool) {
+func (t *OidMapTable) matchByLocal(oid string, proxy string) (*OidMapEntry, bool) {
 	for _, e := range t.entries {
-		if e.MatchLocal(oid) {
+		if e.MatchLocal(oid) && e.Proxy == proxy {
 			return e, true
 		}
 	}
@@ -151,10 +155,24 @@ func (t *OidMapTable) matchByLocal(oid string) (*OidMapEntry, bool) {
 //
 // MatchByGlobal finds entry(local oid)
 //
-func (t *OidMapTable) MatchByLocal(oid string) (*OidMapEntry, bool) {
+func (t *OidMapTable) MatchByLocal(oid string, proxy string) (*OidMapEntry, bool) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
-	return t.matchByLocal(oid)
+	return t.matchByLocal(oid, proxy)
+}
+
+func (t *OidMapTable) hasProxy(proxy string) bool {
+	_, ok := t.proxies[proxy]
+	return ok
+}
+
+//
+// HasProxy returns table has proxy or not.
+//
+func (t *OidMapTable) HasProxy(proxy string) bool {
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
+	return t.hasProxy(proxy)
 }
 
 //
@@ -171,6 +189,9 @@ func (t *OidMapTable) add(entry *OidMapEntry) bool {
 	}
 
 	t.entries = append(t.entries, entry)
+	if entry.Proxy != NotTrapProxy {
+		t.proxies[entry.Proxy] = struct{}{}
+	}
 	return true
 }
 

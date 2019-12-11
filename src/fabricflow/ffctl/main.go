@@ -63,6 +63,8 @@ func rootCmd(name string) *cobra.Command {
 		MonitorCmd(),
 		ethtoolCmd(),
 		serviceCmd(),
+		dhcpIPv4Cmd(),
+		ethtoolCmd(),
 	)
 
 	return rootCmd

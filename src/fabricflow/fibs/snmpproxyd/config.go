@@ -25,6 +25,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const NotTrapProxy = ""
+
 //
 // ConfigOidMap is config(/oidmap/<name>)
 //
@@ -32,10 +34,11 @@ type ConfigOidMap struct {
 	Name  string `yaml:"name"`
 	Oid   string `yaml:"oid"`
 	Local string `yaml:"local"`
+	Proxy string `yaml:"proxy"`
 }
 
 func (c *ConfigOidMap) String() string {
-	return fmt.Sprintf("%s oid:'%s', Local:'%s'", c.Name, c.Oid, c.Local)
+	return fmt.Sprintf("%s oid:'%s', Local:'%s', Proxy:'%s'", c.Name, c.Oid, c.Local, c.Proxy)
 }
 
 type ConfigIfMapEntry struct {

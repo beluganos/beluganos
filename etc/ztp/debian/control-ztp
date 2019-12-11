@@ -1,0 +1,5 @@
+Package: ztp-init-ztp
+Maintainer: beluganos admin <admin@example.net>
+Architecture: all
+Version: 1.0.0-1
+Description: ZTP initialize service

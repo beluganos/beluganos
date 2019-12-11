@@ -1,0 +1,2 @@
+auto ma1
+iface ma1 inet dhcp

@@ -1,0 +1,4 @@
+#! /bin/bash
+# -*- coding: utf-8; mode: shell-script -*-
+
+# systemctl daemon-reload

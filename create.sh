@@ -72,7 +72,7 @@ do_all() {
 do_minimal() {
     confirm "Install minimal" || exit 1
 
-    sudo ${HTTP_PROXY} ${APT_OPTION} apt -y install ${APT_MINS}
+    sudo ${HTTP_PROXY_ENV} ${APT_OPTION} apt -y install ${APT_MINS}
     make_virtenv
     . ./setenv.sh ${ENABLE_VIRTUALENV}
     get_pip

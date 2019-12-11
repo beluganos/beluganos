@@ -152,7 +152,7 @@ func main() {
 	}
 
 	for _, c := range config.OidMap {
-		e := NewOidMapEntry(c.Name, c.Oid, c.Local)
+		e := NewOidMapEntry(c.Name, c.Oid, c.Local, c.Proxy)
 		log.Debugf("OidMap %s", e)
 		s.OidMapTable().Add(e)
 	}

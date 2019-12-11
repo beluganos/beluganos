@@ -90,7 +90,7 @@ func (s *ProxyServer) newSnmpdConn() (conn *net.UDPConn, err error) {
 	return
 }
 
-func (s *ProxyServer) convVarToLocal(variable snmp.Variable) snmp.Variable {
+func (s *ProxyServer) convVarToLocal(variable snmp.Variable, proxy string) snmp.Variable {
 	oid := variable.Name
 
 	if len(oid) == 0 {
@@ -98,7 +98,7 @@ func (s *ProxyServer) convVarToLocal(variable snmp.Variable) snmp.Variable {
 		return variable
 	}
 
-	oidmap, ok := s.OidMapTable().MatchByGlobal(oid.String())
+	oidmap, ok := s.OidMapTable().MatchByGlobal(oid.String(), proxy)
 	if !ok {
 		return variable
 	}
@@ -128,15 +128,15 @@ func (s *ProxyServer) convVarToLocal(variable snmp.Variable) snmp.Variable {
 	return variable
 }
 
-func (s *ProxyServer) convVarsToLocal(variables []snmp.Variable) []snmp.Variable {
+func (s *ProxyServer) convVarsToLocal(variables []snmp.Variable, proxy string) []snmp.Variable {
 	for index, variable := range variables {
-		variables[index] = s.convVarToLocal(variable)
+		variables[index] = s.convVarToLocal(variable, proxy)
 	}
 
 	return variables
 }
 
-func (s *ProxyServer) convVarToGlobal(variable snmp.Variable) snmp.Variable {
+func (s *ProxyServer) convVarToGlobal(variable snmp.Variable, proxy string) snmp.Variable {
 	oid := variable.Name
 
 	if len(oid) == 0 {
@@ -144,7 +144,7 @@ func (s *ProxyServer) convVarToGlobal(variable snmp.Variable) snmp.Variable {
 		return variable
 	}
 
-	oidmap, ok := s.OidMapTable().MatchByLocal(oid.String())
+	oidmap, ok := s.OidMapTable().MatchByLocal(oid.String(), proxy)
 	if !ok {
 		return variable
 	}
@@ -168,23 +168,23 @@ func (s *ProxyServer) convVarToGlobal(variable snmp.Variable) snmp.Variable {
 	return variable
 }
 
-func (s *ProxyServer) convVarsToGlobal(variables []snmp.Variable) []snmp.Variable {
+func (s *ProxyServer) convVarsToGlobal(variables []snmp.Variable, proxy string) []snmp.Variable {
 	for index, variable := range variables {
-		variables[index] = s.convVarToGlobal(variable)
+		variables[index] = s.convVarToGlobal(variable, proxy)
 	}
 
 	return variables
 }
 
-func (s *ProxyServer) convVarTrap(variable snmp.Variable) snmp.Variable {
+func (s *ProxyServer) convVarTrap(variable snmp.Variable, proxy string) snmp.Variable {
 	oid := variable.Name
 
 	if len(oid) == 0 {
-		log.Warnf("ProxyServer.convVarsIfindex invalid oid. %v", oid)
+		log.Warnf("ProxyServer.convVarTrap invalid oid. %v", oid)
 		return variable
 	}
 
-	oidmap, ok := s.OidMapTable().MatchByGlobal(oid.String())
+	oidmap, ok := s.OidMapTable().MatchByGlobal(oid.String(), proxy)
 	if !ok {
 		return variable
 	}
@@ -214,9 +214,9 @@ func (s *ProxyServer) convVarTrap(variable snmp.Variable) snmp.Variable {
 	return variable
 }
 
-func (s *ProxyServer) convVarsTrap(variables []snmp.Variable) []snmp.Variable {
+func (s *ProxyServer) convVarsTrap(variables []snmp.Variable, proxy string) []snmp.Variable {
 	for index, variable := range variables {
-		variables[index] = s.convVarTrap(variable)
+		variables[index] = s.convVarTrap(variable, proxy)
 	}
 
 	return variables

@@ -33,7 +33,7 @@ confirm() {
 set_proxy_env() {
     if [ "${PROXY}"x != ""x ]; then
         APT_PROXY="--env http_proxy=${PROXY}"
-        HTTP_PROXY="http_proxy=${PROXY} https_proxy=${PROXY}"
+        HTTP_PROXY_ENV="http_proxy=${PROXY} https_proxy=${PROXY}"
         export http_proxy=${PROXY}
         export https_proxy=${PROXY}
         export HTTP_PROXY=${PROXY}
@@ -41,7 +41,7 @@ set_proxy_env() {
 
         echo "--- Proxy settings ---"
         echo "APT_PROXY=${APT_PROXY}"
-        echo "HTTP_PROXY=${HTTP_PROXY}"
+        echo "HTTP_PROXY=${HTTP_PROXY_ENV}"
     fi
 }
 
@@ -67,7 +67,8 @@ set_sudo() {
 # install deb packages
 #
 apt_install() {
-    sudo ${HTTP_PROXY} ${APT_OPTION} apt -y install ${APT_PKGS} || { echo "apt_install error."; exit 1; }
+    sudo ${HTTP_PROXY_ENV} ${APT_OPTION} apt -y update
+    sudo ${HTTP_PROXY_ENV} ${APT_OPTION} apt -y install ${APT_PKGS} || { echo "apt_install error."; exit 1; }
     sudo apt -y autoremove
 }
 
