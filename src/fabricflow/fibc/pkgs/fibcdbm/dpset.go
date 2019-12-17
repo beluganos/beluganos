@@ -26,6 +26,10 @@ import (
 //
 type DPEntry interface {
 	EntryID() string
+<<<<<<< HEAD
+=======
+	Remote() string
+>>>>>>> develop
 	Start(<-chan struct{})
 	Stop()
 }

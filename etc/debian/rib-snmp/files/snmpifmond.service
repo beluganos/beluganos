@@ -1,11 +1,19 @@
 [Unit]
 Description=Beluganos RIB interface monitor service
 After=syslog.target network.target
+<<<<<<< HEAD
 ConditionPathExists=/etc/beluganos/snmpifmond.conf
 
 [Service]
 Type=simple
 EnvironmentFile=/etc/beluganos/snmpifmond.conf
+=======
+ConditionPathExists=/etc/beluganos/snmpproxyd.conf
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/beluganos/snmpproxyd.conf
+>>>>>>> develop
 ExecStart=/usr/bin/snmpifmond --snmpd-addr ${SNMPPROXYD_ADDR} --trap-resend ${IFNOTIFY_RESEND} ${VERBOSE}
 User=beluganos
 Group=beluganos

@@ -2,6 +2,13 @@ SUBDIRS = src etc
 
 .PHONY: cover gopkg fibc-install fibc-egg
 
+#
+# Proxy
+# export PROXY=http://192.168.0.1:8080
+#
+# or make PROXY=http://...
+#
+
 cover:
 	@for path in `find . -name cover.out` ; do \
 		echo $$path; \
@@ -51,3 +58,13 @@ fflow-install:
 	install -v -C `pwd`/bin/* ${GOPREFIX}/bin/
 
 release: install fibc-install fflow-install
+
+
+.PHONY: deb
+deb:
+	make -C ./etc/debian all
+
+
+.PHONY: rib
+rib:
+	make -C ./RELEASE/rib all

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #! /bin/sh
+=======
+#! /bin/bash -e
+>>>>>>> develop
 # -*- coding: utf-8 -*-
 
 if [ -n "$1" ]; then

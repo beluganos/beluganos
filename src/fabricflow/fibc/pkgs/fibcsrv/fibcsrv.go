@@ -24,6 +24,10 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+<<<<<<< HEAD
+=======
+	"google.golang.org/grpc/peer"
+>>>>>>> develop
 )
 
 //
@@ -159,3 +163,25 @@ func (h *FibcLogHook) Fire(entry *log.Entry) error {
 
 	return nil
 }
+<<<<<<< HEAD
+=======
+
+//
+// GrpcRemoteHostPort returns remote (address, port).
+//
+func GrpcRemoteHostPort(stream grpc.ServerStream) (string, string) {
+	if stream == nil || stream.Context() == nil {
+		return "", ""
+	}
+
+	if p, ok := peer.FromContext(stream.Context()); ok {
+		addr := p.Addr.String()
+		if host, port, err := net.SplitHostPort(addr); err == nil {
+			return host, port
+		}
+		return addr, ""
+	}
+
+	return "", ""
+}
+>>>>>>> develop

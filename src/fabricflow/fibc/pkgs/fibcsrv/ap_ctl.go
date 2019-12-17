@@ -141,8 +141,14 @@ func (c *APCtl) getApMonitorEntries(stream fibcapi.FIBCApApi_GetDpEntriesServer)
 	c.db.APSet().Range(func(e fibcdbm.DPEntry) {
 		entry := e.(*APAPIMonitorEntry)
 		msg := fibcapi.DbDpEntry{
+<<<<<<< HEAD
 			Type: fibcapi.DbDpEntry_APMON,
 			Id:   entry.EntryID(),
+=======
+			Type:   fibcapi.DbDpEntry_APMON,
+			Id:     entry.EntryID(),
+			Remote: entry.Remote(),
+>>>>>>> develop
 		}
 
 		if err := stream.Send(&msg); err != nil {
@@ -155,8 +161,14 @@ func (c *APCtl) getVMMonitorEntries(stream fibcapi.FIBCApApi_GetDpEntriesServer)
 	c.db.VMSet().Range(func(e fibcdbm.DPEntry) {
 		entry := e.(*VMAPIMonitorEntry)
 		msg := fibcapi.DbDpEntry{
+<<<<<<< HEAD
 			Type: fibcapi.DbDpEntry_VMMON,
 			Id:   entry.reID,
+=======
+			Type:   fibcapi.DbDpEntry_VMMON,
+			Id:     entry.reID,
+			Remote: entry.Remote(),
+>>>>>>> develop
 		}
 
 		if err := stream.Send(&msg); err != nil {
@@ -169,8 +181,14 @@ func (c *APCtl) getDpMonitorEntries(stream fibcapi.FIBCApApi_GetDpEntriesServer)
 	c.db.DPSet().Range(func(e fibcdbm.DPEntry) {
 		entry := e.(*DPAPIMonitorEntry)
 		msg := fibcapi.DbDpEntry{
+<<<<<<< HEAD
 			Type: fibcapi.DbDpEntry_DPMON,
 			Id:   fmt.Sprintf("%d", entry.dpID),
+=======
+			Type:   fibcapi.DbDpEntry_DPMON,
+			Id:     fmt.Sprintf("%d", entry.dpID),
+			Remote: entry.Remote(),
+>>>>>>> develop
 		}
 
 		if err := stream.Send(&msg); err != nil {
@@ -183,8 +201,14 @@ func (c *APCtl) getVsMonitorEntries(stream fibcapi.FIBCApApi_GetDpEntriesServer)
 	c.db.VSSet().Range(func(e fibcdbm.DPEntry) {
 		entry := e.(*VSAPIMonitorEntry)
 		msg := fibcapi.DbDpEntry{
+<<<<<<< HEAD
 			Type: fibcapi.DbDpEntry_VSMON,
 			Id:   fmt.Sprintf("%d", entry.vsID),
+=======
+			Type:   fibcapi.DbDpEntry_VSMON,
+			Id:     fmt.Sprintf("%d", entry.vsID),
+			Remote: entry.Remote(),
+>>>>>>> develop
 		}
 
 		if err := stream.Send(&msg); err != nil {

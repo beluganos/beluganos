@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #! /bin/bash
+=======
+#! /bin/bash -e
+>>>>>>> develop
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2019 Nippon Telegraph and Telephone Corporation.
@@ -18,15 +22,22 @@
 
 . ./create.ini
 
+<<<<<<< HEAD
 PIP=pip3
+=======
+PIP=pip
+>>>>>>> develop
 PATCH=patch
 
 INST_HOME=`pwd`/etc/installer
 . ${INST_HOME}/sys.sh
 . ${INST_HOME}/golang.sh
 . ${INST_HOME}/opennsl.sh
+<<<<<<< HEAD
 . ${INST_HOME}/frr.sh
 . ${INST_HOME}/lxd.sh
+=======
+>>>>>>> develop
 
 apt_install_build() {
     apt install -y automake unzip gawk pkg-config git libpcap-dev
@@ -37,6 +48,7 @@ pip_install() {
 }
 
 beluganos_install() {
+<<<<<<< HEAD
     OPTS="--with-opennsl=$BEL_ONSL_ENABLE" ./bootstrap.sh
     make install
     pushd ./etc/debian
@@ -83,6 +95,18 @@ frr_pkg_get() {
 }
 
 do_build() {
+=======
+    if [ -n "${PROXY}" ]; then
+	export PROXY
+    fi
+    OPTS="--with-opennsl=$BEL_ONSL_ENABLE" ./bootstrap.sh
+    make install
+    make deb
+    make rib
+}
+
+do_all() {
+>>>>>>> develop
     confirm "Install ALL" || exit 1
 
     apt_install_build
@@ -99,6 +123,7 @@ do_build() {
     gobgp_upgrade
 
     beluganos_install
+<<<<<<< HEAD
 
     lxd_init
     lxd_image
@@ -109,4 +134,13 @@ case $1 in
     build) do_build;;
     frr)   frr_pkg_get;;
     test1) lxd_base_build;;
+=======
+}
+
+set_proxy_env
+set_sudo
+
+case $1 in
+    all) do_all;;
+>>>>>>> develop
 esac

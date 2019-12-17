@@ -18,11 +18,21 @@
 package main
 
 import (
+	"fabricflow/ffctl/bonding"
+	"fabricflow/ffctl/bridge"
+	"fabricflow/ffctl/container"
+	dhcplib "fabricflow/ffctl/dhcp"
+	"fabricflow/ffctl/ethtools"
+	"fabricflow/ffctl/maintenance"
+	"fabricflow/ffctl/mkpb"
+	"fabricflow/ffctl/monitor"
+	"fabricflow/ffctl/ovs"
+	"fabricflow/ffctl/service"
+	"fabricflow/ffctl/vlan"
 	"os"
 
-	"github.com/spf13/cobra"
-
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 const (
@@ -54,6 +64,7 @@ func rootCmd(name string) *cobra.Command {
 	rootCmd.PersistentFlags().BoolVar(&showCompletion, "show-completion", false, "Show bash-comnpletion")
 
 	rootCmd.AddCommand(
+<<<<<<< HEAD
 		containerCmd(),
 		ovsCmd(),
 		playbookCmd(),
@@ -65,6 +76,19 @@ func rootCmd(name string) *cobra.Command {
 		serviceCmd(),
 		dhcpIPv4Cmd(),
 		ethtoolCmd(),
+=======
+		bonding.NewCmd(),
+		bridge.NewCmd(),
+		container.NewCmd(),
+		dhcplib.NewIPv4Cmd(),
+		ethtools.NewCmd(),
+		mkpb.NewCmd(),
+		monitor.NewCmd(),
+		maintenance.NewCmd(),
+		ovs.NewCmd(),
+		service.NewCmd(),
+		vlan.NewCmd(),
+>>>>>>> develop
 	)
 
 	return rootCmd

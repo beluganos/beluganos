@@ -20,11 +20,15 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='ribsapi',
   syntax='proto3',
   serialized_options=None,
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
   serialized_pb=_b('\n\rribsapi.proto\x12\x07ribsapi\"\x10\n\x0eGetRicsRequest\"\x14\n\x12GetNexthopsRequest\"\x16\n\x14GetNexthopMapRequest\"\r\n\x0bModRibReply\"\x0e\n\x0cSyncRibReply\"\x1c\n\x0eSyncRibRequest\x12\n\n\x02rt\x18\x01 \x01(\t\"-\n\x11MonitorRibRequest\x12\n\n\x02rt\x18\x01 \x01(\t\x12\x0c\n\x04n_id\x18\x02 \x01(\r\"6\n\tRibUpdate\x12\n\n\x02rt\x18\x01 \x01(\t\x12\x0e\n\x06prefix\x18\x02 \x01(\t\x12\r\n\x05paths\x18\x03 \x03(\x0c\"h\n\x08RicEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04n_id\x18\x02 \x01(\r\x12\x0c\n\x04\x61\x64\x64r\x18\x03 \x01(\t\x12\x0c\n\x04port\x18\x04 \x01(\r\x12\n\n\x02rt\x18\x05 \x01(\t\x12\n\n\x02rd\x18\x06 \x01(\t\x12\r\n\x05label\x18\x07 \x01(\r\"\'\n\x04Path\x12\x0e\n\x06prefix\x18\x01 \x01(\t\x12\x0f\n\x07nexthop\x18\x02 \x01(\t\"3\n\x07Nexthop\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\t\x12\n\n\x02rt\x18\x02 \x01(\t\x12\x0e\n\x06src_id\x18\x03 \x01(\t\"&\n\nNexthopMap\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0b\n\x03val\x18\x02 \x01(\t2\xcf\x01\n\x07RIBSApi\x12\x39\n\x07GetRics\x12\x17.ribsapi.GetRicsRequest\x1a\x11.ribsapi.RicEntry\"\x00\x30\x01\x12@\n\x0bGetNexthops\x12\x1b.ribsapi.GetNexthopsRequest\x1a\x10.ribsapi.Nexthop\"\x00\x30\x01\x12G\n\rGetNexthopMap\x12\x1d.ribsapi.GetNexthopMapRequest\x1a\x13.ribsapi.NexthopMap\"\x00\x30\x01\x32\xc2\x01\n\x0bRIBSCoreApi\x12\x34\n\x06ModRib\x12\x12.ribsapi.RibUpdate\x1a\x14.ribsapi.ModRibReply\"\x00\x12@\n\nMonitorRib\x12\x1a.ribsapi.MonitorRibRequest\x1a\x12.ribsapi.RibUpdate\"\x00\x30\x01\x12;\n\x07SyncRib\x12\x17.ribsapi.SyncRibRequest\x1a\x15.ribsapi.SyncRibReply\"\x00\x62\x06proto3')
 =======
   serialized_pb=_b('\n\rribsapi.proto\x12\x07ribsapi\"%\n\tRibUpdate\x12\n\n\x02rt\x18\x01 \x01(\t\x12\x0c\n\x04path\x18\x02 \x01(\x0c\"\r\n\x0bModRibReply\"-\n\x11MonitorRibRequest\x12\n\n\x02rt\x18\x01 \x01(\t\x12\x0c\n\x04n_id\x18\x02 \x01(\r\"\x1c\n\x0eSyncRibRequest\x12\n\n\x02rt\x18\x01 \x01(\t\"\x0e\n\x0cSyncRibReply\"\x14\n\x12GetNexthopsRequest\"C\n\x07Nexthop\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\n\n\x02rt\x18\x02 \x01(\t\x12\x0c\n\x04\x61\x64\x64r\x18\x03 \x01(\t\x12\x11\n\tsource_id\x18\x04 \x01(\t\"\x10\n\x0eGetRicsRequest\"1\n\x08RicEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04n_id\x18\x02 \x01(\r\x12\n\n\x02rt\x18\x03 \x01(\t\"\x11\n\x0fGetIPMapRequest\"(\n\nIPMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t2\xc2\x01\n\x0bRIBSCoreApi\x12\x34\n\x06ModRib\x12\x12.ribsapi.RibUpdate\x1a\x14.ribsapi.ModRibReply\"\x00\x12@\n\nMonitorRib\x12\x1a.ribsapi.MonitorRibRequest\x1a\x12.ribsapi.RibUpdate\"\x00\x30\x01\x12;\n\x07SyncRib\x12\x17.ribsapi.SyncRibRequest\x1a\x15.ribsapi.SyncRibReply\"\x00\x32\xca\x01\n\x07RIBSApi\x12@\n\x0bGetNexthops\x12\x1b.ribsapi.GetNexthopsRequest\x1a\x10.ribsapi.Nexthop\"\x00\x30\x01\x12\x39\n\x07GetRics\x12\x17.ribsapi.GetRicsRequest\x1a\x11.ribsapi.RicEntry\"\x00\x30\x01\x12\x42\n\rGetNexthopMap\x12\x18.ribsapi.GetIPMapRequest\x1a\x13.ribsapi.IPMapEntry\"\x00\x30\x01\x62\x06proto3')
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+  serialized_pb=_b('\n\rribsapi.proto\x12\x07ribsapi\"%\n\tRibUpdate\x12\n\n\x02rt\x18\x01 \x01(\t\x12\x0c\n\x04path\x18\x02 \x01(\x0c\"\r\n\x0bModRibReply\"-\n\x11MonitorRibRequest\x12\n\n\x02rt\x18\x01 \x01(\t\x12\x0c\n\x04n_id\x18\x02 \x01(\r\"\x1c\n\x0eSyncRibRequest\x12\n\n\x02rt\x18\x01 \x01(\t\"\x0e\n\x0cSyncRibReply\"\x14\n\x12GetNexthopsRequest\"C\n\x07Nexthop\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\n\n\x02rt\x18\x02 \x01(\t\x12\x0c\n\x04\x61\x64\x64r\x18\x03 \x01(\t\x12\x11\n\tsource_id\x18\x04 \x01(\t\"\x10\n\x0eGetRicsRequest\"1\n\x08RicEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04n_id\x18\x02 \x01(\r\x12\n\n\x02rt\x18\x03 \x01(\t\"\x11\n\x0fGetIPMapRequest\"(\n\nIPMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t2\xc2\x01\n\x0bRIBSCoreApi\x12\x34\n\x06ModRib\x12\x12.ribsapi.RibUpdate\x1a\x14.ribsapi.ModRibReply\"\x00\x12@\n\nMonitorRib\x12\x1a.ribsapi.MonitorRibRequest\x1a\x12.ribsapi.RibUpdate\"\x00\x30\x01\x12;\n\x07SyncRib\x12\x17.ribsapi.SyncRibRequest\x1a\x15.ribsapi.SyncRibReply\"\x00\x32\xca\x01\n\x07RIBSApi\x12@\n\x0bGetNexthops\x12\x1b.ribsapi.GetNexthopsRequest\x1a\x10.ribsapi.Nexthop\"\x00\x30\x01\x12\x39\n\x07GetRics\x12\x17.ribsapi.GetRicsRequest\x1a\x11.ribsapi.RicEntry\"\x00\x30\x01\x12\x42\n\rGetNexthopMap\x12\x18.ribsapi.GetIPMapRequest\x1a\x13.ribsapi.IPMapEntry\"\x00\x30\x01\x62\x06proto3')
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 )
 
 
@@ -192,6 +196,7 @@ _GETNEXTHOPSREQUEST = _descriptor.Descriptor(
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
     _descriptor.FieldDescriptor(
       name='rt', full_name='ribsapi.SyncRibRequest.rt', index=0,
@@ -202,6 +207,8 @@ _GETNEXTHOPSREQUEST = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
 =======
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
   ],
   extensions=[
   ],
@@ -240,8 +247,11 @@ _NEXTHOP = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
 =======
+=======
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
     _descriptor.FieldDescriptor(
       name='addr', full_name='ribsapi.Nexthop.addr', index=2,
       number=3, type=9, cpp_type=9, label=1,
@@ -281,6 +291,7 @@ _GETRICSREQUEST = _descriptor.Descriptor(
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
     _descriptor.FieldDescriptor(
       name='rt', full_name='ribsapi.RibUpdate.rt', index=0,
@@ -305,6 +316,8 @@ _GETRICSREQUEST = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
 =======
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
   ],
   extensions=[
   ],
@@ -350,6 +363,7 @@ _RICENTRY = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
     _descriptor.FieldDescriptor(
       name='port', full_name='ribsapi.RicEntry.port', index=3,
@@ -379,46 +393,8 @@ _RICENTRY = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=254,
-  serialized_end=358,
-)
-
-
-_PATH = _descriptor.Descriptor(
-  name='Path',
-  full_name='ribsapi.Path',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='prefix', full_name='ribsapi.Path.prefix', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='nexthop', full_name='ribsapi.Path.nexthop', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
 =======
->>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
   ],
   extensions=[
   ],
@@ -443,30 +419,25 @@ _GETIPMAPREQUEST = _descriptor.Descriptor(
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
-<<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
     _descriptor.FieldDescriptor(
-      name='addr', full_name='ribsapi.Nexthop.addr', index=0,
+      name='prefix', full_name='ribsapi.Path.prefix', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='rt', full_name='ribsapi.Nexthop.rt', index=1,
+      name='nexthop', full_name='ribsapi.Path.nexthop', index=1,
       number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='src_id', full_name='ribsapi.Nexthop.src_id', index=2,
-      number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
 =======
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
   ],
   extensions=[
   ],
@@ -479,6 +450,69 @@ _GETIPMAPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+  serialized_start=282,
+  serialized_end=331,
+)
+
+
+_GETIPMAPREQUEST = _descriptor.Descriptor(
+  name='GetIPMapRequest',
+  full_name='ribsapi.GetIPMapRequest',
+=======
+  serialized_start=333,
+  serialized_end=350,
+)
+
+
+_IPMAPENTRY = _descriptor.Descriptor(
+  name='IPMapEntry',
+  full_name='ribsapi.IPMapEntry',
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+<<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
+    _descriptor.FieldDescriptor(
+      name='key', full_name='ribsapi.IPMapEntry.key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='ribsapi.IPMapEntry.value', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+    _descriptor.FieldDescriptor(
+      name='src_id', full_name='ribsapi.Nexthop.src_id', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+=======
+>>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
   serialized_start=333,
   serialized_end=350,
 )
@@ -521,6 +555,12 @@ _IPMAPENTRY = _descriptor.Descriptor(
   serialized_end=392,
 )
 
+=======
+  serialized_start=352,
+  serialized_end=392,
+)
+
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 DESCRIPTOR.message_types_by_name['RibUpdate'] = _RIBUPDATE
 DESCRIPTOR.message_types_by_name['ModRibReply'] = _MODRIBREPLY
 DESCRIPTOR.message_types_by_name['MonitorRibRequest'] = _MONITORRIBREQUEST
@@ -575,6 +615,7 @@ GetNexthopsRequest = _reflection.GeneratedProtocolMessageType('GetNexthopsReques
   # @@protoc_insertion_point(class_scope:ribsapi.GetNexthopsRequest)
   })
 _sym_db.RegisterMessage(GetNexthopsRequest)
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 
 Nexthop = _reflection.GeneratedProtocolMessageType('Nexthop', (_message.Message,), {
   'DESCRIPTOR' : _NEXTHOP,
@@ -590,6 +631,23 @@ GetRicsRequest = _reflection.GeneratedProtocolMessageType('GetRicsRequest', (_me
   })
 _sym_db.RegisterMessage(GetRicsRequest)
 
+=======
+
+Nexthop = _reflection.GeneratedProtocolMessageType('Nexthop', (_message.Message,), {
+  'DESCRIPTOR' : _NEXTHOP,
+  '__module__' : 'ribsapi_pb2'
+  # @@protoc_insertion_point(class_scope:ribsapi.Nexthop)
+  })
+_sym_db.RegisterMessage(Nexthop)
+
+GetRicsRequest = _reflection.GeneratedProtocolMessageType('GetRicsRequest', (_message.Message,), {
+  'DESCRIPTOR' : _GETRICSREQUEST,
+  '__module__' : 'ribsapi_pb2'
+  # @@protoc_insertion_point(class_scope:ribsapi.GetRicsRequest)
+  })
+_sym_db.RegisterMessage(GetRicsRequest)
+
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 RicEntry = _reflection.GeneratedProtocolMessageType('RicEntry', (_message.Message,), {
   'DESCRIPTOR' : _RICENTRY,
   '__module__' : 'ribsapi_pb2'
@@ -610,15 +668,22 @@ IPMapEntry = _reflection.GeneratedProtocolMessageType('IPMapEntry', (_message.Me
   # @@protoc_insertion_point(class_scope:ribsapi.IPMapEntry)
   })
 _sym_db.RegisterMessage(IPMapEntry)
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 
 
 
+=======
+
+
+
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 _RIBSCOREAPI = _descriptor.ServiceDescriptor(
   name='RIBSCoreApi',
   full_name='ribsapi.RIBSCoreApi',
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
   serialized_start=495,
   serialized_end=702,
@@ -626,12 +691,17 @@ _RIBSCOREAPI = _descriptor.ServiceDescriptor(
   serialized_start=395,
   serialized_end=589,
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+  serialized_start=395,
+  serialized_end=589,
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
   methods=[
   _descriptor.MethodDescriptor(
     name='ModRib',
     full_name='ribsapi.RIBSCoreApi.ModRib',
     index=0,
     containing_service=None,
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
     input_type=_GETRICSREQUEST,
     output_type=_RICENTRY,
@@ -639,6 +709,10 @@ _RIBSCOREAPI = _descriptor.ServiceDescriptor(
     input_type=_RIBUPDATE,
     output_type=_MODRIBREPLY,
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+    input_type=_RIBUPDATE,
+    output_type=_MODRIBREPLY,
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
     serialized_options=None,
   ),
   _descriptor.MethodDescriptor(
@@ -646,6 +720,7 @@ _RIBSCOREAPI = _descriptor.ServiceDescriptor(
     full_name='ribsapi.RIBSCoreApi.MonitorRib',
     index=1,
     containing_service=None,
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
     input_type=_GETNEXTHOPSREQUEST,
     output_type=_NEXTHOP,
@@ -653,6 +728,10 @@ _RIBSCOREAPI = _descriptor.ServiceDescriptor(
     input_type=_MONITORRIBREQUEST,
     output_type=_RIBUPDATE,
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+    input_type=_MONITORRIBREQUEST,
+    output_type=_RIBUPDATE,
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
     serialized_options=None,
   ),
   _descriptor.MethodDescriptor(
@@ -660,6 +739,7 @@ _RIBSCOREAPI = _descriptor.ServiceDescriptor(
     full_name='ribsapi.RIBSCoreApi.SyncRib',
     index=2,
     containing_service=None,
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
     input_type=_GETNEXTHOPMAPREQUEST,
     output_type=_NEXTHOPMAP,
@@ -667,6 +747,10 @@ _RIBSCOREAPI = _descriptor.ServiceDescriptor(
     input_type=_SYNCRIBREQUEST,
     output_type=_SYNCRIBREPLY,
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+    input_type=_SYNCRIBREQUEST,
+    output_type=_SYNCRIBREPLY,
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
     serialized_options=None,
   ),
 ])
@@ -681,6 +765,7 @@ _RIBSAPI = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=1,
   serialized_options=None,
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
   serialized_start=705,
   serialized_end=899,
@@ -688,12 +773,17 @@ _RIBSAPI = _descriptor.ServiceDescriptor(
   serialized_start=592,
   serialized_end=794,
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+  serialized_start=592,
+  serialized_end=794,
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
   methods=[
   _descriptor.MethodDescriptor(
     name='GetNexthops',
     full_name='ribsapi.RIBSApi.GetNexthops',
     index=0,
     containing_service=None,
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
     input_type=_RIBUPDATE,
     output_type=_MODRIBREPLY,
@@ -701,6 +791,10 @@ _RIBSAPI = _descriptor.ServiceDescriptor(
     input_type=_GETNEXTHOPSREQUEST,
     output_type=_NEXTHOP,
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+    input_type=_GETNEXTHOPSREQUEST,
+    output_type=_NEXTHOP,
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
     serialized_options=None,
   ),
   _descriptor.MethodDescriptor(
@@ -708,6 +802,7 @@ _RIBSAPI = _descriptor.ServiceDescriptor(
     full_name='ribsapi.RIBSApi.GetRics',
     index=1,
     containing_service=None,
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
     input_type=_MONITORRIBREQUEST,
     output_type=_RIBUPDATE,
@@ -715,6 +810,10 @@ _RIBSAPI = _descriptor.ServiceDescriptor(
     input_type=_GETRICSREQUEST,
     output_type=_RICENTRY,
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+    input_type=_GETRICSREQUEST,
+    output_type=_RICENTRY,
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
     serialized_options=None,
   ),
   _descriptor.MethodDescriptor(
@@ -722,6 +821,7 @@ _RIBSAPI = _descriptor.ServiceDescriptor(
     full_name='ribsapi.RIBSApi.GetNexthopMap',
     index=2,
     containing_service=None,
+<<<<<<< HEAD:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
 <<<<<<< HEAD:src/fabricflow/ribs/ribsapi/ribsapi_pb2.py
     input_type=_SYNCRIBREQUEST,
     output_type=_SYNCRIBREPLY,
@@ -729,6 +829,10 @@ _RIBSAPI = _descriptor.ServiceDescriptor(
     input_type=_GETIPMAPREQUEST,
     output_type=_IPMAPENTRY,
 >>>>>>> gobgp v2.x対応:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
+=======
+    input_type=_GETIPMAPREQUEST,
+    output_type=_IPMAPENTRY,
+>>>>>>> develop:src/fabricflow/ribs/api/ribsapi/ribsapi_pb2.py
     serialized_options=None,
   ),
 ])

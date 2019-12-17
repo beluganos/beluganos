@@ -1,0 +1,28 @@
+# -*- coding: utf-8; mode:makefile -*-
+
+INSTSH=./install.sh
+
+# PROXY=http://192.168.0.1:8080
+
+.PHONY: all
+all: lxc-image lxc-temp install-deb lxc-export
+
+
+.PHONY: lxc-image
+lxc-image:
+	$(INSTSH) dl-image
+
+
+.PHONY: lxc-temp
+lxc-temp:
+	$(INSTSH) create-temp
+
+
+.PHONY: install-deb
+install-deb:
+	$(INSTSH) install-deb
+
+
+.PHONY: lxc-export
+lxc-export:
+	$(INSTSH) export-temp

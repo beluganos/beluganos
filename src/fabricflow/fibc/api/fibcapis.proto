@@ -156,6 +156,10 @@ message DbDpEntry {
 
   Type   type = 1;
   string id   = 2;
+<<<<<<< HEAD
+=======
+  string remote = 3;
+>>>>>>> develop
 }
 
 message StatsEntry {
