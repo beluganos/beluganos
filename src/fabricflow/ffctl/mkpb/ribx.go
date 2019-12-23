@@ -85,8 +85,15 @@ func (c *RibxCmd) createRibxConf(playbookName string) error {
 	t.Vpn = g.Vpn
 	t.Mic = mic.Name
 
+<<<<<<< HEAD
 	t.RecvChanSize = opt.NLARecvChannelSize
 	t.RecvSockBufSize = opt.NetlinkSocketBufSize
+=======
+	t.NLARecvChanSize = opt.NLARecvChannelSize
+	t.NLARecvSockBufSize = opt.NetlinkSocketBufSize
+	t.NLABrVlanUpdateSec = opt.NLABrVlanUpdateSec
+	t.NLABrVlanChanSize = opt.NLABrVlanChanSize
+>>>>>>> develop
 	t.VpnNexthop = opt.VPMNexthopNetwork
 	t.VpnNexhopBridge = opt.VPNPseudoBridge
 	t.NLACorePort = opt.NLACorePort

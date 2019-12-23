@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #! /bin/bash
+=======
+#! /bin/bash -e
+>>>>>>> develop
 =======
 #! /bin/bash -e
 >>>>>>> develop
@@ -23,7 +27,11 @@
 . ./create.ini
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 PIP=pip3
+=======
+PIP=pip
+>>>>>>> develop
 =======
 PIP=pip
 >>>>>>> develop
@@ -34,8 +42,11 @@ INST_HOME=`pwd`/etc/installer
 . ${INST_HOME}/golang.sh
 . ${INST_HOME}/opennsl.sh
 <<<<<<< HEAD
+<<<<<<< HEAD
 . ${INST_HOME}/frr.sh
 . ${INST_HOME}/lxd.sh
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 
@@ -48,6 +59,7 @@ pip_install() {
 }
 
 beluganos_install() {
+<<<<<<< HEAD
 <<<<<<< HEAD
     OPTS="--with-opennsl=$BEL_ONSL_ENABLE" ./bootstrap.sh
     make install
@@ -96,6 +108,8 @@ frr_pkg_get() {
 
 do_build() {
 =======
+=======
+>>>>>>> develop
     if [ -n "${PROXY}" ]; then
 	export PROXY
     fi
@@ -106,6 +120,9 @@ do_build() {
 }
 
 do_all() {
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
     confirm "Install ALL" || exit 1
 
@@ -124,6 +141,7 @@ do_all() {
 
     beluganos_install
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     lxd_init
     lxd_image
@@ -135,6 +153,8 @@ case $1 in
     frr)   frr_pkg_get;;
     test1) lxd_base_build;;
 =======
+=======
+>>>>>>> develop
 }
 
 set_proxy_env
@@ -142,5 +162,8 @@ set_sudo
 
 case $1 in
     all) do_all;;
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 esac

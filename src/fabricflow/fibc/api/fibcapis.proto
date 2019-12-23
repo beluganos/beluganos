@@ -157,6 +157,10 @@ message DbDpEntry {
   Type   type = 1;
   string id   = 2;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  string remote = 3;
+>>>>>>> develop
 =======
   string remote = 3;
 >>>>>>> develop

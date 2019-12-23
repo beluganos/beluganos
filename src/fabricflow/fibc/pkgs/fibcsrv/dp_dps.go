@@ -31,6 +31,10 @@ type DPAPIMonitorEntry struct {
 	stream fibcapi.FIBCDpApi_MonitorServer
 	dpID   uint64
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	remote string
+>>>>>>> develop
 =======
 	remote string
 >>>>>>> develop
@@ -47,15 +51,21 @@ type DPAPIMonitorEntry struct {
 //
 func NewDPAPIMonitorEntry(stream fibcapi.FIBCDpApi_MonitorServer, dpID uint64, db *DBCtl) *DPAPIMonitorEntry {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return &DPAPIMonitorEntry{
 		stream: stream,
 		dpID:   dpID,
 =======
+=======
+>>>>>>> develop
 	remote, _ := GrpcRemoteHostPort(stream)
 	return &DPAPIMonitorEntry{
 		stream: stream,
 		dpID:   dpID,
 		remote: remote,
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 		monCh:  make(chan *fibcapi.DpMonitorReply),
 		modCh:  make(chan *fibcapi.DpMonitorReply),
@@ -74,7 +84,10 @@ func (m *DPAPIMonitorEntry) EntryID() string {
 
 //
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> develop
 // Remote returns remote addr.
 //
 func (m *DPAPIMonitorEntry) Remote() string {
@@ -82,6 +95,9 @@ func (m *DPAPIMonitorEntry) Remote() string {
 }
 
 //
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 // NewDPAPIMonitorEntryID returns entry-id
 //

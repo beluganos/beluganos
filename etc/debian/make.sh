@@ -17,10 +17,13 @@
 # limitations under the License.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 FRRVER="frr-stable"
 # FRRVER="frr-7"
 # FRRVER="frr-6"
 =======
+=======
+>>>>>>> develop
 # Proxy
 # PROXY=http://192.168.1.100:8080
 
@@ -30,13 +33,19 @@ FRRVER="frr-stable"
 FRRVER="frr-6"
 
 # DO NOT EDIT
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 FIB_MODULES="fib-common fib-fibc fib-fibs govsw"
 RIB_MODULES="rib-common rib-ribc rib-ribs rib-ribp rib-ribt rib-snmp rib-ribn gonla gobgp"
 WBS_MODULES="gonsl"
 MODULES="${FIB_MODULES} ${RIB_MODULES} ${WBS_MODULES}"
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 MAKE=`pwd`/make/make.sh
@@ -44,7 +53,10 @@ RELDIR=`pwd`/../../RELEASE
 DEBDIR=`pwd`/deb-cache
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> develop
 set_proxy() {
     if [ -n "${PROXY}" ]; then
         HTTP_PROXY_OPT="http_proxy=${PROXY} https_proxy=${PROXY}"
@@ -57,6 +69,9 @@ set_proxy() {
     fi
 }
 
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 do_make() {
     local OPTS=$1
@@ -71,8 +86,12 @@ do_make() {
 
 release_bel() {
 <<<<<<< HEAD
+<<<<<<< HEAD
     local MODULE=$1
     local INSTDIR=${RELDIR}/${MODULE}
+=======
+    local INSTDIR=${RELDIR}/$1
+>>>>>>> develop
 =======
     local INSTDIR=${RELDIR}/$1
 >>>>>>> develop
@@ -108,6 +127,10 @@ release_rib() {
     install -C -m 644 ./make/install.ini    ${INSTDIR}/install.ini
     install -C -m 755 ./make/install_rib.sh ${INSTDIR}/install.sh
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    install -C -m 644 ./make/Makefile_rib   ${INSTDIR}/Makefile
+>>>>>>> develop
 =======
     install -C -m 644 ./make/Makefile_rib   ${INSTDIR}/Makefile
 >>>>>>> develop
@@ -116,6 +139,7 @@ release_rib() {
 
 download_deb() {
 <<<<<<< HEAD
+<<<<<<< HEAD
     mkdir -p ${DEBDIR}
     pushd ${DEBDIR}
 
@@ -123,6 +147,8 @@ download_deb() {
     apt-get download libc6 libsnmp30 libssl1.1 libsensors4 libc-ares2 libyang0.16
     apt-get download adduser debconf lsb-base smistrip
 =======
+=======
+>>>>>>> develop
     install -d ${DEBDIR}
     pushd ${DEBDIR}
 
@@ -135,12 +161,16 @@ download_deb() {
     for PKG_NAME in ${PKG_LIST}; do
         apt-get download ${PKG_NAME} || echo "download error. ${PKG_NAME}"
     done
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 
     popd
 }
 
 download_frr() {
+<<<<<<< HEAD
 <<<<<<< HEAD
     mkdir -p ${DEBDIR}
     pushd ${DEBDIR}
@@ -150,6 +180,8 @@ download_frr() {
     echo deb https://deb.frrouting.org/frr $(lsb_release -s -c) $FRRVER | sudo tee -a /etc/apt/sources.list.d/frr.list
     sudo apt update
 =======
+=======
+>>>>>>> develop
     install -d ${DEBDIR}
     pushd ${DEBDIR}
 
@@ -157,6 +189,9 @@ download_frr() {
     sudo rm -f /etc/apt/sources.list.d/frr.list
     echo deb https://deb.frrouting.org/frr $(lsb_release -s -c) $FRRVER | sudo tee -a /etc/apt/sources.list.d/frr.list
     sudo ${HTTP_PROXY_OPT} apt update
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
     apt-get download frr frr-pythontools
 
@@ -165,9 +200,12 @@ download_frr() {
 
 do_release() {
 <<<<<<< HEAD
+<<<<<<< HEAD
     download_deb
     download_frr
 
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
     release_fib fib
@@ -184,14 +222,20 @@ do_usage() {
     echo "$0 release"
     echo "$0 clean"
 <<<<<<< HEAD
+<<<<<<< HEAD
     echo "$0 test <module> <option>"
 }
 
 =======
+=======
+>>>>>>> develop
 }
 
 set_proxy
 
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 case $1 in
     all)
@@ -211,7 +255,11 @@ case $1 in
         download_frr
         ;;
 <<<<<<< HEAD
+<<<<<<< HEAD
     test)
+=======
+    deb)
+>>>>>>> develop
 =======
     deb)
 >>>>>>> develop

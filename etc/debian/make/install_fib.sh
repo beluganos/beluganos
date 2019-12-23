@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #! /bin/sh
+=======
+#! /bin/bash -e
+>>>>>>> develop
 =======
 #! /bin/bash -e
 >>>>>>> develop
@@ -8,9 +12,12 @@
 . ./install.ini
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 BEL_PKGS="} beluganos-fib-*_amd64.deb"
 ALL_PKGS="${DEB_PKGS} ${BEL_PKGS}"
 
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 init_lxd() {
@@ -21,7 +28,11 @@ init_lxd() {
 
 import_image() {
 <<<<<<< HEAD
+<<<<<<< HEAD
     lxc image import ./beluganos-lxd-*.tar.gz --alias ${LXD_BASE_NAME}
+=======
+    lxc image import ./${LXD_FILE_NAME}.tar.gz --alias ${LXD_BASE_NAME}
+>>>>>>> develop
 =======
     lxc image import ./${LXD_FILE_NAME}.tar.gz --alias ${LXD_BASE_NAME}
 >>>>>>> develop
@@ -31,7 +42,11 @@ install_deb() {
     local DEB_FILE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     for DEB_FILE in ${ALL_PKGS}; do
+=======
+    for DEB_FILE in ${FIB_PKGS}; do
+>>>>>>> develop
 =======
     for DEB_FILE in ${FIB_PKGS}; do
 >>>>>>> develop

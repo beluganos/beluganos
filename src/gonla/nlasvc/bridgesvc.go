@@ -33,8 +33,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+<<<<<<< HEAD
 const NLA_BRIDGE_VLAN_UPDATE_CHAN_SIZE = 128 * 4
 
+=======
+>>>>>>> develop
 type NLABridgeVlanUpdate struct {
 	Link    netlink.Link
 	MsgType uint16
@@ -176,6 +179,7 @@ func (s *NLABridgeVlanService) updateBrVlan(msgType uint16, link netlink.Link) {
 	}
 
 	ifindex := link.Attrs().Index
+<<<<<<< HEAD
 	if brvlans, ok := brvlanMap[int32(ifindex)]; ok {
 		s.log.Debugf("updateBrVlan: Update index=%d", ifindex)
 
@@ -183,6 +187,19 @@ func (s *NLABridgeVlanService) updateBrVlan(msgType uint16, link netlink.Link) {
 		s.sendBrVlanMsgs(msgType, brvlans, link)
 		s.cleanBrVlan(ifindex)
 	}
+=======
+
+	s.log.Debugf("updateBrVlan: Update index=%d", ifindex)
+
+	brvlans, ok := brvlanMap[int32(ifindex)]
+	if !ok {
+		brvlans = []*nl.BridgeVlanInfo{}
+	}
+
+	s.table.GCInit()
+	s.sendBrVlanMsgs(msgType, brvlans, link)
+	s.cleanBrVlan(ifindex)
+>>>>>>> develop
 }
 
 func (s *NLABridgeVlanService) NetlinkLink(nlmsg *nlamsg.NetlinkMessage, link *nlamsg.Link) {

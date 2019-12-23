@@ -142,8 +142,14 @@ func (c *APCtl) getApMonitorEntries(stream fibcapi.FIBCApApi_GetDpEntriesServer)
 		entry := e.(*APAPIMonitorEntry)
 		msg := fibcapi.DbDpEntry{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			Type: fibcapi.DbDpEntry_APMON,
 			Id:   entry.EntryID(),
+=======
+			Type:   fibcapi.DbDpEntry_APMON,
+			Id:     entry.EntryID(),
+			Remote: entry.Remote(),
+>>>>>>> develop
 =======
 			Type:   fibcapi.DbDpEntry_APMON,
 			Id:     entry.EntryID(),
@@ -162,8 +168,14 @@ func (c *APCtl) getVMMonitorEntries(stream fibcapi.FIBCApApi_GetDpEntriesServer)
 		entry := e.(*VMAPIMonitorEntry)
 		msg := fibcapi.DbDpEntry{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			Type: fibcapi.DbDpEntry_VMMON,
 			Id:   entry.reID,
+=======
+			Type:   fibcapi.DbDpEntry_VMMON,
+			Id:     entry.reID,
+			Remote: entry.Remote(),
+>>>>>>> develop
 =======
 			Type:   fibcapi.DbDpEntry_VMMON,
 			Id:     entry.reID,
@@ -182,8 +194,14 @@ func (c *APCtl) getDpMonitorEntries(stream fibcapi.FIBCApApi_GetDpEntriesServer)
 		entry := e.(*DPAPIMonitorEntry)
 		msg := fibcapi.DbDpEntry{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			Type: fibcapi.DbDpEntry_DPMON,
 			Id:   fmt.Sprintf("%d", entry.dpID),
+=======
+			Type:   fibcapi.DbDpEntry_DPMON,
+			Id:     fmt.Sprintf("%d", entry.dpID),
+			Remote: entry.Remote(),
+>>>>>>> develop
 =======
 			Type:   fibcapi.DbDpEntry_DPMON,
 			Id:     fmt.Sprintf("%d", entry.dpID),
@@ -202,8 +220,14 @@ func (c *APCtl) getVsMonitorEntries(stream fibcapi.FIBCApApi_GetDpEntriesServer)
 		entry := e.(*VSAPIMonitorEntry)
 		msg := fibcapi.DbDpEntry{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			Type: fibcapi.DbDpEntry_VSMON,
 			Id:   fmt.Sprintf("%d", entry.vsID),
+=======
+			Type:   fibcapi.DbDpEntry_VSMON,
+			Id:     fmt.Sprintf("%d", entry.vsID),
+			Remote: entry.Remote(),
+>>>>>>> develop
 =======
 			Type:   fibcapi.DbDpEntry_VSMON,
 			Id:     fmt.Sprintf("%d", entry.vsID),
