@@ -34,21 +34,8 @@ type OptionConfig struct {
 	L3VlanBase           uint16   `mapstructure:"l3-vlan-base"`
 	NetlinkSocketBufSize uint64   `mapstructure:"netlink-socket-buf-size"`
 	NLARecvChannelSize   uint64   `mapstructure:"nla-recv-channel-size"`
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 	NLABrVlanUpdateSec   uint32   `mapstructure:"nla-brvlan-update-sec"`
 	NLABrVlanChanSize    uint32   `mapstructure:"nla-brvlan-channel-size"`
->>>>>>> develop
-=======
-	NLABrVlanUpdateSec   uint32   `mapstructure:"nla-brvlan-update-sec"`
-	NLABrVlanChanSize    uint32   `mapstructure:"nla-brvlan-channel-size"`
->>>>>>> develop
-=======
-	NLABrVlanUpdateSec   uint32   `mapstructure:"nla-brvlan-update-sec"`
-	NLABrVlanChanSize    uint32   `mapstructure:"nla-brvlan-channel-size"`
->>>>>>> develop
 	NLACorePort          uint16   `mapstructure:"nla-core-port"`
 	NLAAPIPort           uint16   `mapstructure:"nla-api-port"`
 	FibcAPIAddr          string   `mapstructure:"fibc-api-addr"`
@@ -87,21 +74,8 @@ var optionConfigDefaults = map[string]interface{}{
 	"l3-vlan-base":            uint16(3900),
 	"netlink-socket-buf-size": uint64(8388608),
 	"nla-recv-channel-size":   uint64(65536),
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 	"nla-brvlan-update-sec":   uint32(60 * 30),
 	"nla-brvlan-channel-size": uint32(4096 * 4),
->>>>>>> develop
-=======
-	"nla-brvlan-update-sec":   uint32(60 * 30),
-	"nla-brvlan-channel-size": uint32(4096 * 4),
->>>>>>> develop
-=======
-	"nla-brvlan-update-sec":   uint32(60 * 30),
-	"nla-brvlan-channel-size": uint32(4096 * 4),
->>>>>>> develop
 	"nla-core-port":           uint16(50061),
 	"nla-api-port":            uint16(50062),
 	"fibc-api-addr":           "192.169.1.1",

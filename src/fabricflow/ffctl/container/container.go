@@ -76,27 +76,12 @@ func (c *containerCommand) modGovswdPort(name, cmd string, force bool) error {
 	return nil
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 func (c *containerCommand) syncGovswdPort() {
 	if err := fflib.ExecAndOutput(os.Stdout, c.vswCmd, "interface", "sync"); err != nil {
 		log.Errorf("%s error. interface sync %s", c.vswCmd, err)
 	}
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 func (c *containerCommand) registerPort(name string) error {
 	log.Debugf("addPort: name:%s", name)
 
@@ -105,21 +90,8 @@ func (c *containerCommand) registerPort(name string) error {
 		return err
 	}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 	c.syncGovswdPort()
 
->>>>>>> develop
-=======
-	c.syncGovswdPort()
-
->>>>>>> develop
-=======
-	c.syncGovswdPort()
-
->>>>>>> develop
 	return nil
 }
 
@@ -131,21 +103,8 @@ func (c *containerCommand) unregisterPort(name string) error {
 		return err
 	}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 	c.syncGovswdPort()
 
->>>>>>> develop
-=======
-	c.syncGovswdPort()
-
->>>>>>> develop
-=======
-	c.syncGovswdPort()
-
->>>>>>> develop
 	return nil
 }
 

@@ -64,28 +64,6 @@ func rootCmd(name string) *cobra.Command {
 	rootCmd.PersistentFlags().BoolVar(&showCompletion, "show-completion", false, "Show bash-comnpletion")
 
 	rootCmd.AddCommand(
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-		containerCmd(),
-		ovsCmd(),
-		playbookCmd(),
-		vlanCmd(),
-		bridgeCmd(),
-		bondCmd(),
-		MonitorCmd(),
-		ethtoolCmd(),
-		serviceCmd(),
-		dhcpIPv4Cmd(),
-		ethtoolCmd(),
-=======
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 		bonding.NewCmd(),
 		bridge.NewCmd(),
 		container.NewCmd(),
@@ -97,16 +75,6 @@ func rootCmd(name string) *cobra.Command {
 		ovs.NewCmd(),
 		service.NewCmd(),
 		vlan.NewCmd(),
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 	)
 
 	return rootCmd

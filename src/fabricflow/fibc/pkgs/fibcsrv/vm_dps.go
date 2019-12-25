@@ -29,22 +29,7 @@ import (
 type VMAPIMonitorEntry struct {
 	stream fibcapi.FIBCVmApi_MonitorServer
 	reID   string
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 	remote string
->>>>>>> develop
-=======
-	remote string
->>>>>>> develop
-=======
-	remote string
->>>>>>> develop
-=======
-	remote string
->>>>>>> develop
 	monCh  chan *fibcapi.VmMonitorReply
 
 	active bool
@@ -55,35 +40,11 @@ type VMAPIMonitorEntry struct {
 // NewVMAPIMonitorEntry returns new VmApiMonitorEntry.
 //
 func NewVMAPIMonitorEntry(stream fibcapi.FIBCVmApi_MonitorServer, reID string) *VMAPIMonitorEntry {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-	return &VMAPIMonitorEntry{
-		stream: stream,
-		reID:   reID,
-=======
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 	remote, _ := GrpcRemoteHostPort(stream)
 	return &VMAPIMonitorEntry{
 		stream: stream,
 		reID:   reID,
 		remote: remote,
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 		monCh:  make(chan *fibcapi.VmMonitorReply),
 		log:    log.WithFields(log.Fields{"module": "vmmon", "reid": reID}),
 	}
@@ -97,17 +58,6 @@ func (m *VMAPIMonitorEntry) EntryID() string {
 }
 
 //
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 // Remote returns remote addr.
 //
 func (m *VMAPIMonitorEntry) Remote() string {
@@ -115,16 +65,6 @@ func (m *VMAPIMonitorEntry) Remote() string {
 }
 
 //
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 // NewVMAPIMonitorEntryID returns entry-id.
 //
 func NewVMAPIMonitorEntryID(reID string) string {

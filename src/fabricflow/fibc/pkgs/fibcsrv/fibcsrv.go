@@ -24,22 +24,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 	"google.golang.org/grpc/peer"
->>>>>>> develop
-=======
-	"google.golang.org/grpc/peer"
->>>>>>> develop
-=======
-	"google.golang.org/grpc/peer"
->>>>>>> develop
-=======
-	"google.golang.org/grpc/peer"
->>>>>>> develop
 )
 
 //
@@ -175,17 +160,6 @@ func (h *FibcLogHook) Fire(entry *log.Entry) error {
 
 	return nil
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 
 //
 // GrpcRemoteHostPort returns remote (address, port).
@@ -205,13 +179,3 @@ func GrpcRemoteHostPort(stream grpc.ServerStream) (string, string) {
 
 	return "", ""
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop

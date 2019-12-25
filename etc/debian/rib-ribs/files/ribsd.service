@@ -6,23 +6,7 @@ ConditionPathExists=/etc/beluganos/ribxd.conf
 
 [Service]
 Type=simple
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-ExecStart=/usr/bin/ribsd -config /etc/beluganos/ribxd.conf
-=======
 ExecStart=/usr/bin/ribsd --config-file /etc/beluganos/ribxd.conf
->>>>>>> develop
-=======
-ExecStart=/usr/bin/ribsd --config-file /etc/beluganos/ribxd.conf
->>>>>>> develop
-=======
-ExecStart=/usr/bin/ribsd --config-file /etc/beluganos/ribxd.conf
->>>>>>> develop
-=======
-ExecStart=/usr/bin/ribsd --config-file /etc/beluganos/ribxd.conf
->>>>>>> develop
 User=beluganos
 Group=beluganos
 Restart=on-abort

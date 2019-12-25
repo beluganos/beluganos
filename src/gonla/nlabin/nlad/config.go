@@ -29,19 +29,7 @@ const (
 	DEFAULT_MNG_IF              = "eth0"
 	AUTO_NID             uint8  = 255
 	BRVLAN_UPDATE_SECOND uint32 = 1800
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-	BRVLAN_CHAN_SIZE     int    = 128 * 4
-=======
 	BRVLAN_CHAN_SIZE     int    = 4096 * 4
->>>>>>> develop
-=======
-	BRVLAN_CHAN_SIZE     int    = 4096 * 4
->>>>>>> develop
-=======
-	BRVLAN_CHAN_SIZE     int    = 4096 * 4
->>>>>>> develop
 )
 
 type NodeConfig struct {

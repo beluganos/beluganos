@@ -43,22 +43,7 @@ func getAPAPIEntryId() string {
 type APAPIMonitorEntry struct {
 	stream  fibcapi.FIBCApApi_MonitorServer
 	entryID string
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 	remote  string
->>>>>>> develop
-=======
-	remote  string
->>>>>>> develop
-=======
-	remote  string
->>>>>>> develop
-=======
-	remote  string
->>>>>>> develop
 	monCh   chan *fibcapi.ApMonitorReply
 	logCh   chan *fibcapi.ApMonitorReplyLog
 
@@ -71,35 +56,11 @@ type APAPIMonitorEntry struct {
 //
 func NewAPAPIMonitorEntry(stream fibcapi.FIBCApApi_MonitorServer) *APAPIMonitorEntry {
 	eid := getAPAPIEntryId()
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-	return &APAPIMonitorEntry{
-		stream:  stream,
-		entryID: eid,
-=======
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 	remote, _ := GrpcRemoteHostPort(stream)
 	return &APAPIMonitorEntry{
 		stream:  stream,
 		entryID: eid,
 		remote:  remote,
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 		monCh:   make(chan *fibcapi.ApMonitorReply, apAPIMonitorChanSize),
 		logCh:   make(chan *fibcapi.ApMonitorReplyLog, apAPIMonitorLogChanSize),
 		log:     log.WithFields(log.Fields{"module": "apmon", "eid": eid}),
@@ -114,17 +75,6 @@ func (m *APAPIMonitorEntry) EntryID() string {
 }
 
 //
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 // Remote returns remote addr.
 //
 func (m *APAPIMonitorEntry) Remote() string {
@@ -132,16 +82,6 @@ func (m *APAPIMonitorEntry) Remote() string {
 }
 
 //
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
-=======
->>>>>>> develop
 // Send enqueue msg to send queue.
 //
 func (m *APAPIMonitorEntry) Send(msg *fibcapi.ApMonitorReply) {
