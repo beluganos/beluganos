@@ -35,6 +35,11 @@ type OptionConfig struct {
 	NetlinkSocketBufSize uint64   `mapstructure:"netlink-socket-buf-size"`
 	NLARecvChannelSize   uint64   `mapstructure:"nla-recv-channel-size"`
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	NLABrVlanUpdateSec   uint32   `mapstructure:"nla-brvlan-update-sec"`
+	NLABrVlanChanSize    uint32   `mapstructure:"nla-brvlan-channel-size"`
+>>>>>>> develop
 =======
 	NLABrVlanUpdateSec   uint32   `mapstructure:"nla-brvlan-update-sec"`
 	NLABrVlanChanSize    uint32   `mapstructure:"nla-brvlan-channel-size"`
@@ -78,6 +83,11 @@ var optionConfigDefaults = map[string]interface{}{
 	"netlink-socket-buf-size": uint64(8388608),
 	"nla-recv-channel-size":   uint64(65536),
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	"nla-brvlan-update-sec":   uint32(60 * 30),
+	"nla-brvlan-channel-size": uint32(4096 * 4),
+>>>>>>> develop
 =======
 	"nla-brvlan-update-sec":   uint32(60 * 30),
 	"nla-brvlan-channel-size": uint32(4096 * 4),

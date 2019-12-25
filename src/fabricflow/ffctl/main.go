@@ -66,6 +66,7 @@ func rootCmd(name string) *cobra.Command {
 	rootCmd.AddCommand(
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		containerCmd(),
 		ovsCmd(),
 		playbookCmd(),
@@ -80,6 +81,8 @@ func rootCmd(name string) *cobra.Command {
 =======
 =======
 >>>>>>> develop
+=======
+>>>>>>> develop
 		bonding.NewCmd(),
 		bridge.NewCmd(),
 		container.NewCmd(),
@@ -92,6 +95,9 @@ func rootCmd(name string) *cobra.Command {
 		service.NewCmd(),
 		vlan.NewCmd(),
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

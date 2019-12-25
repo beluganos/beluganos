@@ -1,6 +1,10 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #! /bin/bash
+=======
+#! /bin/bash -e
+>>>>>>> develop
 =======
 #! /bin/bash -e
 >>>>>>> develop
@@ -26,7 +30,11 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONF_FILE=setup-lxc.ini
+=======
+CONF_FILE=setup_lxc.ini
+>>>>>>> develop
 =======
 CONF_FILE=setup_lxc.ini
 >>>>>>> develop
@@ -40,8 +48,11 @@ BELUGANOS_USR=beluganos
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 if [ -e "${LXC_WORK_DIR}/${CONF_FILE}" ]; then
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 COMMON_DIR="common"
@@ -49,6 +60,9 @@ COMMON_DIR="common"
 if [ -e "${LXC_WORK_DIR}/${CONF_FILE}" ]; then
     # using setup_lxc.ini on LXC
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -56,6 +70,7 @@ if [ -e "${LXC_WORK_DIR}/${CONF_FILE}" ]; then
     . ${LXC_WORK_DIR}/${CONF_FILE}
 fi
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 lxc_make_dirs() {
@@ -66,6 +81,8 @@ lxc_make_dirs() {
     done
 }
 
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -86,7 +103,11 @@ lxc_copy_files() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         echo "${SRC_PATH} -> ${DST_PATH} (${USR_NAME})"
+=======
+        echo "[LXC] ${SRC_PATH} -> ${DST_PATH} (${USR_NAME})"
+>>>>>>> develop
 =======
         echo "[LXC] ${SRC_PATH} -> ${DST_PATH} (${USR_NAME})"
 >>>>>>> develop
@@ -104,7 +125,11 @@ lxc_services() {
     for SERVICE_NAME in ${SERVICES}; do
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         echo "systemctl ${CMD} ${SERVICE_NAME}"
+=======
+        echo "[LXC] systemctl ${CMD} ${SERVICE_NAME}"
+>>>>>>> develop
 =======
         echo "[LXC] systemctl ${CMD} ${SERVICE_NAME}"
 >>>>>>> develop
@@ -117,6 +142,7 @@ lxc_services() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 copy_lxc_files() {
     local CONF_DIR=$1
     local LXC_NAME=$2
@@ -124,6 +150,8 @@ copy_lxc_files() {
     lxc file push -p -r ${CONF_DIR}/*.sh ${LXC_NAME}${LXC_WORK_DIR}/
     lxc file push -p -r ${CONF_DIR}/*.ini ${LXC_NAME}${LXC_WORK_DIR}/
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 copy_to_lxc() {
@@ -135,6 +163,9 @@ copy_to_lxc() {
     lxc file push -p -r ${CONF_DIR}/*.sh        ${LXC_NAME}${LXC_WORK_DIR}/
     lxc file push -p -r ${CONF_DIR}/*.ini       ${LXC_NAME}${LXC_WORK_DIR}/
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -146,6 +177,7 @@ install_to_fib() {
     local SRC_PATH=$2
     local DST_PATH=$3
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     if [ -e "${SRC_FILE}" ]; then
@@ -169,6 +201,8 @@ fib_init() {
 =======
 =======
 >>>>>>> develop
+=======
+>>>>>>> develop
     echo "install ${FILE_MODE} ${SRC_PATH} -> ${DST_PATH}"
     install -C -m ${FILE_MODE} -g ${BELUGANOS_USR} -o ${BELUGANOS_USR} ${SRC_PATH} ${DST_PATH}
 }
@@ -183,6 +217,9 @@ do_install_fib() {
     install_to_fib 644 ${CONF_DIR}/${COMMON_DIR}/snmp.conf       /etc/snmp/
     install_to_fib 644 ${CONF_DIR}/${COMMON_DIR}/snmpd.conf      /etc/snmp/
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -213,7 +250,11 @@ exec_on_lxc() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     lxc exec ${LXC_NAME} ${LXC_WORK_DIR}/$0 -- lxc $2 $3 $4 $5
+=======
+    lxc exec ${LXC_NAME} ${LXC_WORK_DIR}/$0 -v -- lxc $2 $3 $4 $5
+>>>>>>> develop
 =======
     lxc exec ${LXC_NAME} ${LXC_WORK_DIR}/$0 -v -- lxc $2 $3 $4 $5
 >>>>>>> develop
@@ -226,7 +267,11 @@ usage() {
     echo "beluganos tool."
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     echo "  $0 install <conf dir>"
+=======
+    echo "  $0 install-fib <conf dir>"
+>>>>>>> develop
 =======
     echo "  $0 install-fib <conf dir>"
 >>>>>>> develop
@@ -268,9 +313,12 @@ usage_detail() {
     echo ""
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     echo "  $0 lxc mkdirs"
     echo "    make directories on container."
     echo ""
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -285,9 +333,14 @@ usage_detail() {
 case $1 in
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     install) # $2:<conf dir>
         fib_init $2
         copy_fib_files $2
+=======
+    install-fib) # $2:<conf dir> $3:<lxc name>
+        do_install_fib $2 $3
+>>>>>>> develop
 =======
     install-fib) # $2:<conf dir> $3:<lxc name>
         do_install_fib $2 $3
@@ -302,7 +355,11 @@ case $1 in
         create_lxc $2 $3
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         copy_lxc_files $2 $3
+=======
+        copy_to_lxc $2 $3
+>>>>>>> develop
 =======
         copy_to_lxc $2 $3
 >>>>>>> develop
@@ -315,7 +372,11 @@ case $1 in
     update-lxc) # $2:<conf dir> $3:<lxc name>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         copy_lxc_files $2 $3
+=======
+        copy_files_to_lxc $2 $3
+>>>>>>> develop
 =======
         copy_files_to_lxc $2 $3
 >>>>>>> develop
@@ -326,6 +387,7 @@ case $1 in
         ;;
 
     # internal command
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     init) # $2:<conf dir>
@@ -342,12 +404,17 @@ case $1 in
 =======
 =======
 >>>>>>> develop
+=======
+>>>>>>> develop
     create-lxc) # $2:<conf dir> $3:<lxc name>
         create_lxc $2 $3
         ;;
     copy-to-lxc) # $2:<conf dir> $3:<lxc name>
         copy_to_lxc $2 $3
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -360,7 +427,10 @@ case $1 in
             install) # $3:<lxc name>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 lxc_make_dirs
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -374,9 +444,12 @@ case $1 in
                 ;;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             mkdirs)
                 lxc_make_dirs
                 ;;
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======

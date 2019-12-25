@@ -18,10 +18,13 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 FRRVER="frr-stable"
 # FRRVER="frr-7"
 # FRRVER="frr-6"
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 # Proxy
@@ -34,6 +37,9 @@ FRRVER="frr-6"
 
 # DO NOT EDIT
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -43,7 +49,10 @@ WBS_MODULES="gonsl"
 MODULES="${FIB_MODULES} ${RIB_MODULES} ${WBS_MODULES}"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -54,7 +63,10 @@ DEBDIR=`pwd`/deb-cache
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 set_proxy() {
@@ -70,6 +82,9 @@ set_proxy() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -87,8 +102,12 @@ do_make() {
 release_bel() {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     local MODULE=$1
     local INSTDIR=${RELDIR}/${MODULE}
+=======
+    local INSTDIR=${RELDIR}/$1
+>>>>>>> develop
 =======
     local INSTDIR=${RELDIR}/$1
 >>>>>>> develop
@@ -128,6 +147,10 @@ release_rib() {
     install -C -m 755 ./make/install_rib.sh ${INSTDIR}/install.sh
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    install -C -m 644 ./make/Makefile_rib   ${INSTDIR}/Makefile
+>>>>>>> develop
 =======
     install -C -m 644 ./make/Makefile_rib   ${INSTDIR}/Makefile
 >>>>>>> develop
@@ -140,6 +163,7 @@ release_rib() {
 download_deb() {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     mkdir -p ${DEBDIR}
     pushd ${DEBDIR}
 
@@ -147,6 +171,8 @@ download_deb() {
     apt-get download libc6 libsnmp30 libssl1.1 libsensors4 libc-ares2 libyang0.16
     apt-get download adduser debconf lsb-base smistrip
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
     install -d ${DEBDIR}
@@ -162,6 +188,9 @@ download_deb() {
         apt-get download ${PKG_NAME} || echo "download error. ${PKG_NAME}"
     done
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -170,6 +199,7 @@ download_deb() {
 }
 
 download_frr() {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     mkdir -p ${DEBDIR}
@@ -182,6 +212,8 @@ download_frr() {
 =======
 =======
 >>>>>>> develop
+=======
+>>>>>>> develop
     install -d ${DEBDIR}
     pushd ${DEBDIR}
 
@@ -190,6 +222,9 @@ download_frr() {
     echo deb https://deb.frrouting.org/frr $(lsb_release -s -c) $FRRVER | sudo tee -a /etc/apt/sources.list.d/frr.list
     sudo ${HTTP_PROXY_OPT} apt update
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -201,9 +236,12 @@ download_frr() {
 do_release() {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     download_deb
     download_frr
 
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -223,10 +261,13 @@ do_usage() {
     echo "$0 clean"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     echo "$0 test <module> <option>"
 }
 
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 }
@@ -234,6 +275,9 @@ do_usage() {
 set_proxy
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -256,7 +300,11 @@ case $1 in
         ;;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     test)
+=======
+    deb)
+>>>>>>> develop
 =======
     deb)
 >>>>>>> develop

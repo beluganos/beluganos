@@ -32,6 +32,10 @@ type VSAPIMonitorEntry struct {
 	vsID   uint64
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	remote string
+>>>>>>> develop
 =======
 	remote string
 >>>>>>> develop
@@ -50,10 +54,13 @@ type VSAPIMonitorEntry struct {
 func NewVSAPIMonitorEntry(stream fibcapi.FIBCVsApi_MonitorServer, vsID uint64) *VSAPIMonitorEntry {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return &VSAPIMonitorEntry{
 		stream: stream,
 		vsID:   vsID,
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 	remote, _ := GrpcRemoteHostPort(stream)
@@ -62,6 +69,9 @@ func NewVSAPIMonitorEntry(stream fibcapi.FIBCVsApi_MonitorServer, vsID uint64) *
 		vsID:   vsID,
 		remote: remote,
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -80,7 +90,10 @@ func (m *VSAPIMonitorEntry) EntryID() string {
 //
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 // Remote returns remote addr.
@@ -91,6 +104,9 @@ func (m *VSAPIMonitorEntry) Remote() string {
 
 //
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

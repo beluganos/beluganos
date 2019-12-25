@@ -1,6 +1,10 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #! /bin/bash
+=======
+#! /bin/bash -e
+>>>>>>> develop
 =======
 #! /bin/bash -e
 >>>>>>> develop
@@ -13,9 +17,12 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 BEL_PKGS="beluganos-*.deb gobgp_*_amd64.deb"
 ALL_PKGS="${DEB_PKGS} ${FRR_PKGS} ${BEL_PKGS}"
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 set_proxy() {
@@ -31,6 +38,9 @@ set_proxy() {
     fi
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -56,9 +66,15 @@ create_temp() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     lxc exec ${LXD_TEMP_NAME} apt -- -y update
     lxc exec ${LXD_TEMP_NAME} apt -- -y full-upgrade
     lxc exec ${LXD_TEMP_NAME} apt -- -y autoremove
+=======
+    lxc exec ${LXD_TEMP_NAME} ${LXD_PROXY_OPT} apt -- -y update
+    lxc exec ${LXD_TEMP_NAME} ${LXD_PROXY_OPT} apt -- -y full-upgrade
+    lxc exec ${LXD_TEMP_NAME} ${LXD_PROXY_OPT} apt -- -y autoremove
+>>>>>>> develop
 =======
     lxc exec ${LXD_TEMP_NAME} ${LXD_PROXY_OPT} apt -- -y update
     lxc exec ${LXD_TEMP_NAME} ${LXD_PROXY_OPT} apt -- -y full-upgrade
@@ -84,6 +100,7 @@ export_temp() {
     echo "Export ${LXD_BASE_NAME} as beluganos-lxd-${LXD_BASE_NAME}"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     lxc image export ${LXD_BASE_NAME} beluganos-lxd-${LXD_BASE_NAME}
 
     lxc image info ${LXD_BASE_NAME}
@@ -94,6 +111,8 @@ export_temp() {
 =======
 =======
 >>>>>>> develop
+=======
+>>>>>>> develop
     lxc image export ${LXD_BASE_NAME} ${LXD_FILE_NAME}
 
     lxc image info ${LXD_BASE_NAME}
@@ -102,6 +121,9 @@ export_temp() {
         echo "copy lxd image to ../${FIB_DIR}/"
         install -m 644 ./${LXD_FILE_NAME}.* ../${FIB_DIR}/
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -114,7 +136,11 @@ copy_deb() {
     echo "copy to ${LXD_TEMP_NAME}/tmp/"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     for DEB_FILE in ${ALL_PKGS}; do
+=======
+    for DEB_FILE in ${RIB_PKGS}; do
+>>>>>>> develop
 =======
     for DEB_FILE in ${RIB_PKGS}; do
 >>>>>>> develop
@@ -131,7 +157,11 @@ install_deb() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     for DEB_FILE in ${ALL_PKGS}; do
+=======
+    for DEB_FILE in ${RIB_PKGS}; do
+>>>>>>> develop
 =======
     for DEB_FILE in ${RIB_PKGS}; do
 >>>>>>> develop
@@ -143,6 +173,7 @@ install_deb() {
     done
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 do_all() {
@@ -162,12 +193,16 @@ usage() {
 =======
 usage() {
 >>>>>>> develop
+=======
+usage() {
+>>>>>>> develop
     echo "- create temp container."
     echo "  $0 create-temp"
     echo "- install deb packages to temp container."
     echo "  $0 install-deb"
     echo "- export temp ccontainer as base image."
     echo "  $0 export-temp"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 }
@@ -179,6 +214,8 @@ case $1 in
 =======
 =======
 >>>>>>> develop
+=======
+>>>>>>> develop
     echo "- download lxc image."
     echo "  $0 dl-image"
 }
@@ -187,6 +224,9 @@ set_proxy
 
 case $1 in
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

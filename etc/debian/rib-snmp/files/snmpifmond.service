@@ -3,6 +3,7 @@ Description=Beluganos RIB interface monitor service
 After=syslog.target network.target
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ConditionPathExists=/etc/beluganos/snmpifmond.conf
 
 [Service]
@@ -11,12 +12,17 @@ EnvironmentFile=/etc/beluganos/snmpifmond.conf
 =======
 =======
 >>>>>>> develop
+=======
+>>>>>>> develop
 ConditionPathExists=/etc/beluganos/snmpproxyd.conf
 
 [Service]
 Type=simple
 EnvironmentFile=/etc/beluganos/snmpproxyd.conf
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

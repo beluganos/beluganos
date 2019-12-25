@@ -38,8 +38,13 @@ dump  = {{ .LogDump }}
 core  = "{{ .Mic }}:{{ .NLACorePort }}"
 api   = "127.0.0.1:{{ .NLAAPIPort }}"
 <<<<<<< HEAD
+<<<<<<< HEAD
 recv_chan_size = {{ .RecvChanSize }}
 recv_sock_buf = {{ .RecvSockBufSize }}
+=======
+recv_chan_size = {{ .NLARecvChanSize }}
+recv_sock_buf = {{ .NLARecvSockBufSize }}
+>>>>>>> develop
 =======
 recv_chan_size = {{ .NLARecvChanSize }}
 recv_sock_buf = {{ .NLARecvSockBufSize }}
@@ -52,11 +57,17 @@ recv_sock_buf = {{ .NLARecvSockBufSize }}
   # remotes = ["2001:db8:1::/64", "2001:db8:2::/64"]
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> develop
   [nla.bridge_vlan]
   update_sec = {{ .NLABrVlanUpdateSec }}
   chan_size = {{ .NLABrVlanChanSize }}
 
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 
 [ribc]
@@ -113,17 +124,23 @@ type PlaybookRibxdConf struct {
 	Mic  string
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RecvChanSize    uint64
 	RecvSockBufSize uint64
 	VpnNexthop      string // x.x.x.x/y
 	VpnNexhopBridge string
 =======
+=======
+>>>>>>> develop
 	NLARecvChanSize    uint64
 	NLARecvSockBufSize uint64
 	NLABrVlanUpdateSec uint32
 	NLABrVlanChanSize  uint32
 	VpnNexthop         string // x.x.x.x/y
 	VpnNexhopBridge    string
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 
 	NLACorePort  uint16
@@ -141,14 +158,20 @@ type PlaybookRibxdConf struct {
 func NewPlaybookRibxdConf() *PlaybookRibxdConf {
 	return &PlaybookRibxdConf{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		RecvChanSize:    65536,
 		RecvSockBufSize: 8388608,
 =======
+=======
+>>>>>>> develop
 		NLARecvChanSize:    65536,
 		NLARecvSockBufSize: 1024 * 1024 * 8,
 		NLABrVlanUpdateSec: 60 * 30,
 		NLABrVlanChanSize:  4096 * 4,
 
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 		VpnNexthop:      "1.1.0.0/24",
 		VpnNexhopBridge: "ffbr0",

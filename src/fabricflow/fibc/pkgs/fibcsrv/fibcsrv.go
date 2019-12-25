@@ -26,6 +26,10 @@ import (
 	"google.golang.org/grpc"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	"google.golang.org/grpc/peer"
+>>>>>>> develop
 =======
 	"google.golang.org/grpc/peer"
 >>>>>>> develop
@@ -169,7 +173,10 @@ func (h *FibcLogHook) Fire(entry *log.Entry) error {
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 
@@ -192,6 +199,9 @@ func GrpcRemoteHostPort(stream grpc.ServerStream) (string, string) {
 	return "", ""
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

@@ -210,10 +210,13 @@ func (c *APAPICommand) dumpDpEntries(t fibcapi.DbDpEntry_Type) error {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			fmt.Printf("Id:%s type:%s\n",
 				e.Id,
 				e.Type,
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 			fmt.Printf("Id:%s type:%s remote:%s\n",
@@ -221,6 +224,9 @@ func (c *APAPICommand) dumpDpEntries(t fibcapi.DbDpEntry_Type) error {
 				e.Type,
 				e.Remote,
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
