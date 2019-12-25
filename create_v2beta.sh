@@ -1,7 +1,11 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #! /bin/bash
+=======
+#! /bin/bash -e
+>>>>>>> develop
 =======
 #! /bin/bash -e
 >>>>>>> develop
@@ -33,7 +37,11 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 PIP=pip3
+=======
+PIP=pip
+>>>>>>> develop
 =======
 PIP=pip
 >>>>>>> develop
@@ -52,8 +60,11 @@ INST_HOME=`pwd`/etc/installer
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 . ${INST_HOME}/frr.sh
 . ${INST_HOME}/lxd.sh
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -70,6 +81,7 @@ pip_install() {
 }
 
 beluganos_install() {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -124,6 +136,8 @@ do_build() {
 >>>>>>> develop
 =======
 >>>>>>> develop
+=======
+>>>>>>> develop
     if [ -n "${PROXY}" ]; then
 	export PROXY
     fi
@@ -136,6 +150,9 @@ do_build() {
 do_all() {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -160,6 +177,7 @@ do_all() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     lxd_init
     lxd_image
@@ -175,6 +193,8 @@ case $1 in
 >>>>>>> develop
 =======
 >>>>>>> develop
+=======
+>>>>>>> develop
 }
 
 set_proxy_env
@@ -184,6 +204,9 @@ case $1 in
     all) do_all;;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

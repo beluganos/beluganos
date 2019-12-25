@@ -67,6 +67,7 @@ func rootCmd(name string) *cobra.Command {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		containerCmd(),
 		ovsCmd(),
 		playbookCmd(),
@@ -79,6 +80,8 @@ func rootCmd(name string) *cobra.Command {
 		dhcpIPv4Cmd(),
 		ethtoolCmd(),
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -96,6 +99,9 @@ func rootCmd(name string) *cobra.Command {
 		vlan.NewCmd(),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

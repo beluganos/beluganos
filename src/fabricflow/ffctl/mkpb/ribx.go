@@ -87,9 +87,12 @@ func (c *RibxCmd) createRibxConf(playbookName string) error {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	t.RecvChanSize = opt.NLARecvChannelSize
 	t.RecvSockBufSize = opt.NetlinkSocketBufSize
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 	t.NLARecvChanSize = opt.NLARecvChannelSize
@@ -97,6 +100,9 @@ func (c *RibxCmd) createRibxConf(playbookName string) error {
 	t.NLABrVlanUpdateSec = opt.NLABrVlanUpdateSec
 	t.NLABrVlanChanSize = opt.NLABrVlanChanSize
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

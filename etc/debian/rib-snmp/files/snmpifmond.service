@@ -4,12 +4,15 @@ After=syslog.target network.target
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ConditionPathExists=/etc/beluganos/snmpifmond.conf
 
 [Service]
 Type=simple
 EnvironmentFile=/etc/beluganos/snmpifmond.conf
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -21,6 +24,9 @@ Type=simple
 EnvironmentFile=/etc/beluganos/snmpproxyd.conf
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

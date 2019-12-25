@@ -78,7 +78,10 @@ func (c *containerCommand) modGovswdPort(name, cmd string, force bool) error {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 func (c *containerCommand) syncGovswdPort() {
@@ -88,6 +91,9 @@ func (c *containerCommand) syncGovswdPort() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -101,6 +107,11 @@ func (c *containerCommand) registerPort(name string) error {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	c.syncGovswdPort()
+
+>>>>>>> develop
 =======
 	c.syncGovswdPort()
 
@@ -122,6 +133,11 @@ func (c *containerCommand) unregisterPort(name string) error {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	c.syncGovswdPort()
+
+>>>>>>> develop
 =======
 	c.syncGovswdPort()
 

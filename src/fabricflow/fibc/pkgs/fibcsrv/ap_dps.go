@@ -46,6 +46,10 @@ type APAPIMonitorEntry struct {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	remote  string
+>>>>>>> develop
 =======
 	remote  string
 >>>>>>> develop
@@ -70,10 +74,13 @@ func NewAPAPIMonitorEntry(stream fibcapi.FIBCApApi_MonitorServer) *APAPIMonitorE
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return &APAPIMonitorEntry{
 		stream:  stream,
 		entryID: eid,
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -85,6 +92,9 @@ func NewAPAPIMonitorEntry(stream fibcapi.FIBCApApi_MonitorServer) *APAPIMonitorE
 		remote:  remote,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -107,7 +117,10 @@ func (m *APAPIMonitorEntry) EntryID() string {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -121,6 +134,9 @@ func (m *APAPIMonitorEntry) Remote() string {
 //
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

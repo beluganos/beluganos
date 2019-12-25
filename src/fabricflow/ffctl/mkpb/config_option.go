@@ -36,6 +36,11 @@ type OptionConfig struct {
 	NLARecvChannelSize   uint64   `mapstructure:"nla-recv-channel-size"`
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	NLABrVlanUpdateSec   uint32   `mapstructure:"nla-brvlan-update-sec"`
+	NLABrVlanChanSize    uint32   `mapstructure:"nla-brvlan-channel-size"`
+>>>>>>> develop
 =======
 	NLABrVlanUpdateSec   uint32   `mapstructure:"nla-brvlan-update-sec"`
 	NLABrVlanChanSize    uint32   `mapstructure:"nla-brvlan-channel-size"`
@@ -84,6 +89,11 @@ var optionConfigDefaults = map[string]interface{}{
 	"nla-recv-channel-size":   uint64(65536),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	"nla-brvlan-update-sec":   uint32(60 * 30),
+	"nla-brvlan-channel-size": uint32(4096 * 4),
+>>>>>>> develop
 =======
 	"nla-brvlan-update-sec":   uint32(60 * 30),
 	"nla-brvlan-channel-size": uint32(4096 * 4),

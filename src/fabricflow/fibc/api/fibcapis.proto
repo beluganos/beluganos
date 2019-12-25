@@ -159,6 +159,10 @@ message DbDpEntry {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  string remote = 3;
+>>>>>>> develop
 =======
   string remote = 3;
 >>>>>>> develop

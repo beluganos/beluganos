@@ -23,7 +23,11 @@ DESCRIPTOR = _descriptor.FileDescriptor(
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   serialized_pb=_b('\n\x0e\x66ibcapis.proto\x12\x07\x66ibcapi\x1a\rfibcapi.proto\"\x0c\n\nHelloReply\"\x11\n\x0fPortConfigReply\"\r\n\x0bL2AddrReply\"\x0e\n\x0c\x46lowModReply\"\x0f\n\rGroupModReply\"\x13\n\x11L2AddrStatusReply\"\x0e\n\x0c\x46\x46HelloReply\"\x0f\n\rFFPacketReply\"\x11\n\x0f\x46\x46PacketInReply\"\x13\n\x11\x46\x46PortStatusReply\"\x12\n\x10\x41pMonitorRequest\">\n\x11\x41pMonitorReplyLog\x12\x0c\n\x04line\x18\x01 \x01(\t\x12\r\n\x05level\x18\x02 \x01(\r\x12\x0c\n\x04time\x18\x03 \x01(\x03\"C\n\x0e\x41pMonitorReply\x12)\n\x03log\x18\x01 \x01(\x0b\x32\x1a.fibcapi.ApMonitorReplyLogH\x00\x42\x06\n\x04\x62ody\"\x19\n\x17\x41pGetPortEntriesRequest\"\x17\n\x15\x41pGetIdEntriesRequest\">\n\x15\x41pGetDpEntriesRequest\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.fibcapi.DbDpEntry.Type\"\x15\n\x13\x41pAddPortEntryReply\"\x13\n\x11\x41pAddIdEntryReply\"\x15\n\x13\x41pDelPortEntryReply\"\x13\n\x11\x41pDelIdEntryReply\"F\n\x15\x41pGetPortStatsRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\x0f\n\x07port_no\x18\x02 \x01(\r\x12\r\n\x05names\x18\x03 \x03(\t\"m\n\x15\x41pModPortStatsRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\x0f\n\x07port_no\x18\x02 \x01(\r\x12%\n\x03\x63md\x18\x03 \x01(\x0e\x32\x18.fibcapi.FFPortStats.Cmd\x12\r\n\x05names\x18\x04 \x03(\t\"\x15\n\x13\x41pModPortStatsReply\"!\n\x10VmMonitorRequest\x12\r\n\x05re_id\x18\x01 \x01(\t\"\x9d\x01\n\x0eVmMonitorReply\x12*\n\x0bport_status\x18\x01 \x01(\x0b\x32\x13.fibcapi.PortStatusH\x00\x12&\n\tdp_status\x18\x02 \x01(\x0b\x32\x11.fibcapi.DpStatusH\x00\x12/\n\x0el2_addr_status\x18\x03 \x01(\x0b\x32\x15.fibcapi.L2AddrStatusH\x00\x42\x06\n\x04\x62ody\"K\n\x10VsMonitorRequest\x12\r\n\x05vs_id\x18\x01 \x01(\x04\x12(\n\x07\x64p_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.FFHello.DpType\"l\n\x0eVsMonitorReply\x12*\n\npacket_out\x18\x01 \x01(\x0b\x32\x14.fibcapi.FFPacketOutH\x00\x12&\n\x08port_mod\x18\x02 \x01(\x0b\x32\x12.fibcapi.FFPortModH\x00\x42\x06\n\x04\x62ody\"P\n\x12\x44pMultipartRequest\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12-\n\x07request\x18\x02 \x01(\x0b\x32\x1c.fibcapi.FFMultipart.Request\"J\n\x10\x44pMultipartReply\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12)\n\x05reply\x18\x02 \x01(\x0b\x32\x1a.fibcapi.FFMultipart.Reply\"\x15\n\x13\x44pMultipartReplyAck\"K\n\x10\x44pMonitorRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12(\n\x07\x64p_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.FFHello.DpType\"\xec\x01\n\x0e\x44pMonitorReply\x12*\n\npacket_out\x18\x01 \x01(\x0b\x32\x14.fibcapi.FFPacketOutH\x00\x12&\n\x08port_mod\x18\x02 \x01(\x0b\x32\x12.fibcapi.FFPortModH\x00\x12$\n\x08\x66low_mod\x18\x03 \x01(\x0b\x32\x10.fibcapi.FlowModH\x00\x12&\n\tgroup_mod\x18\x04 \x01(\x0b\x32\x11.fibcapi.GroupModH\x00\x12\x30\n\tmultipart\x18\x05 \x01(\x0b\x32\x1b.fibcapi.DpMultipartRequestH\x00\x42\x06\n\x04\x62ody\"*\n\tDbPortKey\x12\r\n\x05re_id\x18\x01 \x01(\t\x12\x0e\n\x06ifname\x18\x02 \x01(\t\"K\n\x0b\x44\x62PortValue\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\r\n\x05re_id\x18\x02 \x01(\t\x12\x0f\n\x07port_id\x18\x03 \x01(\r\x12\r\n\x05\x65nter\x18\x04 \x01(\x08\"\xf3\x01\n\x0b\x44\x62PortEntry\x12\x1f\n\x03key\x18\x01 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12&\n\nparent_key\x18\x02 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12&\n\nmaster_key\x18\x03 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12%\n\x07vm_port\x18\x04 \x01(\x0b\x32\x14.fibcapi.DbPortValue\x12%\n\x07\x64p_port\x18\x05 \x01(\x0b\x32\x14.fibcapi.DbPortValue\x12%\n\x07vs_port\x18\x06 \x01(\x0b\x32\x14.fibcapi.DbPortValue\")\n\tDbIdEntry\x12\r\n\x05re_id\x18\x01 \x01(\t\x12\r\n\x05\x64p_id\x18\x02 \x01(\x04\"{\n\tDbDpEntry\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.fibcapi.DbDpEntry.Type\x12\n\n\x02id\x18\x02 \x01(\t\";\n\x04Type\x12\x07\n\x03NOP\x10\x00\x12\t\n\x05\x41PMON\x10\x01\x12\t\n\x05VMMON\x10\x02\x12\t\n\x05\x44PMON\x10\x03\x12\t\n\x05VSMON\x10\x04\"8\n\nStatsEntry\x12\r\n\x05group\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\x04\"\x13\n\x11\x41pGetStatsRequest2\x91\x06\n\tFIBCApApi\x12\x41\n\x07Monitor\x12\x19.fibcapi.ApMonitorRequest\x1a\x17.fibcapi.ApMonitorReply\"\x00\x30\x01\x12H\n\x0cGetPortStats\x12\x1e.fibcapi.ApGetPortStatsRequest\x1a\x14.fibcapi.FFPortStats\"\x00\x30\x01\x12N\n\x0cModPortStats\x12\x1e.fibcapi.ApModPortStatsRequest\x1a\x1c.fibcapi.ApModPortStatsReply\"\x00\x12L\n\x0eGetPortEntries\x12 .fibcapi.ApGetPortEntriesRequest\x1a\x14.fibcapi.DbPortEntry\"\x00\x30\x01\x12\x46\n\x0cGetIDEntries\x12\x1e.fibcapi.ApGetIdEntriesRequest\x1a\x12.fibcapi.DbIdEntry\"\x00\x30\x01\x12\x46\n\x0cGetDpEntries\x12\x1e.fibcapi.ApGetDpEntriesRequest\x1a\x12.fibcapi.DbDpEntry\"\x00\x30\x01\x12\x44\n\x0c\x41\x64\x64PortEntry\x12\x14.fibcapi.DbPortEntry\x1a\x1c.fibcapi.ApAddPortEntryReply\"\x00\x12>\n\nAddIDEntry\x12\x12.fibcapi.DbIdEntry\x1a\x1a.fibcapi.ApAddIdEntryReply\"\x00\x12\x42\n\x0c\x44\x65lPortEntry\x12\x12.fibcapi.DbPortKey\x1a\x1c.fibcapi.ApDelPortEntryReply\"\x00\x12>\n\nDelIDEntry\x12\x12.fibcapi.DbIdEntry\x1a\x1a.fibcapi.ApDelIdEntryReply\"\x00\x12?\n\x08GetStats\x12\x1a.fibcapi.ApGetStatsRequest\x1a\x13.fibcapi.StatsEntry\"\x00\x30\x01\x32\xbc\x02\n\tFIBCVmApi\x12\x32\n\tSendHello\x12\x0e.fibcapi.Hello\x1a\x13.fibcapi.HelloReply\"\x00\x12\x41\n\x0eSendPortConfig\x12\x13.fibcapi.PortConfig\x1a\x18.fibcapi.PortConfigReply\"\x00\x12\x38\n\x0bSendFlowMod\x12\x10.fibcapi.FlowMod\x1a\x15.fibcapi.FlowModReply\"\x00\x12;\n\x0cSendGroupMod\x12\x11.fibcapi.GroupMod\x1a\x16.fibcapi.GroupModReply\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.VmMonitorRequest\x1a\x17.fibcapi.VmMonitorReply\"\x00\x30\x01\x32\x84\x02\n\tFIBCVsApi\x12\x36\n\tSendHello\x12\x10.fibcapi.FFHello\x1a\x15.fibcapi.FFHelloReply\"\x00\x12;\n\x0cSendFFPacket\x12\x11.fibcapi.FFPacket\x1a\x16.fibcapi.FFPacketReply\"\x00\x12?\n\x0cSendPacketIn\x12\x13.fibcapi.FFPacketIn\x1a\x18.fibcapi.FFPacketInReply\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.VsMonitorRequest\x1a\x17.fibcapi.VsMonitorReply\"\x00\x30\x01\x32\xaa\x03\n\tFIBCDpApi\x12\x36\n\tSendHello\x12\x10.fibcapi.FFHello\x1a\x15.fibcapi.FFHelloReply\"\x00\x12?\n\x0cSendPacketIn\x12\x13.fibcapi.FFPacketIn\x1a\x18.fibcapi.FFPacketInReply\"\x00\x12\x45\n\x0eSendPortStatus\x12\x15.fibcapi.FFPortStatus\x1a\x1a.fibcapi.FFPortStatusReply\"\x00\x12I\n\x10SendL2AddrStatus\x12\x17.fibcapi.FFL2AddrStatus\x1a\x1a.fibcapi.L2AddrStatusReply\"\x00\x12O\n\x12SendMultipartReply\x12\x19.fibcapi.DpMultipartReply\x1a\x1c.fibcapi.DpMultipartReplyAck\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.DpMonitorRequest\x1a\x17.fibcapi.DpMonitorReply\"\x00\x30\x01\x62\x06proto3')
+=======
+  serialized_pb=_b('\n\x0e\x66ibcapis.proto\x12\x07\x66ibcapi\x1a\rfibcapi.proto\"\x0c\n\nHelloReply\"\x11\n\x0fPortConfigReply\"\r\n\x0bL2AddrReply\"\x0e\n\x0c\x46lowModReply\"\x0f\n\rGroupModReply\"\x13\n\x11L2AddrStatusReply\"\x0e\n\x0c\x46\x46HelloReply\"\x0f\n\rFFPacketReply\"\x11\n\x0f\x46\x46PacketInReply\"\x13\n\x11\x46\x46PortStatusReply\"\x12\n\x10\x41pMonitorRequest\">\n\x11\x41pMonitorReplyLog\x12\x0c\n\x04line\x18\x01 \x01(\t\x12\r\n\x05level\x18\x02 \x01(\r\x12\x0c\n\x04time\x18\x03 \x01(\x03\"C\n\x0e\x41pMonitorReply\x12)\n\x03log\x18\x01 \x01(\x0b\x32\x1a.fibcapi.ApMonitorReplyLogH\x00\x42\x06\n\x04\x62ody\"\x19\n\x17\x41pGetPortEntriesRequest\"\x17\n\x15\x41pGetIdEntriesRequest\">\n\x15\x41pGetDpEntriesRequest\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.fibcapi.DbDpEntry.Type\"\x15\n\x13\x41pAddPortEntryReply\"\x13\n\x11\x41pAddIdEntryReply\"\x15\n\x13\x41pDelPortEntryReply\"\x13\n\x11\x41pDelIdEntryReply\"F\n\x15\x41pGetPortStatsRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\x0f\n\x07port_no\x18\x02 \x01(\r\x12\r\n\x05names\x18\x03 \x03(\t\"m\n\x15\x41pModPortStatsRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\x0f\n\x07port_no\x18\x02 \x01(\r\x12%\n\x03\x63md\x18\x03 \x01(\x0e\x32\x18.fibcapi.FFPortStats.Cmd\x12\r\n\x05names\x18\x04 \x03(\t\"\x15\n\x13\x41pModPortStatsReply\"!\n\x10VmMonitorRequest\x12\r\n\x05re_id\x18\x01 \x01(\t\"\x9d\x01\n\x0eVmMonitorReply\x12*\n\x0bport_status\x18\x01 \x01(\x0b\x32\x13.fibcapi.PortStatusH\x00\x12&\n\tdp_status\x18\x02 \x01(\x0b\x32\x11.fibcapi.DpStatusH\x00\x12/\n\x0el2_addr_status\x18\x03 \x01(\x0b\x32\x15.fibcapi.L2AddrStatusH\x00\x42\x06\n\x04\x62ody\"K\n\x10VsMonitorRequest\x12\r\n\x05vs_id\x18\x01 \x01(\x04\x12(\n\x07\x64p_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.FFHello.DpType\"l\n\x0eVsMonitorReply\x12*\n\npacket_out\x18\x01 \x01(\x0b\x32\x14.fibcapi.FFPacketOutH\x00\x12&\n\x08port_mod\x18\x02 \x01(\x0b\x32\x12.fibcapi.FFPortModH\x00\x42\x06\n\x04\x62ody\"P\n\x12\x44pMultipartRequest\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12-\n\x07request\x18\x02 \x01(\x0b\x32\x1c.fibcapi.FFMultipart.Request\"J\n\x10\x44pMultipartReply\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12)\n\x05reply\x18\x02 \x01(\x0b\x32\x1a.fibcapi.FFMultipart.Reply\"\x15\n\x13\x44pMultipartReplyAck\"K\n\x10\x44pMonitorRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12(\n\x07\x64p_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.FFHello.DpType\"\xec\x01\n\x0e\x44pMonitorReply\x12*\n\npacket_out\x18\x01 \x01(\x0b\x32\x14.fibcapi.FFPacketOutH\x00\x12&\n\x08port_mod\x18\x02 \x01(\x0b\x32\x12.fibcapi.FFPortModH\x00\x12$\n\x08\x66low_mod\x18\x03 \x01(\x0b\x32\x10.fibcapi.FlowModH\x00\x12&\n\tgroup_mod\x18\x04 \x01(\x0b\x32\x11.fibcapi.GroupModH\x00\x12\x30\n\tmultipart\x18\x05 \x01(\x0b\x32\x1b.fibcapi.DpMultipartRequestH\x00\x42\x06\n\x04\x62ody\"*\n\tDbPortKey\x12\r\n\x05re_id\x18\x01 \x01(\t\x12\x0e\n\x06ifname\x18\x02 \x01(\t\"K\n\x0b\x44\x62PortValue\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\r\n\x05re_id\x18\x02 \x01(\t\x12\x0f\n\x07port_id\x18\x03 \x01(\r\x12\r\n\x05\x65nter\x18\x04 \x01(\x08\"\xf3\x01\n\x0b\x44\x62PortEntry\x12\x1f\n\x03key\x18\x01 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12&\n\nparent_key\x18\x02 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12&\n\nmaster_key\x18\x03 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12%\n\x07vm_port\x18\x04 \x01(\x0b\x32\x14.fibcapi.DbPortValue\x12%\n\x07\x64p_port\x18\x05 \x01(\x0b\x32\x14.fibcapi.DbPortValue\x12%\n\x07vs_port\x18\x06 \x01(\x0b\x32\x14.fibcapi.DbPortValue\")\n\tDbIdEntry\x12\r\n\x05re_id\x18\x01 \x01(\t\x12\r\n\x05\x64p_id\x18\x02 \x01(\x04\"\x8b\x01\n\tDbDpEntry\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.fibcapi.DbDpEntry.Type\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0e\n\x06remote\x18\x03 \x01(\t\";\n\x04Type\x12\x07\n\x03NOP\x10\x00\x12\t\n\x05\x41PMON\x10\x01\x12\t\n\x05VMMON\x10\x02\x12\t\n\x05\x44PMON\x10\x03\x12\t\n\x05VSMON\x10\x04\"8\n\nStatsEntry\x12\r\n\x05group\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\x04\"\x13\n\x11\x41pGetStatsRequest2\x91\x06\n\tFIBCApApi\x12\x41\n\x07Monitor\x12\x19.fibcapi.ApMonitorRequest\x1a\x17.fibcapi.ApMonitorReply\"\x00\x30\x01\x12H\n\x0cGetPortStats\x12\x1e.fibcapi.ApGetPortStatsRequest\x1a\x14.fibcapi.FFPortStats\"\x00\x30\x01\x12N\n\x0cModPortStats\x12\x1e.fibcapi.ApModPortStatsRequest\x1a\x1c.fibcapi.ApModPortStatsReply\"\x00\x12L\n\x0eGetPortEntries\x12 .fibcapi.ApGetPortEntriesRequest\x1a\x14.fibcapi.DbPortEntry\"\x00\x30\x01\x12\x46\n\x0cGetIDEntries\x12\x1e.fibcapi.ApGetIdEntriesRequest\x1a\x12.fibcapi.DbIdEntry\"\x00\x30\x01\x12\x46\n\x0cGetDpEntries\x12\x1e.fibcapi.ApGetDpEntriesRequest\x1a\x12.fibcapi.DbDpEntry\"\x00\x30\x01\x12\x44\n\x0c\x41\x64\x64PortEntry\x12\x14.fibcapi.DbPortEntry\x1a\x1c.fibcapi.ApAddPortEntryReply\"\x00\x12>\n\nAddIDEntry\x12\x12.fibcapi.DbIdEntry\x1a\x1a.fibcapi.ApAddIdEntryReply\"\x00\x12\x42\n\x0c\x44\x65lPortEntry\x12\x12.fibcapi.DbPortKey\x1a\x1c.fibcapi.ApDelPortEntryReply\"\x00\x12>\n\nDelIDEntry\x12\x12.fibcapi.DbIdEntry\x1a\x1a.fibcapi.ApDelIdEntryReply\"\x00\x12?\n\x08GetStats\x12\x1a.fibcapi.ApGetStatsRequest\x1a\x13.fibcapi.StatsEntry\"\x00\x30\x01\x32\xbc\x02\n\tFIBCVmApi\x12\x32\n\tSendHello\x12\x0e.fibcapi.Hello\x1a\x13.fibcapi.HelloReply\"\x00\x12\x41\n\x0eSendPortConfig\x12\x13.fibcapi.PortConfig\x1a\x18.fibcapi.PortConfigReply\"\x00\x12\x38\n\x0bSendFlowMod\x12\x10.fibcapi.FlowMod\x1a\x15.fibcapi.FlowModReply\"\x00\x12;\n\x0cSendGroupMod\x12\x11.fibcapi.GroupMod\x1a\x16.fibcapi.GroupModReply\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.VmMonitorRequest\x1a\x17.fibcapi.VmMonitorReply\"\x00\x30\x01\x32\x84\x02\n\tFIBCVsApi\x12\x36\n\tSendHello\x12\x10.fibcapi.FFHello\x1a\x15.fibcapi.FFHelloReply\"\x00\x12;\n\x0cSendFFPacket\x12\x11.fibcapi.FFPacket\x1a\x16.fibcapi.FFPacketReply\"\x00\x12?\n\x0cSendPacketIn\x12\x13.fibcapi.FFPacketIn\x1a\x18.fibcapi.FFPacketInReply\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.VsMonitorRequest\x1a\x17.fibcapi.VsMonitorReply\"\x00\x30\x01\x32\xaa\x03\n\tFIBCDpApi\x12\x36\n\tSendHello\x12\x10.fibcapi.FFHello\x1a\x15.fibcapi.FFHelloReply\"\x00\x12?\n\x0cSendPacketIn\x12\x13.fibcapi.FFPacketIn\x1a\x18.fibcapi.FFPacketInReply\"\x00\x12\x45\n\x0eSendPortStatus\x12\x15.fibcapi.FFPortStatus\x1a\x1a.fibcapi.FFPortStatusReply\"\x00\x12I\n\x10SendL2AddrStatus\x12\x17.fibcapi.FFL2AddrStatus\x1a\x1a.fibcapi.L2AddrStatusReply\"\x00\x12O\n\x12SendMultipartReply\x12\x19.fibcapi.DpMultipartReply\x1a\x1c.fibcapi.DpMultipartReplyAck\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.DpMonitorRequest\x1a\x17.fibcapi.DpMonitorReply\"\x00\x30\x01\x62\x06proto3')
+>>>>>>> develop
 =======
   serialized_pb=_b('\n\x0e\x66ibcapis.proto\x12\x07\x66ibcapi\x1a\rfibcapi.proto\"\x0c\n\nHelloReply\"\x11\n\x0fPortConfigReply\"\r\n\x0bL2AddrReply\"\x0e\n\x0c\x46lowModReply\"\x0f\n\rGroupModReply\"\x13\n\x11L2AddrStatusReply\"\x0e\n\x0c\x46\x46HelloReply\"\x0f\n\rFFPacketReply\"\x11\n\x0f\x46\x46PacketInReply\"\x13\n\x11\x46\x46PortStatusReply\"\x12\n\x10\x41pMonitorRequest\">\n\x11\x41pMonitorReplyLog\x12\x0c\n\x04line\x18\x01 \x01(\t\x12\r\n\x05level\x18\x02 \x01(\r\x12\x0c\n\x04time\x18\x03 \x01(\x03\"C\n\x0e\x41pMonitorReply\x12)\n\x03log\x18\x01 \x01(\x0b\x32\x1a.fibcapi.ApMonitorReplyLogH\x00\x42\x06\n\x04\x62ody\"\x19\n\x17\x41pGetPortEntriesRequest\"\x17\n\x15\x41pGetIdEntriesRequest\">\n\x15\x41pGetDpEntriesRequest\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.fibcapi.DbDpEntry.Type\"\x15\n\x13\x41pAddPortEntryReply\"\x13\n\x11\x41pAddIdEntryReply\"\x15\n\x13\x41pDelPortEntryReply\"\x13\n\x11\x41pDelIdEntryReply\"F\n\x15\x41pGetPortStatsRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\x0f\n\x07port_no\x18\x02 \x01(\r\x12\r\n\x05names\x18\x03 \x03(\t\"m\n\x15\x41pModPortStatsRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\x0f\n\x07port_no\x18\x02 \x01(\r\x12%\n\x03\x63md\x18\x03 \x01(\x0e\x32\x18.fibcapi.FFPortStats.Cmd\x12\r\n\x05names\x18\x04 \x03(\t\"\x15\n\x13\x41pModPortStatsReply\"!\n\x10VmMonitorRequest\x12\r\n\x05re_id\x18\x01 \x01(\t\"\x9d\x01\n\x0eVmMonitorReply\x12*\n\x0bport_status\x18\x01 \x01(\x0b\x32\x13.fibcapi.PortStatusH\x00\x12&\n\tdp_status\x18\x02 \x01(\x0b\x32\x11.fibcapi.DpStatusH\x00\x12/\n\x0el2_addr_status\x18\x03 \x01(\x0b\x32\x15.fibcapi.L2AddrStatusH\x00\x42\x06\n\x04\x62ody\"K\n\x10VsMonitorRequest\x12\r\n\x05vs_id\x18\x01 \x01(\x04\x12(\n\x07\x64p_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.FFHello.DpType\"l\n\x0eVsMonitorReply\x12*\n\npacket_out\x18\x01 \x01(\x0b\x32\x14.fibcapi.FFPacketOutH\x00\x12&\n\x08port_mod\x18\x02 \x01(\x0b\x32\x12.fibcapi.FFPortModH\x00\x42\x06\n\x04\x62ody\"P\n\x12\x44pMultipartRequest\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12-\n\x07request\x18\x02 \x01(\x0b\x32\x1c.fibcapi.FFMultipart.Request\"J\n\x10\x44pMultipartReply\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12)\n\x05reply\x18\x02 \x01(\x0b\x32\x1a.fibcapi.FFMultipart.Reply\"\x15\n\x13\x44pMultipartReplyAck\"K\n\x10\x44pMonitorRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12(\n\x07\x64p_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.FFHello.DpType\"\xec\x01\n\x0e\x44pMonitorReply\x12*\n\npacket_out\x18\x01 \x01(\x0b\x32\x14.fibcapi.FFPacketOutH\x00\x12&\n\x08port_mod\x18\x02 \x01(\x0b\x32\x12.fibcapi.FFPortModH\x00\x12$\n\x08\x66low_mod\x18\x03 \x01(\x0b\x32\x10.fibcapi.FlowModH\x00\x12&\n\tgroup_mod\x18\x04 \x01(\x0b\x32\x11.fibcapi.GroupModH\x00\x12\x30\n\tmultipart\x18\x05 \x01(\x0b\x32\x1b.fibcapi.DpMultipartRequestH\x00\x42\x06\n\x04\x62ody\"*\n\tDbPortKey\x12\r\n\x05re_id\x18\x01 \x01(\t\x12\x0e\n\x06ifname\x18\x02 \x01(\t\"K\n\x0b\x44\x62PortValue\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\r\n\x05re_id\x18\x02 \x01(\t\x12\x0f\n\x07port_id\x18\x03 \x01(\r\x12\r\n\x05\x65nter\x18\x04 \x01(\x08\"\xf3\x01\n\x0b\x44\x62PortEntry\x12\x1f\n\x03key\x18\x01 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12&\n\nparent_key\x18\x02 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12&\n\nmaster_key\x18\x03 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12%\n\x07vm_port\x18\x04 \x01(\x0b\x32\x14.fibcapi.DbPortValue\x12%\n\x07\x64p_port\x18\x05 \x01(\x0b\x32\x14.fibcapi.DbPortValue\x12%\n\x07vs_port\x18\x06 \x01(\x0b\x32\x14.fibcapi.DbPortValue\")\n\tDbIdEntry\x12\r\n\x05re_id\x18\x01 \x01(\t\x12\r\n\x05\x64p_id\x18\x02 \x01(\x04\"\x8b\x01\n\tDbDpEntry\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.fibcapi.DbDpEntry.Type\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0e\n\x06remote\x18\x03 \x01(\t\";\n\x04Type\x12\x07\n\x03NOP\x10\x00\x12\t\n\x05\x41PMON\x10\x01\x12\t\n\x05VMMON\x10\x02\x12\t\n\x05\x44PMON\x10\x03\x12\t\n\x05VSMON\x10\x04\"8\n\nStatsEntry\x12\r\n\x05group\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\x04\"\x13\n\x11\x41pGetStatsRequest2\x91\x06\n\tFIBCApApi\x12\x41\n\x07Monitor\x12\x19.fibcapi.ApMonitorRequest\x1a\x17.fibcapi.ApMonitorReply\"\x00\x30\x01\x12H\n\x0cGetPortStats\x12\x1e.fibcapi.ApGetPortStatsRequest\x1a\x14.fibcapi.FFPortStats\"\x00\x30\x01\x12N\n\x0cModPortStats\x12\x1e.fibcapi.ApModPortStatsRequest\x1a\x1c.fibcapi.ApModPortStatsReply\"\x00\x12L\n\x0eGetPortEntries\x12 .fibcapi.ApGetPortEntriesRequest\x1a\x14.fibcapi.DbPortEntry\"\x00\x30\x01\x12\x46\n\x0cGetIDEntries\x12\x1e.fibcapi.ApGetIdEntriesRequest\x1a\x12.fibcapi.DbIdEntry\"\x00\x30\x01\x12\x46\n\x0cGetDpEntries\x12\x1e.fibcapi.ApGetDpEntriesRequest\x1a\x12.fibcapi.DbDpEntry\"\x00\x30\x01\x12\x44\n\x0c\x41\x64\x64PortEntry\x12\x14.fibcapi.DbPortEntry\x1a\x1c.fibcapi.ApAddPortEntryReply\"\x00\x12>\n\nAddIDEntry\x12\x12.fibcapi.DbIdEntry\x1a\x1a.fibcapi.ApAddIdEntryReply\"\x00\x12\x42\n\x0c\x44\x65lPortEntry\x12\x12.fibcapi.DbPortKey\x1a\x1c.fibcapi.ApDelPortEntryReply\"\x00\x12>\n\nDelIDEntry\x12\x12.fibcapi.DbIdEntry\x1a\x1a.fibcapi.ApDelIdEntryReply\"\x00\x12?\n\x08GetStats\x12\x1a.fibcapi.ApGetStatsRequest\x1a\x13.fibcapi.StatsEntry\"\x00\x30\x01\x32\xbc\x02\n\tFIBCVmApi\x12\x32\n\tSendHello\x12\x0e.fibcapi.Hello\x1a\x13.fibcapi.HelloReply\"\x00\x12\x41\n\x0eSendPortConfig\x12\x13.fibcapi.PortConfig\x1a\x18.fibcapi.PortConfigReply\"\x00\x12\x38\n\x0bSendFlowMod\x12\x10.fibcapi.FlowMod\x1a\x15.fibcapi.FlowModReply\"\x00\x12;\n\x0cSendGroupMod\x12\x11.fibcapi.GroupMod\x1a\x16.fibcapi.GroupModReply\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.VmMonitorRequest\x1a\x17.fibcapi.VmMonitorReply\"\x00\x30\x01\x32\x84\x02\n\tFIBCVsApi\x12\x36\n\tSendHello\x12\x10.fibcapi.FFHello\x1a\x15.fibcapi.FFHelloReply\"\x00\x12;\n\x0cSendFFPacket\x12\x11.fibcapi.FFPacket\x1a\x16.fibcapi.FFPacketReply\"\x00\x12?\n\x0cSendPacketIn\x12\x13.fibcapi.FFPacketIn\x1a\x18.fibcapi.FFPacketInReply\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.VsMonitorRequest\x1a\x17.fibcapi.VsMonitorReply\"\x00\x30\x01\x32\xaa\x03\n\tFIBCDpApi\x12\x36\n\tSendHello\x12\x10.fibcapi.FFHello\x1a\x15.fibcapi.FFHelloReply\"\x00\x12?\n\x0cSendPacketIn\x12\x13.fibcapi.FFPacketIn\x1a\x18.fibcapi.FFPacketInReply\"\x00\x12\x45\n\x0eSendPortStatus\x12\x15.fibcapi.FFPortStatus\x1a\x1a.fibcapi.FFPortStatusReply\"\x00\x12I\n\x10SendL2AddrStatus\x12\x17.fibcapi.FFL2AddrStatus\x1a\x1a.fibcapi.L2AddrStatusReply\"\x00\x12O\n\x12SendMultipartReply\x12\x19.fibcapi.DpMultipartReply\x1a\x1c.fibcapi.DpMultipartReplyAck\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.DpMonitorRequest\x1a\x17.fibcapi.DpMonitorReply\"\x00\x30\x01\x62\x06proto3')
 >>>>>>> develop
@@ -70,8 +74,13 @@ _DBDPENTRY_TYPE = _descriptor.EnumDescriptor(
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   serialized_start=2133,
   serialized_end=2192,
+=======
+  serialized_start=2150,
+  serialized_end=2209,
+>>>>>>> develop
 =======
   serialized_start=2150,
   serialized_end=2209,
@@ -1303,7 +1312,10 @@ _DBDPENTRY = _descriptor.Descriptor(
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -1317,6 +1329,9 @@ _DBDPENTRY = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -1338,8 +1353,13 @@ _DBDPENTRY = _descriptor.Descriptor(
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   serialized_start=2069,
   serialized_end=2192,
+=======
+  serialized_start=2070,
+  serialized_end=2209,
+>>>>>>> develop
 =======
   serialized_start=2070,
   serialized_end=2209,
@@ -1398,8 +1418,13 @@ _STATSENTRY = _descriptor.Descriptor(
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   serialized_start=2194,
   serialized_end=2250,
+=======
+  serialized_start=2211,
+  serialized_end=2267,
+>>>>>>> develop
 =======
   serialized_start=2211,
   serialized_end=2267,
@@ -1437,8 +1462,13 @@ _APGETSTATSREQUEST = _descriptor.Descriptor(
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   serialized_start=2252,
   serialized_end=2271,
+=======
+  serialized_start=2269,
+  serialized_end=2288,
+>>>>>>> develop
 =======
   serialized_start=2269,
   serialized_end=2288,
@@ -1836,8 +1866,13 @@ _FIBCAPAPI = _descriptor.ServiceDescriptor(
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   serialized_start=2274,
   serialized_end=3059,
+=======
+  serialized_start=2291,
+  serialized_end=3076,
+>>>>>>> develop
 =======
   serialized_start=2291,
   serialized_end=3076,
@@ -1965,8 +2000,13 @@ _FIBCVMAPI = _descriptor.ServiceDescriptor(
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   serialized_start=3062,
   serialized_end=3378,
+=======
+  serialized_start=3079,
+  serialized_end=3395,
+>>>>>>> develop
 =======
   serialized_start=3079,
   serialized_end=3395,
@@ -2040,8 +2080,13 @@ _FIBCVSAPI = _descriptor.ServiceDescriptor(
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   serialized_start=3381,
   serialized_end=3641,
+=======
+  serialized_start=3398,
+  serialized_end=3658,
+>>>>>>> develop
 =======
   serialized_start=3398,
   serialized_end=3658,
@@ -2106,8 +2151,13 @@ _FIBCDPAPI = _descriptor.ServiceDescriptor(
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   serialized_start=3644,
   serialized_end=4070,
+=======
+  serialized_start=3661,
+  serialized_end=4087,
+>>>>>>> develop
 =======
   serialized_start=3661,
   serialized_end=4087,

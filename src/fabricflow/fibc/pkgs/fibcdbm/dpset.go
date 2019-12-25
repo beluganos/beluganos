@@ -29,6 +29,10 @@ type DPEntry interface {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	Remote() string
+>>>>>>> develop
 =======
 	Remote() string
 >>>>>>> develop

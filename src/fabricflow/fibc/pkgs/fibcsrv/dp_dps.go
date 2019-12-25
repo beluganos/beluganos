@@ -33,6 +33,10 @@ type DPAPIMonitorEntry struct {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	remote string
+>>>>>>> develop
 =======
 	remote string
 >>>>>>> develop
@@ -57,10 +61,13 @@ func NewDPAPIMonitorEntry(stream fibcapi.FIBCDpApi_MonitorServer, dpID uint64, d
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return &DPAPIMonitorEntry{
 		stream: stream,
 		dpID:   dpID,
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -72,6 +79,9 @@ func NewDPAPIMonitorEntry(stream fibcapi.FIBCDpApi_MonitorServer, dpID uint64, d
 		remote: remote,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -96,7 +106,10 @@ func (m *DPAPIMonitorEntry) EntryID() string {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -110,6 +123,9 @@ func (m *DPAPIMonitorEntry) Remote() string {
 //
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

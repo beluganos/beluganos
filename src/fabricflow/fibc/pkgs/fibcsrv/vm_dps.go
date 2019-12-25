@@ -32,6 +32,10 @@ type VMAPIMonitorEntry struct {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	remote string
+>>>>>>> develop
 =======
 	remote string
 >>>>>>> develop
@@ -54,10 +58,13 @@ func NewVMAPIMonitorEntry(stream fibcapi.FIBCVmApi_MonitorServer, reID string) *
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return &VMAPIMonitorEntry{
 		stream: stream,
 		reID:   reID,
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -69,6 +76,9 @@ func NewVMAPIMonitorEntry(stream fibcapi.FIBCVmApi_MonitorServer, reID string) *
 		remote: remote,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop
@@ -90,7 +100,10 @@ func (m *VMAPIMonitorEntry) EntryID() string {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> develop
 =======
 >>>>>>> develop
 =======
@@ -104,6 +117,9 @@ func (m *VMAPIMonitorEntry) Remote() string {
 //
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> develop
+=======
 >>>>>>> develop
 =======
 >>>>>>> develop

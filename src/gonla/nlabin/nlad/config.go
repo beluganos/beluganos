@@ -31,7 +31,11 @@ const (
 	BRVLAN_UPDATE_SECOND uint32 = 1800
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BRVLAN_CHAN_SIZE     int    = 128 * 4
+=======
+	BRVLAN_CHAN_SIZE     int    = 4096 * 4
+>>>>>>> develop
 =======
 	BRVLAN_CHAN_SIZE     int    = 4096 * 4
 >>>>>>> develop
