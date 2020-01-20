@@ -26,6 +26,8 @@ enum FFM {
     VM_MON_REPLT  = 18;
     DP_MON_REPLY  = 19;
     VS_MON_REPLY  = 20;
+    OAM_REQUEST   = 21;
+    OAM_REPLY     = 22;
 }
 
 message Hello {
@@ -431,6 +433,38 @@ message FFPortStats {
   uint32 port_no = 1;
   map<string, uint64> values = 2;
   map<string, string> s_values = 3;
+}
+
+// OAM
+message OAM {
+  enum OAMType {
+    NOP             = 0; // unused
+    AUDIT_ROUTE_CNT = 1;
+  }
+
+  message AuditRouteCntRequest {
+  }
+  message AuditRouteCntReply {
+    uint64 count = 1;
+  }
+
+  message Request {
+    uint64  dp_id    = 1;
+    string  re_id    = 2;
+    OAMType oam_type = 3;
+    oneof body {
+      AuditRouteCntRequest audit_route_cnt = 4;
+    }
+  }
+
+  message Reply {
+    uint64  dp_id    = 1;
+    string  re_id    = 2;
+    OAMType oam_type = 3;
+    oneof body {
+      AuditRouteCntReply audit_route_cnt = 4;
+    }
+  }
 }
 
 // Multipart

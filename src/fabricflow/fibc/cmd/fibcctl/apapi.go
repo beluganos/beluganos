@@ -141,6 +141,23 @@ func (c *APAPICommand) modPortStats(dpID uint64, portID uint32, cmd fibcapi.FFPo
 	})
 }
 
+func (c *APAPICommand) oamAuditRouteCnt() error {
+	return c.connect(func(client fibcapi.FIBCApApiClient) error {
+		req := fibcapi.OAM_Request{
+			DpId:    0,
+			OamType: fibcapi.OAM_AUDIT_ROUTE_CNT,
+			Body: &fibcapi.OAM_Request_AuditRouteCnt{
+				AuditRouteCnt: &fibcapi.OAM_AuditRouteCntRequest{},
+			},
+		}
+		if _, err := client.RunOAM(context.Background(), &req); err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
 func apAPICmd() *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:     "apapi",
@@ -164,6 +181,7 @@ func apAPICmd() *cobra.Command {
 
 	rootCmd.AddCommand(
 		apAPIPortStatsCmd(),
+		apAPIOAMCmd(),
 	)
 
 	return rootCmd
@@ -227,6 +245,28 @@ func apAPIPortStatsCmd() *cobra.Command {
 				}
 
 				return apapi.modPortStats(dpID, portID, fibcapi.FFPortStats_RESET)
+			},
+		},
+	))
+
+	return rootCmd
+}
+
+func apAPIOAMCmd() *cobra.Command {
+	rootCmd := &cobra.Command{
+		Use:   "oam",
+		Short: "oam command.",
+	}
+
+	apapi := APAPICommand{}
+
+	rootCmd.AddCommand(apapi.setFlags(
+		&cobra.Command{
+			Use:   "audit-route-cnt",
+			Short: "Audit Route(Count)",
+			Args:  cobra.NoArgs,
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return apapi.oamAuditRouteCnt()
 			},
 		},
 	))

@@ -70,6 +70,11 @@ class FIBCApApiStub(object):
         request_serializer=fibcapis__pb2.ApGetStatsRequest.SerializeToString,
         response_deserializer=fibcapis__pb2.StatsEntry.FromString,
         )
+    self.RunOAM = channel.unary_unary(
+        '/fibcapi.FIBCApApi/RunOAM',
+        request_serializer=fibcapi__pb2.OAM.Request.SerializeToString,
+        response_deserializer=fibcapis__pb2.OAMReplyAck.FromString,
+        )
 
 
 class FIBCApApiServicer(object):
@@ -153,6 +158,13 @@ class FIBCApApiServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def RunOAM(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_FIBCApApiServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -211,6 +223,11 @@ def add_FIBCApApiServicer_to_server(servicer, server):
           request_deserializer=fibcapis__pb2.ApGetStatsRequest.FromString,
           response_serializer=fibcapis__pb2.StatsEntry.SerializeToString,
       ),
+      'RunOAM': grpc.unary_unary_rpc_method_handler(
+          servicer.RunOAM,
+          request_deserializer=fibcapi__pb2.OAM.Request.FromString,
+          response_serializer=fibcapis__pb2.OAMReplyAck.SerializeToString,
+      ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
       'fibcapi.FIBCApApi', rpc_method_handlers)
@@ -246,6 +263,11 @@ class FIBCVmApiStub(object):
         '/fibcapi.FIBCVmApi/SendGroupMod',
         request_serializer=fibcapi__pb2.GroupMod.SerializeToString,
         response_deserializer=fibcapis__pb2.GroupModReply.FromString,
+        )
+    self.SendOAMReply = channel.unary_unary(
+        '/fibcapi.FIBCVmApi/SendOAMReply',
+        request_serializer=fibcapis__pb2.OAMReply.SerializeToString,
+        response_deserializer=fibcapis__pb2.OAMReplyAck.FromString,
         )
     self.Monitor = channel.unary_stream(
         '/fibcapi.FIBCVmApi/Monitor',
@@ -286,6 +308,13 @@ class FIBCVmApiServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def SendOAMReply(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
   def Monitor(self, request, context):
     # missing associated documentation comment in .proto file
     pass
@@ -315,6 +344,11 @@ def add_FIBCVmApiServicer_to_server(servicer, server):
           servicer.SendGroupMod,
           request_deserializer=fibcapi__pb2.GroupMod.FromString,
           response_serializer=fibcapis__pb2.GroupModReply.SerializeToString,
+      ),
+      'SendOAMReply': grpc.unary_unary_rpc_method_handler(
+          servicer.SendOAMReply,
+          request_deserializer=fibcapis__pb2.OAMReply.FromString,
+          response_serializer=fibcapis__pb2.OAMReplyAck.SerializeToString,
       ),
       'Monitor': grpc.unary_stream_rpc_method_handler(
           servicer.Monitor,
@@ -352,6 +386,11 @@ class FIBCVsApiStub(object):
         request_serializer=fibcapi__pb2.FFPacketIn.SerializeToString,
         response_deserializer=fibcapis__pb2.FFPacketInReply.FromString,
         )
+    self.SendOAMReply = channel.unary_unary(
+        '/fibcapi.FIBCVsApi/SendOAMReply',
+        request_serializer=fibcapis__pb2.OAMReply.SerializeToString,
+        response_deserializer=fibcapis__pb2.OAMReplyAck.FromString,
+        )
     self.Monitor = channel.unary_stream(
         '/fibcapi.FIBCVsApi/Monitor',
         request_serializer=fibcapis__pb2.VsMonitorRequest.SerializeToString,
@@ -384,6 +423,13 @@ class FIBCVsApiServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def SendOAMReply(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
   def Monitor(self, request, context):
     # missing associated documentation comment in .proto file
     pass
@@ -408,6 +454,11 @@ def add_FIBCVsApiServicer_to_server(servicer, server):
           servicer.SendPacketIn,
           request_deserializer=fibcapi__pb2.FFPacketIn.FromString,
           response_serializer=fibcapis__pb2.FFPacketInReply.SerializeToString,
+      ),
+      'SendOAMReply': grpc.unary_unary_rpc_method_handler(
+          servicer.SendOAMReply,
+          request_deserializer=fibcapis__pb2.OAMReply.FromString,
+          response_serializer=fibcapis__pb2.OAMReplyAck.SerializeToString,
       ),
       'Monitor': grpc.unary_stream_rpc_method_handler(
           servicer.Monitor,
@@ -455,6 +506,11 @@ class FIBCDpApiStub(object):
         request_serializer=fibcapis__pb2.DpMultipartReply.SerializeToString,
         response_deserializer=fibcapis__pb2.DpMultipartReplyAck.FromString,
         )
+    self.SendOAMReply = channel.unary_unary(
+        '/fibcapi.FIBCDpApi/SendOAMReply',
+        request_serializer=fibcapis__pb2.OAMReply.SerializeToString,
+        response_deserializer=fibcapis__pb2.OAMReplyAck.FromString,
+        )
     self.Monitor = channel.unary_stream(
         '/fibcapi.FIBCDpApi/Monitor',
         request_serializer=fibcapis__pb2.DpMonitorRequest.SerializeToString,
@@ -501,6 +557,13 @@ class FIBCDpApiServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def SendOAMReply(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
   def Monitor(self, request, context):
     # missing associated documentation comment in .proto file
     pass
@@ -535,6 +598,11 @@ def add_FIBCDpApiServicer_to_server(servicer, server):
           servicer.SendMultipartReply,
           request_deserializer=fibcapis__pb2.DpMultipartReply.FromString,
           response_serializer=fibcapis__pb2.DpMultipartReplyAck.SerializeToString,
+      ),
+      'SendOAMReply': grpc.unary_unary_rpc_method_handler(
+          servicer.SendOAMReply,
+          request_deserializer=fibcapis__pb2.OAMReply.FromString,
+          response_serializer=fibcapis__pb2.OAMReplyAck.SerializeToString,
       ),
       'Monitor': grpc.unary_stream_rpc_method_handler(
           servicer.Monitor,

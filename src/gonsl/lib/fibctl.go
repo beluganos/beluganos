@@ -38,6 +38,7 @@ type FIBController interface {
 	PortStatus(*fibcapi.FFPortStatus) error
 	L2AddrStatus(*fibcapi.FFL2AddrStatus) error
 	MultipartReply(*fibcapi.FFMultipart_Reply, uint32) error
+	OAMReply(*fibcapi.OAM_Reply, uint32) error
 
 	fmt.Stringer
 }

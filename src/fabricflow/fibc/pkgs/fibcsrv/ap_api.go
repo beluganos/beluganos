@@ -138,3 +138,13 @@ func (s *APAPIServer) ModPortStats(ctxt context.Context, req *fibcapi.ApModPortS
 func (s *APAPIServer) GetStats(req *fibcapi.ApGetStatsRequest, stream fibcapi.FIBCApApi_GetStatsServer) error {
 	return s.ctl.GetStats(stream)
 }
+
+//
+// RunOAM process oam request.
+//
+func (s *APAPIServer) RunOAM(ctxt context.Context, req *fibcapi.OAM_Request) (*fibcapi.OAMReplyAck, error) {
+	if err := s.ctl.RunOAM(req); err != nil {
+		return nil, err
+	}
+	return &fibcapi.OAMReplyAck{}, nil
+}

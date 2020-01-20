@@ -79,6 +79,17 @@ func DispatchVmMonitorReply(r *VmMonitorReply, i interface{}) error {
 			return nil
 		}
 
+	case *VmMonitorReply_Oam:
+		hdr := fibcnet.Header{
+			Type: uint16(FFM_OAM_REQUEST),
+			Xid:  body.Oam.Xid,
+		}
+		return DispatchOAMRequest(
+			&hdr,
+			body.Oam.Request,
+			i,
+		)
+
 	default:
 		return fmt.Errorf("Invalid type. %v", body)
 	}
@@ -109,6 +120,17 @@ func DispatchVsMonitorReply(r *VsMonitorReply, i interface{}) error {
 			h.FIBCFFPortMod(&hdr, body.PortMod)
 			return nil
 		}
+
+	case *VsMonitorReply_Oam:
+		hdr := fibcnet.Header{
+			Type: uint16(FFM_OAM_REQUEST),
+			Xid:  body.Oam.Xid,
+		}
+		return DispatchOAMRequest(
+			&hdr,
+			body.Oam.Request,
+			i,
+		)
 
 	default:
 		return fmt.Errorf("Invalid type. %v", body)
@@ -157,6 +179,14 @@ func DispatchDpMonitorReply(hdr *fibcnet.Header, r *DpMonitorReply, i interface{
 		return DispatchFFMultipartRequest(
 			hdr,
 			msg.Multipart.Request,
+			i,
+		)
+
+	case *DpMonitorReply_Oam:
+		hdr.Xid = msg.Oam.Xid
+		return DispatchOAMRequest(
+			hdr,
+			msg.Oam.Request,
 			i,
 		)
 

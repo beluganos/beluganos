@@ -69,6 +69,27 @@ func NewVMMonitorReplyL2AddrStatus(reID string, addrs []*fibcapi.L2Addr) *fibcap
 }
 
 //
+// VmMonitorReply {
+//   oneof body {
+//     OAMRequest oam
+//   }
+// }
+//
+// OAMRequest {
+//  uint32      xid
+//  OAM.Request request
+// }
+//
+func NewVMMonitorReplyOAM(request *fibcapi.OAM_Request, xid uint32) *fibcapi.VmMonitorReply {
+	return fibcapi.NewVmMonitorReply().SetOAM(
+		&fibcapi.OAMRequest{
+			Xid:     xid,
+			Request: request,
+		},
+	)
+}
+
+//
 // NewDPMonitorReplyMpPort returns new DpMonitorReply
 //
 // DpMonitorReply {
@@ -229,6 +250,27 @@ func NewDPMonitorReplyPortMod(dpID uint64, portID uint32, status fibcapi.PortSta
 }
 
 //
+// DpMonitorReply {
+//   oneof body {
+//     OAMRequest oam
+//   }
+// }
+//
+// OAMRequest {
+//  uint32      xid
+//  OAM.Request request
+// }
+//
+func NewDPMonitorReplyOAM(request *fibcapi.OAM_Request, xid uint32) *fibcapi.DpMonitorReply {
+	return fibcapi.NewDpMonitorReply().SetOAM(
+		&fibcapi.OAMRequest{
+			Xid:     xid,
+			Request: request,
+		},
+	)
+}
+
+//
 // NewVSMonitorReplyPacketOut returns new VsMonitorReply
 //
 // VsMonitorReply {
@@ -274,6 +316,54 @@ func NewVSMonitorReplyPortMod(vsID uint64, portID uint32, status fibcapi.PortSta
 			Status: status,
 		},
 	)
+}
+
+//
+// VsMonitorReply {
+//   oneof body {
+//     OAMRequest oam
+//   }
+// }
+//
+// OAMRequest {
+//  uint32      xid
+//  OAM.Request request
+// }
+//
+func NewVSMonitorReplyOAM(request *fibcapi.OAM_Request, xid uint32) *fibcapi.VsMonitorReply {
+	return fibcapi.NewVsMonitorReply().SetOAM(
+		&fibcapi.OAMRequest{
+			Xid:     xid,
+			Request: request,
+		},
+	)
+}
+
+//
+// OAMReply {
+//  uint32    xid
+//  OAM.Reply reply
+// }
+//
+// OAM.Reply {
+//   uint64   dp_id
+//   OAMType   oam_type # => OAM_AUDIT_ROUTE_CNT
+//   oneof body {
+//     AuditRouteCntReply audit_route_cnt
+//   }
+// }
+//
+// AuditRouteCntReply {
+//   uint64 count
+// }
+//
+func NewOAMReply_AuditRouteCnt(dpID uint64, count uint64, xid uint32) *fibcapi.OAMReply {
+	return &fibcapi.OAMReply{
+		Xid: xid,
+		Reply: fibcapi.NewOAMReply(dpID).SetAuditRouteCnt(
+			fibcapi.NewOAMAuditRouteCntReply(count),
+		),
+	}
 }
 
 //

@@ -26,6 +26,7 @@ import (
 	"fabricflow/ffctl/maintenance"
 	"fabricflow/ffctl/mkpb"
 	"fabricflow/ffctl/monitor"
+	"fabricflow/ffctl/oam"
 	"fabricflow/ffctl/ovs"
 	"fabricflow/ffctl/service"
 	"fabricflow/ffctl/vlan"
@@ -72,6 +73,7 @@ func rootCmd(name string) *cobra.Command {
 		mkpb.NewCmd(),
 		monitor.NewCmd(),
 		maintenance.NewCmd(),
+		oam.NewCmd(),
 		ovs.NewCmd(),
 		service.NewCmd(),
 		vlan.NewCmd(),

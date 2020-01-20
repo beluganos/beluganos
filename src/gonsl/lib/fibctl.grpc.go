@@ -200,3 +200,13 @@ func (c *FIBGrpcController) MultipartReply(reply *fibcapi.FFMultipart_Reply, xid
 	_, err := c.client.SendMultipartReply(context.Background(), &mp)
 	return err
 }
+
+func (c *FIBGrpcController) OAMReply(reply *fibcapi.OAM_Reply, xid uint32) error {
+	oam := fibcapi.OAMReply{
+		Xid:   xid,
+		Reply: reply,
+	}
+
+	_, err := c.client.SendOAMReply(context.Background(), &oam)
+	return err
+}

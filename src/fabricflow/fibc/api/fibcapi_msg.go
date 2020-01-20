@@ -45,6 +45,13 @@ func (r *VmMonitorReply) SetL2AddrStatus(l2addrStatus *L2AddrStatus) *VmMonitorR
 	return r
 }
 
+func (r *VmMonitorReply) SetOAM(oam *OAMRequest) *VmMonitorReply {
+	r.Body = &VmMonitorReply_Oam{
+		Oam: oam,
+	}
+	return r
+}
+
 //
 // NewDpMonitorReply returns new DpMonitorReply.
 //
@@ -102,6 +109,13 @@ func (r *DpMonitorReply) SetMultipart(multipart *DpMultipartRequest) *DpMonitorR
 	return r
 }
 
+func (r *DpMonitorReply) SetOAM(oam *OAMRequest) *DpMonitorReply {
+	r.Body = &DpMonitorReply_Oam{
+		Oam: oam,
+	}
+	return r
+}
+
 func NewDpMonitorRequest(dpId uint64, dpType FFHello_DpType) *DpMonitorRequest {
 	return &DpMonitorRequest{
 		DpId:   dpId,
@@ -128,4 +142,55 @@ func (r *VsMonitorReply) SetFFPortMod(portMod *FFPortMod) *VsMonitorReply {
 		PortMod: portMod,
 	}
 	return r
+}
+
+func (r *VsMonitorReply) SetOAM(oam *OAMRequest) *VsMonitorReply {
+	r.Body = &VsMonitorReply_Oam{
+		Oam: oam,
+	}
+	return r
+}
+
+func NewOAMRequest(dpID uint64) *OAM_Request {
+	return &OAM_Request{
+		DpId: dpID,
+	}
+}
+
+func (r *OAM_Request) SetAuditRouteCnt(audit *OAM_AuditRouteCntRequest) *OAM_Request {
+	r.OamType = OAM_AUDIT_ROUTE_CNT
+	r.Body = &OAM_Request_AuditRouteCnt{
+		AuditRouteCnt: audit,
+	}
+	return r
+}
+
+func NewOAMReply(dpID uint64) *OAM_Reply {
+	return &OAM_Reply{
+		DpId: dpID,
+	}
+}
+
+func NewOAMReplyVM(reID string) *OAM_Reply {
+	return &OAM_Reply{
+		ReId: reID,
+	}
+}
+
+func (r *OAM_Reply) SetAuditRouteCnt(audit *OAM_AuditRouteCntReply) *OAM_Reply {
+	r.OamType = OAM_AUDIT_ROUTE_CNT
+	r.Body = &OAM_Reply_AuditRouteCnt{
+		AuditRouteCnt: audit,
+	}
+	return r
+}
+
+func NewOAMAuditRouteCntRequest() *OAM_AuditRouteCntRequest {
+	return &OAM_AuditRouteCntRequest{}
+}
+
+func NewOAMAuditRouteCntReply(count uint64) *OAM_AuditRouteCntReply {
+	return &OAM_AuditRouteCntReply{
+		Count: count,
+	}
 }

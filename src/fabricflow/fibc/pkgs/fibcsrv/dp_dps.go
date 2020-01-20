@@ -71,6 +71,13 @@ func (m *DPAPIMonitorEntry) Remote() string {
 }
 
 //
+// DPID returns dp-id
+//
+func (m *DPAPIMonitorEntry) DPID() uint64 {
+	return m.dpID
+}
+
+//
 // NewDPAPIMonitorEntryID returns entry-id
 //
 func NewDPAPIMonitorEntryID(dpID uint64) string {

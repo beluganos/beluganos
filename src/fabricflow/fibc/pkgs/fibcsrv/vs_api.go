@@ -81,3 +81,13 @@ func (s *VSAPIServer) SendFFPacket(ctxt context.Context, pkt *fibcapi.FFPacket) 
 func (s *VSAPIServer) Monitor(req *fibcapi.VsMonitorRequest, stream fibcapi.FIBCVsApi_MonitorServer) error {
 	return s.ctl.Monitor(req.VsId, stream, stream.Context().Done())
 }
+
+//
+// SendOAMReply process oam request message.
+//
+func (s *VSAPIServer) SendOAMReply(ctxt context.Context, oam *fibcapi.OAMReply) (*fibcapi.OAMReplyAck, error) {
+	if err := s.ctl.OAMReply(oam.Xid, oam.Reply); err != nil {
+		return nil, err
+	}
+	return &fibcapi.OAMReplyAck{}, nil
+}

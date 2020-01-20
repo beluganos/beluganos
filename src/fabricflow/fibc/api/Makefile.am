@@ -11,11 +11,11 @@ py-test:
 	pylint ${PYLIST}
 	./suite.py
 
-proto:
-	@for PROTO in $(PROTOS); do \
-		protoc -I=. --go_out=plugins=grpc:. $$PROTO; \
-		python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. $$PROTO; \
-	done
+proto:  $(PROTOS)
+	protoc -I=. --go_out=plugins=grpc:. $<
+if ENABLE_PYTHON_GRPC
+	python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. $<
+endif
 
 all-local: proto
 

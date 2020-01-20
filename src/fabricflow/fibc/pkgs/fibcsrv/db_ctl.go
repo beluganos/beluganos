@@ -26,36 +26,6 @@ import (
 )
 
 //
-// DBMpWaiter is waiter for multipart message,
-//
-type DBMpWaiter struct {
-	*fibcdbm.SimpleWaiter
-	Reply *fibcapi.FFMultipart_Reply
-}
-
-//
-// Set sets reply and close wait channel.
-//
-func (w *DBMpWaiter) Set(v interface{}) {
-	if reply, ok := v.(*fibcapi.FFMultipart_Reply); ok {
-		w.Reply = reply
-		w.SimpleWaiter.Close()
-		return
-	}
-
-	w.SimpleWaiter.SetError(fmt.Errorf("Invalid reply. %v", v))
-}
-
-//
-// NewDBMpWaiter returns new DBMpWaiter
-//
-func NewDBMpWaiter() *DBMpWaiter {
-	return &DBMpWaiter{
-		SimpleWaiter: fibcdbm.NewSimpleWaiter(),
-	}
-}
-
-//
 // DBCtl is db controller.
 //
 type DBCtl struct {

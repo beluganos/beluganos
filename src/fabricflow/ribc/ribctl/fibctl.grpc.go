@@ -189,3 +189,17 @@ func (c *FIBGrpcController) GroupMod(mod *fibcapi.GroupMod) error {
 	_, err := c.client.SendGroupMod(context.Background(), mod)
 	return err
 }
+
+func (c *FIBGrpcController) OAMReply(reply *fibcapi.OAM_Reply, xid uint32) error {
+	if c.client == nil {
+		return fmt.Errorf("OAM: bad client status.")
+	}
+
+	oam := fibcapi.OAMReply{
+		Xid:   xid,
+		Reply: reply,
+	}
+
+	_, err := c.client.SendOAMReply(context.Background(), &oam)
+	return err
+}

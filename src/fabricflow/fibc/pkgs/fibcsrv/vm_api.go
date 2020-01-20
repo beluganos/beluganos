@@ -92,3 +92,13 @@ func (s *VMAPIServer) SendGroupMod(ctxt context.Context, mod *fibcapi.GroupMod) 
 func (s *VMAPIServer) Monitor(req *fibcapi.VmMonitorRequest, stream fibcapi.FIBCVmApi_MonitorServer) error {
 	return s.ctl.Monitor(req.ReId, stream, stream.Context().Done())
 }
+
+//
+// SendOAMReply process oam request message.
+//
+func (s *VMAPIServer) SendOAMReply(ctxt context.Context, oam *fibcapi.OAMReply) (*fibcapi.OAMReplyAck, error) {
+	if err := s.ctl.OAMReply(oam.Xid, oam.Reply); err != nil {
+		return nil, err
+	}
+	return &fibcapi.OAMReplyAck{}, nil
+}

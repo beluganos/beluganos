@@ -586,6 +586,8 @@ PACKAGE_URL=''
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+ENABLE_PYTHON_GRPC_FALSE
+ENABLE_PYTHON_GRPC_TRUE
 ENABLE_OPENNSL_FALSE
 ENABLE_OPENNSL_TRUE
 GOPREFIX
@@ -662,6 +664,7 @@ enable_option_checking
 enable_silent_rules
 with_go_prefix
 with_opennsl
+with_python_grpc
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1299,6 +1302,7 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-go-prefix        GOPATH [default=~/go]
   --with-opennsl          enable OpenNSL. [default=no]
+  --with-python-grpc      generage grpc for python. [default=yes]
 
 Report bugs to <admin@example.net>.
 _ACEOF
@@ -2381,6 +2385,23 @@ else
 fi
 
 
+
+# Check whether --with-python-grpc was given.
+if test "${with_python_grpc+set}" = set; then :
+  withval=$with_python_grpc;
+else
+  with_python_grpc=yes
+fi
+
+ if test "$with_python_grpc" = "yes"; then
+  ENABLE_PYTHON_GRPC_TRUE=
+  ENABLE_PYTHON_GRPC_FALSE='#'
+else
+  ENABLE_PYTHON_GRPC_TRUE='#'
+  ENABLE_PYTHON_GRPC_FALSE=
+fi
+
+
 #
 # Makefiles
 #
@@ -2542,6 +2563,10 @@ $as_echo "done" >&6; }
 
 if test -z "${ENABLE_OPENNSL_TRUE}" && test -z "${ENABLE_OPENNSL_FALSE}"; then
   as_fn_error $? "conditional \"ENABLE_OPENNSL\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_PYTHON_GRPC_TRUE}" && test -z "${ENABLE_PYTHON_GRPC_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_PYTHON_GRPC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

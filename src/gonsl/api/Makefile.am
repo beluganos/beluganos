@@ -9,9 +9,11 @@ go-test:
 py-test:
 	pylint ${PY_LIST}
 
-proto:
-	protoc -I=. --go_out=plugins=grpc:. ${PROTOS}
-	python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ${PROTOS}
+proto: $(PROTOS)
+	protoc -I=. --go_out=plugins=grpc:. $<
+if ENABLE_PYTHON_GRPC
+	python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. $<
+endif
 
 all-local: proto
 

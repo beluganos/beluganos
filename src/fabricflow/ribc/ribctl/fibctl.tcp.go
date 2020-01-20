@@ -20,6 +20,7 @@ package ribctl
 import (
 	fibcapi "fabricflow/fibc/api"
 	fibcnet "fabricflow/fibc/net"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -87,4 +88,8 @@ func (f *FIBTcpController) FlowMod(mod *fibcapi.FlowMod) error {
 
 func (f *FIBTcpController) GroupMod(mod *fibcapi.GroupMod) error {
 	return f.Client.Write(mod, 0)
+}
+
+func (f *FIBTcpController) OAMReply(oam *fibcapi.OAM_Reply, xid uint32) error {
+	return fmt.Errorf("oam unsupported.")
 }

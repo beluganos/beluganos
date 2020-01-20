@@ -31,7 +31,7 @@ var WaitTimeout = errors.New("timeout")
 // Waiter is used to sync request and async response
 //
 type Waiter interface {
-	Set(interface{})
+	Set(interface{}, interface{})
 	SetError(error)
 	Wait(time.Duration) error
 }
@@ -57,7 +57,7 @@ func NewSimpleWaiter() *SimpleWaiter {
 //
 // Set sets wait signal.
 //
-func (w *SimpleWaiter) Set(v interface{}) {
+func (w *SimpleWaiter) Set(k interface{}, v interface{}) {
 	w.Close()
 }
 

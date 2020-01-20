@@ -35,6 +35,12 @@ AC_ARG_WITH([opennsl],
 
 AM_CONDITIONAL([ENABLE_OPENNSL], [test "$with_opennsl" = "yes"])
 
+AC_ARG_WITH([python-grpc],
+            [AS_HELP_STRING([--with-python-grpc], [generage grpc for python. @<:@default=yes@:>@])],
+	    [],
+	    [with_python_grpc=yes])
+AM_CONDITIONAL([ENABLE_PYTHON_GRPC], [test "$with_python_grpc" = "yes"])
+
 #
 # Makefiles
 #

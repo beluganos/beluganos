@@ -208,6 +208,13 @@ func (r *RIBController) FIBCL2AddrStatus(hdr *fibcnet.Header, msg *fibcapi.L2Add
 	}
 }
 
+func (r *RIBController) FIBCOAMAuditRouteCntRequest(hdr *fibcnet.Header, oam *fibcapi.OAM_Request, audit *fibcapi.OAM_AuditRouteCntRequest) error {
+	r.log.Debugf("OAM(AuditRouteCnt): xid:%d", hdr.Xid)
+	fibcapi.LogOAMAuditRouteCntRequest(r.log, log.DebugLevel, audit)
+
+	return r.StartAuditRouteCnt(hdr.Xid)
+}
+
 func (r *RIBController) NetlinkNode(nlmsg *nlamsg.NetlinkMessage, node *nlamsg.Node) {
 	r.log.Debugf("NODE: nid:%d", node.NId)
 

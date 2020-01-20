@@ -134,8 +134,8 @@ func (c *DPCtl) MultipartReply(xid uint32, reply *fibcapi.FFMultipart_Reply) err
 	}
 
 	c.db.Waiters().Select(xid, func(w fibcdbm.Waiter) {
-		c.log.Debugf("MP.Reply: set waiter. xid:%d", xid)
-		w.Set(reply)
+		fibcapi.LogFFMultipartReply(c.log, log.DebugLevel, reply, xid)
+		w.Set(nil, reply)
 	})
 
 	return nil
@@ -293,5 +293,13 @@ func (c *DPCtl) L2AddrStatus(dpID uint64, addrs []*fibcapi.L2Addr) error {
 		return err
 	}
 
+	return nil
+}
+
+func (c *DPCtl) OAMReply(xid uint32, reply *fibcapi.OAM_Reply) error {
+	c.db.Waiters().Select(xid, func(w fibcdbm.Waiter) {
+		fibcapi.LogOAMReply(c.log, log.DebugLevel, reply, xid)
+		w.Set("dp", reply)
+	})
 	return nil
 }

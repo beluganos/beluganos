@@ -28,6 +28,7 @@ import (
 
 const (
 	apAPIPortStatWaitMax = 3 * time.Second
+	apAPIOAMWaitMax      = 30 * time.Second
 )
 
 var apCtlPortStatsNames = []string{
@@ -47,8 +48,9 @@ var apCtlPortStatsNames = []string{
 // APCtl is ap api controller
 //
 type APCtl struct {
-	db        *DBCtl
-	psTimeout time.Duration
+	db         *DBCtl
+	psTimeout  time.Duration
+	oamTimeout time.Duration
 
 	stats *fibcdbm.StatsGroup
 	log   *log.Entry
@@ -59,8 +61,9 @@ type APCtl struct {
 //
 func NewAPCtl(db *DBCtl) *APCtl {
 	return &APCtl{
-		db:        db,
-		psTimeout: apAPIPortStatWaitMax,
+		db:         db,
+		psTimeout:  apAPIPortStatWaitMax,
+		oamTimeout: apAPIOAMWaitMax,
 
 		stats: NewAPStats(db),
 		log:   log.WithFields(log.Fields{"module": "apctl"}),
@@ -395,4 +398,80 @@ func (c *APCtl) GetStats(stream fibcapi.FIBCApApi_GetStatsServer) error {
 	})
 
 	return nil
+}
+
+func (c *APCtl) RunOAM(req *fibcapi.OAM_Request) error {
+	w := NewOAMWaiter(req)
+	c.db.VMSet().Range(func(e fibcdbm.DPEntry) {
+		w.SetREID(e.(*VMAPIMonitorEntry).REID())
+	})
+	c.db.VSSet().Range(func(e fibcdbm.DPEntry) {
+		w.SetVSID(e.(*VSAPIMonitorEntry).VSID())
+	})
+	c.db.DPSet().Range(func(e fibcdbm.DPEntry) {
+		w.SetDPID(e.(*DPAPIMonitorEntry).DPID())
+	})
+
+	xid := c.db.Waiters().Register(w)
+	// Unregister(xid) is called on OAM-goroutine.
+
+	c.log.Debugf("RunOAM: xid:%d num:%d", xid, w.RestNum)
+
+	for reID := range w.VMReply {
+		c.log.Debugf("RunOAM: re_id:%s xid:%d", reID, xid)
+
+		req.ReId = reID
+		msg := NewVMMonitorReplyOAM(req, xid)
+		if err := c.db.SendVMMonitorReply(reID, msg); err != nil {
+			c.log.Errorf("RunOAM: send error. re_id:%s xid:%d", reID, xid)
+		}
+	}
+
+	req.ReId = "" // clear
+
+	for vsID := range w.VSReply {
+		c.log.Debugf("RunOAM: vs_id:%d xid:%d", vsID, xid)
+
+		req.DpId = vsID
+		msg := NewVSMonitorReplyOAM(req, xid)
+		if err := c.db.SendVSMonitorReply(vsID, msg); err != nil {
+			c.log.Errorf("RunOAM: send error. vs_id:%d xid:%d", vsID, xid)
+		}
+	}
+
+	for dpID := range w.DPReply {
+		c.log.Debugf("RunOAM: dp_id:%d xid:%d", dpID, xid)
+
+		req.DpId = dpID
+		msg := NewDPMonitorReplyOAM(req, xid)
+		if err := c.db.SendDPMonitorReply(dpID, msg); err != nil {
+			c.log.Errorf("RunOAM: send error. dp_id:%d xid:%d", dpID, xid)
+		}
+	}
+
+	req.DpId = 0 // clear
+
+	go c.serveOAMReply(w, xid)
+
+	return nil
+}
+
+func (c *APCtl) serveOAMReply(w *OAMWaiter, xid uint32) {
+	defer c.db.Waiters().Unregister(xid)
+
+	c.log.Debugf("OAMReply: start. xid:%d", xid)
+
+	if err := w.Wait(c.oamTimeout); err != nil {
+		c.log.Errorf("OAMReply: wait error. xid:%d %s", xid, err)
+		return
+	}
+
+	c.log.Debugf("OAMReply: wait done. xid:%d", xid)
+
+	if err := w.Check(); err != nil {
+		c.log.Errorf("OAMReply: check error. xid:%d %s", xid, err)
+		return
+	}
+
+	c.log.Debugf("OAMReply: end. xid:%d", xid)
 }

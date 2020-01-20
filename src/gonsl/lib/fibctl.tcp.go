@@ -97,3 +97,7 @@ func (c *FIBTcpController) L2AddrStatus(status *fibcapi.FFL2AddrStatus) error {
 func (c *FIBTcpController) MultipartReply(reply *fibcapi.FFMultipart_Reply, xid uint32) error {
 	return c.Client.Write(reply, xid)
 }
+
+func (c *FIBTcpController) OAMReply(reply *fibcapi.OAM_Reply, xid uint32) error {
+	return fmt.Errorf("oam is unsupported.")
+}

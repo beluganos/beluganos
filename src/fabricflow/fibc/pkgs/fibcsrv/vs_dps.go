@@ -66,6 +66,13 @@ func (m *VSAPIMonitorEntry) Remote() string {
 }
 
 //
+// VSID returns vs-id.
+//
+func (m *VSAPIMonitorEntry) VSID() uint64 {
+	return m.vsID
+}
+
+//
 // NewVSAPIMonitorEntryID returns entry-id.
 //
 func NewVSAPIMonitorEntryID(vsID uint64) string {

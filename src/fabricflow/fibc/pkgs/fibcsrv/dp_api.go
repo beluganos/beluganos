@@ -104,3 +104,13 @@ func (s *DPAPIServer) SendMultipartReply(ctxt context.Context, mp *fibcapi.DpMul
 func (s *DPAPIServer) Monitor(req *fibcapi.DpMonitorRequest, stream fibcapi.FIBCDpApi_MonitorServer) error {
 	return s.ctl.Monitor(req.DpId, stream, stream.Context().Done())
 }
+
+//
+// SendOAMReply process oam request message.
+//
+func (s *DPAPIServer) SendOAMReply(ctxt context.Context, oam *fibcapi.OAMReply) (*fibcapi.OAMReplyAck, error) {
+	if err := s.ctl.OAMReply(oam.Xid, oam.Reply); err != nil {
+		return nil, err
+	}
+	return &fibcapi.OAMReplyAck{}, nil
+}

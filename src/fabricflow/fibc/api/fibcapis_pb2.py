@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='fibcapi',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0e\x66ibcapis.proto\x12\x07\x66ibcapi\x1a\rfibcapi.proto\"\x0c\n\nHelloReply\"\x11\n\x0fPortConfigReply\"\r\n\x0bL2AddrReply\"\x0e\n\x0c\x46lowModReply\"\x0f\n\rGroupModReply\"\x13\n\x11L2AddrStatusReply\"\x0e\n\x0c\x46\x46HelloReply\"\x0f\n\rFFPacketReply\"\x11\n\x0f\x46\x46PacketInReply\"\x13\n\x11\x46\x46PortStatusReply\"\x12\n\x10\x41pMonitorRequest\">\n\x11\x41pMonitorReplyLog\x12\x0c\n\x04line\x18\x01 \x01(\t\x12\r\n\x05level\x18\x02 \x01(\r\x12\x0c\n\x04time\x18\x03 \x01(\x03\"C\n\x0e\x41pMonitorReply\x12)\n\x03log\x18\x01 \x01(\x0b\x32\x1a.fibcapi.ApMonitorReplyLogH\x00\x42\x06\n\x04\x62ody\"\x19\n\x17\x41pGetPortEntriesRequest\"\x17\n\x15\x41pGetIdEntriesRequest\">\n\x15\x41pGetDpEntriesRequest\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.fibcapi.DbDpEntry.Type\"\x15\n\x13\x41pAddPortEntryReply\"\x13\n\x11\x41pAddIdEntryReply\"\x15\n\x13\x41pDelPortEntryReply\"\x13\n\x11\x41pDelIdEntryReply\"F\n\x15\x41pGetPortStatsRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\x0f\n\x07port_no\x18\x02 \x01(\r\x12\r\n\x05names\x18\x03 \x03(\t\"m\n\x15\x41pModPortStatsRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\x0f\n\x07port_no\x18\x02 \x01(\r\x12%\n\x03\x63md\x18\x03 \x01(\x0e\x32\x18.fibcapi.FFPortStats.Cmd\x12\r\n\x05names\x18\x04 \x03(\t\"\x15\n\x13\x41pModPortStatsReply\"!\n\x10VmMonitorRequest\x12\r\n\x05re_id\x18\x01 \x01(\t\"\x9d\x01\n\x0eVmMonitorReply\x12*\n\x0bport_status\x18\x01 \x01(\x0b\x32\x13.fibcapi.PortStatusH\x00\x12&\n\tdp_status\x18\x02 \x01(\x0b\x32\x11.fibcapi.DpStatusH\x00\x12/\n\x0el2_addr_status\x18\x03 \x01(\x0b\x32\x15.fibcapi.L2AddrStatusH\x00\x42\x06\n\x04\x62ody\"K\n\x10VsMonitorRequest\x12\r\n\x05vs_id\x18\x01 \x01(\x04\x12(\n\x07\x64p_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.FFHello.DpType\"l\n\x0eVsMonitorReply\x12*\n\npacket_out\x18\x01 \x01(\x0b\x32\x14.fibcapi.FFPacketOutH\x00\x12&\n\x08port_mod\x18\x02 \x01(\x0b\x32\x12.fibcapi.FFPortModH\x00\x42\x06\n\x04\x62ody\"P\n\x12\x44pMultipartRequest\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12-\n\x07request\x18\x02 \x01(\x0b\x32\x1c.fibcapi.FFMultipart.Request\"J\n\x10\x44pMultipartReply\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12)\n\x05reply\x18\x02 \x01(\x0b\x32\x1a.fibcapi.FFMultipart.Reply\"\x15\n\x13\x44pMultipartReplyAck\"K\n\x10\x44pMonitorRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12(\n\x07\x64p_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.FFHello.DpType\"\xec\x01\n\x0e\x44pMonitorReply\x12*\n\npacket_out\x18\x01 \x01(\x0b\x32\x14.fibcapi.FFPacketOutH\x00\x12&\n\x08port_mod\x18\x02 \x01(\x0b\x32\x12.fibcapi.FFPortModH\x00\x12$\n\x08\x66low_mod\x18\x03 \x01(\x0b\x32\x10.fibcapi.FlowModH\x00\x12&\n\tgroup_mod\x18\x04 \x01(\x0b\x32\x11.fibcapi.GroupModH\x00\x12\x30\n\tmultipart\x18\x05 \x01(\x0b\x32\x1b.fibcapi.DpMultipartRequestH\x00\x42\x06\n\x04\x62ody\"*\n\tDbPortKey\x12\r\n\x05re_id\x18\x01 \x01(\t\x12\x0e\n\x06ifname\x18\x02 \x01(\t\"K\n\x0b\x44\x62PortValue\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\r\n\x05re_id\x18\x02 \x01(\t\x12\x0f\n\x07port_id\x18\x03 \x01(\r\x12\r\n\x05\x65nter\x18\x04 \x01(\x08\"\xf3\x01\n\x0b\x44\x62PortEntry\x12\x1f\n\x03key\x18\x01 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12&\n\nparent_key\x18\x02 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12&\n\nmaster_key\x18\x03 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12%\n\x07vm_port\x18\x04 \x01(\x0b\x32\x14.fibcapi.DbPortValue\x12%\n\x07\x64p_port\x18\x05 \x01(\x0b\x32\x14.fibcapi.DbPortValue\x12%\n\x07vs_port\x18\x06 \x01(\x0b\x32\x14.fibcapi.DbPortValue\")\n\tDbIdEntry\x12\r\n\x05re_id\x18\x01 \x01(\t\x12\r\n\x05\x64p_id\x18\x02 \x01(\x04\"\x8b\x01\n\tDbDpEntry\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.fibcapi.DbDpEntry.Type\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0e\n\x06remote\x18\x03 \x01(\t\";\n\x04Type\x12\x07\n\x03NOP\x10\x00\x12\t\n\x05\x41PMON\x10\x01\x12\t\n\x05VMMON\x10\x02\x12\t\n\x05\x44PMON\x10\x03\x12\t\n\x05VSMON\x10\x04\"8\n\nStatsEntry\x12\r\n\x05group\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\x04\"\x13\n\x11\x41pGetStatsRequest2\x91\x06\n\tFIBCApApi\x12\x41\n\x07Monitor\x12\x19.fibcapi.ApMonitorRequest\x1a\x17.fibcapi.ApMonitorReply\"\x00\x30\x01\x12H\n\x0cGetPortStats\x12\x1e.fibcapi.ApGetPortStatsRequest\x1a\x14.fibcapi.FFPortStats\"\x00\x30\x01\x12N\n\x0cModPortStats\x12\x1e.fibcapi.ApModPortStatsRequest\x1a\x1c.fibcapi.ApModPortStatsReply\"\x00\x12L\n\x0eGetPortEntries\x12 .fibcapi.ApGetPortEntriesRequest\x1a\x14.fibcapi.DbPortEntry\"\x00\x30\x01\x12\x46\n\x0cGetIDEntries\x12\x1e.fibcapi.ApGetIdEntriesRequest\x1a\x12.fibcapi.DbIdEntry\"\x00\x30\x01\x12\x46\n\x0cGetDpEntries\x12\x1e.fibcapi.ApGetDpEntriesRequest\x1a\x12.fibcapi.DbDpEntry\"\x00\x30\x01\x12\x44\n\x0c\x41\x64\x64PortEntry\x12\x14.fibcapi.DbPortEntry\x1a\x1c.fibcapi.ApAddPortEntryReply\"\x00\x12>\n\nAddIDEntry\x12\x12.fibcapi.DbIdEntry\x1a\x1a.fibcapi.ApAddIdEntryReply\"\x00\x12\x42\n\x0c\x44\x65lPortEntry\x12\x12.fibcapi.DbPortKey\x1a\x1c.fibcapi.ApDelPortEntryReply\"\x00\x12>\n\nDelIDEntry\x12\x12.fibcapi.DbIdEntry\x1a\x1a.fibcapi.ApDelIdEntryReply\"\x00\x12?\n\x08GetStats\x12\x1a.fibcapi.ApGetStatsRequest\x1a\x13.fibcapi.StatsEntry\"\x00\x30\x01\x32\xbc\x02\n\tFIBCVmApi\x12\x32\n\tSendHello\x12\x0e.fibcapi.Hello\x1a\x13.fibcapi.HelloReply\"\x00\x12\x41\n\x0eSendPortConfig\x12\x13.fibcapi.PortConfig\x1a\x18.fibcapi.PortConfigReply\"\x00\x12\x38\n\x0bSendFlowMod\x12\x10.fibcapi.FlowMod\x1a\x15.fibcapi.FlowModReply\"\x00\x12;\n\x0cSendGroupMod\x12\x11.fibcapi.GroupMod\x1a\x16.fibcapi.GroupModReply\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.VmMonitorRequest\x1a\x17.fibcapi.VmMonitorReply\"\x00\x30\x01\x32\x84\x02\n\tFIBCVsApi\x12\x36\n\tSendHello\x12\x10.fibcapi.FFHello\x1a\x15.fibcapi.FFHelloReply\"\x00\x12;\n\x0cSendFFPacket\x12\x11.fibcapi.FFPacket\x1a\x16.fibcapi.FFPacketReply\"\x00\x12?\n\x0cSendPacketIn\x12\x13.fibcapi.FFPacketIn\x1a\x18.fibcapi.FFPacketInReply\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.VsMonitorRequest\x1a\x17.fibcapi.VsMonitorReply\"\x00\x30\x01\x32\xaa\x03\n\tFIBCDpApi\x12\x36\n\tSendHello\x12\x10.fibcapi.FFHello\x1a\x15.fibcapi.FFHelloReply\"\x00\x12?\n\x0cSendPacketIn\x12\x13.fibcapi.FFPacketIn\x1a\x18.fibcapi.FFPacketInReply\"\x00\x12\x45\n\x0eSendPortStatus\x12\x15.fibcapi.FFPortStatus\x1a\x1a.fibcapi.FFPortStatusReply\"\x00\x12I\n\x10SendL2AddrStatus\x12\x17.fibcapi.FFL2AddrStatus\x1a\x1a.fibcapi.L2AddrStatusReply\"\x00\x12O\n\x12SendMultipartReply\x12\x19.fibcapi.DpMultipartReply\x1a\x1c.fibcapi.DpMultipartReplyAck\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.DpMonitorRequest\x1a\x17.fibcapi.DpMonitorReply\"\x00\x30\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x0e\x66ibcapis.proto\x12\x07\x66ibcapi\x1a\rfibcapi.proto\"\x0c\n\nHelloReply\"\x11\n\x0fPortConfigReply\"\r\n\x0bL2AddrReply\"\x0e\n\x0c\x46lowModReply\"\x0f\n\rGroupModReply\"\x13\n\x11L2AddrStatusReply\"\x0e\n\x0c\x46\x46HelloReply\"\x0f\n\rFFPacketReply\"\x11\n\x0f\x46\x46PacketInReply\"\x13\n\x11\x46\x46PortStatusReply\"\x12\n\x10\x41pMonitorRequest\">\n\x11\x41pMonitorReplyLog\x12\x0c\n\x04line\x18\x01 \x01(\t\x12\r\n\x05level\x18\x02 \x01(\r\x12\x0c\n\x04time\x18\x03 \x01(\x03\"C\n\x0e\x41pMonitorReply\x12)\n\x03log\x18\x01 \x01(\x0b\x32\x1a.fibcapi.ApMonitorReplyLogH\x00\x42\x06\n\x04\x62ody\"\x19\n\x17\x41pGetPortEntriesRequest\"\x17\n\x15\x41pGetIdEntriesRequest\">\n\x15\x41pGetDpEntriesRequest\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.fibcapi.DbDpEntry.Type\"\x15\n\x13\x41pAddPortEntryReply\"\x13\n\x11\x41pAddIdEntryReply\"\x15\n\x13\x41pDelPortEntryReply\"\x13\n\x11\x41pDelIdEntryReply\"F\n\x15\x41pGetPortStatsRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\x0f\n\x07port_no\x18\x02 \x01(\r\x12\r\n\x05names\x18\x03 \x03(\t\"m\n\x15\x41pModPortStatsRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\x0f\n\x07port_no\x18\x02 \x01(\r\x12%\n\x03\x63md\x18\x03 \x01(\x0e\x32\x18.fibcapi.FFPortStats.Cmd\x12\r\n\x05names\x18\x04 \x03(\t\"\x15\n\x13\x41pModPortStatsReply\"!\n\x10VmMonitorRequest\x12\r\n\x05re_id\x18\x01 \x01(\t\"\xc1\x01\n\x0eVmMonitorReply\x12*\n\x0bport_status\x18\x01 \x01(\x0b\x32\x13.fibcapi.PortStatusH\x00\x12&\n\tdp_status\x18\x02 \x01(\x0b\x32\x11.fibcapi.DpStatusH\x00\x12/\n\x0el2_addr_status\x18\x03 \x01(\x0b\x32\x15.fibcapi.L2AddrStatusH\x00\x12\"\n\x03oam\x18\x04 \x01(\x0b\x32\x13.fibcapi.OAMRequestH\x00\x42\x06\n\x04\x62ody\"K\n\x10VsMonitorRequest\x12\r\n\x05vs_id\x18\x01 \x01(\x04\x12(\n\x07\x64p_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.FFHello.DpType\"\x90\x01\n\x0eVsMonitorReply\x12*\n\npacket_out\x18\x01 \x01(\x0b\x32\x14.fibcapi.FFPacketOutH\x00\x12&\n\x08port_mod\x18\x02 \x01(\x0b\x32\x12.fibcapi.FFPortModH\x00\x12\"\n\x03oam\x18\x03 \x01(\x0b\x32\x13.fibcapi.OAMRequestH\x00\x42\x06\n\x04\x62ody\"P\n\x12\x44pMultipartRequest\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12-\n\x07request\x18\x02 \x01(\x0b\x32\x1c.fibcapi.FFMultipart.Request\"J\n\x10\x44pMultipartReply\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12)\n\x05reply\x18\x02 \x01(\x0b\x32\x1a.fibcapi.FFMultipart.Reply\"\x15\n\x13\x44pMultipartReplyAck\"K\n\x10\x44pMonitorRequest\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12(\n\x07\x64p_type\x18\x02 \x01(\x0e\x32\x17.fibcapi.FFHello.DpType\"\x90\x02\n\x0e\x44pMonitorReply\x12*\n\npacket_out\x18\x01 \x01(\x0b\x32\x14.fibcapi.FFPacketOutH\x00\x12&\n\x08port_mod\x18\x02 \x01(\x0b\x32\x12.fibcapi.FFPortModH\x00\x12$\n\x08\x66low_mod\x18\x03 \x01(\x0b\x32\x10.fibcapi.FlowModH\x00\x12&\n\tgroup_mod\x18\x04 \x01(\x0b\x32\x11.fibcapi.GroupModH\x00\x12\x30\n\tmultipart\x18\x05 \x01(\x0b\x32\x1b.fibcapi.DpMultipartRequestH\x00\x12\"\n\x03oam\x18\x06 \x01(\x0b\x32\x13.fibcapi.OAMRequestH\x00\x42\x06\n\x04\x62ody\"@\n\nOAMRequest\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12%\n\x07request\x18\x02 \x01(\x0b\x32\x14.fibcapi.OAM.Request\":\n\x08OAMReply\x12\x0b\n\x03xid\x18\x01 \x01(\r\x12!\n\x05reply\x18\x02 \x01(\x0b\x32\x12.fibcapi.OAM.Reply\"\r\n\x0bOAMReplyAck\"*\n\tDbPortKey\x12\r\n\x05re_id\x18\x01 \x01(\t\x12\x0e\n\x06ifname\x18\x02 \x01(\t\"K\n\x0b\x44\x62PortValue\x12\r\n\x05\x64p_id\x18\x01 \x01(\x04\x12\r\n\x05re_id\x18\x02 \x01(\t\x12\x0f\n\x07port_id\x18\x03 \x01(\r\x12\r\n\x05\x65nter\x18\x04 \x01(\x08\"\xf3\x01\n\x0b\x44\x62PortEntry\x12\x1f\n\x03key\x18\x01 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12&\n\nparent_key\x18\x02 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12&\n\nmaster_key\x18\x03 \x01(\x0b\x32\x12.fibcapi.DbPortKey\x12%\n\x07vm_port\x18\x04 \x01(\x0b\x32\x14.fibcapi.DbPortValue\x12%\n\x07\x64p_port\x18\x05 \x01(\x0b\x32\x14.fibcapi.DbPortValue\x12%\n\x07vs_port\x18\x06 \x01(\x0b\x32\x14.fibcapi.DbPortValue\")\n\tDbIdEntry\x12\r\n\x05re_id\x18\x01 \x01(\t\x12\r\n\x05\x64p_id\x18\x02 \x01(\x04\"\x8b\x01\n\tDbDpEntry\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.fibcapi.DbDpEntry.Type\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0e\n\x06remote\x18\x03 \x01(\t\";\n\x04Type\x12\x07\n\x03NOP\x10\x00\x12\t\n\x05\x41PMON\x10\x01\x12\t\n\x05VMMON\x10\x02\x12\t\n\x05\x44PMON\x10\x03\x12\t\n\x05VSMON\x10\x04\"8\n\nStatsEntry\x12\r\n\x05group\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\x04\"\x13\n\x11\x41pGetStatsRequest2\xc9\x06\n\tFIBCApApi\x12\x41\n\x07Monitor\x12\x19.fibcapi.ApMonitorRequest\x1a\x17.fibcapi.ApMonitorReply\"\x00\x30\x01\x12H\n\x0cGetPortStats\x12\x1e.fibcapi.ApGetPortStatsRequest\x1a\x14.fibcapi.FFPortStats\"\x00\x30\x01\x12N\n\x0cModPortStats\x12\x1e.fibcapi.ApModPortStatsRequest\x1a\x1c.fibcapi.ApModPortStatsReply\"\x00\x12L\n\x0eGetPortEntries\x12 .fibcapi.ApGetPortEntriesRequest\x1a\x14.fibcapi.DbPortEntry\"\x00\x30\x01\x12\x46\n\x0cGetIDEntries\x12\x1e.fibcapi.ApGetIdEntriesRequest\x1a\x12.fibcapi.DbIdEntry\"\x00\x30\x01\x12\x46\n\x0cGetDpEntries\x12\x1e.fibcapi.ApGetDpEntriesRequest\x1a\x12.fibcapi.DbDpEntry\"\x00\x30\x01\x12\x44\n\x0c\x41\x64\x64PortEntry\x12\x14.fibcapi.DbPortEntry\x1a\x1c.fibcapi.ApAddPortEntryReply\"\x00\x12>\n\nAddIDEntry\x12\x12.fibcapi.DbIdEntry\x1a\x1a.fibcapi.ApAddIdEntryReply\"\x00\x12\x42\n\x0c\x44\x65lPortEntry\x12\x12.fibcapi.DbPortKey\x1a\x1c.fibcapi.ApDelPortEntryReply\"\x00\x12>\n\nDelIDEntry\x12\x12.fibcapi.DbIdEntry\x1a\x1a.fibcapi.ApDelIdEntryReply\"\x00\x12?\n\x08GetStats\x12\x1a.fibcapi.ApGetStatsRequest\x1a\x13.fibcapi.StatsEntry\"\x00\x30\x01\x12\x36\n\x06RunOAM\x12\x14.fibcapi.OAM.Request\x1a\x14.fibcapi.OAMReplyAck\"\x00\x32\xf7\x02\n\tFIBCVmApi\x12\x32\n\tSendHello\x12\x0e.fibcapi.Hello\x1a\x13.fibcapi.HelloReply\"\x00\x12\x41\n\x0eSendPortConfig\x12\x13.fibcapi.PortConfig\x1a\x18.fibcapi.PortConfigReply\"\x00\x12\x38\n\x0bSendFlowMod\x12\x10.fibcapi.FlowMod\x1a\x15.fibcapi.FlowModReply\"\x00\x12;\n\x0cSendGroupMod\x12\x11.fibcapi.GroupMod\x1a\x16.fibcapi.GroupModReply\"\x00\x12\x39\n\x0cSendOAMReply\x12\x11.fibcapi.OAMReply\x1a\x14.fibcapi.OAMReplyAck\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.VmMonitorRequest\x1a\x17.fibcapi.VmMonitorReply\"\x00\x30\x01\x32\xbf\x02\n\tFIBCVsApi\x12\x36\n\tSendHello\x12\x10.fibcapi.FFHello\x1a\x15.fibcapi.FFHelloReply\"\x00\x12;\n\x0cSendFFPacket\x12\x11.fibcapi.FFPacket\x1a\x16.fibcapi.FFPacketReply\"\x00\x12?\n\x0cSendPacketIn\x12\x13.fibcapi.FFPacketIn\x1a\x18.fibcapi.FFPacketInReply\"\x00\x12\x39\n\x0cSendOAMReply\x12\x11.fibcapi.OAMReply\x1a\x14.fibcapi.OAMReplyAck\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.VsMonitorRequest\x1a\x17.fibcapi.VsMonitorReply\"\x00\x30\x01\x32\xe5\x03\n\tFIBCDpApi\x12\x36\n\tSendHello\x12\x10.fibcapi.FFHello\x1a\x15.fibcapi.FFHelloReply\"\x00\x12?\n\x0cSendPacketIn\x12\x13.fibcapi.FFPacketIn\x1a\x18.fibcapi.FFPacketInReply\"\x00\x12\x45\n\x0eSendPortStatus\x12\x15.fibcapi.FFPortStatus\x1a\x1a.fibcapi.FFPortStatusReply\"\x00\x12I\n\x10SendL2AddrStatus\x12\x17.fibcapi.FFL2AddrStatus\x1a\x1a.fibcapi.L2AddrStatusReply\"\x00\x12O\n\x12SendMultipartReply\x12\x19.fibcapi.DpMultipartReply\x1a\x1c.fibcapi.DpMultipartReplyAck\"\x00\x12\x39\n\x0cSendOAMReply\x12\x11.fibcapi.OAMReply\x1a\x14.fibcapi.OAMReplyAck\"\x00\x12\x41\n\x07Monitor\x12\x19.fibcapi.DpMonitorRequest\x1a\x17.fibcapi.DpMonitorReply\"\x00\x30\x01\x62\x06proto3')
   ,
   dependencies=[fibcapi__pb2.DESCRIPTOR,])
 
@@ -55,8 +55,8 @@ _DBDPENTRY_TYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2150,
-  serialized_end=2209,
+  serialized_start=2400,
+  serialized_end=2459,
 )
 _sym_db.RegisterEnumDescriptor(_DBDPENTRY_TYPE)
 
@@ -759,6 +759,13 @@ _VMMONITORREPLY = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='oam', full_name='fibcapi.VmMonitorReply.oam', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -775,7 +782,7 @@ _VMMONITORREPLY = _descriptor.Descriptor(
       index=0, containing_type=None, fields=[]),
   ],
   serialized_start=816,
-  serialized_end=973,
+  serialized_end=1009,
 )
 
 
@@ -812,8 +819,8 @@ _VSMONITORREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=975,
-  serialized_end=1050,
+  serialized_start=1011,
+  serialized_end=1086,
 )
 
 
@@ -838,6 +845,13 @@ _VSMONITORREPLY = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='oam', full_name='fibcapi.VsMonitorReply.oam', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -853,8 +867,8 @@ _VSMONITORREPLY = _descriptor.Descriptor(
       name='body', full_name='fibcapi.VsMonitorReply.body',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1052,
-  serialized_end=1160,
+  serialized_start=1089,
+  serialized_end=1233,
 )
 
 
@@ -891,8 +905,8 @@ _DPMULTIPARTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1162,
-  serialized_end=1242,
+  serialized_start=1235,
+  serialized_end=1315,
 )
 
 
@@ -929,8 +943,8 @@ _DPMULTIPARTREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1244,
-  serialized_end=1318,
+  serialized_start=1317,
+  serialized_end=1391,
 )
 
 
@@ -953,8 +967,8 @@ _DPMULTIPARTREPLYACK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1320,
-  serialized_end=1341,
+  serialized_start=1393,
+  serialized_end=1414,
 )
 
 
@@ -991,8 +1005,8 @@ _DPMONITORREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1343,
-  serialized_end=1418,
+  serialized_start=1416,
+  serialized_end=1491,
 )
 
 
@@ -1038,6 +1052,13 @@ _DPMONITORREPLY = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='oam', full_name='fibcapi.DpMonitorReply.oam', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1053,8 +1074,108 @@ _DPMONITORREPLY = _descriptor.Descriptor(
       name='body', full_name='fibcapi.DpMonitorReply.body',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1421,
-  serialized_end=1657,
+  serialized_start=1494,
+  serialized_end=1766,
+)
+
+
+_OAMREQUEST = _descriptor.Descriptor(
+  name='OAMRequest',
+  full_name='fibcapi.OAMRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='xid', full_name='fibcapi.OAMRequest.xid', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='request', full_name='fibcapi.OAMRequest.request', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1768,
+  serialized_end=1832,
+)
+
+
+_OAMREPLY = _descriptor.Descriptor(
+  name='OAMReply',
+  full_name='fibcapi.OAMReply',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='xid', full_name='fibcapi.OAMReply.xid', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='reply', full_name='fibcapi.OAMReply.reply', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1834,
+  serialized_end=1892,
+)
+
+
+_OAMREPLYACK = _descriptor.Descriptor(
+  name='OAMReplyAck',
+  full_name='fibcapi.OAMReplyAck',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1894,
+  serialized_end=1907,
 )
 
 
@@ -1091,8 +1212,8 @@ _DBPORTKEY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1659,
-  serialized_end=1701,
+  serialized_start=1909,
+  serialized_end=1951,
 )
 
 
@@ -1143,8 +1264,8 @@ _DBPORTVALUE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1703,
-  serialized_end=1778,
+  serialized_start=1953,
+  serialized_end=2028,
 )
 
 
@@ -1209,8 +1330,8 @@ _DBPORTENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1781,
-  serialized_end=2024,
+  serialized_start=2031,
+  serialized_end=2274,
 )
 
 
@@ -1247,8 +1368,8 @@ _DBIDENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2026,
-  serialized_end=2067,
+  serialized_start=2276,
+  serialized_end=2317,
 )
 
 
@@ -1293,8 +1414,8 @@ _DBDPENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2070,
-  serialized_end=2209,
+  serialized_start=2320,
+  serialized_end=2459,
 )
 
 
@@ -1338,8 +1459,8 @@ _STATSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2211,
-  serialized_end=2267,
+  serialized_start=2461,
+  serialized_end=2517,
 )
 
 
@@ -1362,8 +1483,8 @@ _APGETSTATSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2269,
-  serialized_end=2288,
+  serialized_start=2519,
+  serialized_end=2538,
 )
 
 _APMONITORREPLY.fields_by_name['log'].message_type = _APMONITORREPLYLOG
@@ -1375,6 +1496,7 @@ _APMODPORTSTATSREQUEST.fields_by_name['cmd'].enum_type = fibcapi__pb2._FFPORTSTA
 _VMMONITORREPLY.fields_by_name['port_status'].message_type = fibcapi__pb2._PORTSTATUS
 _VMMONITORREPLY.fields_by_name['dp_status'].message_type = fibcapi__pb2._DPSTATUS
 _VMMONITORREPLY.fields_by_name['l2_addr_status'].message_type = fibcapi__pb2._L2ADDRSTATUS
+_VMMONITORREPLY.fields_by_name['oam'].message_type = _OAMREQUEST
 _VMMONITORREPLY.oneofs_by_name['body'].fields.append(
   _VMMONITORREPLY.fields_by_name['port_status'])
 _VMMONITORREPLY.fields_by_name['port_status'].containing_oneof = _VMMONITORREPLY.oneofs_by_name['body']
@@ -1384,15 +1506,22 @@ _VMMONITORREPLY.fields_by_name['dp_status'].containing_oneof = _VMMONITORREPLY.o
 _VMMONITORREPLY.oneofs_by_name['body'].fields.append(
   _VMMONITORREPLY.fields_by_name['l2_addr_status'])
 _VMMONITORREPLY.fields_by_name['l2_addr_status'].containing_oneof = _VMMONITORREPLY.oneofs_by_name['body']
+_VMMONITORREPLY.oneofs_by_name['body'].fields.append(
+  _VMMONITORREPLY.fields_by_name['oam'])
+_VMMONITORREPLY.fields_by_name['oam'].containing_oneof = _VMMONITORREPLY.oneofs_by_name['body']
 _VSMONITORREQUEST.fields_by_name['dp_type'].enum_type = fibcapi__pb2._FFHELLO_DPTYPE
 _VSMONITORREPLY.fields_by_name['packet_out'].message_type = fibcapi__pb2._FFPACKETOUT
 _VSMONITORREPLY.fields_by_name['port_mod'].message_type = fibcapi__pb2._FFPORTMOD
+_VSMONITORREPLY.fields_by_name['oam'].message_type = _OAMREQUEST
 _VSMONITORREPLY.oneofs_by_name['body'].fields.append(
   _VSMONITORREPLY.fields_by_name['packet_out'])
 _VSMONITORREPLY.fields_by_name['packet_out'].containing_oneof = _VSMONITORREPLY.oneofs_by_name['body']
 _VSMONITORREPLY.oneofs_by_name['body'].fields.append(
   _VSMONITORREPLY.fields_by_name['port_mod'])
 _VSMONITORREPLY.fields_by_name['port_mod'].containing_oneof = _VSMONITORREPLY.oneofs_by_name['body']
+_VSMONITORREPLY.oneofs_by_name['body'].fields.append(
+  _VSMONITORREPLY.fields_by_name['oam'])
+_VSMONITORREPLY.fields_by_name['oam'].containing_oneof = _VSMONITORREPLY.oneofs_by_name['body']
 _DPMULTIPARTREQUEST.fields_by_name['request'].message_type = fibcapi__pb2._FFMULTIPART_REQUEST
 _DPMULTIPARTREPLY.fields_by_name['reply'].message_type = fibcapi__pb2._FFMULTIPART_REPLY
 _DPMONITORREQUEST.fields_by_name['dp_type'].enum_type = fibcapi__pb2._FFHELLO_DPTYPE
@@ -1401,6 +1530,7 @@ _DPMONITORREPLY.fields_by_name['port_mod'].message_type = fibcapi__pb2._FFPORTMO
 _DPMONITORREPLY.fields_by_name['flow_mod'].message_type = fibcapi__pb2._FLOWMOD
 _DPMONITORREPLY.fields_by_name['group_mod'].message_type = fibcapi__pb2._GROUPMOD
 _DPMONITORREPLY.fields_by_name['multipart'].message_type = _DPMULTIPARTREQUEST
+_DPMONITORREPLY.fields_by_name['oam'].message_type = _OAMREQUEST
 _DPMONITORREPLY.oneofs_by_name['body'].fields.append(
   _DPMONITORREPLY.fields_by_name['packet_out'])
 _DPMONITORREPLY.fields_by_name['packet_out'].containing_oneof = _DPMONITORREPLY.oneofs_by_name['body']
@@ -1416,6 +1546,11 @@ _DPMONITORREPLY.fields_by_name['group_mod'].containing_oneof = _DPMONITORREPLY.o
 _DPMONITORREPLY.oneofs_by_name['body'].fields.append(
   _DPMONITORREPLY.fields_by_name['multipart'])
 _DPMONITORREPLY.fields_by_name['multipart'].containing_oneof = _DPMONITORREPLY.oneofs_by_name['body']
+_DPMONITORREPLY.oneofs_by_name['body'].fields.append(
+  _DPMONITORREPLY.fields_by_name['oam'])
+_DPMONITORREPLY.fields_by_name['oam'].containing_oneof = _DPMONITORREPLY.oneofs_by_name['body']
+_OAMREQUEST.fields_by_name['request'].message_type = fibcapi__pb2._OAM_REQUEST
+_OAMREPLY.fields_by_name['reply'].message_type = fibcapi__pb2._OAM_REPLY
 _DBPORTENTRY.fields_by_name['key'].message_type = _DBPORTKEY
 _DBPORTENTRY.fields_by_name['parent_key'].message_type = _DBPORTKEY
 _DBPORTENTRY.fields_by_name['master_key'].message_type = _DBPORTKEY
@@ -1456,6 +1591,9 @@ DESCRIPTOR.message_types_by_name['DpMultipartReply'] = _DPMULTIPARTREPLY
 DESCRIPTOR.message_types_by_name['DpMultipartReplyAck'] = _DPMULTIPARTREPLYACK
 DESCRIPTOR.message_types_by_name['DpMonitorRequest'] = _DPMONITORREQUEST
 DESCRIPTOR.message_types_by_name['DpMonitorReply'] = _DPMONITORREPLY
+DESCRIPTOR.message_types_by_name['OAMRequest'] = _OAMREQUEST
+DESCRIPTOR.message_types_by_name['OAMReply'] = _OAMREPLY
+DESCRIPTOR.message_types_by_name['OAMReplyAck'] = _OAMREPLYACK
 DESCRIPTOR.message_types_by_name['DbPortKey'] = _DBPORTKEY
 DESCRIPTOR.message_types_by_name['DbPortValue'] = _DBPORTVALUE
 DESCRIPTOR.message_types_by_name['DbPortEntry'] = _DBPORTENTRY
@@ -1689,6 +1827,27 @@ DpMonitorReply = _reflection.GeneratedProtocolMessageType('DpMonitorReply', (_me
   ))
 _sym_db.RegisterMessage(DpMonitorReply)
 
+OAMRequest = _reflection.GeneratedProtocolMessageType('OAMRequest', (_message.Message,), dict(
+  DESCRIPTOR = _OAMREQUEST,
+  __module__ = 'fibcapis_pb2'
+  # @@protoc_insertion_point(class_scope:fibcapi.OAMRequest)
+  ))
+_sym_db.RegisterMessage(OAMRequest)
+
+OAMReply = _reflection.GeneratedProtocolMessageType('OAMReply', (_message.Message,), dict(
+  DESCRIPTOR = _OAMREPLY,
+  __module__ = 'fibcapis_pb2'
+  # @@protoc_insertion_point(class_scope:fibcapi.OAMReply)
+  ))
+_sym_db.RegisterMessage(OAMReply)
+
+OAMReplyAck = _reflection.GeneratedProtocolMessageType('OAMReplyAck', (_message.Message,), dict(
+  DESCRIPTOR = _OAMREPLYACK,
+  __module__ = 'fibcapis_pb2'
+  # @@protoc_insertion_point(class_scope:fibcapi.OAMReplyAck)
+  ))
+_sym_db.RegisterMessage(OAMReplyAck)
+
 DbPortKey = _reflection.GeneratedProtocolMessageType('DbPortKey', (_message.Message,), dict(
   DESCRIPTOR = _DBPORTKEY,
   __module__ = 'fibcapis_pb2'
@@ -1746,8 +1905,8 @@ _FIBCAPAPI = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=2291,
-  serialized_end=3076,
+  serialized_start=2541,
+  serialized_end=3382,
   methods=[
   _descriptor.MethodDescriptor(
     name='Monitor',
@@ -1848,6 +2007,15 @@ _FIBCAPAPI = _descriptor.ServiceDescriptor(
     output_type=_STATSENTRY,
     serialized_options=None,
   ),
+  _descriptor.MethodDescriptor(
+    name='RunOAM',
+    full_name='fibcapi.FIBCApApi.RunOAM',
+    index=11,
+    containing_service=None,
+    input_type=fibcapi__pb2._OAM_REQUEST,
+    output_type=_OAMREPLYACK,
+    serialized_options=None,
+  ),
 ])
 _sym_db.RegisterServiceDescriptor(_FIBCAPAPI)
 
@@ -1860,8 +2028,8 @@ _FIBCVMAPI = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=1,
   serialized_options=None,
-  serialized_start=3079,
-  serialized_end=3395,
+  serialized_start=3385,
+  serialized_end=3760,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendHello',
@@ -1900,9 +2068,18 @@ _FIBCVMAPI = _descriptor.ServiceDescriptor(
     serialized_options=None,
   ),
   _descriptor.MethodDescriptor(
+    name='SendOAMReply',
+    full_name='fibcapi.FIBCVmApi.SendOAMReply',
+    index=4,
+    containing_service=None,
+    input_type=_OAMREPLY,
+    output_type=_OAMREPLYACK,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
     name='Monitor',
     full_name='fibcapi.FIBCVmApi.Monitor',
-    index=4,
+    index=5,
     containing_service=None,
     input_type=_VMMONITORREQUEST,
     output_type=_VMMONITORREPLY,
@@ -1920,8 +2097,8 @@ _FIBCVSAPI = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=2,
   serialized_options=None,
-  serialized_start=3398,
-  serialized_end=3658,
+  serialized_start=3763,
+  serialized_end=4082,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendHello',
@@ -1951,9 +2128,18 @@ _FIBCVSAPI = _descriptor.ServiceDescriptor(
     serialized_options=None,
   ),
   _descriptor.MethodDescriptor(
+    name='SendOAMReply',
+    full_name='fibcapi.FIBCVsApi.SendOAMReply',
+    index=3,
+    containing_service=None,
+    input_type=_OAMREPLY,
+    output_type=_OAMREPLYACK,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
     name='Monitor',
     full_name='fibcapi.FIBCVsApi.Monitor',
-    index=3,
+    index=4,
     containing_service=None,
     input_type=_VSMONITORREQUEST,
     output_type=_VSMONITORREPLY,
@@ -1971,8 +2157,8 @@ _FIBCDPAPI = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=3,
   serialized_options=None,
-  serialized_start=3661,
-  serialized_end=4087,
+  serialized_start=4085,
+  serialized_end=4570,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendHello',
@@ -2020,9 +2206,18 @@ _FIBCDPAPI = _descriptor.ServiceDescriptor(
     serialized_options=None,
   ),
   _descriptor.MethodDescriptor(
+    name='SendOAMReply',
+    full_name='fibcapi.FIBCDpApi.SendOAMReply',
+    index=5,
+    containing_service=None,
+    input_type=_OAMREPLY,
+    output_type=_OAMREPLYACK,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
     name='Monitor',
     full_name='fibcapi.FIBCDpApi.Monitor',
-    index=5,
+    index=6,
     containing_service=None,
     input_type=_DPMONITORREQUEST,
     output_type=_DPMONITORREPLY,

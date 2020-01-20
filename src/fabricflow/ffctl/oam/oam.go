@@ -15,36 +15,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ribctl
+package oam
 
-import fibcapi "fabricflow/fibc/api"
+import "github.com/spf13/cobra"
 
-const (
-	FIBCTypeTCP     = "tcp"
-	FIBCTypeGrpc    = "grpc"
-	FIBCTypeDefault = FIBCTypeGrpc
-)
+func NewCmd() *cobra.Command {
+	rootCmd := &cobra.Command{
+		Use:   "oam",
+		Short: "oam command.",
+	}
 
-type FIBController interface {
-	Start() error
-	Stop()
-	Conn() <-chan bool
-	Recv() <-chan *fibcapi.VmMonitorReply
-	Hello(*fibcapi.Hello) error
-	PortConfig(*fibcapi.PortConfig) error
-	FlowMod(*fibcapi.FlowMod) error
-	GroupMod(*fibcapi.GroupMod) error
-	OAMReply(*fibcapi.OAM_Reply, uint32) error
-	FIBCType() string
+	rootCmd.AddCommand(
+		NewAuditCommand(),
+	)
+
+	return rootCmd
 }
 
-func NewFIBController(fibcType, addr, reId string) FIBController {
-	switch fibcType {
-	case FIBCTypeTCP:
-		return NewFIBTcpController(addr)
-
-	default:
-		return NewFIBGrpcController(addr, reId)
-
+func NewAuditCommand() *cobra.Command {
+	rootCmd := &cobra.Command{
+		Use:   "audit",
+		Short: "audit command",
 	}
+
+	audit := NewAuditCmd()
+
+	rootCmd.AddCommand(audit.setFlags(
+		&cobra.Command{
+			Use:     "route-cnt",
+			Short:   "audit route count,",
+			Aliases: []string{"rc"},
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return audit.routeCnt()
+			},
+		},
+	))
+
+	return rootCmd
 }

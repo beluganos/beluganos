@@ -21,6 +21,7 @@ import (
 	"context"
 	"encoding/hex"
 	fibcapi "fabricflow/fibc/api"
+	fibcnet "fabricflow/fibc/net"
 	"fmt"
 	"govsw/pkgs/govsw"
 	"io"
@@ -162,6 +163,16 @@ func (a *MyApp) sendFFPacket(ifindex int, reId, ifname string) error {
 	return err
 }
 
+func (a *MyApp) sendOAMReply(reply *fibcapi.OAM_Reply, xid uint32) error {
+	msg := fibcapi.OAMReply{
+		Xid:   xid,
+		Reply: reply,
+	}
+
+	_, err := a.client.SendOAMReply(context.Background(), &msg)
+	return err
+}
+
 func (a *MyApp) monitor() {
 	monreq := fibcapi.VsMonitorRequest{
 		VsId:   a.db.DpID(),
@@ -186,34 +197,19 @@ FOR_LOOP:
 			a.log.Errorf("monitor: exit. recv error. %s", err)
 			break FOR_LOOP
 		}
-		if m != nil {
-			switch msg := m.Body.(type) {
-			case *fibcapi.VsMonitorReply_PacketOut:
-				a.log.Tracef("monitor: packet out dpid:%d port:%d #%d",
-					msg.PacketOut.DpId,
-					msg.PacketOut.PortNo,
-					len(msg.PacketOut.Data),
-				)
+		fibcapi.DispatchVsMonitorReply(m, a)
+	}
+}
 
-				if err := a.packetOut(msg.PacketOut); err != nil {
-					a.log.Errorf("monitor: packet out error. %s", err)
-				}
+func (a *MyApp) FIBCFFPacketOut(hdr *fibcnet.Header, pktout *fibcapi.FFPacketOut) {
+	a.log.Tracef("monitor: packet out dpid:%d port:%d #%d",
+		pktout.DpId,
+		pktout.PortNo,
+		len(pktout.Data),
+	)
 
-			case *fibcapi.VsMonitorReply_PortMod:
-				a.log.Debugf("monitor: port mod dpid:%d port:%d %s",
-					msg.PortMod.DpId,
-					msg.PortMod.PortNo,
-					msg.PortMod.Status,
-				)
-
-				if err := a.portMod(msg.PortMod); err != nil {
-					a.log.Errorf("monitor: port mod error. %s", err)
-				}
-
-			default:
-				a.log.Warnf("monitor: %s", msg)
-			}
-		}
+	if err := a.packetOut(pktout); err != nil {
+		a.log.Errorf("monitor: packet out error. %s", err)
 	}
 }
 
@@ -222,6 +218,18 @@ func (a *MyApp) packetOut(pktout *fibcapi.FFPacketOut) error {
 		link.WriteData(pktout.Data)
 		return nil
 	})
+}
+
+func (a *MyApp) FIBCFFPortMod(hdr *fibcnet.Header, pm *fibcapi.FFPortMod) {
+	a.log.Debugf("monitor: port mod dpid:%d port:%d %s",
+		pm.DpId,
+		pm.PortNo,
+		pm.Status,
+	)
+
+	if err := a.portMod(pm); err != nil {
+		a.log.Errorf("monitor: port mod error. %s", err)
+	}
 }
 
 func (a *MyApp) portMod(mod *fibcapi.FFPortMod) error {
@@ -237,4 +245,18 @@ func (a *MyApp) portMod(mod *fibcapi.FFPortMod) error {
 			return fmt.Errorf("Invaid status. %s", mod.Status)
 		}
 	})
+}
+
+func (a *MyApp) FIBCOAMAuditRouteCntRequest(hdr *fibcnet.Header, oam *fibcapi.OAM_Request, audit *fibcapi.OAM_AuditRouteCntRequest) error {
+	msg := fibcapi.OAM_Reply{
+		DpId:    a.db.DpID(),
+		OamType: oam.OamType,
+		Body: &fibcapi.OAM_Reply_AuditRouteCnt{
+			AuditRouteCnt: &fibcapi.OAM_AuditRouteCntReply{
+				Count: 0,
+			},
+		},
+	}
+	go a.sendOAMReply(&msg, hdr.Xid)
+	return nil
 }

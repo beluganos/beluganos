@@ -192,3 +192,11 @@ func (c *VSCtl) FFPacket(vsID uint64, portID uint32, reID, ifname string) error 
 
 	return nil
 }
+
+func (c *VSCtl) OAMReply(xid uint32, reply *fibcapi.OAM_Reply) error {
+	c.db.Waiters().Select(xid, func(w fibcdbm.Waiter) {
+		fibcapi.LogOAMReply(c.log, log.DebugLevel, reply, xid)
+		w.Set("vs", reply)
+	})
+	return nil
+}

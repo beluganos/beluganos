@@ -69,6 +69,7 @@ message VmMonitorReply{
     PortStatus   port_status    = 1;
     DpStatus     dp_status      = 2;
     L2AddrStatus l2_addr_status = 3;
+    OAMRequest   oam            = 4;
   }
 }
 
@@ -83,6 +84,7 @@ message VsMonitorReply {
   oneof body {
     FFPacketOut    packet_out = 1;
     FFPortMod      port_mod   = 2;
+    OAMRequest     oam        = 3;
   }
 }
 
@@ -112,8 +114,23 @@ message DpMonitorReply {
     FlowMod        flow_mod   = 3;
     GroupMod       group_mod  = 4;
     DpMultipartRequest multipart = 5;
+    OAMRequest     oam        = 6;
   }
 }
+
+//
+// OAM
+//
+message OAMRequest {
+  uint32      xid     = 1;
+  OAM.Request request = 2;
+}
+
+message OAMReply {
+  uint32      xid   = 1;
+  OAM.Reply   reply = 2;
+}
+message OAMReplyAck {}
 
 //
 // Database
@@ -181,6 +198,7 @@ service FIBCApApi {
   rpc DelPortEntry     (DbPortKey)               returns (ApDelPortEntryReply)   {}
   rpc DelIDEntry       (DbIdEntry)               returns (ApDelIdEntryReply)     {}
   rpc GetStats         (ApGetStatsRequest)       returns (stream StatsEntry)     {}
+  rpc RunOAM           (OAM.Request)             returns (OAMReplyAck)           {}
 }
 
 service FIBCVmApi {
@@ -188,6 +206,7 @@ service FIBCVmApi {
   rpc SendPortConfig   (PortConfig)       returns (PortConfigReply)       {}
   rpc SendFlowMod      (FlowMod)          returns (FlowModReply)          {}
   rpc SendGroupMod     (GroupMod)         returns (GroupModReply)         {}
+  rpc SendOAMReply     (OAMReply)         returns (OAMReplyAck)           {}
   rpc Monitor          (VmMonitorRequest) returns (stream VmMonitorReply) {}
 }
 
@@ -195,6 +214,7 @@ service FIBCVsApi {
   rpc SendHello        (FFHello)          returns (FFHelloReply)          {}
   rpc SendFFPacket     (FFPacket)         returns (FFPacketReply)         {}
   rpc SendPacketIn     (FFPacketIn)       returns (FFPacketInReply)       {}
+  rpc SendOAMReply     (OAMReply)         returns (OAMReplyAck)           {}
   rpc Monitor          (VsMonitorRequest) returns (stream VsMonitorReply) {}
 }
 
@@ -204,5 +224,6 @@ service FIBCDpApi {
   rpc SendPortStatus   (FFPortStatus)     returns (FFPortStatusReply)     {}
   rpc SendL2AddrStatus (FFL2AddrStatus)   returns (L2AddrStatusReply)     {}
   rpc SendMultipartReply (DpMultipartReply) returns (DpMultipartReplyAck) {}
+  rpc SendOAMReply     (OAMReply)         returns (OAMReplyAck)           {}
   rpc Monitor          (DpMonitorRequest) returns (stream DpMonitorReply) {}
 }

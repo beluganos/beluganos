@@ -65,6 +65,13 @@ func (m *VMAPIMonitorEntry) Remote() string {
 }
 
 //
+// REID returns re-id.
+//
+func (m *VMAPIMonitorEntry) REID() string {
+	return m.reID
+}
+
+//
 // NewVMAPIMonitorEntryID returns entry-id.
 //
 func NewVMAPIMonitorEntryID(reID string) string {

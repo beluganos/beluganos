@@ -378,3 +378,11 @@ func (c *VMCtl) GroupMod(mod *fibcapi.GroupMod) error {
 
 	return nil
 }
+
+func (c *VMCtl) OAMReply(xid uint32, reply *fibcapi.OAM_Reply) error {
+	c.db.Waiters().Select(xid, func(w fibcdbm.Waiter) {
+		fibcapi.LogOAMReply(c.log, log.DebugLevel, reply, xid)
+		w.Set(reply.ReId, reply)
+	})
+	return nil
+}
