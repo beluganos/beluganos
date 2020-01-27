@@ -21,6 +21,7 @@ config_files:
   - { src: "sysctl.conf",     dst: "/etc/sysctl.d/30-beluganos.conf", owner: "root" }
   - { src: "snmp.conf",       dst: "/etc/snmp/snmp.conf",             owner: "root" }
   - { src: "snmpd.conf",      dst: "/etc/snmp/snmpd.conf",            owner: "root" }
+  - { src: "nftables.conf",   dst: "/etc/nftables.conf",              owner: "root" }
   - { src: "ribxd.conf",      dst: "/etc/beluganos/ribxd.conf",       owner: "beluganos"  }
   - { src: "ribtd.conf",      dst: "/etc/beluganos/ribtd.conf",       owner: "beluganos"  }
   - { src: "snmpproxyd.conf", dst: "/etc/beluganos/snmpproxyd.conf",  owner: "beluganos"  }

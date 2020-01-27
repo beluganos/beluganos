@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -136,6 +137,15 @@ var dpPortMap = map[string]map[uint32]uint32{
 	"as5812":   dpPortAS5812,
 	"as7712":   dpPortAS7712,
 	"as7712x4": dpPortAS7712x4,
+}
+
+func PortMapKeys() []string {
+	keys := []string{}
+	for key := range dpPortMap {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	return keys
 }
 
 func PortMap(name string) (map[uint32]uint32, error) {

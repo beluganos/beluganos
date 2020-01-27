@@ -78,7 +78,7 @@ func (c *FibcCmd) createFibcConf(playbookName string) error {
 		return err
 	}
 
-	dpName := fmt.Sprintf("dp_%d", g.DpID)
+	dpName := fmt.Sprintf("dp_%s", g.ReID)
 
 	t := NewPlaybookFibcYaml(g.ReID)
 	t.DpName = dpName

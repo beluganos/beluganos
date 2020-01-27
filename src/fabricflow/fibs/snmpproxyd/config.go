@@ -20,7 +20,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"net"
 
 	"gopkg.in/yaml.v2"
 )
@@ -79,22 +78,7 @@ type ConfigTrap2Map map[string]uint
 // ConfigTrap2sink is config(/trap2sink/<name>)
 //
 type ConfigTrap2sink struct {
-	Addr *net.UDPAddr
-}
-
-func (c *ConfigTrap2sink) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	var data struct {
-		Addr string `yaml:"addr"`
-	}
-	if err := unmarshal(&data); err != nil {
-		return err
-	}
-	addr, err := net.ResolveUDPAddr("udp", data.Addr)
-	if err != nil {
-		return err
-	}
-	c.Addr = addr
-	return nil
+	Addr string `yaml:"addr"`
 }
 
 //

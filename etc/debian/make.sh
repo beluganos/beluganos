@@ -101,7 +101,7 @@ download_deb() {
     local PKG_NAME
     PKG_LIST="snmpd snmp snmp-mibs-downloader libsnmp-base"
     PKG_LIST="${PKG_LIST} libc6 libsnmp30 libssl1.1 libsensors4 libc-ares2 libyang0.16"
-    PKG_LIST="${PKG_LIST} adduser debconf lsb-base smistrip"
+    PKG_LIST="${PKG_LIST} adduser debconf lsb-base smistrip libjansson4 libnftnl7 nftables"
 
     for PKG_NAME in ${PKG_LIST}; do
         apt-get download ${PKG_NAME} || echo "download error. ${PKG_NAME}"

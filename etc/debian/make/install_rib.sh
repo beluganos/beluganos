@@ -42,13 +42,13 @@ create_temp() {
 
 export_temp() {
     echo "Stopping ${LXD_TEMP_NAME}"
-    lxc stop ${LXD_TEMP_NAME}
+    lxc stop ${LXD_TEMP_NAME} || true
 
     echo "Publishing ${LXD_TEMP_NAME} as ${LXD_BASE_NAME}"
     lxc publish ${LXD_TEMP_NAME} --alias ${LXD_BASE_NAME}
 
     echo "Delete ${LXD_TEMP_NAME}"
-    lxc delete -f ${LXD_TEMP_NAME}
+    lxc delete -f ${LXD_TEMP_NAME} || true
 
     echo "Export ${LXD_BASE_NAME} as beluganos-lxd-${LXD_BASE_NAME}"
     lxc image export ${LXD_BASE_NAME} ${LXD_FILE_NAME}

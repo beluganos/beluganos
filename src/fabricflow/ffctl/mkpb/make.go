@@ -28,12 +28,14 @@ import (
 type makeCmfInterface interface {
 	setConfig(config *Config)
 	createConf(string) error
+	copyFlags(*Command)
 }
 
 type MakeCmd struct {
 	*Command
 
 	withOptions bool
+	lxcName     string
 }
 
 func NewMakeCmd() *MakeCmd {
@@ -44,6 +46,7 @@ func NewMakeCmd() *MakeCmd {
 
 func (c *MakeCmd) setSampleFlags(cmd *cobra.Command) *cobra.Command {
 	cmd.Flags().BoolVarP(&c.withOptions, "with-options", "", false, "show options.")
+	cmd.Flags().StringVarP(&c.lxcName, "lxc-name", "n", "mic", "container name.")
 	return cmd
 }
 
@@ -59,10 +62,12 @@ func (c *MakeCmd) run(name string) error {
 		NewRibxCmd(),
 		NewSnmpCmd(),
 		NewSysctlCmd(),
+		NewNFTableCmd(),
 	}
 
 	for _, cmd := range cmdList {
 		log.Debugf("%T.run(%s)", cmd, name)
+		cmd.copyFlags(c.Command)
 		cmd.setConfig(c.config)
 		if err := cmd.createConf(name); err != nil {
 			return err
@@ -80,20 +85,30 @@ func (c *MakeCmd) all() error {
 	}
 
 	pb := NewPlaybookCmd()
+	pb.copyFlags(c.Command)
 	pb.setConfig(c.config)
 	if err := pb.createConf(names[0]); err != nil {
 		return err
 	}
 
 	fibs := NewFibsCmd()
+	fibs.copyFlags(c.Command)
 	fibs.setConfig(c.config)
 	if err := fibs.createConf("common"); err != nil {
 		return err
 	}
 
 	gonsl := NewGonslCmd()
+	gonsl.copyFlags(c.Command)
 	gonsl.setConfig(c.config)
 	if err := gonsl.createConf("common"); err != nil {
+		return err
+	}
+
+	govsw := NewGovswCmd()
+	govsw.copyFlags(c.Command)
+	govsw.setConfig(c.config)
+	if err := govsw.createConf("common"); err != nil {
 		return err
 	}
 
@@ -106,8 +121,8 @@ func (c *MakeCmd) all() error {
 	return pb.createInventory(names...)
 }
 
-func (c *MakeCmd) showSample(name string) error {
-	config, err := MakeSampleConfig(name)
+func (c *MakeCmd) showSample(sampleName string) error {
+	config, err := MakeSampleConfig(sampleName, c.lxcName)
 	if err != nil {
 		return err
 	}
@@ -146,7 +161,7 @@ func NewMakeCommand() *cobra.Command {
 
 	rootCmd.AddCommand(mk.setSampleFlags(
 		&cobra.Command{
-			Use:   "sample <l3 | l3-vlan | l2sw>",
+			Use:   "sample <l3 | l3-vlan | l2sw | iptun>",
 			Short: "sample config comamnd",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
@@ -154,5 +169,18 @@ func NewMakeCommand() *cobra.Command {
 			},
 		},
 	))
+
+	rootCmd.AddCommand(
+		&cobra.Command{
+			Use:   "dp-types",
+			Short: "show dp type list",
+			Args:  cobra.NoArgs,
+			Run: func(cmd *cobra.Command, args []string) {
+				for _, s := range PortMapKeys() {
+					fmt.Printf("%s\n", s)
+				}
+			},
+		},
+	)
 	return rootCmd
 }

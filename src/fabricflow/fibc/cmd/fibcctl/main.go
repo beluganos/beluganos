@@ -24,6 +24,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const FibcAddr = "localhost:50070"
+
 //
 // Command is rot command.
 //

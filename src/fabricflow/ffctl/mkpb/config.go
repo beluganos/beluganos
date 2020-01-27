@@ -79,12 +79,33 @@ func (c *L2SWConfig) RangeTrunk(f func(uint32, []uint16)) {
 	}
 }
 
+//
+// IPTunConfig
+//
+type IPTunConfig struct {
+	BgpRouteFamily  string   `mapstructure:"bgp-route-family"`
+	LocalAddrRange4 string   `mapstructure:"local-addr-range4"`
+	LocalAddrRange6 string   `mapstructure:"local-addr-range6"`
+	RemoteRoutes    []string `mapstructure:"remote-routes"`
+}
+
+func MewIPTunConfig() *IPTunConfig {
+	return &IPTunConfig{
+		RemoteRoutes: []string{},
+	}
+}
+
+func (c *IPTunConfig) String() string {
+	return fmt.Sprintf("family:'%s' local4:'%s' local6:'%s' remotes:%v", c.BgpRouteFamily, c.LocalAddrRange4, c.LocalAddrRange6, c.RemoteRoutes)
+}
+
 type RouterConfig struct {
 	Name    string              `mapstructure:"name"`
 	NodeID  uint8               `mapstructure:"nid"`
 	Eth     []uint32            `mapstructure:"eth"`
 	Vlan    map[uint32][]uint16 `mapstructure:"vlan"`
 	L2SW    *L2SWConfig         `mapstructute:"l2sw"`
+	IPTun   *IPTunConfig        `mapstructute:"iptun"`
 	Daemons []string            `mapstructure:"daemons"`
 	RtRd    []string            `mapstructure:"rt-rd"`
 }

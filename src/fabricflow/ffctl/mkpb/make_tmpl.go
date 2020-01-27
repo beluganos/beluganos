@@ -45,7 +45,7 @@ router:
   {{- if .Vlan }}
     Vlan:
     {{- range $index, $vlan := .Vlan }}
-      {{ $index }}: {{ stru16 $vlan }} 
+      {{ $index }}: {{ stru16 $vlan }}
     {{- else }}
       {{- " {}" }}
     {{- end }}
@@ -67,8 +67,21 @@ router:
         {{ $index }}: {{ stru16 $vlans }}
       {{- else }}
         {{- " {}" }}
-      {{- end }} 
+      {{- end }}
     {{- end }}
+  {{- end }}
+
+  {{- if .IPTun }}
+    iptun:
+      bgp-route-family: {{ .IPTun.BgpRouteFamily }}
+      local-addr-range4: {{ .IPTun.LocalAddrRange4 }}
+      local-addr-range6: {{ .IPTun.LocalAddrRange6 }}
+      remote-routes:
+      {{- range .IPTun.RemoteRoutes }}
+        - {{ . }}
+      {{- else }}
+        {{- " []"}}
+      {{- end }}
   {{- end }}
 {{- end }}
 `
@@ -87,6 +100,7 @@ func ExecPlaybookSampleMakeYamlTempl(c *Config, w io.Writer) error {
 }
 
 const playbookSampleMakeOptionYaml = `
+# to use options, uncomment 'option:' and entries.
 # option:
 {{- range .List }}
 #  {{ .Key }}: {{ .Val }}     # {{ printf "%T" .Val }}

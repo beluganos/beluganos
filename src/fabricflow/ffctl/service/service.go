@@ -28,17 +28,20 @@ import (
 
 const (
 	ServiceFibcName  = "fibcd-go"
+	ServiceFibsName  = "fibsd"
 	ServiceGovswName = "govswd"
 )
 
 type ServiceCmd struct {
 	FibcName   string
+	FibsName   string
 	GovswName  string
 	AllService bool
 }
 
 func (c *ServiceCmd) setFlags(cmd *cobra.Command) *cobra.Command {
 	cmd.Flags().StringVarP(&c.FibcName, "fibcd-service-name", "", ServiceFibcName, "fibcd service name.")
+	cmd.Flags().StringVarP(&c.FibsName, "fibsd-service-name", "", ServiceFibsName, "fibsd service name.")
 	cmd.Flags().StringVarP(&c.GovswName, "govswd-service-name", "", ServiceGovswName, "govswd service name.")
 	cmd.Flags().BoolVarP(&c.AllService, "all", "", false, "execute all service.")
 	return cmd
@@ -47,6 +50,7 @@ func (c *ServiceCmd) setFlags(cmd *cobra.Command) *cobra.Command {
 func (c *ServiceCmd) serviceNames(reverse bool) []string {
 	names := []string{
 		c.FibcName,
+		c.FibsName,
 		c.GovswName,
 	}
 	if reverse {

@@ -18,7 +18,6 @@
 package mkpb
 
 import (
-	"fmt"
 	"io"
 	"sort"
 	"text/template"
@@ -61,7 +60,7 @@ type PlaybookNetplanEth struct {
 func NewPlaybookNetplanEth(index uint32, mtu uint16) *PlaybookNetplanEth {
 	return &PlaybookNetplanEth{
 		Index: index,
-		Name:  fmt.Sprintf("%s%d", IfnamePrefix, index),
+		Name:  NewPhyIfname(index),
 		Mtu:   mtu,
 	}
 }
@@ -75,7 +74,7 @@ type PlaybookNetplanVlan struct {
 func NewPlaybookNetplanVlan(index uint32, vid uint16) *PlaybookNetplanVlan {
 	return &PlaybookNetplanVlan{
 		Index: index,
-		Link:  fmt.Sprintf("%s%d", IfnamePrefix, index),
+		Link:  NewPhyIfname(index),
 		Vid:   vid,
 	}
 }

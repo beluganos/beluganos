@@ -83,7 +83,7 @@ CONF_PATH = /etc/frr/gobgpd.conf
 CONF_TYPE = toml
 LOG_LEVEL = debug
 PPROF_OPT = --pprof-disable
-API_HOSTS = 127.0.0.1:50051
+API_HOSTS = {{ .APIAddr }}:{{ .APIPort }}
 `
 
 func NewPlaybookGoBGPConfTemplate() *template.Template {
@@ -91,10 +91,15 @@ func NewPlaybookGoBGPConfTemplate() *template.Template {
 }
 
 type PlaybookGoBGPConf struct {
+	APIAddr string
+	APIPort uint16
 }
 
 func NewPlaybookGoBGPConf() *PlaybookGoBGPConf {
-	return &PlaybookGoBGPConf{}
+	return &PlaybookGoBGPConf{
+		APIAddr: "localhost",
+		APIPort: 50051,
+	}
 }
 
 func (p *PlaybookGoBGPConf) Execute(w io.Writer) error {

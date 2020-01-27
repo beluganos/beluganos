@@ -52,7 +52,7 @@ type PlaybookFibcPort struct {
 }
 
 func (p *PlaybookFibcPort) Ifname() string {
-	return fmt.Sprintf("%s%d", IfnamePrefix, p.PPort)
+	return NewPhyIfname(p.PPort)
 }
 
 type PlaybookFibcYaml struct {

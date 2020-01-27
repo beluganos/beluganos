@@ -170,6 +170,7 @@ func (s *ProxyWorker) SendClient(msg *snmp.Message) error {
 
 func (s *ProxyWorker) SendTrap(msg *snmp.Message) {
 	s.TrapSinkTable().GetAll(func(addr *net.UDPAddr) {
+		s.log.Debugf("ProxyWorker.SendTrap: %s", addr)
 		if err := s.sendMessage(s.clientConn, msg, addr); err != nil {
 			s.log.Errorf("ProxyWorker.SendTrap error. %s", err)
 		}

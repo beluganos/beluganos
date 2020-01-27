@@ -19,22 +19,24 @@ package mkpb
 
 import "fmt"
 
-func MakeSampleConfig(name string) (*Config, error) {
-	switch name {
+func MakeSampleConfig(sampleName, lxcName string) (*Config, error) {
+	switch sampleName {
 	case "l3":
-		return MakeSampleConfigL3(), nil
+		return MakeSampleConfigL3(lxcName), nil
 	case "l3-vlan":
-		return MakeSampleConfigL3Vlan(), nil
+		return MakeSampleConfigL3Vlan(lxcName), nil
 	case "mpls-vpn":
-		return MakeSampleConfigMplsVpn(), nil
+		return MakeSampleConfigMplsVpn(lxcName), nil
 	case "l2sw":
-		return MakeSampleConfigL2SW(), nil
+		return MakeSampleConfigL2SW(lxcName), nil
+	case "iptun":
+		return MakeSampleConfigIPTun(lxcName), nil
 	default:
-		return nil, fmt.Errorf("unknown sample. %s", name)
+		return nil, fmt.Errorf("unknown sample. %s", sampleName)
 	}
 }
 
-func MakeSampleConfigL3() *Config {
+func MakeSampleConfigL3(lxcName string) *Config {
 	config := NewConfig()
 	config.Global.ReID = "1.1.1.1"
 	config.Global.DpID = 1234
@@ -43,7 +45,7 @@ func MakeSampleConfigL3() *Config {
 	config.Global.DpAddr = "172.16.0.1"
 
 	router := NewRouterConfig()
-	router.Name = "mic"
+	router.Name = lxcName
 	router.Daemons = []string{"zebra", "ospfd"}
 
 	config.Router = []*RouterConfig{
@@ -53,7 +55,7 @@ func MakeSampleConfigL3() *Config {
 	return config
 }
 
-func MakeSampleConfigL3Vlan() *Config {
+func MakeSampleConfigL3Vlan(lxcName string) *Config {
 	config := NewConfig()
 	config.Global.ReID = "1.1.1.1"
 	config.Global.DpID = 1234
@@ -62,7 +64,7 @@ func MakeSampleConfigL3Vlan() *Config {
 	config.Global.DpAddr = "172.16.0.1"
 
 	router := NewRouterConfig()
-	router.Name = "mic"
+	router.Name = lxcName
 	router.Eth = []uint32{1, 2, 3, 4, 5}
 	router.Vlan = map[uint32][]uint16{
 		3: []uint16{10},
@@ -78,7 +80,7 @@ func MakeSampleConfigL3Vlan() *Config {
 	return config
 }
 
-func MakeSampleConfigL2SW() *Config {
+func MakeSampleConfigL2SW(lxcName string) *Config {
 	config := NewConfig()
 	config.Global.ReID = "1.1.1.1"
 	config.Global.DpID = 1234
@@ -87,7 +89,7 @@ func MakeSampleConfigL2SW() *Config {
 	config.Global.DpAddr = "172.16.0.1"
 
 	router := NewRouterConfig()
-	router.Name = "mic"
+	router.Name = lxcName
 	router.L2SW = NewL2SWConfig()
 	router.L2SW.Access = map[uint32]uint16{
 		1: 10,
@@ -104,7 +106,7 @@ func MakeSampleConfigL2SW() *Config {
 	return config
 }
 
-func MakeSampleConfigMplsVpn() *Config {
+func MakeSampleConfigMplsVpn(lxcName string) *Config {
 	config := NewConfig()
 	config.Global.ReID = "1.1.1.1"
 	config.Global.DpID = 1234
@@ -114,7 +116,7 @@ func MakeSampleConfigMplsVpn() *Config {
 	config.Global.Vpn = true
 
 	mic := NewRouterConfig()
-	mic.Name = "vpn-mic"
+	mic.Name = lxcName
 	mic.NodeID = 0
 	mic.Eth = []uint32{1, 2, 3, 4, 5}
 	mic.Daemons = []string{"zebra", "ospfd", "ldpd"}
@@ -138,6 +140,35 @@ func MakeSampleConfigMplsVpn() *Config {
 		mic,
 		ric1,
 		ric2,
+	}
+
+	return config
+}
+
+func MakeSampleConfigIPTun(lxcName string) *Config {
+	config := NewConfig()
+	config.Global.ReID = "1.1.1.1"
+	config.Global.DpID = 1234
+	config.Global.DpType = "as7712x4"
+	config.Global.DpMode = "onsl"
+	config.Global.DpAddr = "172.16.0.1"
+
+	router := NewRouterConfig()
+	router.Name = lxcName
+	router.Daemons = []string{"zebra", "ospfd", "ospfd6"}
+	router.IPTun = MewIPTunConfig()
+	router.IPTun.BgpRouteFamily = "ipv4-unicast"
+	router.IPTun.LocalAddrRange4 = "10.0.0.0/24"
+	router.IPTun.LocalAddrRange6 = "2001:2001::/64"
+	router.IPTun.RemoteRoutes = []string{
+		"10.1.1.0/24",
+		"10.1.2.0/24",
+		"2001:2010::/64",
+		"2001:2020::/64",
+	}
+
+	config.Router = []*RouterConfig{
+		router,
 	}
 
 	return config

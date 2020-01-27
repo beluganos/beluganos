@@ -1,19 +1,15 @@
 ---
 
-port_map:
-  1: 1
-  2: 2
-  3: 3
-  4: 4
-  5: 5
-  6: 6
-  7: 7
-  8: 8
-  9: 9
-  10: 10
+global:
+  re-id: 1.1.1.1
+  dp-id: 1234
+  dp-type: as7712x4
+  dp-mode: onsl
+  dp-addr: 172.16.0.1
+  vpn: false
 
-port_tuple: |
-  {1, 1}
-  {2, 2}
-  {3, 3}
-  {4, 4}
+router:
+  - name: mic
+    nid:  0  # 0: MIC, >0: RIC
+    eth:  [1, 2, 3, 4, 5]  # if empty, all ports.
+    daemons: [zebra, ospfd]

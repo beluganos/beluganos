@@ -11,9 +11,7 @@ BINDIR=/usr/bin
 CNFDIR=/etc/beluganos
 
 SNMPD_CONF=/etc/snmp/snmpd.conf
-SNMPD_PASS="/usr/bin/fibssnmp -v"
-SNMPD_OID_LIST=`./snmpd_install.sh oid-list ./fibssnmp.yaml`
-SNMPD_AGENT_PORT=8161
+SNMPD_AGENT_PORT=1161
 
 #
 # services
@@ -30,6 +28,10 @@ uninstall-service: uninstall-beluganos uninstall-fibc uninstall-fibs uninstall-g
 .PHONY: install-beluganos uninstall-beluganos
 install-beluganos:
 	@echo "install beluganos common service..."
+	@$(INSTALL) -pm 755 ${BEL_CNFDIR}/beluganos_init.sh /etc/beluganos/
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/beluganos_sysctl.conf /etc/sysctl.d/30-beluganos.conf
+
+	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/beluganos.conf    /etc/beluganos/
 	@$(INSTALL) -pm 644 ${BEL_CNFDIR}/beluganos.service /etc/systemd/system/
 	@sudo systemctl daemon-reload
 	@sudo systemctl enable beluganos.service
@@ -45,9 +47,9 @@ uninstall-beluganos:
 # fibs
 #
 .PHONY: install-fibs uninstall-fibs
-install-fibs: install-snmpproxyd install-fibssnmp install-fibsd register-snmp-oid set-snmpd-port
+install-fibs: install-snmpproxyd install-fibssnmp install-fibsd set-snmpd-port
 
-uninstall-fibs: uninstall-snmpproxyd uninstall-fibssnmp uninstall-fibsd unregister-snmp-oid unset-snmpd-port
+uninstall-fibs: uninstall-snmpproxyd uninstall-fibssnmp uninstall-fibsd unset-snmpd-port
 
 #
 # fibssnmp
@@ -62,18 +64,6 @@ uninstall-fibssnmp:
 	@echo "uninstall fibssnmp..."
 	@$(UNINSTALL) ${CNFDIR}/fibssnmp.yaml
 	@$(UNINSTALL) ${BINDIR}/fibssnmp
-
-register-snmp-oid:
-	@echo "register oid to snmpd.conf"
-	@for oid in $(SNMPD_OID_LIST) ; do \
-		./snmpd_install.sh install ${SNMPD_CONF} $$oid "${SNMPD_PASS}"; \
-	done
-
-unregister-snmp-oid:
-	@echo "unregister oid to snmpd.conf"
-	@for oid in $(SNMPD_OID_LIST) ; do \
-		./snmpd_install.sh uninstall ${SNMPD_CONF} $$oid "${SNMPD_PASS}"; \
-	done
 
 #
 # fibsd
@@ -124,14 +114,12 @@ uninstall-snmpproxyd:
 set-snmpd-port:
 	@echo "set snmpd listen port..."
 	./snmpd_install.sh set-agent-port ${SNMPD_CONF} ${SNMPD_AGENT_PORT}
-	@echo "enable snmpd rocommunity..."
-	./snmpd_install.sh enable-rocommunity ${SNMPD_CONF}
+	@sudo systemctl restart snmpd
 
 unset-snmpd-port:
 	@echo "unset snmpd listen port..."
 	./snmpd_install.sh unset-agent-port ${SNMPD_CONF} ${SNMPD_AGENT_PORT}
-	@echo "disable snmpd rocommunity..."
-	./snmpd_install.sh disable-rocommunity ${SNMPD_CONF}
+	@sudo systemctl restart snmpd
 
 
 #

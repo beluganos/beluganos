@@ -90,7 +90,7 @@ view   systemonly  included   .1.3.6.1.2.1.1
 view   systemonly  included   .1.3.6.1.2.1.25.1
 
                                                  #  Full access from the local host
-#rocommunity public  localhost
+ rocommunity public  localhost
                                                  #  Default access to basic system info
  rocommunity public  default    -V systemonly
                                                  #  rocommunity6 is for IPv6
@@ -283,7 +283,7 @@ func NewPlaybookSnmpdConf() *PlaybookSnmpdConf {
 		Trap2SinkAddr:       "",
 		LinkMonitorInterval: 0,
 		FibssnmpCmdPath:     "/usr/bin/fibssnmp",
-		FibssnmpDataPath:    "/etc/beluganos/fibc_stats.yaml",
+		FibssnmpDataPath:    "/var/lib/beluganos/fibc_stats.yaml",
 		OidMap:              []*SnmpdOidEntry{},
 		ONLOidMap:           []*SnmpdOidEntry{},
 	}

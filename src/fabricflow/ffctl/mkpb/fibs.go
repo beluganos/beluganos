@@ -18,8 +18,6 @@
 package mkpb
 
 import (
-	"time"
-
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -100,14 +98,11 @@ func (c *FibsCmd) createSnmpproxydConf(playbookName string) error {
 
 	log.Debugf("%s created.", path)
 
-	ifResend, err := time.ParseDuration(opt.SnmpproxydIfResend)
-	if err != nil {
-		return err
-	}
-
-	t := NewPlaybookSnmpproxydConf() // proxyd
-	t.SnmpPort = opt.SnmpdListenPort
-	t.SnmpproxydIfResend = ifResend
+	t := NewPlaybookSnmpproxydConf() // mib/trap
+	t.SnmpproxydType = "mib/trap"
+	t.SnmpdPort = opt.SnmpdListenPort
+	t.SnmpproxydSnmpPort = opt.SnmpproxydSnmpPort
+	t.SnmpproxydTrapPort = opt.SnmpproxydTrapPort
 	return t.Execute(f)
 }
 

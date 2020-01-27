@@ -18,6 +18,8 @@
 package mkpb
 
 import (
+	"time"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -54,6 +56,13 @@ func (c *RibtCmd) createConf(playbookName string) error {
 }
 
 func (c *RibtCmd) createRibtConf(playbookName string) error {
+	opt := c.optionConfig()
+
+	r, err := c.routerConfig(playbookName)
+	if err != nil {
+		return err
+	}
+
 	path := c.filesPath(playbookName, c.fileName)
 	f, err := createFile(path, c.overwrite, func(backup string) {
 		log.Debugf("%s backup", backup)
@@ -66,6 +75,17 @@ func (c *RibtCmd) createRibtConf(playbookName string) error {
 	log.Debugf("%s created.", path)
 
 	t := NewPlaybookRibtdConf()
+	t.GoBGPAPIAddr = opt.GoBGPAPIAddr
+	t.GoBGPAPIPort = opt.GoBGPAPIPort
+	if iptun := r.IPTun; iptun != nil {
+		t.BgpRouteFamily = iptun.BgpRouteFamily
+		t.TunnelLocalRange4 = iptun.LocalAddrRange4
+		t.TunnelLocalRange6 = iptun.LocalAddrRange6
+	}
+	t.TunnelIFPrefix = opt.IPTunnelIFPrefix
+	t.TunnelTypeIPv6 = opt.IPTunnelTypeIPv6
+	t.DumpTableDuration = time.Duration(opt.RibtDumpSec) * time.Second
+
 	return t.Execute(f)
 }
 

@@ -18,7 +18,6 @@
 package mkpb
 
 import (
-	"fmt"
 	"io"
 	"sort"
 	"text/template"
@@ -95,7 +94,7 @@ func (p *PlaybookBrVlanYaml) AddAccessPorts(ports map[uint32]uint16) {
 	for index, vlan := range ports {
 		vlan := &PlaybookBrVlanVlan{
 			Index: index,
-			Name:  fmt.Sprintf("%s%d", IfnamePrefix, index),
+			Name:  NewPhyIfname(index),
 			Id:    vlan,
 			Ids:   []uint16{},
 		}
@@ -112,7 +111,7 @@ func (p *PlaybookBrVlanYaml) AddTrunkPorts(ports map[uint32][]uint16) {
 	for index, vlans := range ports {
 		vlan := &PlaybookBrVlanVlan{
 			Index: index,
-			Name:  fmt.Sprintf("%s%d", IfnamePrefix, index),
+			Name:  NewPhyIfname(index),
 			Id:    0,
 			Ids:   vlans,
 		}

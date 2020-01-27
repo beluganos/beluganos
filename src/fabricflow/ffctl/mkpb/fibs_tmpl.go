@@ -18,7 +18,6 @@
 package mkpb
 
 import (
-	"fmt"
 	"io"
 	"sort"
 	"text/template"
@@ -27,16 +26,18 @@ import (
 
 const playbookSnmpproxydConf = `# -*- coding: utf-8 -*-
 
-{{- if .SnmpproxydAddr }}
+{{- if eq .SnmpproxydType "ifmon" }}
 # snmproxyd-ifmond
-SNMPPROXYD_ADDR={{ .SnmpproxydAddr }}:161
+SNMPPROXYD_ADDR={{ .SnmpproxydAddr }}:{{ .SnmpproxydTrapPort }}
 IFNOTIFY_RESEND={{ .SnmpproxydIfResend }}
-{{- else }}
+TRAP_RESEND_TIME={{ .SnmpproxydIfResend }}
+{{- else if eq .SnmpproxydType "mib/trap" }}
 # snmpproxyd-mib/trap
 CONF=/etc/beluganos/snmpproxyd.yaml
-LISTEN_MIB=:161
-LISTEN_TRAP=:162
-SNMPD_ADDR=localhost:{{ .SnmpPort }}
+LISTEN_MIB=:{{ .SnmpproxydSnmpPort }}
+LISTEN_TRAP=:{{ .SnmpproxydTrapPort }}
+SNMPD_ADDR=localhost:{{ .SnmpdPort }}
+{{- else }}
 {{- end }}
 
 # debug
@@ -51,14 +52,21 @@ func NewPlaybookSnmpproxydConfTemplate() *template.Template {
 }
 
 type PlaybookSnmpproxydConf struct {
+	SnmpproxydType     string
 	SnmpproxydAddr     string
-	SnmpPort           uint16
+	SnmpproxydSnmpPort uint16
+	SnmpproxydTrapPort uint16
+	SnmpdPort          uint16
 	SnmpproxydIfResend time.Duration
 }
 
 func NewPlaybookSnmpproxydConf() *PlaybookSnmpproxydConf {
 	return &PlaybookSnmpproxydConf{
-		SnmpPort:           1161,
+		SnmpproxydType:     "",
+		SnmpproxydAddr:     "192.169.1.1",
+		SnmpproxydSnmpPort: 161,
+		SnmpproxydTrapPort: 162,
+		SnmpdPort:          1161,
 		SnmpproxydIfResend: 15 * time.Minute,
 	}
 }
@@ -139,7 +147,7 @@ func NewPlaybookSnmpproxydYaml() *PlaybookSnmpproxydYaml {
 func (p *PlaybookSnmpproxydYaml) AddTrap2Map(pport, lport uint32) {
 	e := &PlaybookSnmpproxydTrap2MapEntry{
 		Index:  pport,
-		Ifname: fmt.Sprintf("%s%d", IfnamePrefix, pport),
+		Ifname: NewPhyIfname(pport),
 		Port:   lport,
 	}
 	p.Trap2Map = append(p.Trap2Map, e)
@@ -158,7 +166,7 @@ const playbookFibssnmpConf = `---
 
 handlers:
 {{- range .OidMap }}
-  - oid:  {{ stroid .Oid }}
+  - oid:  {{ stroid .Local }}
     name: {{ .Name }}
     type: {{ .SnmpType }}
 {{- end }}

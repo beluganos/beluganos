@@ -18,7 +18,6 @@
 package mkpb
 
 import (
-	"fmt"
 	"io"
 	"sort"
 	"text/template"
@@ -120,7 +119,7 @@ func (p *PlybookLXDProfile) IfaceIndex(i uint) uint {
 func (p *PlybookLXDProfile) Ifaces() []string {
 	ifaces := []string{}
 	for _, port := range p.Ports {
-		ifaces = append(ifaces, fmt.Sprintf("%s%d", IfnamePrefix, port))
+		ifaces = append(ifaces, NewPhyIfname(port))
 	}
 
 	return ifaces

@@ -93,11 +93,18 @@ func (c *RibxCmd) createRibxConf(playbookName string) error {
 	t.VpnNexhopBridge = opt.VPNPseudoBridge
 	t.NLACorePort = opt.NLACorePort
 	t.NLAAPIPort = opt.NLAAPIPort
-	t.FibcAPIAddr = opt.FibcAPIAddr
+	t.FibcAPIAddr = opt.FibcAPIAddr()
 	t.FibcAPIPort = opt.FibcAPIPort
 	t.RibsCorePort = opt.RibsCorePort
 	t.RibsAPIPort = opt.RibsAPIPort
 	t.RibpAPIPort = opt.RibpAPIPort
+
+	t.GoBGPAPIAddr = opt.GoBGPAPIAddr
+	t.GoBGPAPIPort = opt.GoBGPAPIPort
+
+	if iptun := r.IPTun; iptun != nil {
+		t.IPTunRemoteRoutes = iptun.RemoteRoutes
+	}
 
 	t.LogLevel = opt.RibxLogLevel
 	t.LogDump = opt.RibxLogDump

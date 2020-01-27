@@ -24,22 +24,24 @@ import (
 )
 
 type TrapSinkTable struct {
-	entries []*net.UDPAddr
+	entries []string
 }
 
 func NewTrapSinkTable() *TrapSinkTable {
 	return &TrapSinkTable{
-		entries: []*net.UDPAddr{},
+		entries: []string{},
 	}
 }
 
-func (t *TrapSinkTable) Add(sink *net.UDPAddr) {
+func (t *TrapSinkTable) Add(sink string) {
 	t.entries = append(t.entries, sink)
 }
 
 func (t *TrapSinkTable) GetAll(f func(*net.UDPAddr)) {
 	for _, sink := range t.entries {
-		f(sink)
+		if addr, err := net.ResolveUDPAddr("udp", sink); err == nil {
+			f(addr)
+		}
 	}
 }
 

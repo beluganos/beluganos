@@ -41,10 +41,16 @@ recv_chan_size = {{ .NLARecvChanSize }}
 recv_sock_buf = {{ .NLARecvSockBufSize }}
 
   [[nla.iptun]]
-  nid = 0
+  nid = {{ .NID }}
+  {{- if .IPTunRemoteRoutes }}
+  remotes = [
+    {{- range .IPTunRemoteRoutes }}
+    {{ . }},
+    {{- end }}
+  ]
+  {{- else }}
   remotes = []
-  # remotes = ["10.100.1.0/24", "10.100.2.0/24"]
-  # remotes = ["2001:db8:1::/64", "2001:db8:2::/64"]
+  {{- end }}
 
   [nla.bridge_vlan]
   update_sec = {{ .NLABrVlanUpdateSec }}
@@ -66,7 +72,9 @@ core = "{{ .Mic }}:{{ .RibsCorePort }}"
 api  = "127.0.0.1:{{ .RibsAPIPort }}"
 
   [ribs.bgpd]
-  addr = "127.0.0.1"
+  addr = "{{ .GoBGPAPIAddr }}"
+  port = {{ .GoBGPAPIPort }}
+  route_family = "l3vpn-ipv4-unicast"
 
   {{- if eq .NID 0 }}
   {{/* MPLS-VPN (MIC) */}}
@@ -119,6 +127,11 @@ type PlaybookRibxdConf struct {
 	RibsAPIPort  uint16
 	RibpAPIPort  uint16
 
+	GoBGPAPIAddr string
+	GoBGPAPIPort uint16
+
+	IPTunRemoteRoutes []string
+
 	LogLevel uint8
 	LogDump  uint8
 }
@@ -140,6 +153,8 @@ func NewPlaybookRibxdConf() *PlaybookRibxdConf {
 		RibsCorePort: 50071,
 		RibsAPIPort:  50072,
 		RibpAPIPort:  50091,
+
+		IPTunRemoteRoutes: []string{},
 	}
 }
 

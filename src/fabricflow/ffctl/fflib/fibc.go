@@ -26,7 +26,7 @@ import (
 
 const (
 	FibcHost = "localhost"
-	FibcPort = uint16(50081)
+	FibcPort = uint16(50070)
 )
 
 type FibcClient struct {

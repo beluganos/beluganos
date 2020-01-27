@@ -62,7 +62,7 @@ type PlaybookSysctlIface struct {
 
 func (p *PlaybookSysctlIface) Ifname() string {
 	if p.Vlan == 0 {
-		return fmt.Sprintf("%s%d", IfnamePrefix, p.Index)
+		return NewPhyIfname(p.Index)
 	}
 	return fmt.Sprintf("%s%d/%d", IfnamePrefix, p.Index, p.Vlan)
 }

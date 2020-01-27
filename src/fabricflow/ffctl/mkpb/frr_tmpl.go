@@ -18,7 +18,6 @@
 package mkpb
 
 import (
-	"fmt"
 	"io"
 	"sort"
 	"text/template"
@@ -70,11 +69,7 @@ type PlaybookFrrConfIface struct {
 }
 
 func (p *PlaybookFrrConfIface) Ifname() string {
-	if p.Vlan == 0 {
-		return fmt.Sprintf("%s%d", IfnamePrefix, p.Index)
-	}
-
-	return fmt.Sprintf("%s%d.%d", IfnamePrefix, p.Index, p.Vlan)
+	return NewIfname(p.Index, p.Vlan)
 }
 
 type PlaybookFrrConf struct {

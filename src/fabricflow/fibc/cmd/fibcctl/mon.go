@@ -38,7 +38,7 @@ type MonitorCmd struct {
 }
 
 func (c *MonitorCmd) setFlags(cmd *cobra.Command) *cobra.Command {
-	cmd.Flags().StringVarP(&c.Addr, "fibc-addr", "", "localhost:50061", "fibc address.")
+	cmd.Flags().StringVarP(&c.Addr, "fibc-addr", "", FibcAddr, "fibc address.")
 	cmd.Flags().Uint64VarP(&c.DpID, "dpid", "", 0, "daapath id.")
 	cmd.Flags().StringVarP(&c.ReID, "reid", "", "", "router entity id")
 	cmd.Flags().Uint64VarP(&c.VsID, "vsid", "", 0, "vswitch id.")

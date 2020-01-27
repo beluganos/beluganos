@@ -39,7 +39,7 @@ type VSAPICommand struct {
 
 func (c *VSAPICommand) setFlags(cmd *cobra.Command) *cobra.Command {
 	cmd.Flags().Uint64VarP(&c.VsID, "vsid", "", 0, "vswitch id.")
-	cmd.Flags().StringVarP(&c.Addr, "fibc-addr", "", "localhost:50061", "FIBC address.")
+	cmd.Flags().StringVarP(&c.Addr, "fibc-addr", "", FibcAddr, "FIBC address.")
 	return cmd
 }
 

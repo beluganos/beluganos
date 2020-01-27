@@ -62,6 +62,8 @@ func (c *GobgpCmd) createConf(playbookName string) error {
 }
 
 func (c *GobgpCmd) createGoBGPConf(playbookName string) error {
+	opt := c.optionConfig()
+
 	path := c.filesPath(playbookName, c.gobgpConfFile)
 	f, err := createFile(path, c.overwrite, func(backup string) {
 		log.Debugf("%s backup", backup)
@@ -74,6 +76,8 @@ func (c *GobgpCmd) createGoBGPConf(playbookName string) error {
 	log.Debugf("%s created.", path)
 
 	t := NewPlaybookGoBGPConf()
+	t.APIAddr = opt.GoBGPAPIAddr
+	t.APIPort = opt.GoBGPAPIPort
 	return t.Execute(f)
 }
 

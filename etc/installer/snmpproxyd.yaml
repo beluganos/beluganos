@@ -83,4 +83,4 @@ snmpproxy:
 
     trap2map: {}
 
-    trap2sink: {}
+    trap2sink: []

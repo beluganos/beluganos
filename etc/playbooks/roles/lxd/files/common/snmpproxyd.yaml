@@ -6,30 +6,9 @@ snmpproxy:
       - name:  ifIndex
         oid:   .1.3.6.1.2.1.2.2.1.1
         local: .1.3.6.1.4.99999.2.2.1.1
-      - name:  ifDescr
-        oid:   .1.3.6.1.2.1.2.2.1.2
-        local: .1.3.6.1.4.99999.2.2.1.2
-      - name:  ifType
-        oid:   .1.3.6.1.2.1.2.2.1.3
-        local: .1.3.6.1.4.99999.2.2.1.3
-      - name:  ifMtu
-        oid:   .1.3.6.1.2.1.2.2.1.4
-        local: .1.3.6.1.4.99999.2.2.1.4
-      - name:  ifSpeed
-        oid:   .1.3.6.1.2.1.2.2.1.5
-        local: .1.3.6.1.4.99999.2.2.1.5
-      - name:  ifPhysAddress
-        oid:   .1.3.6.1.2.1.2.2.1.6
-        local: .1.3.6.1.4.99999.2.2.1.6
-      - name:  ifAdminStatus
-        oid:   .1.3.6.1.2.1.2.2.1.7
-        local: .1.3.6.1.4.99999.2.2.1.7
       - name:  ifOperStatus
         oid:   .1.3.6.1.2.1.2.2.1.8
         local: .1.3.6.1.4.99999.2.2.1.8
-      - name:  ifLastChange
-        oid:   .1.3.6.1.2.1.2.2.1.9
-        local: .1.3.6.1.4.99999.2.2.1.9
       - name:  ifInOctets
         oid:   .1.3.6.1.2.1.2.2.1.10
         local: .1.3.6.1.4.99999.2.2.1.10
@@ -63,15 +42,17 @@ snmpproxy:
       - name:  ifOutErrors
         oid:   .1.3.6.1.2.1.2.2.1.20
         local: .1.3.6.1.4.99999.2.2.1.20
-      - name:  ifOutQLen
-        oid:   .1.3.6.1.2.1.2.2.1.21
-        local: .1.3.6.1.4.99999.2.2.1.21
-      - name:  ifSpecific
-        oid:   .1.3.6.1.2.1.2.2.1.22
-        local: .1.3.6.1.4.99999.2.2.1.22
       - name:  ifName
         oid:   .1.3.6.1.2.1.31.1.1.1.1
         local: .1.3.6.1.4.99999.31.1.1.1.1
+      - name:  proxy-to-wbsw
+        oid:   .1.3.6.1.1234.0.1.3
+        local: .1.3
+        proxy: 172.16.0.1
+      - name:  ONL-mibs
+        oid:   .1.3.6.1.4.1.42623.1
+        local: .1.3.6.1.4.1.42623.1
+        proxy: 172.16.0.1
 
     ifmap:
       oidmap:
@@ -82,60 +63,134 @@ snmpproxy:
         max: 2147483647
 
     trap2map:
-      eth1: 1
-      eth2: 2
-      eth3: 3
-      eth4: 4
-      eth5: 5
-      eth6: 6
-      eth7: 7
-      eth8: 8
-      eth9: 9
-      eth10: 10
-      eth11: 11
-      eth12: 12
-      eth13: 13
-      eth14: 14
-      eth15: 15
-      eth16: 16
-      eth17: 17
-      eth18: 18
-      eth19: 19
-      eth20: 20
-      eth21: 21
-      eth22: 22
-      eth23: 23
-      eth24: 24
-      eth25: 25
-      eth26: 26
-      eth27: 27
-      eth28: 28
-      eth29: 29
-      eth30: 30
-      eth31: 31
-      eth32: 32
-      eth33: 33
-      eth34: 34
-      eth35: 35
-      eth36: 36
-      eth37: 37
-      eth38: 38
-      eth39: 39
-      eth40: 40
-      eth41: 41
-      eth42: 42
-      eth43: 43
-      eth44: 44
-      eth45: 45
-      eth46: 46
-      eth47: 47
-      eth48: 48
-      eth49: 49
-      eth50: 53
-      eth51: 57
-      eth52: 61
-      eth53: 65
-      eth54: 69
+      eth1: 50
+      eth2: 51
+      eth3: 52
+      eth4: 53
+      eth5: 54
+      eth6: 55
+      eth7: 56
+      eth8: 57
+      eth9: 58
+      eth10: 59
+      eth11: 60
+      eth12: 61
+      eth13: 62
+      eth14: 63
+      eth15: 64
+      eth16: 65
+      eth17: 68
+      eth18: 69
+      eth19: 70
+      eth20: 71
+      eth21: 72
+      eth22: 73
+      eth23: 74
+      eth24: 75
+      eth25: 76
+      eth26: 77
+      eth27: 78
+      eth28: 79
+      eth29: 80
+      eth30: 81
+      eth31: 82
+      eth32: 83
+      eth33: 34
+      eth34: 35
+      eth35: 36
+      eth36: 37
+      eth37: 38
+      eth38: 39
+      eth39: 40
+      eth40: 41
+      eth41: 42
+      eth42: 43
+      eth43: 44
+      eth44: 45
+      eth45: 46
+      eth46: 47
+      eth47: 48
+      eth48: 49
+      eth49: 84
+      eth50: 85
+      eth51: 86
+      eth52: 87
+      eth53: 88
+      eth54: 89
+      eth55: 90
+      eth56: 91
+      eth57: 92
+      eth58: 93
+      eth59: 94
+      eth60: 95
+      eth61: 96
+      eth62: 97
+      eth63: 98
+      eth64: 99
+      eth65: 102
+      eth66: 103
+      eth67: 104
+      eth68: 105
+      eth69: 106
+      eth70: 107
+      eth71: 108
+      eth72: 109
+      eth73: 110
+      eth74: 111
+      eth75: 112
+      eth76: 113
+      eth77: 114
+      eth78: 115
+      eth79: 116
+      eth80: 117
+      eth81: 17
+      eth82: 18
+      eth83: 19
+      eth84: 20
+      eth85: 21
+      eth86: 22
+      eth87: 23
+      eth88: 24
+      eth89: 25
+      eth90: 26
+      eth91: 27
+      eth92: 28
+      eth93: 29
+      eth94: 30
+      eth95: 31
+      eth96: 32
+      eth97: 118
+      eth98: 119
+      eth99: 120
+      eth100: 121
+      eth101: 122
+      eth102: 123
+      eth103: 124
+      eth104: 125
+      eth105: 126
+      eth106: 127
+      eth107: 128
+      eth108: 129
+      eth109: 130
+      eth110: 131
+      eth111: 132
+      eth112: 133
+      eth113: 1
+      eth114: 2
+      eth115: 3
+      eth116: 4
+      eth117: 5
+      eth118: 6
+      eth119: 7
+      eth120: 8
+      eth121: 9
+      eth122: 10
+      eth123: 11
+      eth124: 12
+      eth125: 13
+      eth126: 14
+      eth127: 15
+      eth128: 16
 
     trap2sink:
-      - addr: 192.169.122.1:161
+      - addr: mic.lxd:1162

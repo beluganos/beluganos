@@ -49,7 +49,7 @@ type DPAPICommand struct {
 func (c *DPAPICommand) setFlags(cmd *cobra.Command) *cobra.Command {
 	cmd.Flags().Uint64VarP(&c.DpID, "dpid", "i", 0, "daapath id.")
 	cmd.Flags().StringVarP(&c.DpType, "dp-type", "", "OPENNSL", "datapath type.")
-	cmd.Flags().StringVarP(&c.Addr, "fibc-addr", "a", "localhost:50061", "FIBC address.")
+	cmd.Flags().StringVarP(&c.Addr, "fibc-addr", "a", FibcAddr, "FIBC address.")
 	return cmd
 }
 

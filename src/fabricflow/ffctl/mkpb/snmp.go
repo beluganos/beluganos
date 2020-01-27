@@ -18,6 +18,8 @@
 package mkpb
 
 import (
+	"time"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -100,13 +102,15 @@ func (c *SnmpCmd) createSnmpdConf(playbookName string) error {
 	log.Debugf("%s created.", path)
 
 	t := NewPlaybookSnmpdConf()
-	t.Trap2SinkAddr = opt.SnmpproxydAddr
+	t.Trap2SinkAddr = opt.SnmpproxydAddr()
 	t.LinkMonitorInterval = opt.SnmpdLinkmonInterval
 
 	return t.Execute(f)
 }
 
 func (c *SnmpCmd) createSnmpproxydConf(playbookName string) error {
+	opt := c.optionConfig()
+
 	path := c.filesPath(playbookName, c.snmpproxydConfFile)
 	f, err := createFile(path, c.overwrite, func(backup string) {
 		log.Debugf("%s backup", backup)
@@ -118,8 +122,16 @@ func (c *SnmpCmd) createSnmpproxydConf(playbookName string) error {
 
 	log.Debugf("%s created.", path)
 
-	t := NewPlaybookSnmpproxydConf() // proxyd
-	t.SnmpproxydAddr = c.optionConfig().SnmpproxydAddr
+	ifResend, err := time.ParseDuration(opt.SnmpproxydIfResend)
+	if err != nil {
+		return err
+	}
+
+	t := NewPlaybookSnmpproxydConf() // ifmon
+	t.SnmpproxydType = "ifmon"
+	t.SnmpproxydAddr = c.optionConfig().SnmpproxydAddr()
+	t.SnmpproxydTrapPort = opt.SnmpproxydTrapPort
+	t.SnmpproxydIfResend = ifResend
 	return t.Execute(f)
 }
 

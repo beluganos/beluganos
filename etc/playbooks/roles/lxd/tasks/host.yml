@@ -10,3 +10,27 @@
     - fibc.log.conf
     - snmpproxyd.conf
     - snmpproxyd.yaml
+
+- name: copy snmp config
+  become: yes
+  copy:
+    src: "{{ commondir }}/{{ item }}"
+    dest: "/etc/snmp/{{ item }}"
+  with_items:
+    - snmp.conf
+    - snmpd.conf
+
+- name: systemd daemon-reload
+  become: yes
+  systemd:
+    daemon_reload: yes
+
+- name: restart snmp daemons
+  become: yes
+  systemd:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - snmpd
+    - snmpproxyd-trap
+    - snmpproxyd-mib

@@ -32,6 +32,17 @@ const (
 	CommandRole     = "lxd"
 )
 
+func NewPhyIfname(index uint32) string {
+	return NewIfname(index, 0)
+}
+
+func NewIfname(index uint32, vlan uint16) string {
+	if vlan == 0 {
+		return fmt.Sprintf("%s%d", IfnamePrefix, index)
+	}
+	return fmt.Sprintf("%s%d.%d", IfnamePrefix, index, vlan)
+}
+
 type Command struct {
 	rootPath  string
 	role      string
@@ -64,6 +75,15 @@ func (c *Command) setConfigFlags(cmd *cobra.Command) *cobra.Command {
 	cmd.Flags().StringVarP(&c.configType, "config-type", "", "", "config file type.")
 	cmd.Flags().BoolVarP(&c.lxdMode, "lxd-config-mode", "", false, "create for lxd.")
 	return c.setFlags(cmd)
+}
+
+func (c *Command) copyFlags(src *Command) {
+	c.rootPath = src.rootPath
+	c.role = src.role
+	c.overwrite = src.overwrite
+	c.configFile = src.configFile
+	c.configType = src.configType
+	c.lxdMode = src.lxdMode
 }
 
 func (c *Command) setConfig(config *Config) {

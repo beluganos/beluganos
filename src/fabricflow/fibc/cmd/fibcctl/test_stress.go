@@ -47,7 +47,7 @@ type TestStressCmd struct {
 func (c *TestStressCmd) setFlags(cmd *cobra.Command) *cobra.Command {
 	cmd.Flags().Uint32VarP(&c.IfNum, "interface", "i", 1, "interface num.")
 	cmd.Flags().Uint32VarP(&c.IfBase, "base-iinterface", "b", 1, "base interface num.")
-	cmd.Flags().StringVarP(&c.Addr, "fibc-addr", "", "localhost:50061", "FIBC address.")
+	cmd.Flags().StringVarP(&c.Addr, "fibc-addr", "", FibcAddr, "FIBC address.")
 	return cmd
 }
 

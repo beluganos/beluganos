@@ -1,20 +1,12 @@
 [Unit]
 Description=Beluganos fib initializer
-After=syslog.target network.target
+After=syslog.target lxd-containers.service
 ConditionPathExists=/etc/beluganos/beluganos.conf
 
 [Service]
 Type=simple
-EnvironmentFile=/etc/beluganos/beluganos.conf
-
-ExecStartPre=/bin/mkdir -p /var/log/beluganos
-ExecStartPre=/bin/chown beluganos.beluganos /var/log/beluganos
-
-ExecStartPre=/bin/mkdir -p /var/run/beluganos
-ExecStartPre=/bin/chown beluganos.beluganos /var/run/beluganos
-ExecStartPre=/bin/chmod 755 /var/run/beluganos
-
-ExecStart=-/sbin/sysctl -p ${FF_SYSCTL_CONF}
+ExecStartPre=/bin/chmod 755 /etc/beluganos/beluganos_init.sh
+ExecStart=-/etc/beluganos/beluganos_init.sh
 
 [Install]
 WantedBy=network.target

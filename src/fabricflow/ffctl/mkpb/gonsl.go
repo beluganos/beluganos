@@ -74,7 +74,7 @@ func (c *GonslCmd) createGonsldYaml(playbookName string) error {
 
 	t := NewPlaybookGonsldYaml()
 	t.DpID = g.DpID
-	t.FibcAddr = opt.FibcAPIAddr
+	t.FibcAddr = opt.FibcAddr
 	t.FibcPort = opt.FibcAPIPort
 	t.L2SWAgingSec = opt.L2SWAgingSec
 	t.L2SWSweepSec = opt.L2SWSweepSec
@@ -117,7 +117,7 @@ func NewGonslCommand() *cobra.Command {
 
 	rootCmd.AddCommand(gonsl.setConfigFlags(
 		&cobra.Command{
-			Use:   "create <playbook name>",
+			Use:   "create",
 			Short: "Crate new gonsl config files.",
 			Args:  cobra.NoArgs,
 			RunE: func(cmd *cobra.Command, args []string) error {

@@ -19,6 +19,8 @@ package ethtools
 
 import (
 	"fmt"
+	"net"
+	"regexp"
 	"sort"
 
 	"github.com/safchain/ethtool"
@@ -26,10 +28,22 @@ import (
 )
 
 type EthtoolCmd struct {
+	excludes []string
+}
+
+func NewEthtoolCmd() *EthtoolCmd {
+	return &EthtoolCmd{
+		excludes: []string{},
+	}
 }
 
 func (c *EthtoolCmd) setFlags(cmd *cobra.Command) *cobra.Command {
 	return cmd
+}
+
+func (c *EthtoolCmd) setChangeFlags(cmd *cobra.Command) *cobra.Command {
+	cmd.Flags().StringSliceVarP(&c.excludes, "exclude", "e", []string{}, "exclude ifname patterns (comma separated or multiple)")
+	return c.setFlags(cmd)
 }
 
 func (c *EthtoolCmd) ethtool(f func(*ethtool.Ethtool) error) error {
@@ -40,6 +54,46 @@ func (c *EthtoolCmd) ethtool(f func(*ethtool.Ethtool) error) error {
 	defer et.Close()
 
 	return f(et)
+}
+
+func (c *EthtoolCmd) listInterfaces(pattern string, excludes []string) ([]net.Interface, error) {
+
+	patternRegex, err := regexp.Compile(pattern)
+	if err != nil {
+		return nil, err
+	}
+
+	excludeRegexes := []*regexp.Regexp{}
+	for _, exclude := range excludes {
+		re, err := regexp.Compile(exclude)
+		if err != nil {
+			return nil, err
+		}
+		excludeRegexes = append(excludeRegexes, re)
+	}
+
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		return nil, err
+	}
+
+	targetIfaces := []net.Interface{}
+FOR_LOOP:
+	for _, iface := range ifaces {
+		for _, re := range excludeRegexes {
+			if match := re.MatchString(iface.Name); match {
+				continue FOR_LOOP
+			}
+
+		}
+
+		if match := patternRegex.MatchString(iface.Name); match {
+			targetIfaces = append(targetIfaces, iface)
+			continue FOR_LOOP
+		}
+	}
+
+	return targetIfaces, nil
 }
 
 func (c *EthtoolCmd) listFeatures(ifname string) error {
@@ -63,9 +117,20 @@ func (c *EthtoolCmd) listFeatures(ifname string) error {
 	})
 }
 
-func (c *EthtoolCmd) changeFeature(ifname string, vals map[string]bool) error {
+func (c *EthtoolCmd) changeFeature(pattern string, vals map[string]bool) error {
+	ifaces, err := c.listInterfaces(pattern, c.excludes)
+	if err != nil {
+		return err
+	}
+
 	return c.ethtool(func(et *ethtool.Ethtool) error {
-		return et.Change(ifname, vals)
+		for _, iface := range ifaces {
+			fmt.Printf("chage featurs. %s\n", iface.Name)
+			if err := et.Change(iface.Name, vals); err != nil {
+				fmt.Printf("change feature error. %s %s\n", iface.Name, err)
+			}
+		}
+		return nil
 	})
 }
 
@@ -76,7 +141,7 @@ func ethtoolFeatureCmd() *cobra.Command {
 		Short:   "ethtool features command.",
 	}
 
-	et := EthtoolCmd{}
+	et := NewEthtoolCmd()
 
 	rootCmd.AddCommand(et.setFlags(
 		&cobra.Command{
@@ -94,7 +159,7 @@ func ethtoolFeatureCmd() *cobra.Command {
 		},
 	))
 
-	rootCmd.AddCommand(et.setFlags(
+	rootCmd.AddCommand(et.setChangeFlags(
 		&cobra.Command{
 			Use:  "on <interface name> <features...>",
 			Args: cobra.MinimumNArgs(2),
@@ -108,7 +173,7 @@ func ethtoolFeatureCmd() *cobra.Command {
 		},
 	))
 
-	rootCmd.AddCommand(et.setFlags(
+	rootCmd.AddCommand(et.setChangeFlags(
 		&cobra.Command{
 			Use:  "off <interface name> <features...>",
 			Args: cobra.MinimumNArgs(2),
