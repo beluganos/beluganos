@@ -1,5 +1,4 @@
-<img src="doc/img/brand-logo-h.png" width="420px" alt="beluganos-logomark">
-
+## Beluganos
 Beluganos is a **new network OS** designed for **white-box switches**, which can apply large-scale networks.
 
 - IP Routing (BGP, OSPF, IPv6, ...) and L2 switching
@@ -8,6 +7,11 @@ Beluganos is a **new network OS** designed for **white-box switches**, which can
 - ASIC based **hardware packet processing**
 
 The feature matrix of Beluganos is available at [doc/function.md](doc/function.md). Beluganos was named after [beluga whale](https://en.wikipedia.org/wiki/Beluga_whale).
+
+>note
+>* The commercial version of "Beluganos" released on March 31,2023 does not use the OSS technology published on theGitHub.
+>* After March 31, 2023, NTT's registered trademark "Beluganos"will be used for the commercial version of "Beluganos" and willnot be used for the OSS version on the GitHub.
+>* For details of the commercial version of “Beluganos”, please click [here](https://group.ntt/en/newsrelease/2023/03/28/230328b.html).
 
 ## Architecture
 Beluganos has one or more **[Linux containers](https://linuxcontainers.org/)**. The main effort of Beluganos is that the route table which is installed to Linux containers is copied to white-box switches. If you will configure router settings like IP addresses or parameter of routing protocols, you may configure the settings of Linux containers by ansible or [NETCONF](https://github.com/beluganos/netconf/). Moreover, in order to control white-box switches, **OpenNSL** or **OF-DPA** is used.
